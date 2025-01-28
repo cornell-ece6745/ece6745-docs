@@ -2,13 +2,13 @@
 # mkdocs Configuration
 #=========================================================================
 
-site_name:   'ECE 2300 Digital Logic and Computer Organization'
+site_name:   'ECE 6745 Complex Digital ASIC Design'
 site_author: 'Christopher Batten'
 
 # Repository
 
-repo_name:   'cornell-ece2300/ece2300-docs'
-repo_url:    'https://github.com/cornell-ece2300/ece2300-docs'
+repo_name:   'cornell-ece6745/ece6745-docs'
+repo_url:    'https://github.com/cornell-ece6745/ece6745-docs'
 
 # Copyright
 
@@ -77,34 +77,8 @@ extra_javascript:
 nav:
 
   - 'Tutorials':
-    - 'Tutorial 0: ECE Linux Server Remote Access': ece2300-tut00-remote-access.md
-    - 'Tutorial 1: Linux Development Environment': ece2300-tut01-linux.md
-    - 'Tutorial 2: Git Distributed Version Control System': ece2300-tut02-git.md
+    - 'Tutorial 0: ECE Linux Server Remote Access': ece6745-tut00-remote-access.md
+    - 'Tutorial 1: Linux Development Environment': ece6745-tut01-linux.md
+    - 'Tutorial 2: Git Distributed Version Control System': ece6745-tut02-git.md
 
-#  - 'Discussion Sections':
-#    - 'Section 1: Linux Development Environment': ece2300-sec01-linux.md
-#    - 'Section 2: Verilog Combinational Gate-Level Design': ece2300-sec02-verilog-gl.md
-#    - 'Section 3: Verilog Testing': ece2300-sec03-verilog-testing.md
-#    - 'Section 4: Lab 2 Head Start': ece2300-sec04-lab2-head-start.md
-#    - 'Section 5: Verilog Combinational RTL Design': ece2300-sec05-verilog-rtl.md
-#    - 'Section 6: Lab 3 Head Start': ece2300-sec06-lab3-head-start.md
-#    - 'Section 7: Verilog Memory Arrays': ece2300-sec07-verilog-mem.md
-
-#  - 'Lab Assignments':
-#    - 'FPGA Development Primer': ece2300-fpga-primer.md
-#    - 'Lab 1 (Parts A & B): Five-Bit Numeric Display -- Implementation and Verification' : ece2300-lab1p1-display.md
-#    - 'Lab 1 (Parts C & D): Five-Bit Numeric Display -- FPGA Analysis/Prototyping and Report' : ece2300-lab1p2-display.md
-#    - 'Lab 2 (Parts A & B): Two-Function Calculator -- Implementation and Verification' : ece2300-lab2p1-calc.md
-#    - 'Lab 2 (Parts C & D): Two-Function Calculator -- FPGA Analysis/Prototyping and Report' : ece2300-lab2-calc-fpga-report.md
-#    - 'Lab 3 (Parts A & B): Music-Player -- Implementation and Verification' : ece2300-lab3ab-music.md
-#    - 'Lab 3 (Parts C & D): Music-Player -- FPGA Analysis/Prototyping and Report' : ece2300-lab3cd-music.md
-#    - 'Lab 3 (Parts C & D) Optional Add-On: Custom Song': ece2300-lab3cd-custom-song.md
-#    - 'Lab 4 (Parts A, B, & C) TinyRV1 Processor -- Implementation and Verification': ece2300-lab4ab-proc.md
-#    - 'Lab 4 (Part D) TinyRV1 Processor -- FPGA Analysis/Prototyping': ece2300-lab4d-proc.md
-#    - 'Lab 4 (Parts E & F) TinyRV1 Processor -- FPGA Analysis/Prototyping and Report': ece2300-lab4ef-proc.md
-# 
-#  - 'Misc':
-#    - 'TinyRV1 ISA': ece2300-tinyrv1-isa.md
-#     - 'Testing and Debug Strategy': ece2300-test-debug-strategy.md
-#
 
