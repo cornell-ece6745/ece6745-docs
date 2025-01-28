@@ -16,15 +16,18 @@ reach out to the course staff for assistance.
 Later tutorials will discuss how to use the Linux development environment
 and the Git distributed version control system. In this tutorial, we
 focus on how to setup remote access to the `ecelinux` servers by first
-connecting to the Cornell VPN and then using two different options to
+connecting to the Cornell VPN and then using three different options to
 remotely access the `ecelinux` servers. The first remote access option is
-based on using PowerShell (for Windows OS users) or Mac Terminal (for Mac OS
-X users) and only supports primitive text-based interaction. We recommend
-using PowerShell or Mac Terminal as backup options to debug connection
-issues to the `ecelinux` servers. The primary remote access option
-recommended in this course is through Visual Studio Code (VS Code) which
-provides a very nice interface with support for working at the command
-line, graphic text editing, and graphic file browsing.
+based on using PowerShell (for Windows OS users) or Mac Terminal (for Mac
+OS X users) and only supports primitive text-based interaction. We
+recommend using PowerShell or Mac Terminal as backup options to debug
+connection issues to the `ecelinux` servers. The second (and primary)
+remote access option recommended in this course is through Visual Studio
+Code (VS Code) which provides a very nice interface with support for
+working at the command line, graphic text editing, and graphic file
+browsing. The third remote access option is based on using Microsoft
+Remote Desktop and is required when executing a Linux application with a
+graphical user interface.
 
 1. Connecting to the Cornell VPN
 --------------------------------------------------------------------------
@@ -111,7 +114,7 @@ need for working on the laboratory/programming assignments. Enter the
 following command on the command line:
 
 ```bash
-% source setup-ece2300.sh
+% source setup-ece6745.sh
 ```
 
 Again, you should not enter the `%` character. You should now see a blue
@@ -129,7 +132,7 @@ Nano, we will first grab a text file using the `wget` command. The next
 tutorial discusses this command in more detail.
 
 ```bash
-% wget http://www.csl.cornell.edu/courses/ece2300/overview.txt
+% wget http://www.csl.cornell.edu/courses/ece6745/overview.txt
 ```
 
 You can start nano by typing the command `nano` at the Linux command line
@@ -189,7 +192,8 @@ depend on whether you are using a Windows OS or Mac OS X
 laptop/workstation.
 
 The key to VS Code is installing the correct extensions. You will need
-extensions for the Verilog hardware description language (HDL). We also
+extensions for the Verilog hardware description language (HDL), the
+Python programming language, and the C/C++ programming language. We also
 want to install a special extension which will enable remotely accessing
 the `ecelinux` servers using SSH. Choose _View > Extensions_ from the
 menubar. Enter the name of the extension in the ``Search Extensions in
@@ -198,11 +202,17 @@ names of the extensions to install:
 
  - Remote - SSH (use the one from Microsoft)
  - Verilog (use the one from Masahiro Hiramori)
+ - Python (use the one from Microsoft)
+ - C/C++ (use the one from Microsoft)
  - Surfer (use the one from surfer-project)
 
 ![](img/tut00-vscode-remote-ssh.png)
 
 ![](img/tut00-vscode-verilog.png)
+
+![](img/tut00-vscode-python.png)
+
+![](img/tut00-vscode-cpp.png)
 
 ![](img/tut00-vscode-surfer.png)
 
@@ -256,11 +266,11 @@ you know you are connected to the `ecelinux` servers.
 The final step is to make sure your extensions for the Verilog HDL are
 also installed on the server. Choose _View > Extensions_ from the
 menubar. Use the "Search Extensions in Marketplace" to search for the
-same Verilog HDL extensions that we installed earlier. Instead of saying
-_Install_ it should now say _Install in SSH: ecelinux.ece.cornell.edu_.
-Install the Verilog HDL extension on the `ecelinux` servers. You only
-need to do this once, and then next time this extension will already be
-installed on the `ecelinux` servers.
+same extensions that we installed earlier. Instead of saying _Install_ it
+should now say _Install in SSH: ecelinux.ece.cornell.edu_. Install the
+extensions on the `ecelinux` servers. You only need to do this once, and
+then next time this extension will already be installed on the `ecelinux`
+servers.
 
 ### 3.4. Using VS Code
 
@@ -289,7 +299,7 @@ laboratory/programming assignments. Enter the following command on the
 command line:
 
 ```bash
-% source setup-ece2300.sh
+% source setup-ece6745.sh
 ```
 
 Again, you should not enter the `%` character. You should now see a blue
@@ -303,7 +313,7 @@ To experiment with VS Code, we will first grab a text file using the
 Type the following command in the VS Code integrated terminal.
 
 ```bash
-% wget http://www.csl.cornell.edu/courses/ece2300/overview.txt
+% wget http://www.csl.cornell.edu/courses/ece6745/overview.txt
 ```
 
 You can open a file in the integrated text editor using the `code`
@@ -369,7 +379,68 @@ the menubar. On Mac OS X, choose _Code > Preferences > Settings_ from the
 menubar. Click on _Text Editor_ and then _Formatting_. Make sure _Format
 On Save_ is not checked.
 
-4. Sourcing Course Setup Script with Auto Setup
+5. Remote Access via Microsoft Remote Desktop
+--------------------------------------------------------------------------
+
+We will primarily use VS Code for working at the terminal, developing our
+hardware, and debugging our designs. However, we need to use a different
+remote accesss option if we want to run a Linux application which has a
+graphical user interface (GUI). We will be using the Microsoft Remote
+Desktop application to log into the `ecelinux` servers to provide us a
+"virtual desktop" which we can then use to start Linux GUI applications.
+
+Start by installing the Microsoft Remote Desktop application. On Windows,
+simply use the _Start Menu_ to search for _Microsoft Remote Desktop_. On
+Mac OS X, download Microsoft Remote Desktop from the App Store:
+
+ - <https://apps.apple.com/us/app/windows-app/id1295203466>
+
+Start Microsoft Remote Desktop and _Connections > Add PC_ from the menu.
+For the hostname we recommend choosing a specific `ecelinux` server so
+your will maintain a persistent connection. For example, you could use
+and of these:
+
+ - `ecelinux-01.ece.cornell.edu`
+ - `ecelinux-02.ece.cornell.edu`
+ - `ecelinux-03.ece.cornell.edu`
+ - `ecelinux-04.ece.cornell.edu`
+ - `ecelinux-05.ece.cornell.edu`
+ - `ecelinux-06.ece.cornell.edu`
+ - `ecelinux-07.ece.cornell.edu`
+ - `ecelinux-08.ece.cornell.edu`
+
+Then user the following setup
+
+ - Click the _User Account_ drop down and choose _Add User Account_
+    + Username: `netid@cornell.edu` (must have `@cornell.edu` at end!)
+    + Password: NetID password
+ - _Display_ tab
+    + Uncheck _Start session in full screen_
+ - _Devices & Audio_ tab
+    + Uncheck _Printers_ and _Smart cards_
+ - Click _Save_
+
+To log into `ecelinux` double click on the corresponding entry in
+Microsoft Remote Desktop. You may see a message like this:
+
+    Your are connecting to the RDP host ... The certificate couldn't be
+    verified back to a root certificate. Your connection may not be
+    secure. Do you want to continue?
+
+If you see this message then take the following steps:
+
+ - Click _Show Certificate_
+ - Click _Always trutst XRDP when connecting ..._
+ - Click _Continue_
+
+This should launch a "virtual desktop" on `ecelinux`. Start a terminal by
+choosing _Applications > Terminal Emulator_. Then source the setup script
+and execute the `xclock` program to confirm you can start a Linux GUI
+application.
+
+![](img/tut00-xrdp.png)
+
+6. Sourcing Course Setup Script with Auto Setup
 --------------------------------------------------------------------------
 
 The previous sections have demonstrated how to remotely access the
@@ -388,7 +459,7 @@ when you are working on this course. Enter the following command on the
 command line to use auto setup:
 
 ```bash
- % source setup-ece2300.sh --enable-auto-setup
+ % source setup-ece6745.sh --enable-auto-setup
 ```
 
 Now completely logout of the `ecelinux` servers then log back in and get
@@ -398,7 +469,7 @@ meaning your environment is automatically setup for the course. If at
 anytime you need to disable auto setup you can use the following command:
 
 ```bash
- % source setup-ece2300.sh --disable-auto-setup
+ % source setup-ece6745.sh --disable-auto-setup
 ```
 
 Again, if for any reason running the setup script prevents you from using

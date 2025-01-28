@@ -21,7 +21,7 @@ Code. To follow along with the tutorial, type the commands without the
 `%` character. In addition to working through the commands in the
 tutorial, you should also try the more open-ended activities.
 
-Before you begin, make sure that you have **sourced the setup-ece2300.sh
+Before you begin, make sure that you have **sourced the setup-ece6745.sh
 script** or that you have enabled auto setup. Sourcing the setup script
 sets up the environment required for this tutorial.
 
@@ -35,7 +35,7 @@ merge requests, code review, issue tracking, and even a built-in wiki
 attached to every repository. We have created a dedicated GitHub
 organization for the course located here:
 
- - <https://github.com/cornell-ece2300>
+ - <https://github.com/cornell-ece6745>
 
 The course staff will add all officially registered students to the
 course organization. For most of this tutorial you will be using a public
@@ -72,7 +72,7 @@ Once you have a GitHub username, please fill out the following form on
 Canvas so the instructors know the mapping from your NetID to your GitHub
 username.
 
- - <http://www.csl.cornell.edu/courses/ece2300/githubid>
+ - <http://www.csl.cornell.edu/courses/ece6745/githubid>
 
 Before you can begin using GitHub, you need to create an SSH key pair on
 an `ecelinux` machine and upload the corresponding SSH public key to
@@ -82,8 +82,8 @@ an `ecelinux` machine, source the course setup script, and then view the
 contents of your public key using the following commands:
 
 ```bash
-% source setup-ece2300.sh
-% cat ~/.ssh/ece2300-github.pub
+% source setup-ece6745.sh
+% cat ~/.ssh/ece6745-github.pub
 ```
 
 Use the following page to upload the public key to GitHub:
@@ -92,7 +92,7 @@ Use the following page to upload the public key to GitHub:
 
 Click on _New SSH Key_, and then cut-and-paste the public key you
 displayed using `cat` into the _key_ textbox. Give the key the title
-"ece2300-github". Then click _Add SSH key_. To test things out try the
+"ece6745-github". Then click _Add SSH key_. To test things out try the
 following on an `ecelinux` machine.
 
 ```bash
@@ -142,7 +142,7 @@ repository. Forking is the process of making a personal copy of someone
 else's repository on GitHub. Start by going to the GitHub page for the
 tutorial repository located here:
 
- - <https://github.com/cornell-ece2300/ece2300-tut02-git>
+ - <https://github.com/cornell-ece6745/ece6745-tut02-git>
 
 ![](img/tut02-git-fork.png#border)
 
@@ -150,7 +150,7 @@ Click on _Fork_ in the upper right-hand corner. If asked where to fork
 this repository, choose your personal GitHub account. After a few
 seconds, you should have a brand new repository in your account:
 
- - <https://github.com/githubid/ece2300-tut02-git>
+ - <https://github.com/githubid/ece6745-tut02-git>
 
 Where `githubid` is your GitHub username on the public version of GitHub.
 Now that you have your own copy of the tutorial repository, the next step
@@ -166,11 +166,11 @@ this tutorial in your home directory before using the `git clone` command
 to clone the remote repository and thus create a local repository.
 
 ```bash
-% source setup-ece2300.sh
+% source setup-ece6745.sh
 % GITHUBID="githubid"
-% mkdir -p ${HOME}/ece2300
-% cd ${HOME}/ece2300
-% git clone git@github.com:${GITHUBID}/ece2300-tut02-git tut02
+% mkdir -p ${HOME}/ece6745
+% cd ${HOME}/ece6745
+% git clone git@github.com:${GITHUBID}/ece6745-tut02-git tut02
 % cd tut02
 % TUTROOT=${PWD}
 ```
@@ -390,7 +390,7 @@ that the `git push` command moves commits from your local repository to
 the remote repository on GitHub. Visit the GitHub page to verify that our
 new commits have been pushed to the remote repository:
 
- - <https://github.com/githubid/ece2300-tut02-git>
+ - <https://github.com/githubid/ece6745-tut02-git>
 
 Click on _commits_ at the top of the GitHub page to view the log of
 commits. You can browse who made each commit, what changed in each
@@ -417,12 +417,12 @@ collaboration with GitHub works, we will "pretend" to be different users
 by cloning extra copies of the tutorial repository.
 
 ```bash
-% cd ${HOME}/ece2300
-% git clone git@github.com:${GITHUBID}/ece2300-tut02-git tut02-alice
+% cd ${HOME}/ece6745
+% git clone git@github.com:${GITHUBID}/ece6745-tut02-git tut02-alice
 % cd tut02-alice
 % ALICE=${PWD}
-% cd ${HOME}/ece2300
-% git clone git@github.com:${GITHUBID}/ece2300-tut02-git tut02-bob
+% cd ${HOME}/ece6745
+% git clone git@github.com:${GITHUBID}/ece6745-tut02-git tut02-bob
 % cd tut02-bob
 % BOB=${PWD}
 ```
@@ -548,9 +548,9 @@ and create his new file, commit, and attempt to push this new commit.
 % git add vegetables.txt
 % git commit -m "BOB: initial vegetable list"
 % git push
- To git@github.com:githubid/ece2300-tut02-git
+ To git@github.com:githubid/ece6745-tut02-git
   ! [rejected]        main -> main (fetch first)
- error: failed to push some refs to 'git@github.com:githubid/ece2300-tut02-git'
+ error: failed to push some refs to 'git@github.com:githubid/ece6745-tut02-git'
  hint: Updates were rejected because the remote contains work that you do
  hint: not have locally. This is usually caused by another repository pushing
  hint: to the same ref. You may want to first integrate the remote changes
@@ -578,7 +578,7 @@ at the Git history using `git log` to see what happened.
 ```bash
 % cd ${BOB}
 % git log --oneline --graph
- *   f5c1361 (HEAD -> main) Merge branch 'main' of github.com:githubid/ece2300-tut02-git
+ *   f5c1361 (HEAD -> main) Merge branch 'main' of github.com:githubid/ece6745-tut02-git
  |\
  | * c13f30e (origin/main, origin/HEAD) ALICE: added lemon to fruit list
  * | 3ef8c85 BOB: initial vegetable list
@@ -603,7 +603,7 @@ repository in GitHub.
 GitHub has a nice commit history viewer which shows a similar commit
 graph as we saw above:
 
- - <https://github.com/githubid/ece2300-tut02-git/network>
+ - <https://github.com/githubid/ece6745-tut02-git/network>
 
 Sometimes Alice and Bob are editing the exact same lines in the exact
 same file. In this case, Git does not really know how to resolve this
@@ -630,7 +630,7 @@ repository on GitHub.
 % echo "date" >> fruit.txt
 % git commit -a -m "BOB: added date to fruit list"
 % git push
- To git@github.com:githubid/ece2300-tut02-git
+ To git@github.com:githubid/ece6745-tut02-git
   ! [rejected]        main -> main (fetch first)
 ```
 
@@ -641,7 +641,7 @@ merge the commits from the remote repository on GitHub.
 % cd ${BOB}
 % git pull
  Unpacking objects: 100% (3/3), done.
- From github.com:cbatten/ece2300-tut02-git
+ From github.com:cbatten/ece6745-tut02-git
     f5c1361..3d43934  main     -> origin/main
  Auto-merging fruit.txt
  CONFLICT (content): Merge conflict in fruit.txt
@@ -788,7 +788,7 @@ The name `origin` refers to the remote repository that the local
 repository was originally cloned from (i.e., the remote repository on
 GitHub). You can now see this new branch on GitHub here:
 
- - <https://github.com/githubid/ece2300-tut02-git/branches>
+ - <https://github.com/githubid/ece6745-tut02-git/branches>
 
 You can browse the commits and source code in the `alice-animals` just
 like the `main` branch. If Bob wants to checkout Alice's new branch, he
@@ -827,17 +827,17 @@ project. GitHub has a nice feature called _pull requests_ that simply
 this process. To create a pull request, Alice would first go to the
 branch page on GitHub for this repository.
 
- - <https://github.com/githubid/ece2300-tut02-git/branches>
+ - <https://github.com/githubid/ece6745-tut02-git/branches>
 
 She then just needs to click on the three dots next to her branch and
 choose _New pull request_. _You must carefully select the base fork!_ If
 you simply choose the default you will try to merge your branch into the
-repository that is part of the `cornell-ece2300` GitHub organization.
-Click on _base fork_ and select _githubid/ece2300-tut02-git_. Alice can
+repository that is part of the `cornell-ece6745` GitHub organization.
+Click on _base fork_ and select _githubid/ece6745-tut02-git_. Alice can
 leave a comment about what this new branch does. Other students can use
 the pull request page on GitHub to comment on and monitor the new branch.
 
- - <https://github.com/githubid/ece2300-tut02-git/pull/1>
+ - <https://github.com/githubid/ece6745-tut02-git/pull/1>
 
 Users can continue to develop and work on the branch until it is ready to
 be merged into `main`. When the pull request is ready to be accepted,
@@ -858,7 +858,7 @@ would look like this:
 | * 3d43934 ALICE: added kiwi to fruit list
 * | 9d12ba9 BOB: added date to fruit list
 |/
-*   f5c1361 Merge branch 'main' of github.com:cbatten/ece2300-tut02-git
+*   f5c1361 Merge branch 'main' of github.com:cbatten/ece6745-tut02-git
 |\
 | * c13f30e ALICE: added lemon to fruit list
 * | 3ef8c85 BOB: initial vegetable list
@@ -924,7 +924,7 @@ repository has all of the commits from the remote repository on GitHub.
 To see the results of the workflow run go to the _Actions_ tab for the
 corresponding repository on GitHub. You can also use a link like this:
 
- - <https://github.com/githubid/ece2300-tut02-git/actions>
+ - <https://github.com/githubid/ece6745-tut02-git/actions>
 
 where `githubid` is your GitHub username on the public version of GitHub.
 You should be able to see a list of workflow runs as illustrated below.
@@ -1060,7 +1060,7 @@ log`. Here is a simple example of the log output.
 | * 3d43934 cb ALICE: added kiwi to fruit list
 * | 9d12ba9 cb BOB: added date to fruit list
 |/
-*   f5c1361 cb Merge branch 'main' of github.com:cbatten/ece2300-tut02-git
+*   f5c1361 cb Merge branch 'main' of github.com:cbatten/ece6745-tut02-git
 |\
 | * c13f30e cb ALICE: added lemon to fruit list
 ```

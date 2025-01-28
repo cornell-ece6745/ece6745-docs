@@ -18,7 +18,7 @@ Code. To follow along with the tutorial, type the commands without the
 tutorial, you should also try the more open-ended activities.
 
 Before you begin, make sure that you have **sourced the
-`setup-ece2300.sh` script** as described in the remote access tutorial.
+`setup-ece6745.sh` script** as described in the remote access tutorial.
 Sourcing the setup script sets up the environment required for this
 tutorial.
 
@@ -93,18 +93,18 @@ redirection_ to create simple text files. We will discuss command output
 redirection in more detail later in the tutorial. Command output
 redirection uses the `>` operator to take the output from one command and
 "redirect" it to a file. The following commands will create a new file
-named `ece2300-tut01.txt` that simply contains the text "Digital Logic and
-Computer Organization"
+named `ece6745-tut01.txt` that simply contains the text "Complex Digital
+ASIC Design"
 
 ```bash
-% echo "Digital Logic and Computer Organization" > ece2300-tut01.txt
+% echo "Complex Digital ASIC Design" > ece6745-tut01.txt
 ```
 
 We can use the `cat` command to quickly display the contents of a
 file.
 
 ```bash
-% cat ece2300-tut01.txt
+% cat ece6745-tut01.txt
 ```
 
 For larger files, `cat` will output the entire file to the console so it
@@ -114,7 +114,7 @@ up/down keys to scroll the file one line at a time, the space bar to
 scroll down one page at a time, and the `q` key to quit viewing the file.
 
 ```bash
-% less ece2300-tut01.txt
+% less ece6745-tut01.txt
 ```
 
 You can use the `ls` command to list the filenames of the files you
@@ -136,21 +136,21 @@ about each file.
 % ls -l
 ```
 
-You should see the newly created `ece2300-tut01.txt` file along with some
+You should see the newly created `ece6745-tut01.txt` file along with some
 additional directories or folders. We will discuss directories in the
 next section. Use the following commands to create a few more files using
 the `echo` command and command output redirection, and then list the
 files again.
 
 ```bash
-% echo "Application" > ece2300-tut01-layer1.txt
-% echo "Algorithm"   > ece2300-tut01-layer2.txt
+% echo "Application" > ece6745-tut01-layer1.txt
+% echo "Algorithm"   > ece6745-tut01-layer2.txt
 % ls -1
 ```
 
 !!! question "Activity 3: Create New File"
 
-    Create a new file named `ece2300-tut01-layer3.txt` which contains the
+    Create a new file named `ece6745-tut01-layer3.txt` which contains the
     third layer in the computing systems stack (i.e., programming
     language). Use `cat` and `less` to verify the file contents.
 
@@ -183,22 +183,22 @@ to separate directories, while Windows uses a back slash (`\`) for the
 same purpose.
 
 We can use the `mkdir` command to make new directories. The following
-command will make a new directory named `ece2300` within your home
+command will make a new directory named `ece6745` within your home
 directory.
 
 ```bash
-% mkdir ece2300
+% mkdir ece6745
 ```
 
 We can use the `cd` command to change our current working directory. The
 following command will change the current working directory to be the
-newly created `ece2300` directory, before displaying the current working
+newly created `ece6745` directory, before displaying the current working
 directory with the `pwd` command.
 
 ```bash
-% cd ece2300
+% cd ece6745
 % pwd
-/home/netid/ece2300
+/home/netid/ece6745
 ```
 
 Use the `mkdir`, `cd`, and `pwd` commands to make another directory.
@@ -207,11 +207,11 @@ Use the `mkdir`, `cd`, and `pwd` commands to make another directory.
 % mkdir tut01
 % cd tut01
 % pwd
-/home/netid/ece2300/tut01
+/home/netid/ece6745/tut01
 ```
 
 We sometimes say that `tut01` is a subdirectory or a child directory of
-the `ece2300` directory. We might also say that the `ece2300` directory
+the `ece6745` directory. We might also say that the `ece6745` directory
 is the parent directory of the `tut01` directory.
 
 There are some important shortcuts that we can use with the `cd` command
@@ -226,33 +226,33 @@ navigate up and down the directory hierarchy we have just created.
 
 ```bash
 % pwd
-/home/netid/ece2300/tut01
+/home/netid/ece6745/tut01
 % cd .
 % pwd
-/home/netid/ece2300/tut01
+/home/netid/ece6745/tut01
 % cd ..
 % pwd
-/home/netid/ece2300
+/home/netid/ece6745
 % cd ..
 % pwd
 /home/netid
-% cd ece2300/tut01
+% cd ece6745/tut01
 % pwd
-/home/netid/ece2300/tut01
+/home/netid/ece6745/tut01
 % cd
 % pwd
 /home/netid
 % cd /
 % pwd
 /
-% cd ~/ece2300
+% cd ~/ece6745
 % pwd
-/home/netid/ece2300
+/home/netid/ece6745
 ```
 
 Notice how we can use the `cd` command to change the working directory to
 another arbitrary directory by simply using a directory path (e.g.,
-`ece2300/tut01`). These are called _relative paths_ because the path is
+`ece6745/tut01`). These are called _relative paths_ because the path is
 relative to your current working directory. You can also use an _absolute
 path_ which always starts with the _root directory_ to concretely specify
 a directory irrespective of the current working directory. A relative
@@ -264,10 +264,10 @@ shop from the center of town?).
 
 ```bash
 % pwd
-/home/netid/ece2300
-% cd /home/netid/ece2300/tut01
+/home/netid/ece6745
+% cd /home/netid/ece6745/tut01
 % pwd
-/home/netid/ece2300/tut01
+/home/netid/ece6745/tut01
 % cd
 % pwd
 /home/netid
@@ -277,29 +277,29 @@ This example illustrates one more useful shortcut. The `cd` command with
 no command line arguments always changes the current working directory to
 your home directory. We can use the `ls` command to list files as well as
 directories. Use the following commands to create a new file and
-directory in the `ece2300/tut01` subdirectory, and then list the file and
+directory in the `ece6745/tut01` subdirectory, and then list the file and
 directory.
 
 ```bash
-% cd ~/ece2300/tut01
-% echo "Computer Systems Programming" > ece2300-tut01.txt
+% cd ~/ece6745/tut01
+% echo "Computer Systems Programming" > ece6745-tut01.txt
 % mkdir dirA
 % ls -1
 ```
 
 You should see both the `dirA` subdirectory and the newly created
-`ece2300-tut01.txt` file listed. Feel free to use the `cat` command to
+`ece6745-tut01.txt` file listed. Feel free to use the `cat` command to
 verify the file contents of the newly created file. We can use the `tree`
 command to recursively list the contents of a directory. The following
 commands create a few more directories before displaying the directory
 hierarchy.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % mkdir -p dirB/dirB_1
 % mkdir -p dirB/dirB_2
 % mkdir -p dirC/dirC_1
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % tree
 .
 +-- dirA
@@ -308,7 +308,7 @@ hierarchy.
 |   `-- dirB_2
 |-- dirC
 |   `-- dirC_1
-`-- ece2300-tut01.txt
+`-- ece6745-tut01.txt
 ```
 
 Note that we are using the `-p` command line option with the `mkdir`
@@ -317,7 +317,7 @@ command to make multiple nested directories in a single step.
 !!! question "Activity 4: Creatring Directories and Files"
 
     Experiment with creating additional directories and files within the
-    `ece2300/tut01` subdirectory. Try creating deeper hierarchies with
+    `ece6745/tut01` subdirectory. Try creating deeper hierarchies with
     three or even four levels of nesting using the `-p` option to the
     `mkdir` command. Experiment with using the `.` and `..` special
     directories. Use the `tree` command to display your newly created
@@ -331,9 +331,9 @@ name to give to the copy. The following commands will make two copies of
 the files we created in the previous section.
 
 ```bash
-% cd ~/ece2300/tut01
-% cp ece2300-tut01.txt ece2300-tut01-a.txt
-% cp ece2300-tut01.txt ece2300-tut01-b.txt
+% cd ~/ece6745/tut01
+% cp ece6745-tut01.txt ece6745-tut01-a.txt
+% cp ece6745-tut01.txt ece6745-tut01-b.txt
 % ls -1
 ```
 
@@ -342,9 +342,9 @@ source files and a final destination directory as the arguments to the
 `cp` command.
 
 ```bash
-% cd ~/ece2300/tut01
-% cp ece2300-tut01.txt dirA
-% cp ece2300-tut01-a.txt ece2300-tut01-b.txt dirA
+% cd ~/ece6745/tut01
+% cp ece6745-tut01.txt dirA
+% cp ece6745-tut01-a.txt ece6745-tut01-b.txt dirA
 % tree
 ```
 
@@ -352,7 +352,7 @@ We can use the `-r` command line option to enable the `cp` command
 to recursively copy an entire directory.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % tree
 % cp -r dirA dirD
 % tree
@@ -363,8 +363,8 @@ As with the `cp` command, the first argument is the name of the file
 you want to move and the second argument is the new name of the file.
 
 ```bash
-% cd ~/ece2300/tut01
-% mv ece2300-tut01.txt ece2300-tut01-c.txt
+% cd ~/ece6745/tut01
+% mv ece6745-tut01.txt ece6745-tut01-c.txt
 % ls -1
 ```
 
@@ -373,10 +373,10 @@ into a subdirectory by using multiple source files and a final
 destination directory as the arguments to the `mv` command.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % tree
-% mv ece2300-tut01-a.txt dirB
-% mv ece2300-tut01-b.txt ece2300-tut01-c.txt dirB
+% mv ece6745-tut01-a.txt dirB
+% mv ece6745-tut01-b.txt ece6745-tut01-c.txt dirB
 % tree
 ```
 
@@ -384,7 +384,7 @@ We do not need to use the `-r` command line option to move an entire
 directory at once.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % tree
 % mv dirD dirE
 % tree
@@ -395,19 +395,19 @@ directory to move files from a subdirectory into the current working
 directory.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % tree
-% mv dirE/ece2300-tut01.txt .
+% mv dirE/ece6745-tut01.txt .
 % tree
 ```
 
 We can use the `rm` command to remove files. The following command
-removes a file from within the `ece2300/tut01` subdirectory.
+removes a file from within the `ece6745/tut01` subdirectory.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % ls -1
-% rm ece2300-tut01.txt
+% rm ece6745-tut01.txt
 % ls -1
 ```
 
@@ -416,10 +416,10 @@ directory earlier in this tutorial.
 
 ```bash
 % cd
-% rm ece2300-tut01.txt
-% rm ece2300-tut01-layer1.txt
-% rm ece2300-tut01-layer2.txt
-% rm ece2300-tut01-layer3.txt
+% rm ece6745-tut01.txt
+% rm ece6745-tut01-layer1.txt
+% rm ece6745-tut01-layer2.txt
+% rm ece6745-tut01-layer3.txt
 ```
 
 We can use the `-r` command line option with the `rm` command to remove
@@ -429,7 +429,7 @@ command that you might want to use instead of the `rm` command to avoid
 accidentally deleting important work.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % ls -1
 % rm -r dirA dirB dirC dirE
 % ls -1
@@ -437,7 +437,7 @@ accidentally deleting important work.
 
 !!! question "Activity 5: Copy, Move, and Remove Directories and Files"
 
-    Creating additional directories and files within the `ece2300/tut01`
+    Creating additional directories and files within the `ece6745/tut01`
     subdirectory, and then use the `cp`, `mv`, and `rm` commands to copy,
     move, and remove the newly created directories and files. Use the
     `ls` and `tree` commands to display your file and directory
@@ -450,8 +450,8 @@ now, this is a useful way to retrieve a text file that we can use in the
 following examples.
 
 ```bash
-% cd ~/ece2300/tut01
-% wget http://www.csl.cornell.edu/courses/ece2300/overview.txt
+% cd ~/ece6745/tut01
+% wget http://www.csl.cornell.edu/courses/ece6745/overview.txt
 % cat overview.txt
 ```
 
@@ -461,12 +461,12 @@ We can use the `grep` command to search and display lines of a file that
 contain a particular pattern. The `grep` command can be useful for
 quickly searching the contents of the source files in your laboratory
 assignments. The command takes the pattern and the files to search as
-command line arguments. The following command searches "digital logic" in
-the `overview.txt` file downloaded in the previous section.
+command line arguments. The following command searches "chip" in the
+`overview.txt` file downloaded in the previous section.
 
 ```bash
-% cd ~/ece2300/tut01
-% grep "digital logic" overview.txt
+% cd ~/ece6745/tut01
+% grep "chip" overview.txt
 ```
 
 You should see just the lines within the `overview.txt` file that contain
@@ -474,8 +474,8 @@ the words "digital logic". We can use the `--line-number` command line
 option with the `grep` command to display the line number of each match.
 
 ```bash
-% cd ~/ece2300/tut01
-% grep --line-number "digital logic" overview.txt
+% cd ~/ece6745/tut01
+% grep --line-number "chip" overview.txt
 ```
 
 We can use the `-r` command line option to recursively search all files
@@ -484,10 +484,10 @@ subdirectory, copy the `overview.txt` file, and illustrate how we can use
 the `grep` command to recursively search for the word "digital logic".
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % mkdir dirA
 % cp overview.txt dirA
-% grep -r --line-number "digital logic" .
+% grep -r --line-number "chip" .
 ```
 
 Notice how we specify a directory as a command line argument (in this
@@ -506,7 +506,7 @@ one line at a time, the space bar to scroll down one page at a time, and
 the `q` key to quit viewing the file.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % less /proc/cpuinfo
 % grep "processor" /proc/cpuinfo
 ```
@@ -516,7 +516,7 @@ processors. You can also search to find out which company makes the
 processors and what clock frequency they are running at:
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % grep "vendor_id" /proc/cpuinfo
 % grep "cpu MHz" /proc/cpuinfo
 ```
@@ -525,7 +525,7 @@ We can find out how much memory is in the system by searching for
 `MemTotal` in the `/proc/meminfo` file.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % grep "MemTotal" /proc/meminfo
 ```
 
@@ -545,7 +545,7 @@ just show a very simple example. First, we create a few new files and
 directories.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % mkdir -p dirB/dirB_1
 % mkdir -p dirB/dirB_2
 % mkdir -p dirC/dirC_1
@@ -568,7 +568,7 @@ specific name. We can also use more complicated patterns to search for
 all files with a specific filename prefix or extension.
 
 ```bash
-% cd ~/ece2300/tut01
+% cd ~/ece6745/tut01
 % find . -name "file0.txt"
 ```
 
@@ -594,7 +594,7 @@ to create an archive of our tutorial directory and then remove the
 tutorial directory.
 
 ```bash
-% cd ~/ece2300
+% cd ~/ece6745
 % tar -czvf tut01.tgz tut01
 % rm -r tut01
 % ls -l
@@ -610,7 +610,7 @@ contents of the archive to recreate the tutorial directory. We also
 remove the archive.
 
 ```bash
-% cd ~/ece2300
+% cd ~/ece6745
 % tar -xzvf tut01.tgz
 % rm tut01.tgz
 % tree tut01
@@ -621,7 +621,7 @@ specify that we intend to extract the archive.
 
 !!! question "Activity 8: Experimenting with `tar`"
 
-    Create an example directory within the `ece2300/tut01` subdirectory.
+    Create an example directory within the `ece6745/tut01` subdirectory.
     Copy the `overview.txt` file and rename it to add example files to
     your new directory. Use the `tar` command to create and extract an
     archive of just this one new directory.
@@ -652,12 +652,12 @@ various commands, but the Bash shell is actually a full-featured
 programming language. One aspect of the shell that is similar in spirit
 to popular programming languages, is the ability to write and read
 _environment variables_. The following commands illustrate how to write
-an environment variable named `ece2300_tut01_layer1`, and how to read this
+an environment variable named `ece6745_tut01_layer1`, and how to read this
 environment variable using the `echo` command.
 
 ```bash
-% ece2300_tut01_layer1="application"
-% echo ${ece2300_tut01_layer1}
+% ece6745_tut01_layer1="application"
+% echo ${ece6745_tut01_layer1}
 ```
 
 Keep in mind that the names of environment variables can only contain
@@ -675,7 +675,7 @@ We often use the `HOME` environment variable in directory paths like
 this:
 
 ```bash
-% cd ${HOME}/ece2300
+% cd ${HOME}/ece6745
 ```
 
 The `PWD` environment variable always holds the current working
@@ -685,23 +685,23 @@ than `echo`. A common example is to use an environment variable to
 with the `cd` command like this:
 
 ```bash
-% cd ${HOME}/ece2300/tut01
+% cd ${HOME}/ece6745/tut01
 % TUT01=${PWD}
 % cd
 % pwd
 /home/netid
 % cd ${TUT01}
 % pwd
-/home/netid/ece2300/tut01
+/home/netid/ece6745/tut01
 ```
 
 !!! question "Activity 9: Experimenting with Environment Variables"
 
-    Create a new environment variable named `ece2300_tut01_layer2` and
+    Create a new environment variable named `ece6745_tut01_layer2` and
     write it with the second layer in the computer systems stack (i.e.,
     algorithm). Use the `echo` command to display this environment
     variable. Experiment with creating a new subdirectory within
-    `ece2300/tut01` and then using an environment variable to "remember"
+    `ece6745/tut01` and then using an environment variable to "remember"
     that location.
 
 ### 1.12. Command Output Redirection
@@ -710,7 +710,7 @@ We have already seen using the `echo` command and command output
 redirection to create simple text files. Here is another example:
 
 ```bash
-% cd ${HOME}/ece2300/tut01
+% cd ${HOME}/ece6745/tut01
 % echo "Application" > computing-stack.txt
 % cat computing-stack.txt
 ```
@@ -721,7 +721,7 @@ command on the left. For example, we can save the output from the `pwd`
 command or the `man` command to a file for future reference.
 
 ```bash
-% cd ${HOME}/ece2300/tut01
+% cd ${HOME}/ece6745/tut01
 % pwd > cmd-output.txt
 % cat cmd-output.txt
 % man pwd > cmd-output.txt
@@ -733,7 +733,7 @@ output from the command on the left and append the file named on the
 right. We can use this to create multiline text files:
 
 ```bash
-% cd ${HOME}/ece2300/tut01
+% cd ${HOME}/ece6745/tut01
 % echo "Application"           > computing-stack.txt
 % echo "Algorithm"            >> computing-stack.txt
 % echo "Programming Language" >> computing-stack.txt
@@ -756,7 +756,7 @@ chaining together. The second command will only execute if the first
 command succeeds. Below is an example.
 
 ```bash
-% cd ${HOME}/ece2300/tut01 && cat computing-stack.txt
+% cd ${HOME}/ece6745/tut01 && cat computing-stack.txt
 ```
 
 !!! question "Activity 11: Experimenting with Command Chaining"
@@ -826,7 +826,7 @@ to open a new file called `get-processor-memory-info.sh` (note that by
 convention we usually use the `.sh` extension for Bash shell scripts).
 
 ```
-% cd ${HOME}/ece2300/tut01
+% cd ${HOME}/ece6745/tut01
 % code get-processor-memory-info.sh
 ```
 
@@ -843,7 +843,7 @@ Then save the Bash shell script and execute it using the `source`
 command.
 
 ```
-% cd ${HOME}/ece2300/tut01
+% cd ${HOME}/ece6745/tut01
 % source get-processor-memory-info.sh
 ```
 
@@ -851,10 +851,10 @@ command.
 
     Create a new Bash shell script named `wget-and-grep.sh`. The Bash
     shell script should use `wget` to get the `overview.txt` file for the
-    course and then uses grep to find instances of the workd "digital
-    logic" in this file. See earlier examples in this tutorial for the
-    commands required for both steps. Then use `source` to execute the
-    new Bash shell script.
+    course and then uses grep to find instances of the word "chip" in
+    this file. See earlier examples in this tutorial for the commands
+    required for both steps. Then use `source` to execute the new Bash
+    shell script.
 
 ### 1.15. Aliases, Wildcards, Command History, and Tab Completion
 
@@ -869,10 +869,10 @@ directory. We can create an alias to make this process take just two
 keystrokes.
 
 ```bash
-% alias ct="cd ${HOME}/ece2300/tut01"
+% alias ct="cd ${HOME}/ece6745/tut01"
 % ct
 % pwd
-/home/academic/netid/ece2300/tut01
+/home/academic/netid/ece6745/tut01
 ```
 
 If you always want this alias to be available whenever you login to the
@@ -880,7 +880,7 @@ system, you can save it in your `.bashrc` file. The `.bashrc` is a
 special Bash script that is run on every invocation of a Bash shell.
 
 ```bash
-% echo "alias ct=\"cd ${HOME}/ece2300/tut01\"" >> ${HOME}/.bashrc
+% echo "alias ct=\"cd ${HOME}/ece6745/tut01\"" >> ${HOME}/.bashrc
 ```
 
 The reason we have to use a back slash (`\`) in front of the double
@@ -895,7 +895,7 @@ files that end in the suffix `.txt` and then copies all files that match
 the wildcard from one directory to another.
 
 ```bash
-% cd ${HOME}/ece2300/tut01
+% cd ${HOME}/ece6745/tut01
 % ls *.txt
 % cp dirA/file*.txt dirB
 % tree
@@ -943,31 +943,31 @@ you need for working on the laboratory assignments. Enter the following
 command on the command line:
 
 ```bash
-% source setup-ece2300.sh
+% source setup-ece6745.sh
 ```
 
-You should now see `ECE 2300` in your prompt which means your environment
+You should now see `ECE 6745` in your prompt which means your environment
 is setup for the course.
 
 It can be tedious to always remember to source the course setup script.
 You can also use auto setup which will automatically source the course
 setup for you when you open a terminal. Note that if the environment for
-ECE 2300 conflicts with the environment required by a different course
+ECE 6745 conflicts with the environment required by a different course
 then you will need to manually source the setup script when you are
 working on this course. Enter the following command on the command line
 to use auto setup:
 
 ```bash
-% source setup-ece2300.sh --enable-auto-setup
+% source setup-ece6745.sh --enable-auto-setup
 ```
 
 Now close the terminal and log out completely from the `ecelinux`
-servers. Log back in and you should see `ECE 2300` in the prompt meaning
+servers. Log back in and you should see `ECE 6745` in the prompt meaning
 your environment is automatically setup for the course. If at anytime you
 need to disable auto setup you can use the following command:
 
 ```bash
-% source setup-ece2300.sh --disable-auto-setup
+% source setup-ece6745.sh --disable-auto-setup
 ```
 
 Again, if for any reason running the setup script prevents you from using
