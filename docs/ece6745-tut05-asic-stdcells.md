@@ -215,7 +215,7 @@ Run the simulation and view the result using Surfer.
 
 ```bash
 % cd $TOPDIR/sim
-% iverilog -sverilog -s top -o nand3-test nand3-test.v
+% iverilog -g2012 -s top -o nand3-test nand3-test.v
 % ./nand3-test
 % code nand3-test.vcd
 ```
