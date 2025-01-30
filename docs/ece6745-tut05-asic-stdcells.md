@@ -130,7 +130,7 @@ located on the course webpage here:
 
  - <https://web.csl.cornell.edu/courses/ece6745/resources/nangate-freepdk45nm-stdcell-databook.pdf>
 
-### Verilog Behavioral View
+### 2.1. Verilog Behavioral View
 
 Let's begin by looking at the Verilog behavioral view for a 3-input NAND
 standard cell which is named NAND3_X1.
@@ -214,7 +214,7 @@ The test bench simply tries four different combinations of input values.
 Run the simulation and view the result using Surfer.
 
 ```bash
-% cd $TOPDIR
+% cd $TOPDIR/sim
 % iverilog -sverilog -s top -o nand3-test nand3-test.v
 % ./nand3-test
 % code nand3-test.vcd
@@ -226,7 +226,7 @@ of delay.
 
 ![](img/tut05-nand3-verilog-waveforms.png)
 
-### SPICE Schematic View
+### 2.2. SPICE Schematic View
 
 Now that we understand the Verilog behavioral view, let's look at how we
 would implement this same standard cells at the transistor level. We can
@@ -255,16 +255,16 @@ pull-up network. The PMOS transistors are larger than the NMOS
 transistors (see `W=` parameter) because the mobility of holes is less
 than the mobility of electrons.
 
-Let's use `ngspice` to simulate the SPICE schematic view of the 3-input
+Let's use ngspice to simulate the SPICE schematic view of the 3-input
 NAND standard cell. Take a look at the provided SPICE test bench.
 
 ```bash
-% cd $TOPDIR
+% cd $TOPDIR/sim
 % cat nand3-test.sp
 ```
 
 Although it is not too important for you to understand how to write a
-SPICe test bench, it can still be fun to look at one.
+SPICE test bench, it can still be fun to look at one.
 
 ```
 * Simple NAND3_X1 simulation
@@ -317,7 +317,15 @@ plot V(a) V(b) V(c) V(y)
 .end
 ```
 
-Note that if we use `ngspice` to display plots, then it is a Linux GUI
+See Tutorial 8 for much more detail on SPICE simulation. You can run the
+simulation using ngspice like this:
+
+```bash
+% cd $TOPDIR/sim
+% nsgpice nand3-test.sp
+```
+
+Note that if we use ngspice to display plots, then it is a Linux GUI
 application so you will need to use Microsoft Remote Desktop. The
 waveforms should look similar to what is shown below. The input signals
 ramp up and down based on the `t_rise` and `t_fall` parameters above.
@@ -328,7 +336,7 @@ the schematic.
 
 ![](img/tut05-nand3-spice-waveforms.png)
 
-### GDS Layout View
+### 2.3. GDS Layout View
 
 Now that we understand the SPICE schematic view, let's look at the actual
 layout for the 3-input NAND cell using the open-source Klayout GDS
@@ -360,7 +368,7 @@ arranged in a row. Although it is difficult to see, the three input pins
 and one output pin are labeled squares of M1, and these pins are arranged
 to be on a predetermined grid.
 
-### SPICE Extracted Schematic View
+### 2.4. SPICE Extracted Schematic View
 
 The SPICE schematic view was saw earlier includes just the transistors.
 We can use sophisticated tools to extract detailed parasitic resistance
@@ -394,7 +402,7 @@ snippet of the extracted circuit for the 3-input NAND cell:
 The full model is a couple of hundred lines long, so you can see how
 detailed this model is!
 
-### LIB Logical View
+### 2.5. LIB Logical View
 
 The ASIC tools do not actually interact with the low-level SPICE
 schematic views and GDS layour views. We can use a special set of tools
@@ -520,7 +528,7 @@ compact that the text `.lib` file. The `.lib` file captures the abstract
 logical, timing, and power aspects of the standard-cell library, but it
 does not capture the physical aspects of the standard-cell library.
 
-### LEF Physical View
+### 2.6. LEF Physical View
 
 While the ASIC tools could potentially use the `.gds` file directly, the
 ASIC tools do not really need this much detail. We can use a special set
@@ -601,7 +609,7 @@ If you compare the `.lef` to the `.gds` you can see that the `.lef` is a
 much simpler representation that only captures the boundary, pins, and
 obstructions.
 
-### Routing Technology Files
+### 2.7. Routing Technology Files
 
 The standard-cell library also includes several files (e.g.,
 `rtk-tech.tf`, `rtk-tech.lef`, `rtk-typical.captable`) that capture

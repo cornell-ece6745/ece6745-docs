@@ -81,5 +81,6 @@ nav:
     - 'Tutorial 1: Linux Development Environment': ece6745-tut01-linux.md
     - 'Tutorial 2: Git Distributed Version Control System': ece6745-tut02-git.md
     - 'Tutorial 5: ASIC Standard Cells': ece6745-tut05-asic-stdcells.md
+    - 'Tutorial 8: SPICE Simulation': ece6745-tut08-spice-sim.md
 
 
