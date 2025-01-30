@@ -80,5 +80,6 @@ nav:
     - 'Tutorial 0: ECE Linux Server Remote Access': ece6745-tut00-remote-access.md
     - 'Tutorial 1: Linux Development Environment': ece6745-tut01-linux.md
     - 'Tutorial 2: Git Distributed Version Control System': ece6745-tut02-git.md
+    - 'Tutorial 5: ASIC Standard Cells': ece6745-tut05-asic-stdcells.md
 
 

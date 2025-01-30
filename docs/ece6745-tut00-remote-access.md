@@ -389,11 +389,15 @@ graphical user interface (GUI). We will be using the Microsoft Remote
 Desktop application to log into the `ecelinux` servers to provide us a
 "virtual desktop" which we can then use to start Linux GUI applications.
 
+### 5.1. Installing Microsoft Remote Desktop on Your Laptop/Workstation
+
 Start by installing the Microsoft Remote Desktop application. On Windows,
 simply use the _Start Menu_ to search for _Microsoft Remote Desktop_. On
 Mac OS X, download Microsoft Remote Desktop from the App Store:
 
  - <https://apps.apple.com/us/app/windows-app/id1295203466>
+
+### 5.2. Starting and Configuring Microsoft Remote Desktop
 
 Start Microsoft Remote Desktop and _Connections > Add PC_ from the menu.
 For the hostname we recommend choosing a specific `ecelinux` server so
@@ -439,6 +443,22 @@ and execute the `xclock` program to confirm you can start a Linux GUI
 application.
 
 ![](img/tut00-xrdp.png)
+
+### 3.5. Troubleshooting Remote Access via VS Code
+
+You may need to experiment with how to get copy-and-paste to work.
+
+Start a text editor by choosing _Applications > Accessories > Text
+Editor_. Copy some text from your local laptop/workstation and try
+pasting that text into the text editor. Try using Control-V (and/or
+Command-V if you are using Mac OS X). Also experiment with right clicking
+in the Text Editor and chosing _Paste_.
+
+Then start a terminal by choosing _Applications > Terminal Emulator_.
+Copy some text from your local laptop/workstation and try pasting that
+text into the terminal emulator. Try using Shift-Control-V. Also
+experiment with right clicking in the Terminal Emulator and choosing
+_Paste_.
 
 6. Sourcing Course Setup Script with Auto Setup
 --------------------------------------------------------------------------
