@@ -40,7 +40,7 @@ difficult. It requires negotiating with the foundry and signing multiple
 non-disclosure agreements. So in this course we will be using the
 FreePDK45 PDK:
 
- - https://eda.ncsu.edu/freepdk/freepdk45
+ - <https://eda.ncsu.edu/freepdk/freepdk45>
 
 This is an open PDK for a "fake" technology. It was created by
 universities using publically available data on several different
@@ -128,7 +128,7 @@ document that describes the details of every cell in the library. Take a
 few minutes to browse through the Nangate standard-cell library databook
 located on the course webpage here:
 
- - https://web.csl.cornell.edu/courses/ece6745/resources/nangate-freepdk45nm-stdcell-databook.pdf
+ - <https://web.csl.cornell.edu/courses/ece6745/resources/nangate-freepdk45nm-stdcell-databook.pdf>
 
 ### Verilog Behavioral View
 
