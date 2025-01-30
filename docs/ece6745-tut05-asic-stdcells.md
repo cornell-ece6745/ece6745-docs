@@ -317,13 +317,14 @@ plot V(a) V(b) V(c) V(y)
 .end
 ```
 
-You should run this simulation using Microsoft Remote Desktop since it
-will pop-up a plot showing the input and output signals. The waveforms
-should look similar to what is shown below. The input signals ramp up and
-down based on the `t_rise` and `t_fall` parameters above. Because this is
-a SPICE schematic view you can see the output does not change instantly
-but instead takes some amount of time due to the parasitic resistance and
-capacitances associated with the transistors in the schematic.
+Note that if we use `ngspice` to display plots, then it is a Linux GUI
+application so you will need to use Microsoft Remote Desktop. The
+waveforms should look similar to what is shown below. The input signals
+ramp up and down based on the `t_rise` and `t_fall` parameters above.
+Because this is a SPICE schematic view you can see the output does not
+change instantly but instead takes some amount of time due to the
+parasitic resistance and capacitances associated with the transistors in
+the schematic.
 
 ![](img/tut05-nand3-spice-waveforms.png)
 
@@ -331,7 +332,8 @@ capacitances associated with the transistors in the schematic.
 
 Now that we understand the SPICE schematic view, let's look at the actual
 layout for the 3-input NAND cell using the open-source Klayout GDS
-viewer.
+viewer. Note that since Klayout is a Linux GUI application you will need
+to use Microsoft Remote Desktop.
 
 ```
  % klayout -l ${ECE6745_STDCELLS}/klayout.lyp ${ECE6745_STDCELLS}/stdcells.gds
