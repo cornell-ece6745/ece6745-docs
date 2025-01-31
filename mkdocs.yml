@@ -84,4 +84,6 @@ nav:
     - 'Tutorial 6: ASIC Front-End Flow': ece6745-tut06-asic-front-end.md
     - 'Tutorial 8: SPICE Simulation': ece6745-tut08-spice-sim.md
 
+  - 'Sections':
+    - 'Section 1: ASIC Front-End Flow': ece6745-sec01-asic-front-end.md
 
