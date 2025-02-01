@@ -152,6 +152,17 @@ to. You can quit by pressing `CONTROL+X1. Use `CONTROL+G1 for help.
 
 ![](img/tut00-nano.png#border)
 
+### 2.4. Troubleshooting Remote Access via PowerShell or Mac Terminal
+
+Note that you should really only source a setup script for a single
+course at a time. If you modified your `.bashrc` to source a course setup
+script in a previous semseter you need to remove those lines from your
+`.bashrc`. If you are taking two courses which use `ecelinux` in the same
+semester then you should make sure _not_ to source either setup script in
+your `.bashrc`. You should instead always source the appropriate setup
+script each time you log into `ecelinux` for whatever course you are
+currently working on.
+
 3. Remote Access via VS Code
 --------------------------------------------------------------------------
 
@@ -370,6 +381,14 @@ Note that using the `Remote-SSH: Add new SSH host...` option does not
 always seem to work on Microsoft Windows OS laptops/workstations. This is
 why we recommend just using `Remote-SSH: Connect Current Window to
 Host...` directly.
+
+VS Code can sometimes "cache" your `.bashrc`. This means if you modfiy
+your `.bashrc`, log out, and log back in the changes to your `.bashrc`
+will not be reflected. If you modify your `.bashrc` we recommend: (1)
+using _Remote-SSH: Kill VS Code Server on Host..._ as described above;
+(2) close all instances of VS Code; (3) either use PowerShell or Mac
+Terminal to remove the `.vscode-server` directory as described above; and
+(4) reconnect VS Code to `ecelinux`.
 
 Sometimes VS Code can take a very long time to save a file. This is
 usually because VS Code is trying to auto-format the file on the

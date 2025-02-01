@@ -93,7 +93,9 @@ directory for the project.
 % cd $HOME/ece6745
 % git clone git@github.com:cornell-ece6745/ece6745-tut06-asic-front-end tut06
 % cd tut06
-% TOPDIR=$PWD
+% export TOPDIR=$PWD
+% cd $TOPDIR/asic/build-sort
+% export ASICDIR=$PWD
 ```
 
 1. PyMTL3-Based Testing, Simulation, Translation
@@ -284,8 +286,7 @@ To create a 4-state simulation, let's start by creating another build
 directory for our Synopsys VCS work.
 
 ```bash
-% mkdir -p $TOPDIR/asic/build-sort/s01-synopsys-vcs-rtlsim
-% cd $TOPDIR/asic/build-sort/s01-synopsys-vcs-rtlsim
+% cd $ASICDIR/01-synopsys-vcs-rtlsim
 ```
 
 We run Synopsys VCS to compile a simulation, and `./simv` to run the
@@ -293,13 +294,13 @@ simulation. Let's run a 4-state simulation for `test_basic` using the
 design `SortUnitStruct__p_nbits_8__pickled.v`.
 
 ```bash
-% cd $TOPDIR/asic/build-sort/s01-synopsys-vcs-rtlsim
+% cd $ASICDIR/01-synopsys-vcs-rtlsim
 % vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
-   +incdir+../../../sim/build \
+   +incdir+$TOPDIR/sim/build \
    +vcs+dumpvars+SortUnitStruct__p_nbits_8_test_basic_vcs.vcd \
    -top SortUnitStruct__p_nbits_8_tb \
-   ../../../sim/build/SortUnitStruct__p_nbits_8_test_basic_tb.v \
-   ../../../sim/build/SortUnitStruct__p_nbits_8__pickled.v
+   $TOPDIR/sim/build/SortUnitStruct__p_nbits_8_test_basic_tb.v \
+   $TOPDIR/sim/build/SortUnitStruct__p_nbits_8__pickled.v
 % ./simv
 ```
 
@@ -310,7 +311,7 @@ Here some of the key command line options for Synopsys VCS:
 +lint=all                           turn on all linting checks
 -xprop=tmerge                       use more advanced X propoagation
 -override_timescale=1ns/1ps         changes the timescale. Units/precision
-+incdir+../../../sim/build          specifies directories to search for `include
++incdir+$TOPDIR/sim/build           specifies directories to search for `include
 +vcs+dumpvars+filename.vcd          dump VCD in current dir with the name filename.vcd
 -top SortUnitStruct__p_nbits_8_tb   name of the top module (located within the VTB)
 ```
@@ -328,22 +329,22 @@ use this VCD for power analysis, for the purposes of this tutorial we
 will only be doing power analysis using the gate-level netlist.
 
 ```bash
-% cd $TOPDIR/asic/build-sort/s01-synopsys-vcs-rtlsim
+% cd $ASICDIR/01-synopsys-vcs-rtlsim
 % vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
-   +incdir+../../../sim/build \
+   +incdir+$TOPDIR/sim/build \
    +vcs+dumpvars+SortUnitStruct__p_nbits_8_sort-rtl-struct-random_vcs.vcd \
    -top SortUnitStruct__p_nbits_8_tb \
-   ../../../sim/build/SortUnitStruct__p_nbits_8_sort-rtl-struct-random_tb.v \
-   ../../../sim/build/SortUnitStruct__p_nbits_8__pickled.v
+   $TOPDIR/sim/build/SortUnitStruct__p_nbits_8_sort-rtl-struct-random_tb.v \
+   $TOPDIR/sim/build/SortUnitStruct__p_nbits_8__pickled.v
 % ./simv
 ```
 
-To simplify rerunning a simulation, considering putting the above command
-line in a shell script so you can run it as follows:
+To simplify rerunning a simulation, we can put the above command lines in
+a shell script. We have done this for you so you can run it as follows:
 
 ```bash
-% cd $TOPDIR/asic/build-sort/s01-synopsys-vcs-rtlsim
-% source ./run.sh
+% cd $ASICDIR
+% source 01-synopsys-vcs-rtlsim/run.sh
 ```
 
 3. Using Synopsys Design Compiler for Synthesis
@@ -360,8 +361,7 @@ We start by creating a subdirectory for our work, and then launching
 Synopsys DC.
 
 ```bash
-% mkdir -p $TOPDIR/asic/build-sort/s02-synopsys-dc-synth
-% cd $TOPDIR/asic/build-sort/s02-synopsys-dc-synth
+% cd $ASICDIR/02-synopsys-dc-synth
 % dc_shell-xg-t
 ```
 
@@ -403,7 +403,7 @@ module references starting from the top-level module, and also infers
 various registers and/or advanced data-path components.
 
 ```
-dc_shell> analyze -format sverilog ../../../sim/build/SortUnitStruct__p_nbits_8__pickled.v
+dc_shell> analyze -format sverilog $env(TOPDIR)/sim/build/SortUnitStruct__p_nbits_8__pickled.v
 dc_shell> elaborate SortUnitStruct__p_nbits_8
 ```
 
@@ -678,7 +678,7 @@ Notice that the module hierarchy is preserved and also notice that the
 `MinMaxUnit` synthesizes into a large number of basic logic gates.
 
 ```bash
-% cd $TOPDIR/asic/build-sort/s02-synopsys-dc-synth
+% cd $ASICDIR/02-synopsys-dc-synth
 % more post-synth.v
 ```
 
@@ -688,7 +688,7 @@ generally analyzing our design. Start Synopsys DV and setup the
 `target_library` and `link_library` variables as before.
 
 ```
-% cd $TOPDIR/asic/build-sort/s02-synopsys-dc-synth
+% cd $ASICDIR/02-synopsys-dc-synth
 % design_vision-xg
 design_vision> set_app_var target_library "$env(ECE6745_STDCELLS)/stdcells.db"
 design_vision> set_app_var link_library   "* $env(ECE6745_STDCELLS)/stdcells.db"
@@ -735,19 +735,25 @@ results, so we will not really use Synopsys DV that often.
 
 ![](img/tut06-synopsys-dv-1.png)
 
-**To Do On Your Own:** Sweep a range of target clock frequencies to
-determine the shortest possible clock period which still meets timing
-without any negative slack. You can put a sequence of commands in a
-`.tcl` file and then run Synopsys DC using those commands in one step
-like this:
+You can automate the above steps by putting a sequence of commands in a
+`.tcl` file and run Synopsys DC using those commands in one step like
+this:
 
 ```bash
-% cd $TOPDIR/asic/build-sort/s02-synopsys-dc-synth
+% cd $ASICDIR/02-synopsys-dc-synth
 % dc_shell-xg-t -f run.tcl
 ```
 
-So consider placing the commands from this section into a `.tcl` file and
-then running Synopsys DC with a target clock period of 0.3ns. Then
+To further simplify rerunning this step, we can put the above command
+line in a shell script. We have done this for you so you can run it as
+follows:
+
+```bash
+% cd $ASICDIR
+% source 02-synopsys-dc-synth/run.sh
+```
+
+Try running Synopsys DC with a target clock period of 0.3ns. Then
 gradually increase the clock period until your design meets timing. **To
 follow along with the tutorial, push the design through synth again using
 0.6 ns as your clock constraint, as this is what we will be using for the
@@ -763,30 +769,23 @@ an advantage over RTL simulation because it more precisely represents the
 specification of the true hardware generated by the tools. This sort of
 simulation could propogate X's into the design that were not found by the
 4-state RTL simulation, and it also verifies that the tools did not
-optimize anything away during synthesis. We'll start by creating a build
-directory for our post-synth run of vcs.
+optimize anything away during synthesis. We will use Synopsys VCS to run
+our gate-level simulation on the `sort-rtl-struct-random` simulator
+testbench:
 
 ```bash
-% mkdir -p $TOPDIR/asic/build-sort/s03-synopsys-vcs-ffglsim
-% cd $TOPDIR/asic/build-sort/s03-synopsys-vcs-ffglsim
-```
-
-Then we'll run Synopsys VCS to run our gate-level simulation on the
-sort-rtl-struct-random simulator testbench:
-
-```bash
-% cd $TOPDIR/asic/build-sort/s03-synopsys-vcs-ffglsim
+% cd $TOPDIR/asic/build-sort/03-synopsys-vcs-ffglsim
 % vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
-   +incdir+../../../sim/build \
+   +incdir+$TOPDIR/sim/build \
    +vcs+dumpvars+SortUnitStruct__p_nbits_8_sort-rtl-struct-random_vcs.vcd \
    -top SortUnitStruct__p_nbits_8_tb \
    +delay_mode_zero \
    +define+CYCLE_TIME=0.6 \
    +define+VTB_INPUT_DELAY=0.03 \
    +define+VTB_OUTPUT_ASSERT_DELAY=0.57 \
-   ../../../sim/build/SortUnitStruct__p_nbits_8_sort-rtl-struct-random_tb.v \
+   $TOPDIR/sim/build/SortUnitStruct__p_nbits_8_sort-rtl-struct-random_tb.v \
    $ECE6745_STDCELLS/stdcells.v \
-   ../s02-synopsys-dc-synth/post-synth.v
+   ../02-synopsys-dc-synth/post-synth.v
 % ./simv
 ```
 
@@ -809,21 +808,72 @@ convert `.vcd` files into `.saif` files. An `.saif` file only contains a
 single average activity factor for every net.
 
 ```bash
-% cd $TOPDIR/asic/build-sort/s03-synopsys-vcs-ffglsim
+% cd $ASICDIR/03-synopsys-vcs-ffglsim
 % vcd2saif -input  ./SortUnitStruct__p_nbits_8_sort-rtl-struct-random_vcs.vcd \
            -output ./SortUnitStruct__p_nbits_8_sort-rtl-struct-random.saif
 ```
 
-To simplify rerunning a simulation, considering putting the above command
-lines in a shell script so you can run it as follows:
+To simplify rerunning a simulation and then running `vcd2said`, we can
+put the above command lines in a shell script. We have done this for you
+so you can run it as follows:
 
 ```bash
-% cd $TOPDIR/asic/build-sort/s03-synopsys-vcs-ffglsim
-% source ./run.sh
+% cd $ASICDIR
+% source 03-synopsys-vcs-ffglsim/run.sh
 ```
 
-5. To Do On Your Own
+5. To-Do On Your Own
 --------------------------------------------------------------------------
 
-synthesize GCD, automated steps with scripts
+Now we can use what you have learned so far to push the GCD unit through
+the flow. First, run a simulation of the GCD unit.
+
+```
+% cd $TOPDIR/sim/build
+% ../tut3_verilog/gcd/gcd-sim --impl rtl --input random --stats --translate --dump-vtb
+% ls GcdUnit_noparam__pickled.v
+% ls GcdUnit_noparam_gcd-rtl-random_tb.v
+% ls GcdUnit_noparam_gcd-rtl-random_tb.v.cases
+```
+
+Now create a new ASIC build directory and copy the scripts we used to
+push the sort unit through the ASIC front-end flow.
+
+```
+% mkdir -p $TOPDIR/asic/build-gcd
+% cd $TOPDIR/asic/build-gcd
+% export ASICDIR=$PWD
+
+% mkdir -p $ASICDIR/01-synopsys-vcs-rtlsim
+% cp $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim/run.sh $ASICDIR/01-synopsys-vcs-rtlsim/run.sh
+
+% mkdir -p $ASICDIR/02-synopsys-dc-synth
+% cp $TOPDIR/asic/build-sort/02-synopsys-dc-synth/run.tcl $ASICDIR/02-synopsys-dc-synth
+% cp $TOPDIR/asic/build-sort/02-synopsys-dc-synth/run.sh  $ASICDIR/02-synopsys-dc-synth
+
+% mkdir -p $ASICDIR/03-synopsys-vcs-ffglsim
+% cp $TOPDIR/asic/build-sort/03-synopsys-vcs-ffglsim/run.sh $ASICDIR/03-synopsys-vcs-ffglsim
+```
+
+Now open up each of these files and modify so they push the GCD unit
+instead of the sort unit through the flow. For example, the top module
+name for the test harness is `GcdUnit_noparam_tb`. You will need to
+change the Verilog files used for simulation appropriately. You will need
+to change the top-level module you are elaborating during synthesis to
+`GcdUnit_noparam` and the cycle-time constraint to 1.0ns. Once you have
+updated the scripts you can then push the GCD unit through the flow like
+this:
+
+
+```bash
+% cd $ASICDIR
+% source 01-synopsys-vcs-rtlsim/run.sh
+% source 02-synopsys-dc-synth/run.sh
+% source 03-synopsys-vcs-ffglsim/run.sh
+```
+
+Carefully look at the post-synthesis gate-level netlist in `post-synt.v`
+and the results from running the fast-functional gate-level simulation to
+verify that the GCD unit was successfully pushed through the ASIC
+front-end flow.
 
