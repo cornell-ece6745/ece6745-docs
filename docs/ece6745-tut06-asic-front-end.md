@@ -728,10 +728,11 @@ more aggressive clock constraint and/or adding more pipeline stages. If
 there are just a few levels of logic on the critical path then our design
 is probably very simple (as in this case!), while if there are more than
 50 levels of logic then there is potentially room for signficant
-improvement. The following screen capture illutrates using Design Vision
-to explore the post-synthesis results. While this can be interesting, in
-this course, we almost always prefer exploring the post-place-and-route
-results, so we will not really use Synopsys DV that often.
+improvement. The following screen capture illutrates using Synopsys
+Design Vision to explore the post-synthesis results. While this can be
+interesting, in this course, we almost always prefer exploring the
+post-place-and-route results, so we will not really use Synopsys DV that
+often.
 
 ![](img/tut06-synopsys-dv-1.png)
 
@@ -873,7 +874,9 @@ this:
 ```
 
 Carefully look at the post-synthesis gate-level netlist in `post-synt.v`
-and the results from running the fast-functional gate-level simulation to
-verify that the GCD unit was successfully pushed through the ASIC
-front-end flow.
+and load the design into Synopsys Design Vision to examine the critical
+path. Carefully look and the results from running the fast-functional
+gate-level simulation to verify that the design is passing the test.
+Convince yourself that the GCD unit was successfully pushed through the
+ASIC front-end flow.
 
