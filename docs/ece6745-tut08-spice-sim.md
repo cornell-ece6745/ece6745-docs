@@ -362,6 +362,7 @@ NMOS like this:
 *  src  gate drain body type
 M1 vdd  in   out   vdd  PMOS_VTL W=0.675um L=0.045um
 M2 gnd  in   out   gnd  NMOS_VTL W=0.450um L=0.045um
+```
 
 Rerun the simulation:
 
