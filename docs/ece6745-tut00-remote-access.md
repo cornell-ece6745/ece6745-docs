@@ -530,7 +530,8 @@ your VS Code terminal like this:
 
 If you see an error that the script cannot find a running instance of
 Xvnc this means you have not connected to your selected `ecelinux` server
-using Microsoft Remote Desktop.
+using Microsoft Remote Desktop. You cannot source `setup-gui.sh` in your
+`.bashrc`. It will not work.
 
 Assuming there are no errors, you can now try starting a Linux GUI
 application. Try running the `xclock` program in your VS Code terminal.
