@@ -479,19 +479,6 @@ dc_shell> analyze -format sverilog ../../sim/build/RegIncr4stage__pickled.v
 dc_shell> elaborate RegIncr4stage
 ```
 
-We can use the `check_design` command to make sure there are no obvious
-errors in our Verilog RTL.
-
-```
-dc_shell> check_design
-```
-
-It is _critical_ that you review all warnings. Often times there will be
-something very wrong in your Verilog RTL which means any results from
-using the ASIC tools is completely bogus. Synopsys DC will output a
-warning, but Synopsys DC will usually just keep going, potentially
-producing a completely incorrect gate-level model!
-
 We now need to create a clock constraint to tell Synopsys DC what our
 target cycle time is:
 
@@ -517,10 +504,10 @@ We can also generate usful reports about area, energy, and timing. Prof.
 Batten will spend some time explaining these reports:
 
 ```
+dc_shell> report_qor
 dc_shell> report_resources -nosplit -hierarchy
-dc_shell> report_timing -nosplit -transition_time -nets -attributes
 dc_shell> report_area -nosplit -hierarchy
-dc_shell> report_power -nosplit -hierarchy
+dc_shell> report_timing -nosplit -transition_time -nets -attributes
 ```
 
 Make some notes about what you find. Note the total cell area used in

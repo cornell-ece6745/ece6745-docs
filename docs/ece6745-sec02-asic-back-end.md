@@ -11,7 +11,7 @@ be using in ECE 6745. Notice that the Synopsys and Cadence ASIC tools all
 require various views from the standard-cell library which part of the
 ASIC design kit (ADK).
 
-![](img/tut07-asic-flow-back-end.jpg)
+![](img/tut07-asic-flow-back-end.png)
 
 The "back-end" of the flow is highlighted in red and refers to the PyMTL
 simulator, Synopsys DC, and Synopsys VCS:
@@ -400,7 +400,9 @@ the ring, the spacing between the two rings, and what metal layers to use
 for the ring.
 
 ```
-innovus> addRing -nets {VDD VSS} -width 0.6 -spacing 0.5 -layer [list top 7 bottom 7 left 6 right 6]
+innovus> addRing -nets {VDD VSS} \
+           -width 0.6 -spacing 0.5 \
+           -layer [list top 7 bottom 7 left 6 right 6]
 ```
 
 We have power and ground rails along each row of standard cells and a
@@ -409,14 +411,19 @@ command to draw wires and automatically insert vias whenever wires cross.
 First we draw the vertical "stripes".
 
 ```
-innovus> addStripe -nets {VSS VDD} -layer 6 -direction vertical -width 0.4 -spacing 0.5 -set_to_set_distance 5 -start 0.5
+innovus> addStripe -nets {VSS VDD} \
+           -layer 6 -direction vertical -width 0.4 -spacing 0.5 \
+           -set_to_set_distance 5 -start 0.5
 ```
 
 And then we draw the horizontal "stripes".
 
 ```
-innovus> setAddStripeMode -stacked_via_bottom_layer 6 -stacked_via_top_layer 7
-innovus> addStripe -nets {VSS VDD} -layer 7 -direction horizontal -width 0.4 -spacing 0.5 -set_to_set_distance 5 -start 0.5
+innovus> setAddStripeMode -stacked_via_bottom_layer 6 \
+           -stacked_via_top_layer 7
+innovus> addStripe -nets {VSS VDD} \
+           -layer 7 -direction horizontal -width 0.4 -spacing 0.5 \
+           -set_to_set_distance 5 -start 0.5
 ```
 
 Now that we have finished our basic power planning we can do the initial
@@ -438,54 +445,32 @@ Then use the _Design Browser_ to click on specific modules or nets to
 highlight them in the physical view.
 
 The `place_design` command will perform a very preliminary route to help
-ensure a good placement, but we will now do a more detailed routing pass
-for the clock and signals to improve the quality of results. The
-`cccopt_design` command will do clock tree synthesis optimization to
-improve the quality of the clock tree (e.g., less clock skew across the
-chip). Before running the command make sure you can see the physical view
-of the chip, and then watch how the clock net changes after the command
-is complete. You can choose to just show the clock by changing the
-visibility of nets in the right-hand panel.
-
-```
-innovus> ccopt_design
-```
-
-We can use the `routeDesign` to do detailed timing-driven routing of all
-of the signals. As before, make sure you watch the physical view to see
-the result before and after running this command. You should be able to
-appreciate that the final result requires fewer and shorter wires.
+ensure a good placement, but we will now use the `routeDesign` command to
+do a more detailed routing pass.
 
 ```
 innovus> routeDesign
 ```
+
+Watch the physical view to see the result before and after running this
+command. You should be able to appreciate that the final result requires
+fewer and shorter wires.
 
 The final step is to insert "filler" cells. Filler cells are essentially
 empty standard cells whose sole purpose is to connect the wells across
 each standard cell row.
 
 ```
-innovus> setFillerMode -corePrefix FILL -core "FILLCELL_X4 FILLCELL_X2 FILLCELL_X1"
+innovus> setFillerMode -core "FILLCELL_X1 FILLCELL_X2 FILLCELL_X4"
 innovus> addFiller
 ```
 
 Now we are basically done! Obviously there are many more steps required
-before you can really tape out a chip. We would need to add an I/O ring
-to connect the chip to the package, we would need to do further
-verification, and additional optimization.
+before you can really tape out a chip. We would need to add a real power
+grid and an I/O ring to connect the chip to the package. We would need to
+do further verification and additional optimization.
 
-For example, one thing we want to do is verify that the gate-level
-netlist matches what is really in the final layout. We can do this using
-the `verifyConnectivity` command. We can also do a preliminary "design
-rule check" to make sure that the generated metal interconnect does not
-violate any design rules with the `verify_drc` command.
-
-```
-innovus> verifyConnectivity
-innovus> verify_drc
-```
-
-Now we can generate various artifacts. We might want to save the final
+We can generate various artifacts. We might want to save the final
 gate-level netlist for the chip since Cadence Innovus will often insert
 new cells or change cells during its optimization passes.
 
@@ -495,7 +480,8 @@ innovus> saveNetlist post-pnr.v
 
 We can also extract resistance and capacitance for the metal interconnect
 and write this to a special `.spef` file and `.sdf` file. These files can
-be used for later timing and/or power analysis.
+be used for later back-annotated gate-level simulation and/or power
+analysis.
 
 ```
 innovus> extractRC
@@ -508,7 +494,9 @@ This is what we will send to the foundry when we are ready to tapeout the
 chip.
 
 ```
-innovus> streamOut post-pnr.gds -merge "$env(ECE6745_STDCELLS)/stdcells.gds" -mapFile "$env(ECE6745_STDCELLS)/rtk-stream-out.map"
+innovus> streamOut post-pnr.gds \
+           -merge "$env(ECE6745_STDCELLS)/stdcells.gds" \
+           -mapFile "$env(ECE6745_STDCELLS)/rtk-stream-out.map"
 ```
 
 We can also use Cadence Innovus to do timing, area, and power analysis
@@ -517,9 +505,8 @@ results will be _much_ more accurate than the preliminary post-synthesis
 results.
 
 ```
-innovus> report_timing
 innovus> report_area
-innovus> report_power -hierarchy all
+innovus> report_timing
 ```
 
 Finally, we go ahead and exit Cadence Innovus.
