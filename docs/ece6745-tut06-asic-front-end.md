@@ -94,8 +94,6 @@ directory for the project.
 % git clone git@github.com:cornell-ece6745/ece6745-tut06-asic-front-end tut06
 % cd tut06
 % export TOPDIR=$PWD
-% cd $TOPDIR/asic/build-sort
-% export ASICDIR=$PWD
 ```
 
 1. PyMTL3-Based Testing, Simulation, Translation
@@ -218,8 +216,8 @@ num_cycles_per_sort = 1.06
 ```
 
 Take a moment to open up the translated Verilog which should be in a file
-named `SortUnitStruct__p_nbits_8__pickled.v`. The Verilog module name
-includes a suffix to make it unique for a specific set of parameters.
+named `SortUnitStruct__pickled.v`. The Verilog module name includes a
+suffix to make it unique for a specific set of parameters.
 
 2. Using Synopsys VCS for 4-state RTL simulation
 -------------------------------------------------------------------------
@@ -286,34 +284,34 @@ To create a 4-state simulation, let's start by creating another build
 directory for our Synopsys VCS work.
 
 ```bash
-% cd $ASICDIR/01-synopsys-vcs-rtlsim
+% cd $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim
 ```
 
 We run Synopsys VCS to compile a simulation, and `./simv` to run the
 simulation. Let's run a 4-state simulation for `test_basic` using the
-design `SortUnitStruct__p_nbits_8__pickled.v`.
+design `SortUnitStruct__pickled.v`.
 
 ```bash
-% cd $ASICDIR/01-synopsys-vcs-rtlsim
+% cd $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim
 % vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
-   +incdir+$TOPDIR/sim/build \
-   +vcs+dumpvars+SortUnitStruct__p_nbits_8_test_basic_vcs.vcd \
-   -top SortUnitStruct__p_nbits_8_tb \
-   $TOPDIR/sim/build/SortUnitStruct__p_nbits_8_test_basic_tb.v \
-   $TOPDIR/sim/build/SortUnitStruct__p_nbits_8__pickled.v
+      +incdir+$TOPDIR/sim/build \
+      +vcs+dumpvars+SortUnitStruct__p_nbits_8_test_basic.vcd \
+      -top SortUnitStruct__p_nbits_8_tb \
+      $TOPDIR/sim/build/SortUnitStruct__p_nbits_8_test_basic_tb.v \
+      $TOPDIR/sim/build/SortUnitStruct__p_nbits_8__pickled.v
 % ./simv
 ```
 
 Here some of the key command line options for Synopsys VCS:
 
 ```
--sverilog                           indicates we are using SystemVerilog
-+lint=all                           turn on all linting checks
--xprop=tmerge                       use more advanced X propoagation
--override_timescale=1ns/1ps         changes the timescale. Units/precision
-+incdir+$TOPDIR/sim/build           specifies directories to search for `include
-+vcs+dumpvars+filename.vcd          dump VCD in current dir with the name filename.vcd
--top SortUnitStruct__p_nbits_8_tb   name of the top module (located within the VTB)
+-sverilog                     indicates we are using SystemVerilog
++lint=all                     turn on all linting checks
+-xprop=tmerge                 use more advanced X propoagation
+-override_timescale=1ns/1ps   changes the timescale. Units/precision
++incdir+$TOPDIR/sim/build     specifies directories to search for `include
++vcs+dumpvars+filename.vcd    dump VCD in current dir with the name filename.vcd
+-top SortUnitStruct_tb        name of the top module (located within the VTB)
 ```
 
 Synopsys VCS is a sophisticated tool with many command line options. If
@@ -329,13 +327,13 @@ use this VCD for power analysis, for the purposes of this tutorial we
 will only be doing power analysis using the gate-level netlist.
 
 ```bash
-% cd $ASICDIR/01-synopsys-vcs-rtlsim
+% cd $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim
 % vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
-   +incdir+$TOPDIR/sim/build \
-   +vcs+dumpvars+SortUnitStruct__p_nbits_8_sort-rtl-struct-random_vcs.vcd \
-   -top SortUnitStruct__p_nbits_8_tb \
-   $TOPDIR/sim/build/SortUnitStruct__p_nbits_8_sort-rtl-struct-random_tb.v \
-   $TOPDIR/sim/build/SortUnitStruct__p_nbits_8__pickled.v
+      +incdir+$TOPDIR/sim/build \
+      +vcs+dumpvars+SortUnitStruct_random.vcd \
+      -top SortUnitStruct_tb \
+      $TOPDIR/sim/build/SortUnitStruct_random_tb.v \
+      $TOPDIR/sim/build/SortUnitStruct__pickled.v
 % ./simv
 ```
 
@@ -343,8 +341,8 @@ To simplify rerunning a simulation, we can put the above command lines in
 a shell script. We have done this for you so you can run it as follows:
 
 ```bash
-% cd $ASICDIR
-% source 01-synopsys-vcs-rtlsim/run.sh
+% cd $TOPDIR/asic/build-sort
+% ./01-synopsys-vcs-rtlsim/run
 ```
 
 3. Using Synopsys Design Compiler for Synthesis
@@ -361,7 +359,7 @@ We start by creating a subdirectory for our work, and then launching
 Synopsys DC.
 
 ```bash
-% cd $ASICDIR/02-synopsys-dc-synth
+% cd $TOPDIR/asic/build-sort/02-synopsys-dc-synth
 % dc_shell-xg-t
 ```
 
@@ -403,8 +401,8 @@ module references starting from the top-level module, and also infers
 various registers and/or advanced data-path components.
 
 ```
-dc_shell> analyze -format sverilog $env(TOPDIR)/sim/build/SortUnitStruct__p_nbits_8__pickled.v
-dc_shell> elaborate SortUnitStruct__p_nbits_8
+dc_shell> analyze -format sverilog $env(TOPDIR)/sim/build/SortUnitStruct__pickled.v
+dc_shell> elaborate SortUnitStruct
 ```
 
 We need to create a clock constraint to tell Synopsys DC what our target
@@ -415,36 +413,46 @@ power. The `create_clock` command takes the name of the clock signal in
 the Verilog (which in this course will always be `clk`), the label to
 give this clock (i.e., `ideal_clock1`), and the target clock period in
 nanoseconds. So in this example, we are asking Synopsys DC to see if it
-can synthesize the design to run at 3.33GHz (i.e., a cycle time of
-300ps).
+can synthesize the design to run at 2.5GHz (i.e., a cycle time of 400ps).
 
 ```
-dc_shell> create_clock clk -name ideal_clock1 -period 0.3
+dc_shell> create_clock clk -name ideal_clock1 -period 0.4
+```
+
+In addition to the clock constraint we also need to constrain the max
+transition time to ensure no net takes a very long time to transition.
+Here we constrain the max transition to be 250ps.
+
+```
+dc_shell> set_max_transition 0.250 SortUnitStruct
+```
+
+We need to constrain what kind of cells are expected to drive the input
+pins and what kind of load is expected at the output pin so Synopsys DC
+can properly synthesize the design. here we constrain the input cells to
+be inverters with 2x drive strength and the output load to be 7fF.
+
+```
+dc_shell> set_driving_cell -no_design_rule -lib_cell INV_X2 [all_inputs]
+dc_shell> set_load -pin_load 7 [all_outputs]
 ```
 
 In an ideal world, all inputs and outputs would change immediately with
 the clock edge. In reality, this is not the case. We need to include
-reasonable delays for inputs and outputs, so Synopsys DC can factor this
-into its timing analysis so we would still meet timing if we were to tape
-our design out in real silicon. Here, we choose 5% of the clock period
-for our input and output delays.
+reasonable propagation and contamination delays for the inputs and
+reasonable clock-to-q and hold time constraints for the outputs so
+Synopsys DC can factor this into its timing analysis so we would still
+meet timing if we were to tape our design out in real silicon. Here, we
+choose the min delay constraints to be 50ps (i.e., the input port
+contamination delay and the output port hold time constraint) and the max
+delay constrainst to be 100ps (i.e., the input port propagation delay and
+the output port setup time constraint).
 
 ```
-dc_shell> set_input_delay  -clock ideal_clock1 [expr 0.3*0.05] [all_inputs]
-dc_shell> set_output_delay -clock ideal_clock1 [expr 0.3*0.05] [all_outputs]
-```
-
-Next, we give Synopsys DC some constraints about fanout and transition
-slew. Fanout roughly describes the number of inputs driven by a
-particular output, and the higher the fanout, the higher the drive
-strength required. Slew rate is how quickly a signal can make a full
-transition. We want all of our signals to meet a good slew, meaning that
-they can transition quickly, so we set maximum slew to one quarter of the
-clock period.
-
-```
-dc_shell> set_max_fanout 20 SortUnitStruct__p_nbits_8
-dc_shell> set_max_transition [expr 0.25*0.3] SortUnitStruct__p_nbits_8
+dc_shell> set_input_delay  -clock ideal_clock1 -min 0.050 [all_inputs]
+dc_shell> set_input_delay  -clock ideal_clock1 -max 0.100 [all_inputs]
+dc_shell> set_output_delay -clock ideal_clock1 -min 0.050 [all_outputs]
+dc_shell> set_output_delay -clock ideal_clock1 -max 0.100 [all_outputs]
 ```
 
 We can use the `check_design` command to make sure there are no obvious
@@ -511,52 +519,56 @@ dc_shell> write_sdc -nosplit post-synth.sdc
 We can use various commands to generate reports about area, energy, and
 timing. The `report_timing` command will show the critical path through
 the design. Part of the report is displayed below. Note that this report
-was generated using a clock constraint of 300ps.
+was generated using a clock constraint of 400ps.
 
 ```
 dc_shell> report_timing -nosplit -transition_time -nets -attributes
  ...
  Point                                       Fanout Trans Incr  Path
- --------------------------------------------------------------------------
+ ---------------------------------------------------------------------
  clock ideal_clock1 (rise edge)                           0.00  0.00
  clock network delay (ideal)                              0.00  0.00
- v/elm2_S2S3/q_reg[2]/CK (DFF_X1)                   0.00  0.00  0.00 r
- v/elm2_S2S3/q_reg[2]/Q (DFF_X1)                    0.01  0.09  0.09 r
- v/elm2_S2S3/q[2] (net)                      3            0.00  0.09 r
- v/elm2_S2S3/q[2] (vc_Reg_p_nbits8_2)                     0.00  0.09 r
- v/elm2_S3[2] (net)                                       0.00  0.09 r
- v/mmuA_S3/in1[2] (MinMaxUnit_p_nbits8_1)           0.00        0.09 r
- v/mmuA_S3/in1[2] (net)                                   0.00  0.09 r
- v/mmuA_S3/U25/ZN (INV_X1)                          0.01  0.02  0.12 f
- v/mmuA_S3/n11 (net)                         1            0.00  0.12 f
- v/mmuA_S3/U3/ZN (NAND2_X1)                         0.01  0.02  0.14 r
- v/mmuA_S3/n8 (net)                          1            0.00  0.14 r
- v/mmuA_S3/U20/ZN (NAND4_X1)                        0.02  0.04  0.18 f
- v/mmuA_S3/net7323 (net)                     1            0.00  0.18 f
- v/mmuA_S3/U11/ZN (OAI221_X1)                       0.05  0.06  0.24 r
- v/mmuA_S3/net7315 (net)                     2            0.00  0.24 r
- v/mmuA_S3/U13/ZN (AND2_X2)                         0.03  0.07  0.31 r
- v/mmuA_S3/net7572 (net)                     8            0.00  0.31 r
- v/mmuA_S3/U53/Z (MUX2_X1)                          0.01  0.08  0.40 f
- v/mmuA_S3/out_min[0] (net)                  1            0.00  0.40 f
- v/mmuA_S3/out_min[0] (MinMaxUnit_p_nbits8_1)       0.00        0.40 f
- v/mmuA_out_min_S3[0] (net)                               0.00  0.40 f
- v/U30/ZN (AND2_X1)                                 0.01  0.03  0.43 f
- v/out1[0] (net)                             1            0.00  0.43 f
- v/out1[0] (SortUnitStruct_p_nbits8)                0.00        0.43 f
- out1[0] (net)                                            0.00  0.43 f
- out1[0] (out)                                      0.01  0.00  0.43 f
- data arrival time                                              0.43
+ v/elm1_S2S3/q_reg[4]/CK (DFF_X1)                   0.00  0.00  0.00 r
+ v/elm1_S2S3/q_reg[4]/Q (DFF_X1)                    0.01  0.08  0.08 f
+ v/elm1_S2S3/q[4] (net)                        2          0.00  0.08 f
+ v/elm1_S2S3/q[4] (vc_Reg_p_nbits8_3)                     0.00  0.08 f
+ v/elm1_S3[4] (net)                                       0.00  0.08 f
+ v/mmuA_S3/in0[4] (MinMaxUnit_p_nbits8_1)                 0.00  0.08 f
+ v/mmuA_S3/in0[4] (net)                                   0.00  0.08 f
+ v/mmuA_S3/U11/ZN (INV_X1)                          0.01  0.03  0.11 r
+ v/mmuA_S3/n8 (net)                            1          0.00  0.11 r
+ v/mmuA_S3/U27/ZN (OAI22_X1)                        0.01  0.03  0.14 f
+ v/mmuA_S3/n30 (net)                           2          0.00  0.14 f
+ v/mmuA_S3/U33/ZN (INV_X1)                          0.01  0.03  0.17 r
+ v/mmuA_S3/n21 (net)                           1          0.00  0.17 r
+ v/mmuA_S3/U15/ZN (NAND3_X1)                        0.01  0.03  0.20 f
+ v/mmuA_S3/n28 (net)                           1          0.00  0.20 f
+ v/mmuA_S3/U35/ZN (OAI221_X1)                       0.04  0.04  0.24 r
+ v/mmuA_S3/n32 (net)                           1          0.00  0.24 r
+ v/mmuA_S3/U36/ZN (OAI211_X1)                       0.03  0.06  0.30 f
+ v/mmuA_S3/n34 (net)                           3          0.00  0.30 f
+ v/mmuA_S3/U17/ZN (INV_X1)                          0.03  0.06  0.36 r
+ v/mmuA_S3/n14 (net)                           5          0.00  0.36 r
+ v/mmuA_S3/U46/Z (MUX2_X1)                          0.01  0.08  0.44 f
+ v/mmuA_S3/out_min[0] (net)                    1          0.00  0.44 f
+ v/mmuA_S3/out_min[0] (MinMaxUnit_p_nbits8_1)             0.00  0.44 f
+ v/mmuA_out_min_S3[0] (net)                               0.00  0.44 f
+ v/U29/ZN (AND2_X1)                                 0.01  0.03  0.47 f
+ v/out1[0] (net)                               1          0.00  0.47 f
+ v/out1[0] (SortUnitStruct_p_nbits8)                      0.00  0.47 f
+ out1[0] (net)                                            0.00  0.47 f
+ out1[0] (out)                                      0.01  0.00  0.47 f
+ data arrival time                                              0.47
 
- clock ideal_clock1 (rise edge)                           0.30  0.30
- clock network delay (ideal)                              0.00  0.30
- output external delay                                   -0.01  0.29
- data required time                                             0.29
- ---------------------------------------------------------------------------------------------------------
- data required time                                             0.29
- data arrival time                                             -0.43
- ---------------------------------------------------------------------------------------------------------
- slack (VIOLATED)                                              -0.15
+ clock ideal_clock1 (rise edge)                           0.40  0.40
+ clock network delay (ideal)                              0.00  0.40
+ output external delay                                   -0.10  0.30
+ data required time                                             0.30
+ ---------------------------------------------------------------------
+ data required time                                             0.30
+ data arrival time                                             -0.47
+ ---------------------------------------------------------------------
+ slack (VIOLATED)                                              -0.17
 ```
 
 This timing report uses _static timing analysis_ to find the critical
@@ -678,7 +690,7 @@ Notice that the module hierarchy is preserved and also notice that the
 `MinMaxUnit` synthesizes into a large number of basic logic gates.
 
 ```bash
-% cd $ASICDIR/02-synopsys-dc-synth
+% cd $TOPDIR/asic/build-sort/02-synopsys-dc-synth
 % more post-synth.v
 ```
 
@@ -688,7 +700,7 @@ generally analyzing our design. Start Synopsys DV and setup the
 `target_library` and `link_library` variables as before.
 
 ```
-% cd $ASICDIR/02-synopsys-dc-synth
+% cd $TOPDIR/asic/build-sort/02-synopsys-dc-synth
 % design_vision-xg
 design_vision> set_app_var target_library "$env(ECE6745_STDCELLS)/stdcells.db"
 design_vision> set_app_var link_library   "* $env(ECE6745_STDCELLS)/stdcells.db"
@@ -741,24 +753,24 @@ You can automate the above steps by putting a sequence of commands in a
 this:
 
 ```bash
-% cd $ASICDIR/02-synopsys-dc-synth
+% cd $TOPDIR/asic/build-sort/02-synopsys-dc-synth
 % dc_shell-xg-t -f run.tcl
 ```
 
 To further simplify rerunning this step, we can put the above command
-line in a shell script. We have done this for you so you can run it as
-follows:
+line in a shell script. We have created a `run.tcl` script and the
+corresponding `run` script so you can run it as follows:
 
 ```bash
-% cd $ASICDIR
-% source 02-synopsys-dc-synth/run.sh
+% cd $TOPDIR/asic/build-sort
+% ./02-synopsys-dc-synth/run
 ```
 
-Try running Synopsys DC with a target clock period of 0.3ns. Then
-gradually increase the clock period until your design meets timing. **To
-follow along with the tutorial, push the design through synth again using
-0.6 ns as your clock constraint, as this is what we will be using for the
-rest of the flow.**
+Modify the run script to target a clock period of 0.4ns. Then gradually
+increase the clock period until your design meets timing. **To follow
+along with the tutorial, push the design through synth again using 0.6ns
+as your clock constraint, as this is what we will be using for the rest
+of the flow.**
 
 4. Using Synopsys VCS for Fast-Functional Gate-Level Simulation
 --------------------------------------------------------------------------
@@ -777,15 +789,15 @@ testbench:
 ```bash
 % cd $TOPDIR/asic/build-sort/03-synopsys-vcs-ffglsim
 % vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
-   +incdir+$TOPDIR/sim/build \
-   +vcs+dumpvars+SortUnitStruct__p_nbits_8_sort-rtl-struct-random_vcs.vcd \
-   -top SortUnitStruct__p_nbits_8_tb \
    +delay_mode_zero \
+   +incdir+$TOPDIR/sim/build \
+   +vcs+dumpvars+SortUnitStruct_random.vcd \
    +define+CYCLE_TIME=0.6 \
-   +define+VTB_INPUT_DELAY=0.03 \
-   +define+VTB_OUTPUT_ASSERT_DELAY=0.57 \
-   $TOPDIR/sim/build/SortUnitStruct__p_nbits_8_sort-rtl-struct-random_tb.v \
+   +define+VTB_INPUT_DELAY=0.075 \
+   +define+VTB_OUTPUT_ASSERT_DELAY=0.525 \
+   -top SortUnitStruct_tb \
    $ECE6745_STDCELLS/stdcells.v \
+   $TOPDIR/sim/build/SortUnitStruct_random_tb.v \
    ../02-synopsys-dc-synth/post-synth.v
 % ./simv
 ```
@@ -801,26 +813,12 @@ change on the clock edge. We also include the macros `CYCLE_TIME`,
 long after the rising edge we change the inputs and how long after the
 rising edge we check the outputs.
 
-The `.vcd` file contains information about the state of every net in the
-design on every cycle. This can make these `.vcd` files very large and
-thus slow to analyze. For average power analysis, we only need to know
-the activity factor on each net. We can use the `vcd2saif` tool to
-convert `.vcd` files into `.saif` files. An `.saif` file only contains a
-single average activity factor for every net.
+To simplify rerunning a simulation, we can put the above command lines in
+a shell script. We have done this for you so you can run it as follows:
 
 ```bash
-% cd $ASICDIR/03-synopsys-vcs-ffglsim
-% vcd2saif -input  ./SortUnitStruct__p_nbits_8_sort-rtl-struct-random_vcs.vcd \
-           -output ./SortUnitStruct__p_nbits_8_sort-rtl-struct-random.saif
-```
-
-To simplify rerunning a simulation and then running `vcd2said`, we can
-put the above command lines in a shell script. We have done this for you
-so you can run it as follows:
-
-```bash
-% cd $ASICDIR
-% source 03-synopsys-vcs-ffglsim/run.sh
+% cd $TOPDIR/asic/build-sort
+% ./03-synopsys-vcs-ffglsim/run
 ```
 
 5. To-Do On Your Own
@@ -841,19 +839,14 @@ Now create a new ASIC build directory and copy the scripts we used to
 push the sort unit through the ASIC front-end flow.
 
 ```
-% mkdir -p $TOPDIR/asic/build-gcd
-% cd $TOPDIR/asic/build-gcd
-% export ASICDIR=$PWD
+% mkdir -p $TOPDIR/asic/build-gcd/01-synopsys-vcs-rtlsim
+% mkdir -p $TOPDIR/asic/build-gcd/02-synopsys-dc-synth
+% mkdir -p $TOPDIR/asic/build-gcd/03-synopsys-vcs-ffglsim
 
-% mkdir -p $ASICDIR/01-synopsys-vcs-rtlsim
-% cp $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim/run.sh $ASICDIR/01-synopsys-vcs-rtlsim/run.sh
-
-% mkdir -p $ASICDIR/02-synopsys-dc-synth
-% cp $TOPDIR/asic/build-sort/02-synopsys-dc-synth/run.tcl $ASICDIR/02-synopsys-dc-synth
-% cp $TOPDIR/asic/build-sort/02-synopsys-dc-synth/run.sh  $ASICDIR/02-synopsys-dc-synth
-
-% mkdir -p $ASICDIR/03-synopsys-vcs-ffglsim
-% cp $TOPDIR/asic/build-sort/03-synopsys-vcs-ffglsim/run.sh $ASICDIR/03-synopsys-vcs-ffglsim
+% cp $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim/run   $TOPDIR/asic/build-gcd/01-synopsys-vcs-rtlsim
+% cp $TOPDIR/asic/build-sort/02-synopsys-dc-synth/run.tcl $TOPDIR/asic/build-gcd/02-synopsys-dc-synth
+% cp $TOPDIR/asic/build-sort/02-synopsys-dc-synth/run     $TOPDIR/asic/build-gcd/02-synopsys-dc-synth
+% cp $TOPDIR/asic/build-sort/03-synopsys-vcs-ffglsim/run  $TOPDIR/asic/build-gcd/03-synopsys-vcs-ffglsim
 ```
 
 Now open up each of these files and modify so they push the GCD unit
@@ -867,10 +860,10 @@ this:
 
 
 ```bash
-% cd $ASICDIR
-% source 01-synopsys-vcs-rtlsim/run.sh
-% source 02-synopsys-dc-synth/run.sh
-% source 03-synopsys-vcs-ffglsim/run.sh
+% cd $TOPDIR/asic
+% ./01-synopsys-vcs-rtlsim/run
+% ./02-synopsys-dc-synth/run
+% ./03-synopsys-vcs-ffglsim/run
 ```
 
 Carefully look at the post-synthesis gate-level netlist in `post-synt.v`
