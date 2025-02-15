@@ -450,7 +450,7 @@ analysis.
 ```
 innovus> extractRC
 innovus> rcOut -rc_corner typical -spef post-pnr.spef
-innovus> write_sdf post-pnr
+innovus> write_sdf post-pnr.sdf
 ```
 
 And of course the step is to generate the real layout as a `.gds` file.
@@ -468,9 +468,9 @@ what we did with Synopsys DC. These post-place-and-route results will be
 _much_ more accurate than the preliminary post-synthesis results.
 
 ```
-innovus> report_area
 innovus> report_timing -late  -path_type full_clock -net
 innovus> report_timing -early -path_type full_clock -net
+innovus> report_area
 ```
 
 Finally, we go ahead and exit Cadence Innovus.
@@ -506,15 +506,14 @@ for RTL simulation:
 ```bash
 % mkdir -p $TOPDIR/asic/05-synopsys-vcs-baglsim
 % cd $TOPDIR/asic/05-synopsys-vcs-baglsim
-% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
     +neg_tchk +sdfverbose \
-    -sdf max:RegIncr4stage_tb.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
+    -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
     +define+CYCLE_TIME=1.000 \
     +define+VTB_INPUT_DELAY=0.025 \
     +define+VTB_OUTPUT_DELAY=0.025 \
-    +vcs+dumpvars+RegIncr4stage_basic.vcd \
+    +vcs+dumpvars+waves.vcd \
     +incdir+$TOPDIR/sim/build \
-    -top RegIncr4stage_tb \
     ${ECE6745_STDCELLS}/stdcells.v \
     ${TOPDIR}/sim/build/RegIncr4stage_basic_tb.v \
     ../04-cadence-innovus-pnr/post-pnr.v
@@ -533,7 +532,7 @@ Surfer.
 
 ```bash
 % cd $TOPDIR/asic/05-synopsys-vcs-baglsim
-% code RegIncr4stage_basic.vcd
+% code waves.vcd
 ```
 
 Browse the signal hierarchy and display all the waveforms for the DUT
@@ -552,18 +551,18 @@ place-and-route).
 
 ```bash
 % cd $TOPDIR/asic/05-synopsys-vcs-baglsim
-% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
     +neg_tchk +sdfverbose \
-    -sdf max:RegIncr4stage_tb.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
+    -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
     +define+CYCLE_TIME=0.300 \
     +define+VTB_INPUT_DELAY=0.025 \
     +define+VTB_OUTPUT_DELAY=0.025 \
-    +vcs+dumpvars+RegIncr4stage_basic-300ps.vcd \
+    +vcs+dumpvars+waves-300ps.vcd \
     +incdir+$TOPDIR/sim/build \
-    -top RegIncr4stage_tb \
     ${ECE6745_STDCELLS}/stdcells.v \
     ${TOPDIR}/sim/build/RegIncr4stage_basic_tb.v \
     ../04-cadence-innovus-pnr/post-pnr.v
+% ./simv
 ```
 
 You should see timing violations and the test will fail. If you look at
@@ -572,7 +571,7 @@ finish its calculation and cannot meet the setup time contraint.
 
 ```bash
 % cd $TOPDIR/asic/05-synopsys-vcs-baglsim
-% open RegIncr4stage_basic-300ps.vcd
+% code waves-300ps.vcd
 ```
 
 For power analysis we need to convert our VCD file into an SAIF file. The
@@ -580,8 +579,7 @@ SAIF file has just the activity factors for every net in the design.
 
 ```bash
 % cd $TOPDIR/asic/05-synopsys-vcs-baglsim
-% vcd2saif -input RegIncr4stage_basic.vcd \
-           -output RegIncr4stage_basic.saif
+% vcd2saif -input waves.vcd -output waves.saif
 ```
 
 5. Using Synopsys PrimeTime for Power Analysis
@@ -644,8 +642,7 @@ We now read in the SAIF file with the activity factors and the SPEF file
 with the parasitic cpacitances for every net in our design.
 
 ```
-pt_shell> read_saif "../05-synopsys-vcs-baglsim/RegIncr4stage_basic.saif" \
-                    -strip_path "RegIncr4stage_tb/DUT"
+pt_shell> read_saif "../05-synopsys-vcs-baglsim/waves.saif" -strip_path "Top/DUT"
 pt_shell> read_parasitics -format spef "../04-cadence-innovus-pnr/post-pnr.spef"
 ```
 

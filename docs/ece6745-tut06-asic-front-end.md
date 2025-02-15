@@ -1,5 +1,5 @@
 
-ECE 6745 Tutorial 5: ASIC Front-End Flow
+ECE 6745 Tutorial 6: ASIC Front-End Flow
 ==========================================================================
 
 The tutorial will discuss the key tools used for ASIC front-end flow
@@ -110,6 +110,8 @@ network and the datapath is shown below.
 
 ![](img/tut06-sort-unit-dpath.png)
 
+### 1.1. Implement, Test, and Translate a Sort Unit
+
 Let's start by running the tests for the sort unit and note that the
 tests for the `SortUnitStruct` will fail.
 
@@ -164,6 +166,7 @@ Once you have your design working rerun the tests with the
 `--test-verilog` and `--dump-vtb` command line options.
 
 ```bash
+% cd $TOPDIR/sim/build
 % pytest ../tut3_verilog/sort --test-verilog --dump-vtb
 ```
 
@@ -204,8 +207,11 @@ instantiates your top module as `DUT`, sets the inputs, and performs a
 check every cycle on the outputs.
 
 ```bash
+% cd $TOPDIR/sim/build
 % less SortUnitStruct__p_nbits_8_test_basic_tb.v
 ```
+
+### 2.2. Simulate Sort Unit
 
 After running the tests we use the sort unit simulator to do the final
 evaluation.
@@ -282,25 +288,17 @@ assign out2    = mmuA_out_max_S3 & {p_nbits{val_S3}};
 assign out3    = elm3_S3         & {p_nbits{val_S3}};
 ```
 
-To create a 4-state simulation, let's start by creating another build
-directory for our Synopsys VCS work.
-
-```bash
-% cd $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim
-```
-
 We run Synopsys VCS to compile a simulation, and `./simv` to run the
 simulation. Let's run a 4-state simulation for `test_basic` using the
 design `SortUnitStruct__pickled.v`.
 
 ```bash
 % cd $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim
-% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
-    +vcs+dumpvars+SortUnitStruct_random.vcd \
-    +incdir+$TOPDIR/sim/build \
-    -top SortUnitStruct_tb \
-    $TOPDIR/sim/build/SortUnitStruct_random_tb.v \
-    $TOPDIR/sim/build/SortUnitStruct__pickled.v
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
+    +vcs+dumpvars+waves.vcd \
+    +incdir+${TOPDIR}/sim/build \
+    ${TOPDIR}/sim/build/SortUnitStruct__p_nbits_8_test_basic_tb.v \
+    ${TOPDIR}/sim/build/SortUnitStruct__p_nbits_8__pickled.v
 % ./simv
 ```
 
@@ -310,9 +308,9 @@ Here some of the key command line options for Synopsys VCS:
 -sverilog                     indicates we are using SystemVerilog
 -xprop=tmerge                 use more advanced X propoagation
 -override_timescale=1ns/1ps   changes the timescale. Units/precision
-+incdir+$TOPDIR/sim/build     specifies directories to search for `include
+-top Top                      name of the top module (located within the VTB)
 +vcs+dumpvars+filename.vcd    dump VCD in current dir with the name filename.vcd
--top SortUnitStruct_tb        name of the top module (located within the VTB)
++incdir+$TOPDIR/sim/build     specifies directories to search for `include
 ```
 
 Synopsys VCS is a sophisticated tool with many command line options. If
@@ -322,6 +320,13 @@ webpage:
 
  - <https://www.csl.cornell.edu/courses/ece6745/asicdocs>
 
+Open up the resulting VCD filea and notice how all of the input ports
+start as X values and then eventually become non-X values after reset.
+Notice how the pipeline registers are not reset so it takes a few cycles
+for them to be output non-X values.
+
+![](img/tut06-waves.png)
+
 Let's run another 4-state simulation, this time using the testbench from
 the sort-rtl simulator run that we ran earlier. Note that while we can
 use this VCD for power analysis, for the purposes of this tutorial we
@@ -329,12 +334,11 @@ will only be doing power analysis using the gate-level netlist.
 
 ```bash
 % cd $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim
-% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
-      +vcs+dumpvars+SortUnitStruct_random.vcd \
-      +incdir+$TOPDIR/sim/build \
-      -top SortUnitStruct_tb \
-      $TOPDIR/sim/build/SortUnitStruct_random_tb.v \
-      $TOPDIR/sim/build/SortUnitStruct__pickled.v
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
+      +vcs+dumpvars+waves.vcd \
+      +incdir+${TOPDIR}/sim/build \
+      ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v \
+      ${TOPDIR}/sim/build/SortUnitStruct__pickled.v
 % ./simv
 ```
 
@@ -406,7 +410,7 @@ module references starting from the top-level module, and also infers
 various registers and/or advanced data-path components.
 
 ```
-dc_shell> analyze -format sverilog $env(TOPDIR)/sim/build/SortUnitStruct__pickled.v
+dc_shell> analyze -format sverilog ../../../sim/build/SortUnitStruct__pickled.v
 dc_shell> elaborate SortUnitStruct
 ```
 
@@ -420,10 +424,10 @@ power. The `create_clock` command takes the name of the clock signal in
 the Verilog (which in this course will always be `clk`), the label to
 give this clock (i.e., `ideal_clock1`), and the target clock period in
 nanoseconds. So in this example, we are asking Synopsys DC to see if it
-can synthesize the design to run at 2.5GHz (i.e., a cycle time of 400ps).
+can synthesize the design to run at 1.4GHz (i.e., a cycle time of 700ps).
 
 ```
-dc_shell> create_clock clk -name ideal_clock1 -period 0.4
+dc_shell> create_clock clk -name ideal_clock1 -period 0.7
 ```
 
 In addition to the clock constraint we also need to constrain the max
@@ -444,23 +448,53 @@ dc_shell> set_driving_cell -no_design_rule -lib_cell INV_X2 [all_inputs]
 dc_shell> set_load -pin_load 7 [all_outputs]
 ```
 
-In an ideal world, all inputs and outputs would change immediately with
-the clock edge. In reality, this is not the case. We need to include
-reasonable propagation and contamination delays for the inputs and
-reasonable clock-to-q and hold time constraints for the outputs so
-Synopsys DC can factor this into its timing analysis so we would still
-meet timing if we were to tape our design out in real silicon. Here, we
-choose the min delay constraints to be 50ps (i.e., the input port
-contamination delay and the output port hold time constraint) and the max
-delay constrainst to be 100ps (i.e., the input port propagation delay and
-the output port setup time constraint).
+In an ideal world, all inputs would change immediately with the clock
+edge. In reality, this is not the case since there will be some logic
+before this block on the chip as shown in the following figure.
+
+![](img/tut06-input-delays.png)
+
+We need to include reasonable propagation and contamination delays for
+the input ports so Synopsys DC can factor these into its timing analysis.
+Here, we choose the max input delay constraint to be 50ps (i.e., the
+block needs to meet the setup time constraints even if the inputs change
+50ps after the rising edge of the clock), and we choose the min input
+delay constraint to be 0ps (i.e., the block needs to meet the hold time
+constraints even if the inputs change right on the rising edge clock).
 
 ```
-dc_shell> set_input_delay  -clock ideal_clock1 -min 0.050 [all_inputs]
-dc_shell> set_input_delay  -clock ideal_clock1 -max 0.100 [all_inputs]
-dc_shell> set_output_delay -clock ideal_clock1 -min 0.050 [all_outputs]
-dc_shell> set_output_delay -clock ideal_clock1 -max 0.100 [all_outputs]
+dc_shell> set_input_delay -clock ideal_clock1 -max 0.000 [all_inputs -exclude_clock_ports]
+dc_shell> set_input_delay -clock ideal_clock1 -min 0.050 [all_inputs -exclude_clock_ports]
 ```
+
+We also need to constrain the output ports since there will be some logic
+after this block on the chip as shown in the following figure.
+
+![](img/tut06-output-delays.png)
+
+We need to include reasonable setup and hold time constraints for the
+output ports so Synopsys DC can factor these into into its timing
+analysis. Here we choose a setup time constraint of 50ps meaning the
+output data must be stable 50ps before the rising edge of the clock, and
+we choose a hold time constraint of 0ps meaning the outputs can change
+right on the rising edge of the clock.
+
+```
+dc_shell> set_output_delay -clock ideal_clock1 -max 0.050 [all_outputs]
+dc_shell> set_output_delay -clock ideal_clock1 -min 0.000 [all_outputs]
+```
+
+Finally we also need to constraint any combinational paths which go
+directly from the input ports to the output ports. Here we constrain such
+paths to be no longer than one cycle cycle.
+
+```
+dc_shell> set_max_delay 0.7 -from [all_inputs -exclude_clock_ports] -to [all_outputs]
+```
+
+Once we have finished setting all of the constraints we can use
+`check_timing` to make sure there are no unconstrained paths or other
+issues.
 
 ### 3.4. Synthesize
 
@@ -531,59 +565,64 @@ dc_shell> write -format ddc     -hierarchy -output post-synth.ddc
 dc_shell> write_sdc -nosplit post-synth.sdc
 ```
 
-We can use various commands to generate reports about area, energy, and
-timing. The `report_timing` command will show the critical path through
-the design. Part of the report is displayed below. Note that this report
-was generated using a clock constraint of 400ps.
+We can use various commands to generate reports about timing and area.
+The `report_timing` command will show the critical path through the
+design. Part of the report is displayed below. Note that this report was
+generated using a clock constraint of 400ps.
 
 ```
-dc_shell> report_timing -nosplit -transition_time -nets -attributes
+dc_shell> report_timing -nosplit -nets
  ...
- Point                                       Fanout Trans Incr  Path
- ---------------------------------------------------------------------
- clock ideal_clock1 (rise edge)                           0.00  0.00
- clock network delay (ideal)                              0.00  0.00
- v/elm1_S2S3/q_reg[4]/CK (DFF_X1)                   0.00  0.00  0.00 r
- v/elm1_S2S3/q_reg[4]/Q (DFF_X1)                    0.01  0.08  0.08 f
- v/elm1_S2S3/q[4] (net)                        2          0.00  0.08 f
- v/elm1_S2S3/q[4] (vc_Reg_p_nbits8_3)                     0.00  0.08 f
- v/elm1_S3[4] (net)                                       0.00  0.08 f
- v/mmuA_S3/in0[4] (MinMaxUnit_p_nbits8_1)                 0.00  0.08 f
- v/mmuA_S3/in0[4] (net)                                   0.00  0.08 f
- v/mmuA_S3/U11/ZN (INV_X1)                          0.01  0.03  0.11 r
- v/mmuA_S3/n8 (net)                            1          0.00  0.11 r
- v/mmuA_S3/U27/ZN (OAI22_X1)                        0.01  0.03  0.14 f
- v/mmuA_S3/n30 (net)                           2          0.00  0.14 f
- v/mmuA_S3/U33/ZN (INV_X1)                          0.01  0.03  0.17 r
- v/mmuA_S3/n21 (net)                           1          0.00  0.17 r
- v/mmuA_S3/U15/ZN (NAND3_X1)                        0.01  0.03  0.20 f
- v/mmuA_S3/n28 (net)                           1          0.00  0.20 f
- v/mmuA_S3/U35/ZN (OAI221_X1)                       0.04  0.04  0.24 r
- v/mmuA_S3/n32 (net)                           1          0.00  0.24 r
- v/mmuA_S3/U36/ZN (OAI211_X1)                       0.03  0.06  0.30 f
- v/mmuA_S3/n34 (net)                           3          0.00  0.30 f
- v/mmuA_S3/U17/ZN (INV_X1)                          0.03  0.06  0.36 r
- v/mmuA_S3/n14 (net)                           5          0.00  0.36 r
- v/mmuA_S3/U46/Z (MUX2_X1)                          0.01  0.08  0.44 f
- v/mmuA_S3/out_min[0] (net)                    1          0.00  0.44 f
- v/mmuA_S3/out_min[0] (MinMaxUnit_p_nbits8_1)             0.00  0.44 f
- v/mmuA_out_min_S3[0] (net)                               0.00  0.44 f
- v/U29/ZN (AND2_X1)                                 0.01  0.03  0.47 f
- v/out1[0] (net)                               1          0.00  0.47 f
- v/out1[0] (SortUnitStruct_p_nbits8)                      0.00  0.47 f
- out1[0] (net)                                            0.00  0.47 f
- out1[0] (out)                                      0.01  0.00  0.47 f
- data arrival time                                              0.47
+ Point                                      Fanout Incr  Path
+ ---------------------------------------------------------------
+ clock ideal_clock1 (rise edge)                    0.00  0.00
+ clock network delay (ideal)                       0.00  0.00
+ v/elm1_S0S1/q_reg[1]/CK (DFF_X1)                  0.00  0.00 r
+ v/elm1_S0S1/q_reg[1]/Q (DFF_X1)                   0.08  0.08 f
+ v/elm1_S0S1/q[1] (net)                     2      0.00  0.08 f
+ v/elm1_S0S1/q[1] (vc_Reg_p_nbits8_11)             0.00  0.08 f
+ v/elm1_S1[1] (net)                                0.00  0.08 f
+ v/mmuA_S1/in1[1] (MinMaxUnit)                     0.00  0.08 f
+ v/mmuA_S1/in1[1] (net)                            0.00  0.08 f
+ v/mmuA_S1/U10/ZN (INV_X1)                         0.04  0.12 r
+ v/mmuA_S1/n22 (net)                        3      0.00  0.12 r
+ v/mmuA_S1/U45/ZN (AOI21_X1)                       0.03  0.15 f
+ v/mmuA_S1/n8 (net)                         1      0.00  0.15 f
+ v/mmuA_S1/U46/ZN (AOI222_X1)                      0.09  0.24 r
+ v/mmuA_S1/n9 (net)                         1      0.00  0.24 r
+ v/mmuA_S1/U9/ZN (NOR3_X1)                         0.03  0.27 f
+ v/mmuA_S1/n10 (net)                        1      0.00  0.27 f
+ v/mmuA_S1/U6/ZN (NOR3_X1)                         0.06  0.33 r
+ v/mmuA_S1/n11 (net)                        1      0.00  0.33 r
+ v/mmuA_S1/U3/ZN (NOR3_X1)                         0.03  0.36 f
+ v/mmuA_S1/n12 (net)                        1      0.00  0.36 f
+ v/mmuA_S1/U47/ZN (AOI221_X1)                      0.08  0.44 r
+ v/mmuA_S1/n13 (net)                        1      0.00  0.44 r
+ v/mmuA_S1/U48/ZN (OAI22_X1)                       0.05  0.49 f
+ v/mmuA_S1/n15 (net)                        2      0.00  0.49 f
+ v/mmuA_S1/U27/ZN (OAI21_X1)                       0.04  0.53 r
+ v/mmuA_S1/N1 (net)                         1      0.00  0.53 r
+ v/mmuA_S1/U49/ZN (INV_X2)                         0.06  0.59 f
+ v/mmuA_S1/n23 (net)                        6      0.00  0.59 f
+ v/mmuA_S1/U43/ZN (OAI22_X1)                       0.06  0.65 r
+ v/mmuA_S1/out_max[7] (net)                 1      0.00  0.65 r
+ v/mmuA_S1/out_max[7] (MinMaxUnit)                 0.00  0.65 r
+ v/mmuA_out_max_S1[7] (net)                        0.00  0.65 r
+ v/elm1_S1S2/d[7] (vc_Reg_p_nbits8_7)              0.00  0.65 r
+ v/elm1_S1S2/d[7] (net)                            0.00  0.65 r
+ v/elm1_S1S2/q_reg[7]/D (DFF_X1)                   0.01  0.66 r
+ data arrival time                                       0.66
 
- clock ideal_clock1 (rise edge)                           0.40  0.40
- clock network delay (ideal)                              0.00  0.40
- output external delay                                   -0.10  0.30
- data required time                                             0.30
- ---------------------------------------------------------------------
- data required time                                             0.30
- data arrival time                                             -0.47
- ---------------------------------------------------------------------
- slack (VIOLATED)                                              -0.17
+ clock ideal_clock1 (rise edge)                    0.70  0.70
+ clock network delay (ideal)                       0.00  0.70
+ v/elm1_S1S2/q_reg[7]/CK (DFF_X1)                  0.00  0.70 r
+ library setup time                               -0.04  0.66
+ data required time                                      0.66
+ ---------------------------------------------------------------
+ data required time                                      0.66
+ data arrival time                                       0.66
+ ---------------------------------------------------------------
+ slack (MET)                                             0.00
 ```
 
 This timing report uses _static timing analysis_ to find the critical
@@ -593,24 +632,24 @@ practice) and finds the longest path. For more information about static
 timing analysis, consult Chapter 1 of the [Synopsys Timing Constraints
 and Optimization User
 Guide](http://www.csl.cornell.edu/courses/ece6745/asicdocs/tcoug.pdf).
-The report clearly shows that the critical path starts at bit 2 of a
-pipeline register in between the S2 and S3 stages (`elm2_S2S3`), goes
-into an input of a `MinMaxUnit`, comes out the `out_min` port of the
-`MinMaxUnit`, and ends at a top-level output port (`out1`). The report
-shows the delay through each logic gate (e.g., the clk-to-q delay of the
-initial DFF is 90ps, the propagation delay of a NAND2_X1 gate is 20ps)
-and the total delay for the critical path which in this case is 0.43ns.
-We set the clock constraint to be 300ps, but also notice that the report
-factors in the output delay we set with the `set_output_delay` command.
+The report clearly shows that the critical path starts at bit 1 of a
+pipeline register in between the S0 and S1 stages (`elm1_S0S1`), goes
+into an input of a `MinMaxUnit`, comes out the `out_max` port of the
+`MinMaxUnit`, and ends at the pipeline register between the S1 and S2
+stages (`elm1_S1S21). The report shows the delay through each logic gate
+(e.g., the clk-to-q delay of the initial DFF is 80ps, the propagation
+delay of a AOI21_X1 gate is 150ps) and the total delay for the critical
+path which in this case is 0.66ns.
 
 The difference between the required arrival time and the actual arrival
-time is called the _slack_. Positive slack means the path arrived before
-it needed to while negative slack means the path arrived after it needed
-to. If you end up with negative slack, then you need to rerun the tools
-with a longer target clock period until you can meet timing with no
-negative slack. The process of tuning a design to ensure it meets timing
-is called "timing closure". In this course, we are primarily interested
-in design-space exploration as opposed to meeting some externally defined
+time is called the _slack_. In the above report we just meet timing with
+zero slack. Positive slack means the path arrived before it needed to
+while negative slack means the path arrived after it needed to. If you
+end up with negative slack, then you need to rerun the tools with a
+longer target clock period until you can meet timing with no negative
+slack. The process of tuning a design to ensure it meets timing is called
+"timing closure". In this course, we are primarily interested in
+design-space exploration as opposed to meeting some externally defined
 target timing specification. So you will need to sweep a range of target
 clock periods. **Your goal is to choose the shortest possible clock
 period which still meets timing without any negative slack!** This will
@@ -620,79 +659,6 @@ designs, sometimes the best situation is to tune the baseline so it meets
 timing and then ensure the alternative designs have similar cycle times.
 This will enable a fair comparison since all designs will be running at
 the same cycle time.
-
-The `report_area` command can show how much area each module uses and can
-enable detailed area breakdown analysis.
-
-```
-dc_shell> report_area -nosplit -hierarchy
-...
-Combinational area:         388.626001
-Buf/Inv area:                88.843999
-Noncombinational area:      449.273984
-Macro/Black Box area:         0.000000
-Net Interconnect area:       undefined  (Wire load has zero net area)
-
-Total cell area:            837.899985
-Total area:                  undefined
-
-Hierarchical area distribution
-------------------------------
-
-                Global      Local
-                Cell Area   Cell Area
-                ----------  ----------------
-Hierarchical    Abs               Non   Black
-Cell            Total  %    Comb  Comb  Boxes
---------------- ----- ---- ----- ----- ----  -------------------------------
-SortUnitStruct  837.9  100   0.0   0.0  0.0  SortUnitStruct__p_nbits_8
-v               837.9  100  37.2   0.0  0.0  tut3_verilog_sort_SortUnitStruct_p_nbits8
-v/elm0_S0S1      36.1  4.3   0.0  36.1  0.0  vc_Reg_p_nbits8_0
-v/elm0_S1S2      36.7  4.4   0.0  36.7  0.0  vc_Reg_p_nbits8_8
-v/elm0_S2S3      36.1  4.3   0.0  36.1  0.0  vc_Reg_p_nbits8_4
-v/elm1_S0S1      36.1  4.3   0.0  36.1  0.0  vc_Reg_p_nbits8_11
-v/elm1_S1S2      36.7  4.4   0.0  36.7  0.0  vc_Reg_p_nbits8_7
-v/elm1_S2S3      36.1  4.3   0.0  36.1  0.0  vc_Reg_p_nbits8_3
-v/elm2_S0S1      36.1  4.3   0.0  36.1  0.0  vc_Reg_p_nbits8_10
-v/elm2_S1S2      36.1  4.3   0.0  36.1  0.0  vc_Reg_p_nbits8_6
-v/elm2_S2S3      36.1  4.3   0.0  36.1  0.0  vc_Reg_p_nbits8_2
-v/elm3_S0S1      36.1  4.3   0.0  36.1  0.0  vc_Reg_p_nbits8_9
-v/elm3_S1S2      36.7  4.4   0.0  36.7  0.0  vc_Reg_p_nbits8_5
-v/elm3_S2S3      36.1  4.3   0.0  36.1  0.0  vc_Reg_p_nbits8_1
-v/mmuA_S1        71.2  8.5  71.2   0.0  0.0  tut3_verilog_sort_MinMaxUnit_p_nbits8_0
-v/mmuA_S2        71.0  8.5  71.0   0.0  0.0  tut3_verilog_sort_MinMaxUnit_p_nbits8_3
-v/mmuA_S3        64.9  7.7  64.9   0.0  0.0  tut3_verilog_sort_MinMaxUnit_p_nbits8_1
-v/mmuB_S1        72.8  8.7  72.8   0.0  0.0  tut3_verilog_sort_MinMaxUnit_p_nbits8_4
-v/mmuB_S2        67.2  8.0  67.2   0.0  0.0  tut3_verilog_sort_MinMaxUnit_p_nbits8_2
-v/val_S0S1        5.8  0.7   1.3   4.5  0.0  vc_ResetReg_p_nbits1_0
-v/val_S1S2        5.8  0.7   1.3   4.5  0.0  vc_ResetReg_p_nbits1_2
-v/val_S2S3        5.8  0.7   1.3   4.5  0.0  vc_ResetReg_p_nbits1_1
---------------- ----- ---- ----- ----- ----  -----------------------------------------
-Total                      388.6 449.2  0.0
-```
-
-The units are in square micron. The cell area can sometimes be different
-from the total area. The total cell area includes just the standard
-cells, while the total area can include interconnect area as well. If
-available, we will want to use the total area in our analysis. Otherwise
-we can just use the cell area. So we can see that the sort unit consumes
-approximately 837um^2 of area. We can also see that each pipeline
-register consumes about 4-5% of the area, while the `MinMaxUnit`s consume
-about ~40% of the area. This is one reason we try not to flatten our
-designs, since the module hierarchy helps us understand the area
-breakdowns. If we completely flattened the design there would only be one
-line in the above table.
-
-The `report_power` command can show how much power each module consumes.
-Note that this power analysis is actually not that useful yet, since at
-this stage of the flow the power analysis is based purely on statistical
-activity factor estimation. Basically, Synopsys DC assumes every net
-toggles 10% of the time. This is a pretty poor estimate, so we should
-never use this kind of statistical power estimation in this course.
-
-```
-dc_shell> report_power -nosplit -hierarchy
-```
 
 Finally, we go ahead and exit Synopsys DC.
 
@@ -765,6 +731,8 @@ often.
 
 ![](img/tut06-synopsys-dv-1.png)
 
+### 3.6. Automating Synthesis
+
 You can automate the above steps by putting a sequence of commands in a
 `.tcl` file and run Synopsys DC using those commands in one step like
 this:
@@ -805,11 +773,10 @@ testbench:
 
 ```bash
 % cd $TOPDIR/asic/build-sort/03-synopsys-vcs-ffglsim
-% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
    +delay_mode_zero \
-   +vcs+dumpvars+SortUnitStruct_random.vcd \
+   +vcs+dumpvars+waves.vcd \
    +incdir+$TOPDIR/sim/build \
-   -top SortUnitStruct_tb \
    ${ECE6745_STDCELLS}/stdcells.v \
    ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v \
    ../02-synopsys-dc-synth/post-synth.v
@@ -844,9 +811,7 @@ the flow. First, run a simulation of the GCD unit.
 ```
 % cd $TOPDIR/sim/build
 % ../tut3_verilog/gcd/gcd-sim --impl rtl --input random --stats --translate --dump-vtb
-% ls GcdUnit_noparam__pickled.v
-% ls GcdUnit_noparam_gcd-rtl-random_tb.v
-% ls GcdUnit_noparam_gcd-rtl-random_tb.v.cases
+% less GcdUnit__pickled.v
 ```
 
 Now create a new ASIC build directory and copy the scripts we used to
@@ -864,26 +829,38 @@ push the sort unit through the ASIC front-end flow.
 ```
 
 Now open up each of these files and modify so they push the GCD unit
-instead of the sort unit through the flow. For example, the top module
-name for the test harness is `GcdUnit_noparam_tb`. You will need to
-change the Verilog files used for simulation appropriately. You will need
-to change the top-level module you are elaborating during synthesis to
-`GcdUnit_noparam` and the cycle-time constraint to 1.0ns. Once you have
-updated the scripts you can then push the GCD unit through the flow like
-this:
+instead of the sort unit through the flow. You will need to update the
+name of the Verilog source files and the top module name as follows:
 
+ - Verilog source file name: `GcdUnit__pickled.v`
+ - Verilog test source file name: `GcdUnit_random_tb.v`
+ - Top module name for synthesis: `GcdUnit`
+
+Basically, you just need to change `SortUnitStruct` to `GcdUnit` in all
+of the run scripts. Keep the cycle time constraint as 700ps and the other
+constraints as before. Once you have updated the scripts you can then
+push the GCD unit through the flow like this:
 
 ```bash
-% cd $TOPDIR/asic
+% cd $TOPDIR/asic/build-gcd
 % ./01-synopsys-vcs-rtlsim/run
 % ./02-synopsys-dc-synth/run
 % ./03-synopsys-vcs-ffglsim/run
 ```
 
-Carefully look at the post-synthesis gate-level netlist in `post-synt.v`
-and load the design into Synopsys Design Vision to examine the critical
-path. Carefully look and the results from running the fast-functional
-gate-level simulation to verify that the design is passing the test.
-Convince yourself that the GCD unit was successfully pushed through the
-ASIC front-end flow.
+Carefully look at the post-synthesis timing report to ensure your design
+meetings timing:
+
+```bash
+% cd $TOPDIR/asic/build-gcd
+% cat 02-synopsys-dc-synth/timing.rpt
+```
+
+If your design does not meet timing, increase the cycle time constraint
+and try again until it does meet timing. Spend time looking at the
+post-synthesis gate-level netlist in `post-synth.v` and load the design
+into Synopsys Design Vision to examine the critical path. Carefully look
+and the results from running the fast-functional gate-level simulation to
+verify that the design is passing the test. Convince yourself that the
+GCD unit was successfully pushed through the ASIC front-end flow.
 

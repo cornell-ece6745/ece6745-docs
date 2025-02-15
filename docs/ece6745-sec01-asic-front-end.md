@@ -406,10 +406,9 @@ simulation:
 ```bash
 % mkdir -p $TOPDIR/asic/01-synopsys-vcs-rtlsim
 % cd $TOPDIR/asic/01-synopsys-vcs-rtlsim
-% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
-    +vcs+dumpvars+RegIncr4stage_basic-rtlsim.vcd \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
+    +vcs+dumpvars+waves.vcd \
     +incdir+../../sim/build \
-    -top RegIncr4stage_tb \
     ../../sim/build/RegIncr4stage__pickled.v \
     ../../sim/build/RegIncr4stage_basic_tb.v
 ```
@@ -426,7 +425,7 @@ It should pass the test. Now let's look at the resulting waveforms with
 Surfer.
 
 ```bash
-% code RegIncr4stage_basic-rtlsim.vcd
+% code waves.vcd
 ```
 
 You can also use GTKWave if you prefer to view waveforms, but since
@@ -513,7 +512,7 @@ We can also generate usful reports about area and timing. Prof. Batten
 will spend some time explaining these reports:
 
 ```
-dc_shell> report_area -nosplit -hierarchy
+dc_shell> report_area   -nosplit -hierarchy
 dc_shell> report_timing -nosplit -nets
 ```
 
@@ -598,11 +597,10 @@ in RTL simulation. Here is how to run VCS for RTL simulation:
 ```bash
 % mkdir -p $TOPDIR/asic/03-synopsys-vcs-ffglsim
 % cd $TOPDIR/asic/03-synopsys-vcs-ffglsim
-% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top\
     +delay_mode_zero \
-    +vcs+dumpvars+RegIncr4stage_basic-ffglsim.vcd \
+    +vcs+dumpvars+waves.vcd \
     +incdir+../../sim/build \
-    -top RegIncr4stage_tb \
     ${ECE6745_STDCELLS}/stdcells.v \
     ../02-synopsys-dc-synth/post-synth.v \
     ../../sim/build/RegIncr4stage_basic_tb.v
@@ -621,7 +619,7 @@ Surfer.
 
 ```
 % cd $TOPDIR/asic/03-synopsys-vcs-ffglsim
-% code RegIncr4stage_basic-ffglsim.vcd
+% code waves.vcd
 ```
 
 You can also use GTKWave if you prefer to view waveforms, but since
