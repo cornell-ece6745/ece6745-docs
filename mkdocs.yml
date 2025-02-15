@@ -82,6 +82,7 @@ nav:
     - 'Tutorial 2: Git Distributed Version Control System': ece6745-tut02-git.md
     - 'Tutorial 5: ASIC Standard Cells': ece6745-tut05-asic-stdcells.md
     - 'Tutorial 6: ASIC Front-End Flow': ece6745-tut06-asic-front-end.md
+    - 'Tutorial 7: ASIC Back-End Flow': ece6745-tut07-asic-back-end.md
     - 'Tutorial 8: SPICE Simulation': ece6745-tut08-spice-sim.md
 
   - 'Sections':

@@ -49,7 +49,9 @@ tutorial so you can understand all of these views.
     format. In addition to the Verilog gate-level netlist, Synopsys DC
     can also generate a `.ddc` file which contains information about the
     gate-level netlist and timing, and this `.ddc` file can be inspected
-    using Synopsys Design Vision (DV).
+    using Synopsys Design Vision (DV). We will also use Synopsys DC to
+    generate a `.sdc` which captures timing constraints which can then be
+    used as input to the place-and-route tool.
 
  4. We use **Cadence Innovus** to place-and-route our design, which means
     to place all of the gates in the gate-level netlist into rows on the
@@ -99,12 +101,12 @@ directory for the project.
 1. PyMTL3-Based Testing, Simulation, Translation
 --------------------------------------------------------------------------
 
-Our goal in this tutorial is to generate layout for the sort unit from
-the Verilog tutorial using the ASIC tools. As a reminder, the sort unit
-takes as input four integers and a valid bit and outputs those same four
-integers in increasing order with the valid bit. The sort unit is
-implemented using a three-stage pipelined, bitonic sorting network and
-the datapath is shown below.
+Our goal in this tutorial is to generate a gate-level netlist for the
+sort unit from the Verilog tutorial using the ASIC tools. As a reminder,
+the sort unit takes as input four integers and a valid bit and outputs
+those same four integers in increasing order with the valid bit. The sort
+unit is implemented using a three-stage pipelined, bitonic sorting
+network and the datapath is shown below.
 
 ![](img/tut06-sort-unit-dpath.png)
 
@@ -293,12 +295,12 @@ design `SortUnitStruct__pickled.v`.
 
 ```bash
 % cd $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim
-% vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
-      +incdir+$TOPDIR/sim/build \
-      +vcs+dumpvars+SortUnitStruct__p_nbits_8_test_basic.vcd \
-      -top SortUnitStruct__p_nbits_8_tb \
-      $TOPDIR/sim/build/SortUnitStruct__p_nbits_8_test_basic_tb.v \
-      $TOPDIR/sim/build/SortUnitStruct__p_nbits_8__pickled.v
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
+    +vcs+dumpvars+SortUnitStruct_random.vcd \
+    +incdir+$TOPDIR/sim/build \
+    -top SortUnitStruct_tb \
+    $TOPDIR/sim/build/SortUnitStruct_random_tb.v \
+    $TOPDIR/sim/build/SortUnitStruct__pickled.v
 % ./simv
 ```
 
@@ -306,7 +308,6 @@ Here some of the key command line options for Synopsys VCS:
 
 ```
 -sverilog                     indicates we are using SystemVerilog
-+lint=all                     turn on all linting checks
 -xprop=tmerge                 use more advanced X propoagation
 -override_timescale=1ns/1ps   changes the timescale. Units/precision
 +incdir+$TOPDIR/sim/build     specifies directories to search for `include
@@ -328,9 +329,9 @@ will only be doing power analysis using the gate-level netlist.
 
 ```bash
 % cd $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim
-% vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
-      +incdir+$TOPDIR/sim/build \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
       +vcs+dumpvars+SortUnitStruct_random.vcd \
+      +incdir+$TOPDIR/sim/build \
       -top SortUnitStruct_tb \
       $TOPDIR/sim/build/SortUnitStruct_random_tb.v \
       $TOPDIR/sim/build/SortUnitStruct__pickled.v
@@ -370,6 +371,8 @@ Synopsys DC to ignore the prefix `dc_shell>` using the following:
 dc_shell> alias "dc_shell>" ""
 ```
 
+### 3.1. Initial Setup
+
 There are two important variables we need to set before starting to work
 in Synopsys DC. The `target_library` variable specifies the standard
 cells that Synopsys DC should use when synthesizing the RTL. The
@@ -391,6 +394,8 @@ Note that we can use `$env(ECE6745_STDCELLS)` to get access to the
 containing the standard cells, and that we are referencing the abstract
 logical and timing views in the `.db` format.
 
+### 3.2. Analyze and Elaborate
+
 As an aside, if you want to learn more about any command in any Synopsys
 tool, you can simply type `man toolname` at the shell prompt. We are now
 ready to read in the Verilog file which contains the top-level design and
@@ -404,6 +409,8 @@ various registers and/or advanced data-path components.
 dc_shell> analyze -format sverilog $env(TOPDIR)/sim/build/SortUnitStruct__pickled.v
 dc_shell> elaborate SortUnitStruct
 ```
+
+### 3.3. Timing Constraints
 
 We need to create a clock constraint to tell Synopsys DC what our target
 cycle time is. Synopsys DC will not synthesize a design to run "as fast
@@ -455,6 +462,8 @@ dc_shell> set_output_delay -clock ideal_clock1 -min 0.050 [all_outputs]
 dc_shell> set_output_delay -clock ideal_clock1 -max 0.100 [all_outputs]
 ```
 
+### 3.4. Synthesize
+
 We can use the `check_design` command to make sure there are no obvious
 errors in our Verilog RTL.
 
@@ -501,7 +510,13 @@ turn off flattening by using the `-no_autoungroup` option with the
 `compile_ultra` command. `compile_ultra` also has the option
 `-gate_clock` which automatically performs clock gating on your design,
 which can save quite a bit of power. Once you finish this tutorial, feel
-free to go back and experiment with the `compile_ultra` command.
+free to go back and experiment with this command.
+
+```
+dc_shell> compile_ultra -no_autoungroup -gate_clock`
+```
+
+### 3.4. Final Output and Reports
 
 Now that we have synthesized the design, we output the resulting
 gate-level netlist in two different file formats: Verilog and `.ddc`
@@ -694,6 +709,8 @@ Notice that the module hierarchy is preserved and also notice that the
 % more post-synth.v
 ```
 
+### 3.5. Using Synopsys Design Vision
+
 We can use the Synopsys Design Vision (DV) tool for browsing the
 resulting gate-level netlist, plotting critical path histograms, and
 generally analyzing our design. Start Synopsys DV and setup the
@@ -788,16 +805,13 @@ testbench:
 
 ```bash
 % cd $TOPDIR/asic/build-sort/03-synopsys-vcs-ffglsim
-% vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
    +delay_mode_zero \
-   +incdir+$TOPDIR/sim/build \
    +vcs+dumpvars+SortUnitStruct_random.vcd \
-   +define+CYCLE_TIME=0.6 \
-   +define+VTB_INPUT_DELAY=0.075 \
-   +define+VTB_OUTPUT_ASSERT_DELAY=0.525 \
+   +incdir+$TOPDIR/sim/build \
    -top SortUnitStruct_tb \
-   $ECE6745_STDCELLS/stdcells.v \
-   $TOPDIR/sim/build/SortUnitStruct_random_tb.v \
+   ${ECE6745_STDCELLS}/stdcells.v \
+   ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v \
    ../02-synopsys-dc-synth/post-synth.v
 % ./simv
 ```

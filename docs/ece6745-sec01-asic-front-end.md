@@ -351,7 +351,6 @@ And now let's run all of the tests:
 ```bash
 % cd $TOPDIR/sim/build
 % pytest ../tut3_verilog/regincr/test/RegIncrNstage_test.py -sv
-% ls *.v
 % less RegIncrNstage__p_nstages_4__pickled.v
 ```
 
@@ -371,7 +370,7 @@ simulator in action:
 
 ```bash
 % cd $TOPDIR/sim/build
-% ../tut3_verilog/regincr/regincr-sim 0x10 0x20 0x30 0x40
+% ../tut3_verilog/regincr/regincr-sim 0xff 0x20 0x30 0x40 0x00
 ```
 
 The simulator will generate the pickled Verilog file we want to
@@ -407,9 +406,9 @@ simulation:
 ```bash
 % mkdir -p $TOPDIR/asic/01-synopsys-vcs-rtlsim
 % cd $TOPDIR/asic/01-synopsys-vcs-rtlsim
-% vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
-    +incdir+../../sim/build \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
     +vcs+dumpvars+RegIncr4stage_basic-rtlsim.vcd \
+    +incdir+../../sim/build \
     -top RegIncr4stage_tb \
     ../../sim/build/RegIncr4stage__pickled.v \
     ../../sim/build/RegIncr4stage_basic_tb.v
@@ -457,6 +456,8 @@ Synopsys DC.
 % dc_shell-xg-t
 ```
 
+### 4.1. Initial Setup
+
 We need to set two variables before starting to work in Synopsys DC.
 These variables tell Synopsys DC the location of the standard cell
 library `.db` file which is just a binary version of the `.lib` file we
@@ -466,6 +467,8 @@ saw earlier.
 dc_shell> set_app_var target_library "$env(ECE6745_STDCELLS)/stdcells.db"
 dc_shell> set_app_var link_library   "* $env(ECE6745_STDCELLS)/stdcells.db"
 ```
+
+### 4.2. Analyze and Elaborate
 
 We are now ready to read in the Verilog file which contains the top-level
 design and all referenced modules. We do this with two commands. The
@@ -479,6 +482,8 @@ dc_shell> analyze -format sverilog ../../sim/build/RegIncr4stage__pickled.v
 dc_shell> elaborate RegIncr4stage
 ```
 
+### 4.3. Timing Constraints
+
 We now need to create a clock constraint to tell Synopsys DC what our
 target cycle time is:
 
@@ -486,11 +491,15 @@ target cycle time is:
 dc_shell> create_clock clk -name ideal_clock1 -period 1
 ```
 
+### 4.4. Synthesize
+
 Finaly, the `compile` comamnd will do the actual logic synthesis:
 
 ```
 dc_shell> compile
 ```
+
+### 4.5. Final Output and Reports
 
 We write the output to a Verilog gate-level netlist and a `.ddc` file
 which we can use with Synopsys DV.
@@ -500,14 +509,12 @@ dc_shell> write -format verilog -hierarchy -output post-synth.v
 dc_shell> write -format ddc     -hierarchy -output post-synth.ddc
 ```
 
-We can also generate usful reports about area, energy, and timing. Prof.
-Batten will spend some time explaining these reports:
+We can also generate usful reports about area and timing. Prof. Batten
+will spend some time explaining these reports:
 
 ```
-dc_shell> report_qor
-dc_shell> report_resources -nosplit -hierarchy
 dc_shell> report_area -nosplit -hierarchy
-dc_shell> report_timing -nosplit -transition_time -nets -attributes
+dc_shell> report_timing -nosplit -nets
 ```
 
 Make some notes about what you find. Note the total cell area used in
@@ -527,6 +534,8 @@ Notice that the module hierarchy is preserved.
 Take a close look at the implementation of the incrementer. What kind of
 standard cells has the synthesis tool chosen? What kind of adder
 microarchitecture?
+
+### 4.6. Using Synopsys Design Vision
 
 We can use the Synopsys Design Vision (DV) tool for browsing the
 resulting gate-level netlist, plotting critical path histograms, and
@@ -589,10 +598,10 @@ in RTL simulation. Here is how to run VCS for RTL simulation:
 ```bash
 % mkdir -p $TOPDIR/asic/03-synopsys-vcs-ffglsim
 % cd $TOPDIR/asic/03-synopsys-vcs-ffglsim
-% vcs -sverilog +lint=all -xprop=tmerge -override_timescale=1ns/1ps \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
     +delay_mode_zero \
-    +incdir+../../sim/build \
     +vcs+dumpvars+RegIncr4stage_basic-ffglsim.vcd \
+    +incdir+../../sim/build \
     -top RegIncr4stage_tb \
     ${ECE6745_STDCELLS}/stdcells.v \
     ../02-synopsys-dc-synth/post-synth.v \
@@ -625,20 +634,6 @@ subset of the gate-level netlist using these steps:
  - Click the + button in the _Variables_ panel
 
 Notice how we can see all of the single-bit signals corresponding to each
-gate in the gate-level netlist, and how these signals all change on the
-rising clock edge without any delays.
-
-6. To-Do On Your Own
---------------------------------------------------------------------------
-
-If you have time, push the multi-stage registered incrementer through the
-flow again, but this type use a faster clock constraint. This will force
-the tools to be more agress as they attempt to "meet timing". Try using a
-clock constraint of 0.3ns instead of 1ns. Use `report_resources` to
-determine what kind of adder microarchitecture the synthesis tool has
-chosen. Use `report_timing` to see if the tool is able to generate a
-gate-level netlist that can really run at 333MHz. Use `report_area` to
-compare the area of the design with the 0.3ns clock constraint to the
-design with the 1ns clock constraint. Use Synopsys DV to visualize the
-improved adder microarchitecture.
+gate in the gate-level netlist, and how these signals all change without
+any delays.
 

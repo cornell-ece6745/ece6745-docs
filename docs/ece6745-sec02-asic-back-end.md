@@ -157,7 +157,7 @@ Before we can place and route a gate-level netlist, we need to synthesize
 that netlist. This is what we learned about in the last section. Here are
 the steps to test and then synthesize the design using Synopsys DC.
 
-### 2.1. Test, Simulate, and Translate the Four-Stage Registered Incrementer
+### 2.1. Test, Simulate, Translate
 
 Always run the tests before pushing anything through the ASIC flow. There
 is no sense in running the flow if the design is incorrect!
@@ -168,20 +168,8 @@ is no sense in running the flow if the design is incorrect!
 % pytest ../tut3_verilog/regincr
 ```
 
-Next we should rerun all the tests with the `--test-verilog` and
-`--dump-vtb` command line options to ensure that the design also works
-after translated into Verilog and that we generate a Verilog test-bench
-for gate-level simulation. You should do this step even if you are using
-Verilog for your RTL design.
-
-```bash
-% cd $TOPDIR/sim/build
-% pytest ../tut3_verilog/regincr --test-verilog --dump-vtb
-```
-
-The tests are for verification. When we push a design through the flow we
-want to use a simulator which is focused on evaluation. You can run the
-simulator for our four-stage registered incrementer like this:
+You can run the simulator for our four-stage registered incrementer like
+this:
 
 ```bash
 % cd $TOPDIR/sim/build
@@ -192,7 +180,7 @@ simulator for our four-stage registered incrementer like this:
 You should now have the Verilog that we want to push through the ASIC
 flow.
 
-### 2.2. Simulate, Synthesize, Simulate Design
+### 2.2. Simulate, Synthesize, Simulate
 
 We have provided you run scripts that will reproduce the three key steps
 we learned about in the previous discussion sections:
@@ -215,19 +203,19 @@ fast-functional gate-level simulation. Then take a look at the synthesis
 reports
 
 ```bash
-% less ./02-synopsys-dc-synth/resources.rpt
 % less ./02-synopsys-dc-synth/area.rpt
 % less ./02-synopsys-dc-synth/timing.rpt
 ```
 
-Finally, take a few minutes to examine the resulting Verilog gate-level netlist.
-Notice that the module hierarchy is preserved.
+Finally, take a few minutes to examine the resulting Verilog gate-level
+netlist. Notice that the module hierarchy is preserved.
 
 ```bash
 % less ./02-synopsys-dc-synth/post-synth.v
 ```
 
-This is the gate-level netlist that we now want to place and route.
+This is the gate-level netlist that we now want to push through the ASIC
+back-end flow.
 
 3. Using Cadence Innovus for Place-and-Route
 --------------------------------------------------------------------------
@@ -239,6 +227,8 @@ input and output files separate.
 % mkdir -p $TOPDIR/asic/04-cadence-innovus-pnr
 % cd $TOPDIR/asic/04-cadence-innovus-pnr
 ```
+
+### 3.1. Constraint and Timing Input Files
 
 Before starting Cadence Innovus, we need to create two files which will
 be loaded into the tool. The first file is a `.sdc` file which contains
@@ -256,13 +246,13 @@ stable 200ps before the rising edge). Use VS Code to create a file named
 The file should have the following constraint:
 
 ```
-create_clock clk -name ideal_clock -period 0.7
+create_clock clk -name ideal_clock -period 1
 ```
 
 The `create_clock` command is similar to the command we used in
 synthesis, and usually, we use the same target clock period that we used
-for synthesis. In this case, we are targeting a 1.42GHz clock frequency
-(i.e., a 0.7ns clock period).
+for synthesis. In this case, we are targeting a 1GHz clock frequency
+(i.e., a 1ns clock period).
 
 The second file is a "multi-mode multi-corner" (MMMC) analysis file. This
 file specifies what "corner" to use for our timing analysis. A corner is
@@ -293,8 +283,7 @@ create_library_set -name libs_typical \
    -timing [list "$env(ECE6745_STDCELLS)/stdcells.lib"]
 
 create_delay_corner -name delay_default \
-   -early_library_set libs_typical \
-   -late_library_set libs_typical \
+   -library_set libs_typical \
    -rc_corner typical
 
 create_constraint_mode -name constraints_default \
@@ -304,9 +293,7 @@ create_analysis_view -name analysis_default \
    -constraint_mode constraints_default \
    -delay_corner delay_default
 
-set_analysis_view \
-   -setup [list analysis_default] \
-   -hold [list analysis_default]
+set_analysis_view -setup analysis_default -hold  analysis_default
 ```
 
 The `create_rc_corner` command loads in the `.captable` file that we
@@ -327,6 +314,8 @@ a typical corner by putting together the typical `.captable` and typical
 corner, and the `set_analysis_view` command tells Cadence Innovus that we
 would like to use this specific analysis view for both setup and hold
 time analysis.
+
+### 3.2. Initial Setup and Floorplanning
 
 Now that we have created our `constraints.sdc` and `setup-timing.tcl`
 files we can start Cadence Innovus. Note that we are using the Cadence
@@ -375,6 +364,8 @@ cell utilization to be 0.7, and we have added 4.0um of margin around the
 top, bottom, left, and right of the chip. This margin gives us room for
 the power ring which will go around the entire chip.
 
+### 2.3. Power Routing
+
 Often when working with the ASIC flow back-end, we need to explicitly
 tell the tools how the logical design connects to the physical aspects of
 the chip. For example, the next step is to tell Cadence Innovus that
@@ -393,38 +384,7 @@ ground rails that go along each row of standard cells.
 innovus> sroute -nets {VDD VSS}
 ```
 
-Now we create a power ring around our chip using the `addRing` command. A
-power ring ensures we can easily get power and ground to all standard
-cells. The command takes parameters specifying the width of each wire in
-the ring, the spacing between the two rings, and what metal layers to use
-for the ring.
-
-```
-innovus> addRing -nets {VDD VSS} \
-           -width 0.6 -spacing 0.5 \
-           -layer [list top 7 bottom 7 left 6 right 6]
-```
-
-We have power and ground rails along each row of standard cells and a
-power ring, so now we need to hook these up. We can use the `addStripe`
-command to draw wires and automatically insert vias whenever wires cross.
-First we draw the vertical "stripes".
-
-```
-innovus> addStripe -nets {VSS VDD} \
-           -layer 6 -direction vertical -width 0.4 -spacing 0.5 \
-           -set_to_set_distance 5 -start 0.5
-```
-
-And then we draw the horizontal "stripes".
-
-```
-innovus> setAddStripeMode -stacked_via_bottom_layer 6 \
-           -stacked_via_top_layer 7
-innovus> addStripe -nets {VSS VDD} \
-           -layer 7 -direction horizontal -width 0.4 -spacing 0.5 \
-           -set_to_set_distance 5 -start 0.5
-```
+### 2.4. Placement
 
 Now that we have finished our basic power planning we can do the initial
 placement and routing of the standard cells using the `place_design`
@@ -444,6 +404,8 @@ _Windows > Workspaces > Design Browser + Physical_ menu option.
 Then use the _Design Browser_ to click on specific modules or nets to
 highlight them in the physical view.
 
+### 2.5. Routing
+
 The `place_design` command will perform a very preliminary route to help
 ensure a good placement, but we will now use the `routeDesign` command to
 do a more detailed routing pass.
@@ -455,6 +417,8 @@ innovus> routeDesign
 Watch the physical view to see the result before and after running this
 command. You should be able to appreciate that the final result requires
 fewer and shorter wires.
+
+### 2.6. Final Output and Reports
 
 The final step is to insert "filler" cells. Filler cells are essentially
 empty standard cells whose sole purpose is to connect the wells across
@@ -485,8 +449,8 @@ analysis.
 
 ```
 innovus> extractRC
-innovus> rcOut -rc_corner typical -spef typical.spef
-innovus> write_sdf post-pnr.sdf -interconn all -setuphold split
+innovus> rcOut -rc_corner typical -spef post-pnr.spef
+innovus> write_sdf post-pnr
 ```
 
 And of course the step is to generate the real layout as a `.gds` file.
@@ -499,14 +463,14 @@ innovus> streamOut post-pnr.gds \
            -mapFile "$env(ECE6745_STDCELLS)/rtk-stream-out.map"
 ```
 
-We can also use Cadence Innovus to do timing, area, and power analysis
-similar to what we did with Synopsys DC. These post-place-and-route
-results will be _much_ more accurate than the preliminary post-synthesis
-results.
+We can also use Cadence Innovus to do timing and area analysis similar to
+what we did with Synopsys DC. These post-place-and-route results will be
+_much_ more accurate than the preliminary post-synthesis results.
 
 ```
 innovus> report_area
-innovus> report_timing
+innovus> report_timing -late  -path_type full_clock -net
+innovus> report_timing -early -path_type full_clock -net
 ```
 
 Finally, we go ahead and exit Cadence Innovus.
@@ -542,20 +506,17 @@ for RTL simulation:
 ```bash
 % mkdir -p $TOPDIR/asic/05-synopsys-vcs-baglsim
 % cd $TOPDIR/asic/05-synopsys-vcs-baglsim
-% vcs -sverilog \
-    +lint=all +lint=noNS +lint=noSVA-UA \
-    -xprop=tmerge \
-    -override_timescale=1ns/1ps \
-    +incdir+$TOPDIR/sim/build \
-    +vcs+dumpvars+RegIncr4stage_basic-700ps.vcd \
-    -top RegIncr4stage_tb \
-    +define+CYCLE_TIME=0.7 \
-    +define+VTB_INPUT_DELAY=0.1 \
-    +define+VTB_OUTPUT_ASSERT_DELAY=0.69 \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
     +neg_tchk +sdfverbose \
     -sdf max:RegIncr4stage_tb.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
+    +define+CYCLE_TIME=1.000 \
+    +define+VTB_INPUT_DELAY=0.025 \
+    +define+VTB_OUTPUT_DELAY=0.025 \
+    +vcs+dumpvars+RegIncr4stage_basic.vcd \
+    +incdir+$TOPDIR/sim/build \
+    -top RegIncr4stage_tb \
     ${ECE6745_STDCELLS}/stdcells.v \
-    $TOPDIR/sim/build/RegIncr4stage_basic_tb.v \
+    ${TOPDIR}/sim/build/RegIncr4stage_basic_tb.v \
     ../04-cadence-innovus-pnr/post-pnr.v
 ```
 
@@ -572,7 +533,7 @@ Surfer.
 
 ```bash
 % cd $TOPDIR/asic/05-synopsys-vcs-baglsim
-% code RegIncr4stage_basic-700ps.vcd
+% code RegIncr4stage_basic.vcd
 ```
 
 Browse the signal hierarchy and display all the waveforms for the DUT
@@ -586,35 +547,32 @@ using these steps:
 Zoom in and notice how the signals now change throughout the cycle. This
 is because the delay of every gate and wire is now modeled. Let's rerun
 the simulation, but this time let's use a very fast clock frequency (much
-faster than the 700ps clock constraint we used during synthesis and
+faster than the 1ns clock constraint we used during synthesis and
 place-and-route).
 
 ```bash
 % cd $TOPDIR/asic/05-synopsys-vcs-baglsim
-% vcs -sverilog \
-    +lint=all +lint=noNS +lint=noSVA-UA \
-    -xprop=tmerge \
-    -override_timescale=1ns/1ps \
-    +incdir+$TOPDIR/sim/build \
-    +vcs+dumpvars+RegIncr4stage_basic-200ps.vcd \
-    -top RegIncr4stage_tb \
-    +define+CYCLE_TIME=0.2 \
-    +define+VTB_INPUT_DELAY=0.1 \
-    +define+VTB_OUTPUT_ASSERT_DELAY=0.19 \
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
     +neg_tchk +sdfverbose \
     -sdf max:RegIncr4stage_tb.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
+    +define+CYCLE_TIME=0.300 \
+    +define+VTB_INPUT_DELAY=0.025 \
+    +define+VTB_OUTPUT_DELAY=0.025 \
+    +vcs+dumpvars+RegIncr4stage_basic-300ps.vcd \
+    +incdir+$TOPDIR/sim/build \
+    -top RegIncr4stage_tb \
     ${ECE6745_STDCELLS}/stdcells.v \
-    $TOPDIR/sim/build/RegIncr4stage_basic_tb.v \
+    ${TOPDIR}/sim/build/RegIncr4stage_basic_tb.v \
     ../04-cadence-innovus-pnr/post-pnr.v
 ```
 
-You should see several setup time violations and the test will fail. If
-you look at the resulting waveforms you can see that some of the outputs
-are turning to Xs becuase of these violations.
+You should see timing violations and the test will fail. If you look at
+the resulting waveforms you can see that the adder does not have time to
+finish its calculation and cannot meet the setup time contraint.
 
 ```bash
 % cd $TOPDIR/asic/05-synopsys-vcs-baglsim
-% open RegIncr4stage_basic-200ps.vcd
+% open RegIncr4stage_basic-300ps.vcd
 ```
 
 For power analysis we need to convert our VCD file into an SAIF file. The
@@ -622,8 +580,8 @@ SAIF file has just the activity factors for every net in the design.
 
 ```bash
 % cd $TOPDIR/asic/05-synopsys-vcs-baglsim
-% vcd2saif -input RegIncr4stage_basic-700ps.vcd \
-           -output RegIncr4stage_basic-700ps.saif
+% vcd2saif -input RegIncr4stage_basic.vcd \
+           -output RegIncr4stage_basic.saif
 ```
 
 5. Using Synopsys PrimeTime for Power Analysis
@@ -679,16 +637,16 @@ period. Here we will set the clock frequency to be the same as the
 initial clock constraint.
 
 ```
-pt_shell> create_clock clk -name ideal_clock1 -period 0.7
+pt_shell> create_clock clk -name ideal_clock1 -period 1
 ```
 
 We now read in the SAIF file with the activity factors and the SPEF file
 with the parasitic cpacitances for every net in our design.
 
 ```
-pt_shell> read_saif "../05-synopsys-vcs-baglsim/RegIncr4stage_basic-700ps.saif" \
+pt_shell> read_saif "../05-synopsys-vcs-baglsim/RegIncr4stage_basic.saif" \
                     -strip_path "RegIncr4stage_tb/DUT"
-pt_shell> read_parasitics -format spef "../04-cadence-innovus-pnr/post-par.spef"
+pt_shell> read_parasitics -format spef "../04-cadence-innovus-pnr/post-pnr.spef"
 ```
 
 We now have everything we need to perform the power analysis: (1) the
