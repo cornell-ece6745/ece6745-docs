@@ -126,17 +126,6 @@ is no sense in running the flow if the design is incorrect!
 % pytest ../tut3_verilog/sort
 ```
 
-Next we should rerun all the tests with the `--test-verilog` and
-`--dump-vtb` command line options to ensure that the design also works
-after translated into Verilog and that we generate a Verilog test-bench
-for gate-level simulation. You should do this step even if you are using
-Verilog for your RTL design.
-
-```bash
-% cd $TOPDIR/sim/build
-% pytest ../tut3_verilog/sort --test-verilog --dump-vtb
-```
-
 The tests are for verification. When we push a design through the flow we
 want to use a simulator which is focused on evaluation. You can run the
 simulator for our sort unit like this:
@@ -144,8 +133,8 @@ simulator for our sort unit like this:
 ```bash
 % cd $TOPDIR/sim/build
 % ../tut3_verilog/sort/sort-sim --impl rtl-struct --stats --translate --dump-vtb
-% num_cycles          = 106
-% num_cycles_per_sort = 1.06
+num_cycles          = 106
+num_cycles_per_sort = 1.06
 ```
 
 You should now have the Verilog that we want to push through the ASIC
@@ -153,17 +142,47 @@ flow.
 
 ### 1.2. Simulate, Synthesize, Simulate
 
-We have provided you run scripts that will reproduce the three key steps
-we learned about in the previous tutorial:
+Let's take a look at each script to confirm it matches the manual
+commands we used in the previous discussion section. Here is the run
+script for four-start RTL simulation.
 
- - Use Synopsys VCS for four-state RTL simulation
- - Use Synopsys DC to synthesize RTL to gate-level netlist
- - Use Synopsys VCS for fast-functional gate-level simulation
+```bash
+% cd $TOPDIR/asic/build-sort
+% cat ./01-synopsys-vcs-rtlsim/run
+```
+
+Here is the run script for synthesis.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% cat ./02-synopsys-dc-synth/run
+```
+
+Notice that this script simply executes `dc_shell-xg-t` with a TCL script
+which contains the commands to: configure the standard cell library,
+analyze and elaborate the design; setup timing constraints; synthesize
+the design; write outputs; and write final outputs (i.e., Verilog and
+DDC) and reports (i.e., timing report and area report).
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% cat ./02-synopsys-dc-synth/run.tcl
+```
+
+Finally, here is the run script for fast-functional gate-level
+simulation. The key difference from four-state RTL simulation is that
+this simulation takes as input the Verilog for the standard-cell library
+and the Verilog for the post-synthesis gate-level netlist.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% cat ./03-synopsys-vcs-ffglsim/run
+```
 
 You can run these steps as follows:
 
 ```bash
-% cd $TOPDIR/asic
+% cd $TOPDIR/asic/build-sort
 % ./01-synopsys-vcs-rtlsim/run
 % ./02-synopsys-dc-synth/run
 % ./03-synopsys-vcs-ffglsim/run
@@ -171,10 +190,10 @@ You can run these steps as follows:
 
 Verify that your design passes four-state RTL simulation and
 fast-functional gate-level simulation. Then take a look at the synthesis
-reports
+reports.
 
 ```bash
-% less ./02-synopsys-dc-synth/resources.rpt
+% cd $TOPDIR/asic/build-sort
 % less ./02-synopsys-dc-synth/area.rpt
 % less ./02-synopsys-dc-synth/timing.rpt
 ```
@@ -183,6 +202,7 @@ Finally, take a few minutes to examine the resulting Verilog gate-level
 netlist. Notice that the module hierarchy is preserved.
 
 ```bash
+% cd $TOPDIR/asic/build-sort
 % less ./02-synopsys-dc-synth/post-synth.v
 ```
 
@@ -207,39 +227,19 @@ files separate from the other tools.
 % cd $TOPDIR/asic/build-sort/04-cadence-innovus-pnr
 ```
 
-### 2.1. Constraint and Timing Input Files
+### 2.1. Timing Analysis Setup File
 
-Before starting Cadence Innovus, we need two files which will be loaded
-into the tool. The first file is a `.sdc` file which contains timing
-constraint information about our design. This file is where we specify
-our target clock period, but it is also where we could specify input or
-output delay constraints (e.g., the output signals must be stable 200ps
-before the rising edge). We created this file at the end of our synthesis
-step using Synopsys DC. Before we get started, let's open that file to
-take a look at the constraint DC generated.
-
-```bash
-% less ../02-synopsys-dc-synth/post-synth.sdc
-```
-
-The `create_clock` command is similar to the command we used in
-synthesis, and we usually use the same target clock period that we used
-for synthesis. In this case, we are targeting a 1.67GHz clock frequency
-(i.e., a 0.6ns clock period). Note that we also see the constraints that
-we set for max transition, driving scells, output loads, input delays,
-and output delays.
-
-The second file is a "multi-mode multi-corner" (MMMC) analysis file. This
-file specifies what "corner" to use for our timing analysis. A corner is
-a characterization of the standard cell library and technology with
-specific assumptions about the process, temperature, and voltage (PVT).
-So we might have a "fast" corner which assumes best-case process
-variability, low temperature, and high voltage, or we might have a "slow"
-corner which assumes worst-case variability, high temperature, and low
-voltage. To ensure our design will work across a range of operating
-conditions, we need to evaluate our design across a range of corners. In
-this course, we will keep things simple by only considering a "typical"
-corner (i.e., average PVT). Use VS Code to create a file named
+Before starting Cadence Innovus, we need to create a file to setup the
+timing analysis. This file specifies what "corner" to use for our timing
+analysis. A corner is a characterization of the standard cell library and
+technology with specific assumptions about the process, temperature, and
+voltage (PVT). So we might have a "fast" corner which assumes best-case
+process variability, low temperature, and high voltage, or we might have
+a "slow" corner which assumes worst-case variability, high temperature,
+and low voltage. To ensure our design will work across a range of
+operating conditions, we need to evaluate our design across a range of
+corners. In this course, we will keep things simple by only considering a
+"typical" corner (i.e., average PVT). Use VS Code to create a file named
 `setup-timing.tcl`.
 
 ```bash
@@ -283,13 +283,14 @@ cell. The `create_delay_corner` specifies a specific corner that we would
 like to use for our timing analysis by putting together a `.captable` and
 a `.lib` file. In this specific example, we are creating a typical corner
 by putting together the typical `.captable` and typical `.lib` we just
-loaded. The `create_constraint_mode` command loads in the `.sdc` file we
-mentioned earlier in this section. The `create_analysis_view` command
-puts together constraints with a specific corner, and the
-`set_analysis_view` command tells Cadence Innovus that we would like to
-use this specific analysis view for both setup and hold time analysis.
+loaded. The `create_constraint_mode` command loads in the post-synthesis
+`.sdc` file which captures all of the timing constraints after synthesis.
+The `create_analysis_view` command puts together constraints with a
+specific corner, and the `set_analysis_view` command tells Cadence
+Innovus that we would like to use this specific analysis view for both
+setup and hold time analysis.
 
-### 2.2. Initial Setup and Floorplanning
+### 2.2. Initial Setup
 
 Now that we have created our `setup-timing.tcl` file we can start Cadence
 Innovus:
@@ -325,23 +326,18 @@ physical information about each cell used in the design.
 innovus> init_design
 ```
 
-Then, we tell innovus the type of timing analysis we want it to do. In
-on-chip variation (OCV) mode, the software calculates clock and data path
-delays based on minimum and maximum operating conditions for setup
-analysis and vice-versa for hold analysis. These delays are used together
-in the analysis of each check. The OCV is the small difference in the
-operating parameter value across the chip. Each timing arc in the design
-can have an early and a late delay to account for the on-chip process,
-voltage, and temperature variation. We need this mode in order to do
-proper hold time fixing later on.
+We also need to tell Cadence Innovus the process node are using so it can
+roughly estimate specific technology parameters.
 
 ```
-innovus> setAnalysisMode -analysisType onChipVariation -cppr both
+innovus> setDesignMode -process 45
 ```
 
-The next step is to do some floorplaning. This is where we broadly
-organize the chip in terms of its overall dimensions and the placement of
-any previously designed blocks. For now we just do some very simple
+### 2.3. Floorplanning
+
+The next substep is floorplaning. This is where we broadly organize the
+chip in terms of its overall dimensions and the placement of any
+previously designed blocks. For now we just do some very simple
 floorplanning using the `floorPlan` command.
 
 ```
@@ -366,13 +362,13 @@ You can use the _View > Fit_ menu option to see the entire chip.
 
 ![](assets/fig/cadence-innovus-1.png)
 
-### 2.3. Power Routing
+### 2.4. Power Routing
 
-The next step is to work on power routing. Recall that each standard cell
-has internal M1 power and ground rails which will connect via abutment
-when the cells are placed into rows. If we were just to supply power to
-cells using these rails we would likely have large IR drop and the cells
-in the middle of the chip would effectively be operating at a much lower
+The next substep is power routing. Recall that each standard cell has
+internal M1 power and ground rails which will connect via abutment when
+the cells are placed into rows. If we were just to supply power to cells
+using these rails we would likely have large IR drop and the cells in the
+middle of the chip would effectively be operating at a much lower
 voltage. During power routing, we create a grid of power and ground wires
 on the top metal layers and then connect this grid down to the M1 power
 rails in each row. We also create a power ring around the entire
@@ -442,11 +438,10 @@ toggle M7. Zoom in on a via and toggle the visibility of the metal layers
 to see how Cadence Innovus has automatically inserted a via stack that
 goes from M1 all the way up to M6 or M7.
 
-### 2.4. Placement
+### 2.5. Placement
 
-Now that we have finished our basic power planning we can do the initial
-placement and routing of the standard cells using the `place_design`
-command:
+The next substep is cell placement. We can do the initial placement and
+routing of the standard cells using the `place_design` command:
 
 ```
 innovus> place_design
@@ -479,65 +474,71 @@ Notice how Cadence Innovus has grouped each module together. The
 placement algorithm tries to keep connected standard cells close together
 to minimize wiring.
 
-### 2.5. Routing
-
-The next step is to assign IO pin location for our block-level design.
-Since this is not a full chip with IOcells, or a hierarchical block, we
-don't really care exactly where all of the pins line up, so we'll let the
-tool assign the location for all of the pins.
+After placement, we can assign IO pin locations for our block-level
+design. Since this is not a full chip with IO pads, or a hierarchical
+block, we don't really care exactly where all of the pins line up, so
+we'll let the tool assign the location for all of the pins.
 
 ```
 innovus> assignIoPins -pin *
 ```
 
-The next step is to improve the quality of the clock tree routing. First,
-let's display just the clock tree so we can clearly see the impact of
-optimized clock tree routing. In the right panel click on _Net_ and then
-deselect the checkbox in the V column next to _Signal_, _Special Net_,
-_Power_, and _Ground_ so that only _Clock_ is selected. You should be
-able to see the clock snaking around the chip connecting the clock port
-of all of the registers. Now use the `ccopt_design` command to optimize
-the clock tree routing.
+### 2.6. Clock-Tree Synthesis
+
+The next substep is clock-tree synthesis. First, let's display the
+preliminary clock tree created in the previous step so we can clearly see
+the impact of optimized clock tree routing. In the right panel click on
+_Net_ and then deselect the checkbox in the V column next to _Signal_,
+_Special Net_, _Power_, and _Ground_ so that only _Clock_ is selected.
+You should be able to see the clock snaking around the chip connecting
+the clock port of all of the registers. Now use the `ccopt_design`
+command to optimize the clock tree routing.
 
 ```
-innovus> ccopt_design
+innovus> create_ccopt_clock_tree_spec
+innovus> set_ccopt_property update_io_latency false
+innovus> ccopt_design -cts
 ```
 
-If you watch closely you should see a significant difference in the
-clock tree routing before and after optimization. The following screen
-capture illustrates the optimized clock tree routing.
+By default, Cadence Innovus can optimize the clock tree by adding a
+"clock source insertion latency". Essentially this means that Cadence
+Innovus might decide that the top-level chip should adjust the delay
+between the input pins and the clock. Unfortunately, this makes it more
+difficult for us to perform block-level back-annotated gate-level
+simulation so for now we will disable this optimization.
+
+If you watch closely you should see a significant difference in the clock
+tree routing before and after optimization. The following screen capture
+illustrates the optimized clock tree routing.
 
 ![](img/tut07-cadence-innovus-5.png)
 
 The routes are straighter, shorter, and well balanced. This will result
 in much lower clock skew.
 
-To avoid hold time violations (situations where the contamination delay
-is smaller than the hold time and new data arrives too quickly) we
-include the following commands:
+We should now use the `optDesign` command to try and fix both setup time
+violations (e.g., by choosing different standard cells to reduce the
+delay of the critical path) and hold time violations (e.g., by inserting
+buffers to increase the delay of certain fast paths).
 
 ```
-innovus> setOptMode -holdFixingCells {BUF_X1}
-innovus> setOptMode -holdTargetSlack 0.013 -setupTargetSlack 0.044
-innovus> optDesign -postCTS -prefix postCTS_hold -hold
+innovus> setDelayCalMode -SIAware false
+innovus> setOptMode -holdFixingCells {BUF_X1 BUF_X1 BUF_X2 BUF_X4 BUF_X8 BUF_X16 BUF_X32}
+innovus> optDesign -postCTS -setup -hold
 ```
 
-Here, we specified a list of buffer cells that innovus can use to add in
-delays to paths that violate the hold time constraint. We then tell
-innovus our hold and setup time constraints, in nanoseconds, these
-numbers were derived from the `.lib` file. Then, we actually fix any
-violating paths using the `optDesign` command.
+### 2.7. Routing
 
-The next step is to improve the quality of the signal routing. Display
-just the signals but not the power and ground routing by clicking on the
-checkbox in the V column next to _Signal_ in the left panel. Then use the
-`routeDesign` command to optimize the signal routing. We follow this with
-another iteration of `optDesign` to fix any violating paths that were
-created during `routeDesign`.
+The next substep is routing. Although we already did a preliminary
+routing during the placement substep, we now want to optimize this signal
+routing. Display just the signals but not the power and ground routing by
+clicking on the checkbox in the V column next to _Signal_ in the left
+panel. Then use the `routeDesign` command to optimize the signal routing.
+We follow this with another iteration of `optDesign` to fix any violating
+paths that were created during `routeDesign`.
 
 ```
 innovus> routeDesign
-innovus> optDesign -postRoute -prefix postRoute_hold -hold
 ```
 
 If you watch closely you should see a significant difference in the
@@ -550,9 +551,20 @@ Again the routes are straighter and shorter. This will reduce the
 interconnect resistance and capacitance and thus improve the delay and
 energy of our design.
 
-### 2.6. Final Output and Reports
+Once again, we can now use the `optDesign` command to try and fix both
+setup time violations (e.g., by choosing different standard cells to
+reduce the delay of the critical path) and hold time violations (e.g., by
+inserting buffers to increase the delay of certain fast paths).
 
-The final step is to insert "filler" cells. Filler cells are essentially
+```
+innovus> setDelayCalMode -SIAware false
+innovus> setOptMode -holdFixingCells {BUF_X1 BUF_X1 BUF_X2 BUF_X4 BUF_X8 BUF_X16 BUF_X32}
+innovus> optDesign -postRoute -setup -hold
+```
+
+### 2.8. Finishing
+
+One final step is to insert "filler" cells. Filler cells are essentially
 empty standard cells whose sole purpose is to connect the wells across
 each standard cell row.
 
@@ -577,15 +589,10 @@ has generated a little "jog" meaning that on a single layer the wire goes
 both vertically and horizontally. This is an example of the sophisticated
 algorithms used in these tools.
 
-Our design is now on silicon! Obviously there are many more steps
-required before you can really tape out a chip. We would need to add an
-I/O ring with pads so we can connect the chip to the package, we would
-need to do further verification, and additional optimization.
-
-For example, one thing we want to do is verify that the gate-level
-netlist matches what is really in the final layout. We can do this using
-the `verifyConnectivity` command. We can also do a preliminary "design
-rule check" to make sure that the generated metal interconnect does not
+Another final step do is verify that the gate-level netlist matches what
+is really in the final layout. We can do this using the
+`verifyConnectivity` command. We can also do a preliminary "design rule
+check" to make sure that the generated metal interconnect does not
 violate any design rules with the `verify_drc` command.
 
 ```
@@ -593,36 +600,47 @@ innovus> verifyConnectivity
 innovus> verify_drc
 ```
 
-Now we can generate various output files. We might want to save the final
-gate-level netlist for the chip, since Cadence Innovus will often insert
-new cells or change cells during its optimization passes.
+### 2.9. Outputs and Reports
+
+Now we can generate various output files and reports. We start by saving
+the design so we can reload the design into Cadence Innovus for later
+analysis using the GUI.
+
+```
+innovus> saveDesign post-pnr.enc
+```
+
+We also need to save the final gate-level netlist to enable
+back-annotated gate-level simulation, since Cadence Innovus will often
+insert new cells or change cells during its optimization passes.
 
 ```
 innovus> saveNetlist post-pnr.v
 ```
 
-We can also extract resistance and capacitance for the metal interconnect
-and write this to a special `.spef` file. This file can be used for later
-timing and/or power analysis.
+We can also extract resistance and capacitance for the metal wires used
+in the design and write this to a special `.spef` file. This file can be
+used for later power analysis.
 
 ```
 innovus> extractRC
 innovus> rcOut -rc_corner typical -spef post-pnr.spef
 ```
 
-You may get an error regarding open nets. This is actually more of a warning
-message, and for the purposes of RC extraction we can ignore this.
+You may get an error regarding open nets. This is actually more of a
+warning message, and for the purposes of RC extraction we can ignore
+this.
 
-We also need to extract delay information and write this to an
-`.sdf`(Standard Delay Format) file, which we'll use for our
-back-annotated gate-level simulations.
+We also need to extract delay information and write this to an `.sdf`
+(Standard Delay Format) file, which we'll use for our back-annotated
+gate-level simulations.
 
 ```
-innovus> write_sdf post-pnr.sdf -interconn all -setuphold split
+innovus> write_sdf post-pnr.sdf
 ```
 
-Finally, we of course need to generate the real layout as a `.gds` file. This
-is what we will send to the foundry when we are ready to tapeout the
+Finally, we of course need to generate the real layout as a `.gds` file.
+This is what we will send to the foundry when we are ready to tapeout the
 chip.
 
 ```
@@ -634,57 +652,84 @@ innovus> streamOut post-pnr.gds \
 We can also use Cadence Innovus to do timing, area, and power analysis
 similar to what we did with Synopsys DC. These post-place-and-route
 results will be _much_ more accurate than the preliminary post-synthesis
-results. Let's start with a basic timing report.
+results. Let's start with a basic setup timing report.
 
 ```
-innovus> report_timing
- ...
- Other End Arrival Time          0.000
- - Setup                         0.045
- + Phase Shift                   0.600
- = Required Time                 0.555
- - Arrival Time                  0.502
- = Slack Time                    0.053
-     Clock Rise Edge                 0.000
-     + Clock Network Latency (Prop)  0.000
-     = Beginpoint Arrival Time       0.000
-     +-----------------------------------------------------------------------------------------------+
-     |                Instance                |     Arc      |   Cell   | Delay | Arrival | Required |
-     |                                        |              |          |       |  Time   |   Time   |
-     |----------------------------------------+--------------+----------+-------+---------+----------|
-     | elm_S1S2__2/out_reg[3]                 | CK ^         |          |       |   0.000 |    0.053 |
-     | elm_S1S2__2/out_reg[3]                 | CK ^ -> Q ^  | DFF_X1   | 0.090 |   0.090 |    0.143 |
-     | minmax0_S2/FE_DBTC3_elm_S1S2__2__out_3 | A ^ -> ZN v  | INV_X1   | 0.013 |   0.104 |    0.156 |
-     | minmax0_S2/U14                         | A2 v -> ZN v | AND2_X1  | 0.029 |   0.133 |    0.186 |
-     | minmax0_S2/U7                          | A2 v -> ZN v | OR2_X1   | 0.048 |   0.181 |    0.234 |
-     | minmax0_S2/U10                         | A2 v -> ZN ^ | NOR2_X1  | 0.030 |   0.211 |    0.264 |
-     | minmax0_S2/U35                         | A1 ^ -> ZN v | NOR2_X1  | 0.011 |   0.222 |    0.275 |
-     | minmax0_S2/U11                         | A1 v -> ZN ^ | NOR2_X1  | 0.025 |   0.247 |    0.300 |
-     | minmax0_S2/U38                         | A1 ^ -> ZN v | NOR3_X1  | 0.012 |   0.258 |    0.311 |
-     | minmax0_S2/U65                         | A1 v -> ZN ^ | OAI22_X1 | 0.026 |   0.284 |    0.337 |
-     | minmax0_S2/U13                         | A1 ^ -> ZN v | NAND2_X1 | 0.077 |   0.362 |    0.415 |
-     | minmax0_S2/U33                         | A v -> ZN ^  | INV_X1   | 0.109 |   0.471 |    0.524 |
-     | minmax0_S2/U60                         | A2 ^ -> ZN v | OAI22_X1 | 0.032 |   0.502 |    0.555 |
-     | elm_S2S3__1/out_reg[7]                 | D v          | DFF_X1   | 0.000 |   0.502 |    0.555 |
-     +-----------------------------------------------------------------------------------------------+
+innovus> report_timing -late -path_type full_clock -net
+...
+Other End Arrival Time          0.000
+- External Delay                0.050
++ Phase Shift                   0.700
+= Required Time                 0.650
+- Arrival Time                  0.607
+= Slack Time                    0.043
+     Clock Rise Edge                      0.000
+     + Drive Adjustment                   0.008
+     = Beginpoint Arrival Time            0.008
+     +---------------------------------------------------------------------------------------------------------------------+
+     |               Pin               | Edge |             Net              |      Cell      | Delay | Arrival | Required |
+     |                                 |      |                              |                |       |  Time   |   Time   |
+     |---------------------------------+------+------------------------------+----------------+-------+---------+----------|
+     | clk[0]                          |  ^   | clk[0]                       |                |       |   0.008 |    0.052 |
+     | v/CTS_ccl_a_buf_00001/A         |  ^   | clk[0]                       | CLKBUF_X3      | 0.000 |   0.008 |    0.052 |
+     | v/CTS_ccl_a_buf_00001/Z         |  ^   | v/CTS_1                      | CLKBUF_X3      | 0.059 |   0.068 |    0.111 |
+     | v/elm2_S2S3/q_reg[1]/CK         |  ^   | v/CTS_1                      | DFF_X1         | 0.002 |   0.069 |    0.113 |
+     | v/elm2_S2S3/q_reg[1]/Q          |  ^   | v/elm2_S3[1]                 | DFF_X1         | 0.101 |   0.170 |    0.213 |
+     | v/mmuA_S3/FE_DBTC2_elm2_S3_1/A  |  ^   | v/elm2_S3[1]                 | INV_X1         | 0.000 |   0.170 |    0.213 |
+     | v/mmuA_S3/FE_DBTC2_elm2_S3_1/ZN |  v   | v/mmuA_S3/FE_DBTN2_elm2_S3_1 | INV_X1         | 0.014 |   0.184 |    0.227 |
+     | v/mmuA_S3/U62/B2                |  v   | v/mmuA_S3/FE_DBTN2_elm2_S3_1 | AOI21_X1       | 0.000 |   0.184 |    0.227 |
+     | v/mmuA_S3/U62/ZN                |  ^   | v/mmuA_S3/n22                | AOI21_X1       | 0.030 |   0.214 |    0.257 |
+     | v/mmuA_S3/U17/A1                |  ^   | v/mmuA_S3/n22                | NAND2_X1       | 0.000 |   0.214 |    0.257 |
+     | v/mmuA_S3/U17/ZN                |  v   | v/mmuA_S3/n13                | NAND2_X1       | 0.017 |   0.231 |    0.274 |
+     | v/mmuA_S3/U8/A2                 |  v   | v/mmuA_S3/n13                | NAND3_X1       | 0.000 |   0.231 |    0.274 |
+     | v/mmuA_S3/U8/ZN                 |  ^   | v/mmuA_S3/n5                 | NAND3_X1       | 0.019 |   0.250 |    0.293 |
+     | v/mmuA_S3/U6/A1                 |  ^   | v/mmuA_S3/n5                 | NAND3_X1       | 0.000 |   0.250 |    0.293 |
+     | v/mmuA_S3/U6/ZN                 |  v   | v/mmuA_S3/n4                 | NAND3_X1       | 0.017 |   0.267 |    0.310 |
+     | v/mmuA_S3/U3/A3                 |  v   | v/mmuA_S3/n4                 | AND3_X1        | 0.000 |   0.267 |    0.310 |
+     | v/mmuA_S3/U3/ZN                 |  v   | v/mmuA_S3/n23                | AND3_X1        | 0.035 |   0.302 |    0.345 |
+     | v/mmuA_S3/U2/A1                 |  v   | v/mmuA_S3/n23                | NOR2_X1        | 0.000 |   0.302 |    0.345 |
+     | v/mmuA_S3/U2/ZN                 |  ^   | v/mmuA_S3/n24                | NOR2_X1        | 0.025 |   0.326 |    0.370 |
+     | v/mmuA_S3/U36/A1                |  ^   | v/mmuA_S3/n24                | NOR3_X1        | 0.000 |   0.326 |    0.370 |
+     | v/mmuA_S3/U36/ZN                |  v   | v/mmuA_S3/n25                | NOR3_X1        | 0.011 |   0.337 |    0.381 |
+     | v/mmuA_S3/U32/A1                |  v   | v/mmuA_S3/n25                | OAI22_X1       | 0.000 |   0.337 |    0.381 |
+     | v/mmuA_S3/U32/ZN                |  ^   | v/mmuA_S3/n27                | OAI22_X1       | 0.037 |   0.374 |    0.418 |
+     | v/mmuA_S3/U13/A                 |  ^   | v/mmuA_S3/n27                | OAI21_X1       | 0.000 |   0.374 |    0.418 |
+     | v/mmuA_S3/U13/ZN                |  v   | v/mmuA_S3/n16                | OAI21_X1       | 0.023 |   0.397 |    0.441 |
+     | v/mmuA_S3/FE_OFC1_n16/A         |  v   | v/mmuA_S3/n16                | CLKBUF_X1      | 0.000 |   0.397 |    0.441 |
+     | v/mmuA_S3/FE_OFC1_n16/Z         |  v   | v/mmuA_S3/FE_OFN5_n16        | CLKBUF_X1      | 0.095 |   0.492 |    0.535 |
+     | v/mmuA_S3/U57/B1                |  v   | v/mmuA_S3/FE_OFN5_n16        | OAI22_X1       | 0.001 |   0.493 |    0.537 |
+     | v/mmuA_S3/U57/ZN                |  ^   | v/mmuA_out_max_S3[2]         | OAI22_X1       | 0.059 |   0.553 |    0.596 |
+     | v/U11/A1                        |  ^   | v/mmuA_out_max_S3[2]         | AND2_X1        | 0.000 |   0.553 |    0.596 |
+     | v/U11/ZN                        |  ^   | out2[2]                      | AND2_X1        | 0.054 |   0.606 |    0.650 |
+     | out2[2]                         |  ^   | out2[2]                      | SortUnitStruct | 0.000 |   0.607 |    0.650 |
+     +---------------------------------------------------------------------------------------------------------------------+
 ```
 
-Note that for these results we used a target clock period of 0.6ns. This
-was the shortest clock period which still met timing without any negative
-slack during synthesis. From the above report we can see that our design
-is still meeting timing even after place-and-route. Note that it is very
-likely that the critical path identified by Synsopsys DC after synthesis
-will _not_ be the same critical path identified by Cadence Innovus after
-place-and-route. This is because Synopsys DC can only guess the final
-placement of the cells and interconnect during static timing analysis,
-while Cadence Innovus can use the real placement of the cells and
-interconnect during static timing analysis. For the same reason, there is
-no guarantee that if your design meets timing after synthesis that it
-will still meet timing after place-and-route! It is very possible that
-your design _will_ meet timing after synthesis and then _will not_ meet
-timing after place-and-route. **If your design does not meet timing after
-place-and-route you must go back and use a longer target clock period for
-synthesis!**
+Note that for these results we used a target clock period of 700ps. From
+the above report we can see that our design is still meeting timing even
+after place-and-route. This critical path is from the last pipeline
+register to the `out2[2]` output pin. Recall the setup time for all
+output ports was set to be 50ps in our timing constraints. So this path
+must be less than 700ps - 50ps = 650ps to meet the setup time constraint.
+The actual arrive time is 607ps and includes 69ps from the input clock
+pin to the CK pin of the DFF, 101ps for the clock-to-q delay, 383ps to
+get through the min/max unit, and 54ps to go through a final AND gate
+before reaching the `out2[2]` output pin for a total delay of 607ps. The
+total delay (607ps) is less than the required time (650ps) by 43ps of
+positive slack.
+
+Note that it is very likely that the critical path identified by
+Synsopsys DC after synthesis will _not_ be the same critical path
+identified by Cadence Innovus after place-and-route. This is because
+Synopsys DC can only guess the final placement of the cells and
+interconnect during static timing analysis, while Cadence Innovus can use
+the real placement of the cells and interconnect during static timing
+analysis. For the same reason, there is no guarantee that if your design
+meets timing after synthesis that it will still meet timing after
+place-and-route! It is very possible that your design _will_ meet timing
+after synthesis and then _will not_ meet timing after place-and-route.
+**If your design does not meet timing after place-and-route you must go
+back and use a longer target clock period for synthesis!**
 
 You can use the following steps in Cadence Innovus to display where the
 critical path is on the actual chip.
@@ -698,7 +743,7 @@ You can also use the Design Browser to highlight specific modules to
 visualize how the critical path is routed across the chip between these
 modules. The following screen capture illustrates the critical path in
 our three-stage sort unit. From the above timing report we know the
-critical path basically goes through the `minmax0_S2` module, so we have
+critical path basically goes through the `mmuA_S3` module, so we have
 highlighted that module in red using the Design Browser. Cadence Innovus
 has worked hard in both placement and routing to keep the critical path
 short. If your critical path stretches across the entire chip you may
@@ -707,53 +752,105 @@ design to help the tools produce a better quality of result.
 
 ![](img/tut07-cadence-innovus-8.png)
 
+In addition to checking to see if we met our setup time constraints, we
+also must check to see if we have met our hold time constraints.
+
+```
+innovus> report_timing -early -path_type full_clock -net
+Other End Arrival Time          0.070
++ Hold                          0.015
++ Phase Shift                   0.000
+= Required Time                 0.085
+  Arrival Time                  0.085
+  Slack Time                    0.000
+     Clock Rise Edge                      0.000
+     + Input Delay                        0.000
+     + Drive Adjustment                   0.004
+     = Beginpoint Arrival Time            0.004
+     Timing Path:
+     +--------------------------------------------------------------------------------------------------------+
+     |             Pin              | Edge |            Net             |  Cell  | Delay | Arrival | Required |
+     |                              |      |                            |        |       |  Time   |   Time   |
+     |------------------------------+------+----------------------------+--------+-------+---------+----------|
+     | in3[6]                       |  ^   | in3[6]                     |        |       |   0.004 |    0.004 |
+     | FE_PHC106_in3_6/A            |  ^   | in3[6]                     | BUF_X1 | 0.000 |   0.004 |    0.004 |
+     | FE_PHC106_in3_6/Z            |  ^   | FE_PHN106_in3_6            | BUF_X1 | 0.020 |   0.024 |    0.024 |
+     | FE_PHC81_in3_6/A             |  ^   | FE_PHN106_in3_6            | BUF_X1 | 0.000 |   0.024 |    0.024 |
+     | FE_PHC81_in3_6/Z             |  ^   | FE_PHN81_in3_6             | BUF_X1 | 0.021 |   0.045 |    0.045 |
+     | FE_PHC46_in3_6/A             |  ^   | FE_PHN81_in3_6             | BUF_X1 | 0.000 |   0.045 |    0.045 |
+     | FE_PHC46_in3_6/Z             |  ^   | FE_PHN46_in3_6             | BUF_X1 | 0.020 |   0.065 |    0.065 |
+     | v/elm3_S0S1/FE_PHC28_in3_6/A |  ^   | FE_PHN46_in3_6             | BUF_X1 | 0.000 |   0.065 |    0.065 |
+     | v/elm3_S0S1/FE_PHC28_in3_6/Z |  ^   | v/elm3_S0S1/FE_PHN28_in3_6 | BUF_X1 | 0.020 |   0.085 |    0.085 |
+     | v/elm3_S0S1/q_reg[6]/D       |  ^   | v/elm3_S0S1/FE_PHN28_in3_6 | DFF_X1 | 0.000 |   0.085 |    0.085 |
+     +--------------------------------------------------------------------------------------------------------+
+     Clock Rise Edge                      0.000
+     + Drive Adjustment                   0.008
+     = Beginpoint Arrival Time            0.008
+     Other End Path:
+     +-----------------------------------------------------------------------------------+
+     |           Pin           | Edge |   Net   |   Cell    | Delay | Arrival | Required |
+     |                         |      |         |           |       |  Time   |   Time   |
+     |-------------------------+------+---------+-----------+-------+---------+----------|
+     | clk[0]                  |  ^   | clk[0]  |           |       |   0.008 |    0.009 |
+     | v/CTS_ccl_a_buf_00002/A |  ^   | clk[0]  | CLKBUF_X3 | 0.000 |   0.008 |    0.009 |
+     | v/CTS_ccl_a_buf_00002/Z |  ^   | v/CTS_2 | CLKBUF_X3 | 0.061 |   0.069 |    0.069 |
+     | v/elm3_S0S1/q_reg[6]/CK |  ^   | v/CTS_2 | DFF_X1    | 0.001 |   0.070 |    0.070 |
+     +-----------------------------------------------------------------------------------+
+```
+
+In our original design, there was basically no logic on the path from the
+input pin `in2[3]` and the `D` input of the DFF in the `elm2_S0S1`
+pipeline register. This makes this path a "fast path" which might cause a
+hold time violation. Indeed, in the above timing report, we can see that
+Cadence Innovus has inserted buffers (i.e., with the `FE_PHC` prefix) to
+delay the data to meet the hold time constraint. The timing report shows
+that the delay from the block's clock pin to the CK pin of the DFF (i.e.,
+clock tree insertion delay) is 70ps and the contamination delay from the
+block's `in2[3]` pin to the D pin of the DFF is 85ps. Since 85ps - 75ps
+is 15ps which is greater than or equal to the hold time of 15ps this path
+now meets the hold time constraint.
+
 As in Synopsys DC, the `report_area` command can show the area each
 module uses and can enable detailed area breakdown analysis. These area
 results will be far more accurate than the post-synthesis results.
 
 ```
 innovus> report_area
-  Depth  Name                          #Inst  Area (um^2)
-  --------------------------------------------------------
-  0      SortUnitStructRTL__nbits_8    369    709.688
-  1      elm_S1S2__2                   8      36.176
-  1      val_S1S2                      3      5.852
-  1      minmax0_S1                    58     53.998
-  1      elm_S0S1__3                   8      36.176
-  1      minmax1_S2                    54     52.934
-  1      elm_S0S1__0                   8      36.176
-  1      elm_S2S3__0                   8      36.176
-  1      elm_S2S3__1                   8      36.176
-  1      minmax1_S1                    53     52.934
-  1      elm_S1S2__1                   8      36.176
-  1      val_S0S1                      3      5.852
-  1      elm_S0S1__2                   8      36.176
-  1      elm_S2S3__3                   8      36.176
-  1      elm_S1S2__3                   8      36.176
-  1      val_S2S3                      3      5.852
-  1      minmax0_S2                    57     54.264
-  1      elm_S1S2__0                   8      36.176
-  1      minmax_S3                     42     43.89
-  1      elm_S0S1__1                   8      36.176
-  1      elm_S2S3__2                   8      36.176
+    Hinst Name   Module Name                         Inst Count Tot Area
+------------------------------------------------------------------------
+SortUnitStruct                                              520  841.890
+  v              tut3_verilog_sort_SortUnitStruct_p_nbits8  424  765.282
+    v/elm0_S0S1  vc_Reg_p_nbits8_0                           16   42.560
+    v/elm0_S1S2  vc_Reg_p_nbits8_8                            8   36.176
+    v/elm0_S2S3  vc_Reg_p_nbits8_4                            8   36.176
+    v/elm1_S0S1  vc_Reg_p_nbits8_11                          16   42.560
+    v/elm1_S1S2  vc_Reg_p_nbits8_7                            8   36.176
+    v/elm1_S2S3  vc_Reg_p_nbits8_3                            8   36.176
+    v/elm2_S0S1  vc_Reg_p_nbits8_10                          16   42.560
+    v/elm2_S1S2  vc_Reg_p_nbits8_6                            8   36.176
+    v/elm2_S2S3  vc_Reg_p_nbits8_2                            8   36.176
+    v/elm3_S0S1  vc_Reg_p_nbits8_9                           16   42.560
+    v/elm3_S1S2  vc_Reg_p_nbits8_5                            8   36.176
+    v/elm3_S2S3  vc_Reg_p_nbits8_1                            8   36.176
+    v/mmuA_S1    tut3_verilog_sort_MinMaxUnit_p_nbits8_0     48   48.678
+    v/mmuA_S2    tut3_verilog_sort_MinMaxUnit_p_nbits8_3     48   48.678
+    v/mmuA_S3    tut3_verilog_sort_MinMaxUnit_p_nbits8_1     57   53.466
+    v/mmuB_S1    tut3_verilog_sort_MinMaxUnit_p_nbits8_4     47   47.082
+    v/mmuB_S2    tut3_verilog_sort_MinMaxUnit_p_nbits8_2     49   49.742
+    v/val_S0S1   vc_ResetReg_p_nbits1_0                       6    8.246
+    v/val_S1S2   vc_ResetReg_p_nbits1_2                       3    5.852
+    v/val_S2S3   vc_ResetReg_p_nbits1_1                       3    5.852
 ```
 
-The `#Inst` column indicates the number of non-filler cells in that
-module. There are a total of 369 standard cells in the design. Each
-register has eight standard cells; eight flip-flops since it is an
-eight-bit register. The `MinMaxUnit`s have a different number of cells
-since they have been optimized differently. The `MinMaxUnit`s consume
-about ~40% of the area.
-
-As in Synopsys DC, the `report_power` command can show how much power
-each module consumes. Note that this power analysis is still not that
-useful yet, since at this stage of the flow the power analysis is still
-based purely on statistical activity factor estimation. We will do more
-realistic power analysis in the next section.
-
-```
-innovus> report_power -hierarchy all
-```
+The `Inst Count` column indicates the number of non-filler cells in that
+module. There are a total of 520 standard cells in the design. Each
+register should have eight standard cells; eight flip-flops since it is
+an eight-bit register. However, notice that some of the pipeline
+registers have 16 standard cells. You can look in the post-pnr gate-level
+netlist to see why. This is because these pipeline registers have
+inserted extra buffers to fix hold-time violations. The `MinMaxUnit`s
+have a different number of cells since they have been optimized
+differently. The `MinMaxUnit`s consume about ~47% of the area.
 
 Finally, we go ahead and exit Cadence Innovus.
 
@@ -761,7 +858,7 @@ Finally, we go ahead and exit Cadence Innovus.
 innovus> exit
 ```
 
-### 2.7. Viewing Final Layout
+### 2.10. Final Layout
 
 We can now look at the actual `.gds` file for our design to see the final
 layout including all of the cells and the interconnect using the
@@ -786,39 +883,45 @@ metal layers has been hiddent for clarity.
 
 ![](img/tut07-sort-unit-gds-2.png)
 
-**To Do On Your Own:** Try increasing the bitwidth of the sort unit and
-see how this impacts the timing and/or area. For example, experiment with
-a sort unit capable of sorting 32-bit or 64-bit values. You will need to
-adjust the test harness and simulation driver appropriately.
+### 2.11. Automating Place and Route
 
-Try flattening the design during synthesis by using this command:
-
-```
-dc_shell> compile -ungroup_all
-```
-
-or try using the `compile_ultra` command with (or without) flattening.
-Then push the resulting design through place-and-route to see if this
-improves the quality of results with respect to timing and/or area.
-
-```
-dc_shell> compile_ultra -no_autoungroup
-```
-
-You can put a sequence of commands in a `.tcl` file and then run Cadence
-Innovus using those commands in one step like this:
+You can automate the above steps by putting a sequence of commands in a
+`.tcl` file and run Cadence Innovus using those commands in one step like
+this:
 
 ```bash
-% cd $TOPDIR/asic-manual/cadence-innovus
-% innovus -64 -no_gui -files init.tcl
+% cd $TOPDIR/asic/build-sort/04-cadence-innovus-pnr
+% innovus -no_gui -files run.tcl
 ```
 
-The `-no_gui` command prevents Cadence Innovus from opening the GUI which
-can make interacting with the tool much faster. So consider placing the
-commands from this section into a `.tcl` file to make it easy to rerun
-Cadence Innovus.
+To further simplify rerunning this step, we can put the above command
+line in its own a shell script. We have created such run scripts for you.
+Let's take a look to confirm these scripts match the manual commands we
+used above.
 
-Using Synopsys VCS for Back-Annotated Gate-Level Simulation
+```bash
+% cd $TOPDIR/asic/build-sort
+% cat ./04-cadence-innovus-pnr/run
+% cat ./04-cadence-innovus-pnr/run.tcl
+```
+
+You can rerun synthesis as follows.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% ./04-cadence-innovus-pnr/run
+```
+
+And you can then open up the Cadence Innovus design in the GUI as
+follows.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% innovus
+innovus> source ./04-cadence-innovus-pnr/post-pnr.enc
+```
+
+3. Using Synopsys VCS for Back-Annotated Gate-Level Simulation
 --------------------------------------------------------------------------
 
 Before place and route, we used Synopsys VCS to do 4-state simulation,

@@ -189,6 +189,43 @@ we learned about in the previous discussion sections:
  - Use Synopsys DC to synthesize RTL to gate-level netlist
  - Use Synopsys VCS for fast-functional gate-level simulation
 
+Let's take a look at each script to confirm it matches the manual
+commands we used in the previous discussion section. Here is the run
+script for four-start RTL simulation.
+
+```bash
+% cd $TOPDIR/asic
+% cat ./01-synopsys-vcs-rtlsim/run
+```
+
+Here is the run script for synthesis.
+
+```bash
+% cd $TOPDIR/asic
+% cat ./02-synopsys-dc-synth/run
+```
+
+Notice that this script simply executes `dc_shell-xg-t` with a TCL script
+which contains the commands to: configure the standard cell library,
+analyze and elaborate the design; setup timing constraints; synthesize
+the design; write outputs; and write final outputs (i.e., Verilog and
+DDC) and reports (i.e., timing report and area report).
+
+```bash
+% cd $TOPDIR/asic
+% cat ./02-synopsys-dc-synth/run.tcl
+```
+
+Finally, here is the run script for fast-functional gate-level
+simulation. The key difference from four-state RTL simulation is that
+this simulation takes as input the Verilog for the standard-cell library
+and the Verilog for the post-synthesis gate-level netlist.
+
+```bash
+% cd $TOPDIR/asic
+% cat ./03-synopsys-vcs-ffglsim/run
+```
+
 You can run these steps as follows:
 
 ```bash
@@ -200,9 +237,10 @@ You can run these steps as follows:
 
 Verify that your design passes four-state RTL simulation and
 fast-functional gate-level simulation. Then take a look at the synthesis
-reports
+reports.
 
 ```bash
+% cd $TOPDIR/asic
 % less ./02-synopsys-dc-synth/area.rpt
 % less ./02-synopsys-dc-synth/timing.rpt
 ```
@@ -211,6 +249,7 @@ Finally, take a few minutes to examine the resulting Verilog gate-level
 netlist. Notice that the module hierarchy is preserved.
 
 ```bash
+% cd $TOPDIR/asic
 % less ./02-synopsys-dc-synth/post-synth.v
 ```
 
@@ -377,12 +416,15 @@ innovus> globalNetConnect VDD -type pgpin -pin VDD -inst * -verbose
 innovus> globalNetConnect VSS -type pgpin -pin VSS -inst * -verbose
 ```
 
-The next step in power planning is to draw M1 wires for the power and
+For this discussion section we will just draw M1 wires for the power and
 ground rails that go along each row of standard cells.
 
 ```
 innovus> sroute -nets {VDD VSS}
 ```
+
+In a more realistic flow we would also create a power ring and connect
+the rows of standard cells to this power ring.
 
 ### 2.4. Placement
 

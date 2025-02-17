@@ -467,7 +467,7 @@ dc_shell> set_app_var target_library "$env(ECE6745_STDCELLS)/stdcells.db"
 dc_shell> set_app_var link_library   "* $env(ECE6745_STDCELLS)/stdcells.db"
 ```
 
-### 4.2. Analyze and Elaborate
+### 4.2. Analyze and Elaborate the Design
 
 We are now ready to read in the Verilog file which contains the top-level
 design and all referenced modules. We do this with two commands. The
@@ -481,7 +481,7 @@ dc_shell> analyze -format sverilog ../../sim/build/RegIncr4stage__pickled.v
 dc_shell> elaborate RegIncr4stage
 ```
 
-### 4.3. Timing Constraints
+### 4.3. Create Timing Constraints
 
 We now need to create a clock constraint to tell Synopsys DC what our
 target cycle time is:
@@ -490,7 +490,7 @@ target cycle time is:
 dc_shell> create_clock clk -name ideal_clock1 -period 1
 ```
 
-### 4.4. Synthesize
+### 4.4. Synthesize the Design
 
 Finaly, the `compile` comamnd will do the actual logic synthesis:
 
@@ -498,14 +498,14 @@ Finaly, the `compile` comamnd will do the actual logic synthesis:
 dc_shell> compile
 ```
 
-### 4.5. Final Output and Reports
+### 4.5. Write Final Outputs and Reports
 
-We write the output to a Verilog gate-level netlist and a `.ddc` file
-which we can use with Synopsys DV.
+We write the output to a `.ddc` file which we can use with Synopsys DV
+and a Verilog gate-level netlist.
 
 ```
-dc_shell> write -format verilog -hierarchy -output post-synth.v
 dc_shell> write -format ddc     -hierarchy -output post-synth.ddc
+dc_shell> write -format verilog -hierarchy -output post-synth.v
 ```
 
 We can also generate usful reports about area and timing. Prof. Batten
@@ -592,7 +592,7 @@ can do this using Synopsys VCS for fast-functional gatel-level
 simulation. _Fast-functional_ refers to the fact that this simulation
 will not take account any of the gate delays. All gates will take zero
 time and all signals will still change on the rising clock edge just like
-in RTL simulation. Here is how to run VCS for RTL simulation:
+in RTL simulation. Here is how to run VCS for RTL simulation.
 
 ```bash
 % mkdir -p $TOPDIR/asic/03-synopsys-vcs-ffglsim
@@ -606,8 +606,10 @@ in RTL simulation. Here is how to run VCS for RTL simulation:
     ../../sim/build/RegIncr4stage_basic_tb.v
 ```
 
-You should see a `simv` binary which is the compiled RTL simulator which
-you can run like this:
+The key difference from four-state RTL simulation is that this simulation
+takes as input the Verilog for the standard-cell library and the Verilog
+for the post-synthesis gate-level netlist. You should see a `simv` binary
+which is the compiled RTL simulator which you can run as follows.
 
 ```
 % cd $TOPDIR/asic/03-synopsys-vcs-ffglsim

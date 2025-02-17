@@ -343,7 +343,15 @@ will only be doing power analysis using the gate-level netlist.
 ```
 
 To simplify rerunning a simulation, we can put the above command lines in
-a shell script. We have done this for you so you can run it as follows:
+a shell script. We have created such run scripts for you. Let's take a
+look to confirm these scripts match the manual commands we used above.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% cat ./01-synopsys-vcs-rtlsim/run
+```
+
+You can rerun four-state RTL simulation as follows.
 
 ```bash
 % cd $TOPDIR/asic/build-sort
@@ -398,7 +406,7 @@ Note that we can use `$env(ECE6745_STDCELLS)` to get access to the
 containing the standard cells, and that we are referencing the abstract
 logical and timing views in the `.db` format.
 
-### 3.2. Analyze and Elaborate
+### 3.2. Elaborate
 
 As an aside, if you want to learn more about any command in any Synopsys
 tool, you can simply type `man toolname` at the shell prompt. We are now
@@ -496,7 +504,7 @@ Once we have finished setting all of the constraints we can use
 `check_timing` to make sure there are no unconstrained paths or other
 issues.
 
-### 3.4. Synthesize
+### 3.4. Synthesis
 
 We can use the `check_design` command to make sure there are no obvious
 errors in our Verilog RTL.
@@ -550,18 +558,18 @@ free to go back and experiment with this command.
 dc_shell> compile_ultra -no_autoungroup -gate_clock`
 ```
 
-### 3.4. Final Output and Reports
+### 3.4. Outputs and Reports
 
 Now that we have synthesized the design, we output the resulting
-gate-level netlist in two different file formats: Verilog and `.ddc`
-(which we will use with Synopsys DesignVision). We also output an `.sdc`
+gate-level netlist in two different file formats: `.ddc` (which we will
+use with Synopsys DesignVision) and Verilog. We also output an `.sdc`
 file which contains the constraint information we gave Synopsys DC. We
 will pass this same constraint information to Cadence Innovus during the
 place and route portion of the flow.
 
 ```
-dc_shell> write -format verilog -hierarchy -output post-synth.v
 dc_shell> write -format ddc     -hierarchy -output post-synth.ddc
+dc_shell> write -format verilog -hierarchy -output post-synth.v
 dc_shell> write_sdc -nosplit post-synth.sdc
 ```
 
@@ -675,7 +683,7 @@ Notice that the module hierarchy is preserved and also notice that the
 % more post-synth.v
 ```
 
-### 3.5. Using Synopsys Design Vision
+### 3.5. Synopsys Design Vision
 
 We can use the Synopsys Design Vision (DV) tool for browsing the
 resulting gate-level netlist, plotting critical path histograms, and
@@ -743,19 +751,22 @@ this:
 ```
 
 To further simplify rerunning this step, we can put the above command
-line in a shell script. We have created a `run.tcl` script and the
-corresponding `run` script so you can run it as follows:
+line in its own shell script. We have created such run scripts for you.
+Let's take a look to confirm these scripts match the manual commands we
+used above.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% cat ./02-synopsys-dc-synth/run
+% cat ./02-synopsys-dc-synth/run.tcl
+```
+
+You can rerun synthesis as follows.
 
 ```bash
 % cd $TOPDIR/asic/build-sort
 % ./02-synopsys-dc-synth/run
 ```
-
-Modify the run script to target a clock period of 0.4ns. Then gradually
-increase the clock period until your design meets timing. **To follow
-along with the tutorial, push the design through synth again using 0.6ns
-as your clock constraint, as this is what we will be using for the rest
-of the flow.**
 
 4. Using Synopsys VCS for Fast-Functional Gate-Level Simulation
 --------------------------------------------------------------------------
@@ -795,7 +806,15 @@ long after the rising edge we change the inputs and how long after the
 rising edge we check the outputs.
 
 To simplify rerunning a simulation, we can put the above command lines in
-a shell script. We have done this for you so you can run it as follows:
+a shell script. We have created such run scripts for you. Let's take a
+look to confirm these scripts match the manual commands we used above.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% cat ./03-synopsys-vcs-ffglsim/run
+```
+
+You can rerun fast-functional gate-level simulation as follows.
 
 ```bash
 % cd $TOPDIR/asic/build-sort
