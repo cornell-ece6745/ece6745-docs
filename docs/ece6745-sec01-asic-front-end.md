@@ -391,7 +391,7 @@ simulation.
 % less RegIncr4stage_basic_tb.v.cases
 ```
 
-3. Using Synopsys VCS for 4-State RTL Simulation
+3. Synopsys VCS for 4-State RTL Simulation
 --------------------------------------------------------------------------
 
 Recall that PyMTL3 simulation of Verilog RTL uses Verilator which is a
@@ -436,7 +436,7 @@ X and only become 0 or 1 after a few cycles once we come out of reset. If
 we improperly used an initialized value then we would see X-propagation
 which would hopefully cause a failing test case.
 
-4. Using Synopsys Design Compiler for Synthesis
+4. Synopsys Design Compiler for Synthesis
 --------------------------------------------------------------------------
 
 We use Synopsys Design Compiler (DC) to synthesize Verilog RTL models
@@ -512,8 +512,8 @@ We can also generate usful reports about area and timing. Prof. Batten
 will spend some time explaining these reports:
 
 ```
-dc_shell> report_area   -nosplit -hierarchy
-dc_shell> report_timing -nosplit -nets
+dc_shell> report_area   -hierarchy
+dc_shell> report_timing -nets
 ```
 
 Make some notes about what you find. Note the total cell area used in
@@ -534,7 +534,7 @@ Take a close look at the implementation of the incrementer. What kind of
 standard cells has the synthesis tool chosen? What kind of adder
 microarchitecture?
 
-### 4.6. Using Synopsys Design Vision
+### 4.6. Synopsys Design Vision
 
 We can use the Synopsys Design Vision (DV) tool for browsing the
 resulting gate-level netlist, plotting critical path histograms, and
@@ -582,7 +582,7 @@ also to open a gave-level schematic of just the critical path.
  - Select the left-most bar in the histogram to see list of most critical paths
  - Select one of the paths in the path list to highlight the path in the schematic view
 
-5. Using Synopsys VCS for Fast-Functional Gate-Level Simulation
+5. Synopsys VCS for Fast-Functional Gate-Level Simulation
 --------------------------------------------------------------------------
 
 Good ASIC designers are always paranoid and _never_ trust their tools.

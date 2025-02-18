@@ -256,7 +256,7 @@ netlist. Notice that the module hierarchy is preserved.
 This is the gate-level netlist that we now want to push through the ASIC
 back-end flow.
 
-3. Using Cadence Innovus for Place-and-Route
+3. Cadence Innovus for Place-and-Route
 --------------------------------------------------------------------------
 
 We will be running Cadence Innovus in a separate directory to keep the
@@ -467,7 +467,7 @@ empty standard cells whose sole purpose is to connect the wells across
 each standard cell row.
 
 ```
-innovus> setFillerMode -core "FILLCELL_X1 FILLCELL_X2 FILLCELL_X4"
+innovus> setFillerMode -core {FILLCELL_X4 FILLCELL_X2 FILLCELL_X1}
 innovus> addFiller
 ```
 
@@ -531,7 +531,7 @@ Choose _Display > Full Hierarchy_ from the menu to display the entire
 design. Zoom in and out to see the individual transistors as well as the
 entire block.
 
-4. Using Synopsys VCS for Back-Annotated Gate-Level Simulation
+4. Synopsys VCS for Back-Annotated Gate-Level Simulation
 --------------------------------------------------------------------------
 
 As we learned in the last discussion section, good ASIC designers are
@@ -624,7 +624,7 @@ SAIF file has just the activity factors for every net in the design.
 % vcd2saif -input waves.vcd -output waves.saif
 ```
 
-5. Using Synopsys PrimeTime for Power Analysis
+5. Synopsys PrimeTime for Power Analysis
 --------------------------------------------------------------------------
 
 Synopsys PrimeTime (PT) is primarily used for very accurate "sign-off"
@@ -703,8 +703,8 @@ how much power the sort unit consumes as well as how much each module in
 our design consumes.
 
 ```
-pt_shell> report_power -nosplit
-pt_shell> report_power -nosplit -hierarchy
+pt_shell> report_power
+pt_shell> report_power -hierarchy
 ```
 
 Finally, we go ahead and exit Synopsys PT.

@@ -209,7 +209,7 @@ netlist. Notice that the module hierarchy is preserved.
 This is the gate-level netlist that we now want to push through the ASIC
 back-end flow.
 
-2. Using Cadence Innovus for Place-and-Route
+2. Cadence Innovus for Place-and-Route
 --------------------------------------------------------------------------
 
 We use Cadence Innovus for placing standard cells in rows and then
@@ -333,6 +333,28 @@ roughly estimate specific technology parameters.
 innovus> setDesignMode -process 45
 ```
 
+Cadence Innovus includes many advanced timing-driven optimizations by
+default. Two examples include signal integrity analysis (e.g., capacitive
+coupling across signal wires) and useful clock skew (e.g., purposefully
+introducing clock skew to give more time for critical paths at the
+expense of other paths). To simply our timing analysis we will turn these
+optimizations off as follows.
+
+```
+innovus> setDelayCalMode -SIAware false
+innovus> setOptMode -usefulSkew false
+```
+
+Cadence Innovus can fix hold-time violations by inserting extra buffers
+to delay certain paths. We need to tell Cadence Innovus which standard
+cells to use when fixing hold-time violations as follows.
+
+```
+innovus> setOptMode -holdFixingCells {
+  BUF_X1 BUF_X1 BUF_X2 BUF_X4 BUF_X8 BUF_X16 BUF_X32
+}
+```
+
 ### 2.3. Floorplanning
 
 The next substep is floorplaning. This is where we broadly organize the
@@ -393,7 +415,7 @@ We now create a power ring around our chip using the `addRing` command. A
 power ring ensures we can easily get power and ground to all standard
 cells. The command takes parameters specifying the width of each wire in
 the ring, the spacing between the two rings, and what metal layers to use
-for the ring. We will put the power ring on M6 and M7; we often put the
+for the ring. We will put the power ring on M7 and M8; we often put the
 power routing on the top metal layers since these are fundamentally
 global routes and these top layers have low resistance which helps us
 minimize static IR drop and di/dt noise. These top layers have high
@@ -403,29 +425,34 @@ modest amount of decoupling capacitance to smooth out time variations in
 the power supply).
 
 ```
-innovus> addRing -nets {VDD VSS} -width 0.6 -spacing 0.5 \
-            -layer [list top 7 bottom 7 left 6 right 6]
+innovus> addRing \
+  -nets {VDD VSS} -width 0.8 -spacing 0.8 \
+  -layer [list top 9 bottom 9 left 8 right 8]
 ```
 
 We have power and ground rails along each row of standard cells and a
 power ring, so now we need to hook these up. We can use the `addStripe`
 command to draw wires and automatically insert vias whenever wires cross.
-First, we draw the vertical "stripes".
+First, we draw the horizontal "stripes".
 
 ```
-innovus> addStripe -nets {VSS VDD} -layer 6 -direction vertical \
-            -width 0.4 -spacing 0.5 -set_to_set_distance 5 -start 0.5
+innovus> addStripe \
+  -nets {VSS VDD} -layer 9 -direction horizontal \
+  -width 0.8 -spacing 4.8 \
+  -set_to_set_distance 11.2 -start_offset 2.4
 ```
 
-And then we draw the horizontal "stripes".
+And then we draw the vertical "stripes".
 
 ```
-innovus> addStripe -nets {VSS VDD} -layer 7 -direction horizontal \
-            -width 0.4 -spacing 0.5 -set_to_set_distance 5 -start 0.5
+innovus> addStripe \
+  -nets {VSS VDD} -layer 8 -direction vertical \
+  -width 0.8 -spacing 4.8 \
+  -set_to_set_distance 11.2 -start_offset 2.4
 ```
 
 The following screen capture illustrates what you should see: a power
-ring and grid on M6 and M7 connected to the horizontal power and ground
+ring and grid on M7 and M8 connected to the horizontal power and ground
 rails on M1.
 
 ![](img/tut07-cadence-innovus-2.png)
@@ -433,10 +460,10 @@ rails on M1.
 You can toggle the visibility of metal layers by using the panel on the
 right. Click the checkbox in the V column to toggle the visibility of the
 corresponding layer. You can also simply use the number keys on your
-keyboard. Pressing the 6 key will toggle M6 and pressing the 7 key will
-toggle M7. Zoom in on a via and toggle the visibility of the metal layers
+keyboard. Pressing the 7 key will toggle M7 and pressing the 8 key will
+toggle M8. Zoom in on a via and toggle the visibility of the metal layers
 to see how Cadence Innovus has automatically inserted a via stack that
-goes from M1 all the way up to M6 or M7.
+goes from M1 all the way up to M7 or M8.
 
 ### 2.5. Placement
 
@@ -465,8 +492,8 @@ Here are the steps:
  - Right click on a module, click _Highlight_, select a color
 
 In this way you can view where various modules are located on the chip.
-The following screen capture illustrates the location of the five
-`MinMaxUnit` modules.
+The following screen capture illustrates the location of the five min/max
+units.
 
 ![](img/tut07-cadence-innovus-4.png)
 
@@ -522,8 +549,6 @@ delay of the critical path) and hold time violations (e.g., by inserting
 buffers to increase the delay of certain fast paths).
 
 ```
-innovus> setDelayCalMode -SIAware false
-innovus> setOptMode -holdFixingCells {BUF_X1 BUF_X1 BUF_X2 BUF_X4 BUF_X8 BUF_X16 BUF_X32}
 innovus> optDesign -postCTS -setup -hold
 ```
 
@@ -557,8 +582,6 @@ reduce the delay of the critical path) and hold time violations (e.g., by
 inserting buffers to increase the delay of certain fast paths).
 
 ```
-innovus> setDelayCalMode -SIAware false
-innovus> setOptMode -holdFixingCells {BUF_X1 BUF_X1 BUF_X2 BUF_X4 BUF_X8 BUF_X16 BUF_X32}
 innovus> optDesign -postRoute -setup -hold
 ```
 
@@ -569,7 +592,7 @@ empty standard cells whose sole purpose is to connect the wells across
 each standard cell row.
 
 ```
-innovus> setFillerMode -corePrefix FILL -core "FILLCELL_X4 FILLCELL_X2 FILLCELL_X1"
+innovus> setFillerMode -core {FILLCELL_X4 FILLCELL_X2 FILLCELL_X1}
 innovus> addFiller
 ```
 
@@ -650,9 +673,9 @@ innovus> streamOut post-pnr.gds \
 ```
 
 We can also use Cadence Innovus to do timing, area, and power analysis
-similar to what we did with Synopsys DC. These post-place-and-route
-results will be _much_ more accurate than the preliminary post-synthesis
-results. Let's start with a basic setup timing report.
+similar to what we did with Synopsys DC. These post-pnr results will be
+_much_ more accurate than the preliminary post-synthesis results. Let's
+start with a basic setup timing report.
 
 ```
 innovus> report_timing -late -path_type full_clock -net
@@ -848,9 +871,9 @@ register should have eight standard cells; eight flip-flops since it is
 an eight-bit register. However, notice that some of the pipeline
 registers have 16 standard cells. You can look in the post-pnr gate-level
 netlist to see why. This is because these pipeline registers have
-inserted extra buffers to fix hold-time violations. The `MinMaxUnit`s
+inserted extra buffers to fix hold-time violations. The min/max units
 have a different number of cells since they have been optimized
-differently. The `MinMaxUnit`s consume about ~47% of the area.
+differently. The min/max units consume about ~47% of the area.
 
 Finally, we go ahead and exit Cadence Innovus.
 
@@ -924,119 +947,110 @@ innovus> source ./04-cadence-innovus-pnr/post-pnr.enc
 3. Using Synopsys VCS for Back-Annotated Gate-Level Simulation
 --------------------------------------------------------------------------
 
-Before place and route, we used Synopsys VCS to do 4-state simulation,
-and gate-level simulation. This time, we'll be using VCS to perform a
-back-annotated gate-level simulation. The key difference between the
-previous gate-level simulation and this one is that in this case, we'll
-be using an `.sdf` file to annotate delays in the gate-level simulation.
+In the previous tutorial, we used Synopsys VCS to do 4-state simulation
+and gate-level simulation. This time, we'll be using VCS to perform
+back-annotated gate-level simulation. The key difference between
+fast-functional and back-annotated gate-level simulation, is that we can
+now use an `.sdf` file to annotate delays in the gate-level simulation.
 In previous simulations, we only see signals change on the clock edge;
 however, with a back-annotated simulation, we'll know more precisely when
 signals are arriving by using the delay information provided by the
 `.sdf`. This means that running a back-annotated simulation with a cycle
-time that is too fast will cause the design to fail! Back-annotated
-simulations are also useful for detecting hold-time violations.
+time that is too fast can potentially cause setup time violations or fast
+paths can potentially cause hold time violations. Back-annotated
+gate-level simulation is the primary way we will verify that our final
+design is functionally correct.
 
-Given the more realistic timing implications of a back-annotated
-simulation, we need to be more careful about the cycle time, input delay,
-and output delay that we provide to vcs. We'll start by creating a build
-directory for our post-synth run of vcs, and output directories for the
-`.vcd` and `.saif` that we'll generate for power analysis.
+We will be running Synopsys VCS in a separate directory to keep the files
+separate from the other tools.
 
 ```bash
 % mkdir -p $TOPDIR/asic/build-sort/05-synopsys-vcs-baglsim
 % cd $TOPDIR/asic/build-sort/05-synopsys-vcs-baglsim
 ```
 
-Then we will use Synopsys VCS to simulate our gate-level model with the
-same test bench we used before. Notice the differences between this
-command and the fast functional gate-level simulation command:
+Given the more realistic timing implications of a back-annotated
+simulation, we need to be more careful about the cycle time, input
+delays, and output delays that we provide to Synopsys VCS. Notice the
+differences between the following command and the fast-functional
+gate-level simulation command from the previous tutorial.
 
 ```bash
 % cd $TOPDIR/asic/build-sort/05-synopsys-vcs-baglsim
-% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps \
-    +neg_tchk +sdfverbose \
-    -sdf max:SortUnitStruct_tb.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
-    +define+CYCLE_TIME=0.600 \
-    +define+VTB_INPUT_DELAY=0.025 \
-    +define+VTB_OUTPUT_DELAY=0.025 \
-    +vcs+dumpvars+SortUnitStruct_random-600ps.vcd \
-    +incdir+$TOPDIR/sim/build \
-    -top SortUnitStruct_tb \
-    ${ECE6745_STDCELLS}/stdcells.v \
-    $TOPDIR/sim/build/SortUnitStruct_random_tb.v \
-    ../04-cadence-innovus-pnr/post-pnr.v
-% ./simv
-```
-
-% vcs ../cadence-innovus/post-par.v
-$ECE5745_STDCELLS/stdcells.v
--full64 -sverilog +incdir+../../sim/build +lint=all -xprop=tmerge
--top SortUnitStructRTL__nbits_8_tb
-../../sim/build/SortUnitStructRTL__nbits_8_sort-rtl-struct-random_tb.v
-+sdfverbose -sdf
-min:SortUnitStructRTL__nbits_8_tb.DUT:../cadence-innovus/post-par.sdf
-+define+CYCLE_TIME=0.6
-+define+VTB_INPUT_DELAY=0.03
-+define+VTB_OUTPUT_ASSERT_DELAY=0.57
-+vcs+dumpvars+SortUnitStructRTL__nbits_8_sort-rtl-struct-random_vcs.vcd
-+neg_tchk -override_timescale=1ns/1ps
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
+  +neg_tchk +sdfverbose \
+  -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
+  +define+CYCLE_TIME=0.400 \
+  +define+VTB_INPUT_DELAY=0.025 \
+  +define+VTB_OUTPUT_DELAY=0.025 \
+  +vcs+dumpvars+waves.vcd \
+  +incdir+${TOPDIR}/sim/build \
+  ${ECE6745_STDCELLS}/stdcells.v \
+  ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v \
+  ../04-cadence-innovus-pnr/post-pnr.v
 % ./simv
 ```
 
 This time, we add the flag `+neg_tchk`, which enables negative values in
 timing checks. Negative values in timing checks are important for cells
 which have negative hold times, for example. We also include the
-`+sdfverbose` flag which reads in the `post-par.sdf`. Note that we also
+`+sdfverbose` flag which reads in the `post-pnr.sdf`. Note that we also
 assign non-zero values for `+define+VTB_INPUT_DELAY` and
-`+define+VTB_OUTPUT_ASSERT_DELAY`. These values are based on the input
-and output delays we set during the Synopsys DC synthesis step. Note that
-we assert the value at the clock constraint minus the output delay. This
-ensures that the signal arrives and is stable by a margin of the output
-delay. Including these macros will ensure that our timing checks will
-actually mean something. Without this, our simulations may pass because
-data arrives before the clock edge, even if it does not arrive before the
-output delay. In such a case, the timing checks will be completely bogus.
-To illustrate how useful these timing checks can be, lets run another
-simulation where we try to push the design to run too quickly. Here, we
-reduce the cycle time down to 0.45 ns:
+`+define+VTB_OUTPUT_DELAY`. These values are based on the input and
+output delay timing constraints during the Synopsys DC synthesis step.
+All inputs from the test bench will be set 25ps after the rising edge;
+recall that we used an input min delay of 0ps and max delay of 50ps so
+changing the inputs 25ps after the rising edge should meet hold and setup
+time constraints. All outputs will be checked 25ps before the next rising
+edge; recall that we used an output max delay of 50ps which corresponds
+to the setup time of the output pin so the output data should be stable
+by 25ps before the rising edge.
 
-```bash
-% cd $TOPDIR/asic-manual/vcs-postpnr-build
-% vcs ../cadence-innovus/post-par.v $ECE5745_STDCELLS/stdcells.v -full64 -sverilog +incdir+../../sim/build +lint=all -xprop=tmerge -top SortUnitStructRTL__nbits_8_tb ../../sim/build/SortUnitStructRTL__nbits_8_sort-rtl-struct-random_tb.v +sdfverbose -sdf max:SortUnitStructRTL__nbits_8_tb.DUT:../cadence-innovus/post-par.sdf +define+CYCLE_TIME=0.45 +define+VTB_INPUT_DELAY=0.03 +define+VTB_OUTPUT_ASSERT_DELAY=0.42 +vcs+dumpvars+SortUnitStructRTL__nbits_8_sort-rtl-struct-random_vcs.vcd +neg_tchk -override_timescale=1ns/1ps
-% ./simv
-```
-
-Note that we also annotated the sdf using the maximum delays, due to the 
-`-sdf max:...` flag. It is important to do a check using the maximum delays 
-for setup time checks, and using minimum delays for hold time checks. 
-Here, we can see the violating flip-flop, and the subsequent testbench 
-failure. Note that you resulting netlist and layout may be slightly different 
-than the one referenced here, so if your timing violation looks slightly 
-different, or you do not yet have a timing violation, that is ok! Feel free 
-to run your simulation even faster if that is the case, by changing the 
-`CYCLE_TIME` and `VTB_OUTPUT_ASSERT_DELAY` macros.
+The above command uses a cycle time of 400ps but recall that we used a
+cycle time constraint of 700ps. You should see a failing timing check and
+testbench failure similar to below.
 
 ```
-"/work/global/brg/install/adk-pkgs/freepdk-45nm/stdview/stdcells.v", 2123: Timing violation in SortUnitStructRTL__nbits_8_tb.DUT.elm_S1S2__0.\out_reg[1]
-    $setuphold( posedge CK:10129, negedge D:10110, limits: (44,10) );
+"/classes/ece6745/install/adks/freepdk-45nm/stdview/stdcells.v", 2122:
+  Timing violation in Top.DUT.v.elm0_S1S2.\q_reg[4]
+  $setuphold( posedge CK:2265, posedge D:2271, limits: (32,23) );
 
+...
 
 The test bench received a value containing X/Z's! Please note
 that the VTB is pessmistic about X's and you should make sure
 all output ports of your DUT does not produce X's after reset.
-- Timestamp      : 11 (default unit: ns)
-- Cycle number   : 23 (variable: cycle_count)
-- line number    : line 22 in SortUnitStructRTL__nbits_8_sort-rtl-struct-random_tb.v.cases
-- port name      : out[2] (out[2] in Verilog)
-- expected value : 0xf5
-- actual value   : 0xfX
+- Timestamp      : 3 (default unit: ns)
+- Cycle number   : 5 (variable: cycle_count)
+- line number    : line 4 in SortUnitStruct_random_tb.v.cases
+- port name      : out[1] (out1 in Verilog)
+- expected value : 0x77
+- actual value   : 0xxX
 ```
 
-Let's re-run the simulation at the correct clock speed to obtain the 
-right vcd for saif generation.
+The timing check is failing because the clock is rising at 2265ps and the
+data input is changing at 2271ps for the `elm0_S1S2.q_reg[4]` DFF; this
+means the data is changing 6ps after the rising edge but the hold time
+for this specific flip-flop is 23ps. If you open up the resulting
+waveforms and look at these signals at 2265ps you should be able to see
+this exact scenario.
+
+Let's rerun the simulation with our actual target cycle time of 700ps and
+verify back-annotated gate-level simulation passes the simulation.
 
 ```bash
-% vcs ../cadence-innovus/post-par.v $ECE5745_STDCELLS/stdcells.v -full64 -sverilog +incdir+../../sim/build +lint=all -xprop=tmerge -top SortUnitStructRTL__nbits_8_tb ../../sim/build/SortUnitStructRTL__nbits_8_sort-rtl-struct-random_tb.v +sdfverbose -sdf min:SortUnitStructRTL__nbits_8_tb.DUT:../cadence-innovus/post-par.sdf +define+CYCLE_TIME=0.6 +define+VTB_INPUT_DELAY=0.03 +define+VTB_OUTPUT_ASSERT_DELAY=0.57 +vcs+dumpvars+SortUnitStructRTL__nbits_8_sort-rtl-struct-random_vcs.vcd +neg_tchk -override_timescale=1ns/1ps
+% cd $TOPDIR/asic/build-sort/05-synopsys-vcs-baglsim
+% vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
+  +neg_tchk +sdfverbose \
+  -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
+  +define+CYCLE_TIME=0.700 \
+  +define+VTB_INPUT_DELAY=0.025 \
+  +define+VTB_OUTPUT_DELAY=0.025 \
+  +vcs+dumpvars+waves.vcd \
+  +incdir+${TOPDIR}/sim/build \
+  ${ECE6745_STDCELLS}/stdcells.v \
+  ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v \
+  ../04-cadence-innovus-pnr/post-pnr.v
 % ./simv
 ```
 
@@ -1048,15 +1062,356 @@ convert `.vcd` files into `.saif` files. An `.saif` file only contains a
 single average activity factor for every net.
 
 ```bash
-% cd $TOPDIR/asic-manual/vcs-postpnr-build
-% vcd2saif -input ./SortUnitStructRTL__nbits_8_sort-rtl-struct-random_vcs.vcd -output ./SortUnitStructRTL__nbits_8_sort-rtl-struct-random.saif
+% cd $TOPDIR/asic/build-sort/05-synopsys-vcs-baglsim
+% vcd2saif -input ./waves.vcd -output ./waves.saif
 ```
 
-Take a look at the vcd file from this simulation. Here we can see some 
-subcycle delays that shows us how long it takes for data to stabilize 
-before the following cycle, super cool! This is showing the first stage 
-of the sort unit pipeline. It shows the input and output of the stage 0 
-pipeline registers, the input/output of the two stage 0 minmax units, 
-and the input and output of the stage 1 pipeline registers.
+Take a look at the vcd file from this simulation. Here we can see some
+subcycle delays that shows us how long it takes for data to stabilize
+before the following cycle. This is showing the first stage of the sort
+unit pipeline. It shows the input and output of one of the stage 0
+min/max units.
 
-![](assets/fig/waveform.png)
+![](img/tut07-waves.png)
+
+To simplify rerunning a simulation, we can put the above command lines in
+a shell script. We have created such a run script for you. Let's take a
+look to confirm these scripts match the manual commands we used above.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% cat ./05-synopsys-vcs-baglsim/run
+```
+
+You can rerun back-annotated gate-level simulation as follows.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% ./05-synopsys-vcs-baglsim/run
+```
+
+4. Synopsys PrimeTime for Power Analysis
+--------------------------------------------------------------------------
+
+Synopsys PrimeTime (PT) is primarily used for very accurate "sign-off"
+static timing analysis (more accurate than the analysis performed by
+Synopsys DC and Cadence Innovus), but in this course, we will only use
+Synopsys PT for power analysis. There are many ways to perform power
+analysis. We can use Synopsys DC and Cadence Innovus for statistical
+power analysis where we simply assume some toggle probability on each
+net. For more accurate power analysis we need to find out the actual
+activity for every net for a given experiment, which is exactly what the
+`.saif` file from the previous section provides.
+
+We will be running Synopsys PT in a separate directory to keep the files
+separate from the other tools.
+
+```bash
+% mkdir -p $TOPDIR/asic/build-sort/06-synopsys-pt-pwr
+% cd $TOPDIR/asic/build-sort/06-synopsys-pt-pwr
+% pt_shell
+```
+
+To make it easier to copy-and-paste commands from this document, we tell
+Synopsys PT to ignore the prefix `pt_shell>` using the following:
+
+```
+pt_shell> alias "pt_shell>" ""
+```
+
+### 4.1. Initial Setup
+
+We begin by setting the `target_library` and `link_library` variables as
+before.
+
+```
+pt_shell> set_app_var target_library "$env(ECE6745_STDCELLS)/stdcells.db"
+pt_shell> set_app_var link_library   "* $env(ECE6745_STDCELLS)/stdcells.db"
+```
+
+Since Synopsys PT is primarily used for static timing analysis, we need
+to explicitly tell Synopsys PT that we want to use it for power analysis.
+
+```
+pt_shell> set_app_var power_enable_analysis true
+```
+
+### 4.2. Inputs
+
+We need to read in the gate-level netlist, tell Synopsys PT we want to do
+power analysis for the top-level module, and link the design (i.e.,
+recursively resolve all of the module references starting from the
+top-level module).
+
+```
+pt_shell> read_verilog ../04-cadence-innovus-pnr/post-pnr.v
+pt_shell> current_design SortUnitStruct
+pt_shell> link_design
+```
+
+We need to read in the actual activity factors which will be used for
+power analysis. The `.saif` file comes from a `.vcd` file which in turn
+came from running a simulation with a test harness. We need to strip off
+part of the instance names in the `.saif` file since the gate-level
+netlist does not have this test harness.
+
+```
+pt_shell> read_saif ../05-synopsys-vcs-baglsim/waves.saif -strip_path Top/DUT
+```
+
+The `.db` file includes parasitic capacitance estimates for every pin of
+every standard cell, but to improve the accuracy of power analysis, we
+also need to include parasitic capacitances from the interconnect. Recall
+that we used Cadence Innovus to generate exactly this information in a
+`.spef` file. So we now read in these additional parasitic capacitance
+values for every net in the gate-level netlist.
+
+```
+pt_shell> read_parasitics -format spef ../04-cadence-innovus-pnr/post-pnr.spef
+```
+
+### 4.3. Timing Constraints
+
+In order to do power analysis, Synopsys PT needs to know the clock
+period. Here we will set the clock frequency to be the same as the
+initial clock constraint, but note that this is only valid if our design
+actually met timing. If our design has negative slack, then this means we
+cannot actually run the design at the target clock frequency and we will
+need to iterate to meet timing.
+
+```
+pt_shell> create_clock clk -name ideal_clock1 -period 0.7
+```
+
+### 4.4. Power Analysis
+
+We now have everything we need to perform the power analysis: (1) the
+activity factor of a subset set of the nets, (2) the capacitance of every
+net/port, (3) the supply voltage, and (4) the clock frequency. We use the
+`update_power` command to propagate activity factors to unannotated nest
+and to estimate the power of our design.
+
+```
+pt_shell> update_power
+```
+
+### 4.5. Outputs
+
+We can use the `report_power` command to show a high-level overview of
+how much power the sort unit consumes.
+
+```
+pt_shell> report_power
+ ...
+                Internal  Switching  Leakage    Total
+ Power Group    Power     Power      Power      Power   (     %)  Attrs
+ -----------------------------------------------------------------------
+ clock_network  5.871e-04 2.163e-04 9.175e-08 8.035e-04 (29.22%)  i
+ register       6.058e-04 1.292e-04 7.822e-06 7.428e-04 (27.01%)
+ combinational  6.564e-04 5.365e-04 1.092e-05 1.204e-03 (43.77%)
+ sequential        0.0000    0.0000    0.0000    0.0000 ( 0.00%)
+ memory            0.0000    0.0000    0.0000    0.0000 ( 0.00%)
+ io_pad            0.0000    0.0000    0.0000    0.0000 ( 0.00%)
+ black_box         0.0000    0.0000    0.0000    0.0000 ( 0.00%)
+
+  Net Switching Power  = 8.819e-04   (32.07%)
+  Cell Internal Power  = 1.849e-03   (67.25%)
+  Cell Leakage Power   = 1.884e-05   ( 0.68%)
+                         ---------
+Total Power            = 2.750e-03  (100.00%)
+```
+
+These numbers are in Watts. We can see that the sort unit consumes
+~2.75mW of power when processing random input data. Power is the rate
+change of energy (i.e., energy divided by execution time), so the total
+energy is just the product of the total power, the number of cycles, and
+the cycle time. When we ran the sort unit simulator at the beginning of
+the tutorial, we saw that the simulation required 106 cycles. Assuming
+our sort unit runs as 0.7ns, this means the total energy is 2.5mW * 106 *
+0.7ns = 185pJ. Since we are doing 100 sorts, this corresponds to about
+1.8pJ per sort.
+
+The power is broken down into internal, switching, and leakage power.
+Internal and switching power are both forms of dynamic power, while
+leakage power is a form of static power. Notice that in this case, the
+dynamic power is much more significant than the static power. Internal
+power was described earlier in this tutorial, so you may want to revisit
+that section. Note that internal power includes short circuit power, but
+it can also include the local clock power internal to the cell. In this
+overview, the power is also broken down by the power consumed in the
+global clock network, registers, and combinational logic. Switching power
+is the power dissipated by the charging and discharging of the load
+capacitance at the output of each cell. Leakage power is the constant
+power due to subthreshold leakage. Sometimes we might want to factor out
+the static leakage power and focus more on the dynamic energy since
+including leakage power would mix energy and performance (i.e., using
+more cycles requires more leakage power even if we are not doing any more
+work during those cycles).
+
+Although the above breakdown is somewhat useful, it is even more useful
+to use the `report_power` command to show how much power each module
+consumes in the design.
+
+```
+pt_shell> report_power -hierarchy
+ ...
+                                      Int      Switch   Leak     Total
+Hierarchy                             Power    Power    Power    Power    %
+----------------------------------------------------------------------------------
+SortUnitStruct                        1.85e-03 8.82e-04 1.88e-05 2.75e-03 100.0
+  v (SortUnitStruct_p_nbits8)         1.68e-03 8.12e-04 1.62e-05 2.51e-03  91.2
+    mmuA_S1 (MinMaxUnit_p_nbits8_0)   7.75e-05 8.51e-05 1.21e-06 1.64e-04   6.0
+    mmuA_S2 (MinMaxUnit_p_nbits8_3)   7.83e-05 9.41e-05 1.26e-06 1.74e-04   6.3
+    elm3_S2S3 (vc_Reg_p_nbits8_1)     9.39e-05 3.49e-06 6.31e-07 9.80e-05   3.6
+    elm2_S2S3 (vc_Reg_p_nbits8_2)     9.37e-05 1.25e-05 6.33e-07 1.07e-04   3.9
+    mmuA_S3 (MinMaxUnit_p_nbits8_1)   7.77e-05 8.44e-05 1.31e-06 1.63e-04   5.9
+    elm1_S2S3 (vc_Reg_p_nbits8_3)     9.71e-05 1.17e-05 6.31e-07 1.09e-04   4.0
+    elm3_S0S1 (vc_Reg_p_nbits8_9)     1.01e-04 1.63e-05 8.07e-07 1.18e-04   4.3
+    elm0_S2S3 (vc_Reg_p_nbits8_4)     9.42e-05 3.24e-06 6.30e-07 9.81e-05   3.6
+    elm2_S0S1 (vc_Reg_p_nbits8_10)    1.04e-04 1.57e-05 8.04e-07 1.20e-04   4.4
+    elm1_S0S1 (vc_Reg_p_nbits8_11)    1.01e-04 1.64e-05 8.04e-07 1.18e-04   4.3
+    val_S2S3 (vc_ResetReg_p_nbits1_1) 9.19e-06 7.25e-07 1.17e-07 1.00e-05   0.4
+    elm0_S0S1 (vc_Reg_p_nbits8_0)     1.01e-04 1.34e-05 8.04e-07 1.15e-04   4.2
+    val_S0S1 (vc_ResetReg_p_nbits1_0) 1.02e-05 3.57e-07 4.51e-07 1.10e-05   0.4
+    elm3_S1S2 (vc_Reg_p_nbits8_5)     9.34e-05 1.62e-05 6.32e-07 1.10e-04   4.0
+    elm2_S1S2 (vc_Reg_p_nbits8_6)     9.46e-05 1.25e-05 6.32e-07 1.08e-04   3.9
+    elm1_S1S2 (vc_Reg_p_nbits8_7)     9.67e-05 1.24e-05 6.31e-07 1.10e-04   4.0
+    mmuB_S1 (MinMaxUnit_p_nbits8_4)   7.48e-05 8.74e-05 1.19e-06 1.63e-04   5.9
+    mmuB_S2 (MinMaxUnit_p_nbits8_2)   7.12e-05 8.76e-05 1.27e-06 1.60e-04   5.8
+    elm0_S1S2 (vc_Reg_p_nbits8_8)     9.50e-05 1.19e-05 6.32e-07 1.08e-04   3.9
+    val_S1S2 (vc_ResetReg_p_nbits1_2) 9.18e-06 7.81e-08 1.17e-07 9.38e-06   0.3
+```
+
+From this breakdown, you can see that each min/max unit consumes about 6%
+of the total power and each register consumes about 4% of the total
+power. There are five min/max units so overall they consume about 30% of
+the total power and there are 12 registers so overall they consume 48% of
+the total power. So while each min/max unit consumes more energy than
+each register, there are more registers than min/max units such that
+overall more energy is consumed in the registers than the min/max units.
+
+Finally, we go ahead and exit Synopsys PT.
+
+### 4.6. Automating Power Analysis
+
+```
+pt_shell> exit
+```
+
+You can automate the above steps by putting a sequence of commands in a
+`.tcl` file and run Synopsys PT using those commands in one step like
+this:
+
+```bash
+% cd $TOPDIR/asic/build-sort/06-synopsys-pt-pwr
+% pt_shell -f run.tcl
+```
+
+To further simplify rerunning this step, we can put the above command
+line in its own shell script. We have created such run scripts for you.
+Let's take a look to confirm these scripts match the manual commands we
+used above.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% cat ./06-synopsys-pt-pwr/run
+% cat ./06-synopsys-pt-pwr/run.tcl
+```
+
+You can rerun power analysis as follows.
+
+```bash
+% cd $TOPDIR/asic/build-sort
+% ./06-synopsys-pt-pwr/run
+```
+
+5. To-Do On Your Own
+--------------------------------------------------------------------------
+
+Now we can use what you have learned so far to push the GCD unit through
+the ASIC front-end and back-end flow. First, run a simulation of the GCD
+unit.
+
+```
+% cd $TOPDIR/sim/build
+% ../tut3_verilog/gcd/gcd-sim --impl rtl --input random --stats --translate --dump-vtb
+% less GcdUnit__pickled.v
+```
+
+Now create a new ASIC build directory and copy the scripts we used to
+push the sort unit through the ASIC front-end flow.
+
+```
+% mkdir -p $TOPDIR/asic/build-gcd/01-synopsys-vcs-rtlsim
+% mkdir -p $TOPDIR/asic/build-gcd/02-synopsys-dc-synth
+% mkdir -p $TOPDIR/asic/build-gcd/03-synopsys-vcs-ffglsim
+% mkdir -p $TOPDIR/asic/build-gcd/04-cadence-innovus-pnr
+% mkdir -p $TOPDIR/asic/build-gcd/05-synopsys-vcs-baglsim
+% mkdir -p $TOPDIR/asic/build-gcd/06-synopsys-pt-pwr
+
+% cp $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim/run              $TOPDIR/asic/build-gcd/01-synopsys-vcs-rtlsim
+% cp $TOPDIR/asic/build-sort/02-synopsys-dc-synth/run.tcl            $TOPDIR/asic/build-gcd/02-synopsys-dc-synth
+% cp $TOPDIR/asic/build-sort/02-synopsys-dc-synth/run                $TOPDIR/asic/build-gcd/02-synopsys-dc-synth
+% cp $TOPDIR/asic/build-sort/03-synopsys-vcs-ffglsim/run             $TOPDIR/asic/build-gcd/03-synopsys-vcs-ffglsim
+% cp $TOPDIR/asic/build-sort/04-cadence-innovus-pnr/setup-timing.tcl $TOPDIR/asic/build-gcd/04-cadence-innovus-pnr/setup-timing.tcl
+% cp $TOPDIR/asic/build-sort/04-cadence-innovus-pnr/run              $TOPDIR/asic/build-gcd/04-cadence-innovus-pnr/run
+% cp $TOPDIR/asic/build-sort/04-cadence-innovus-pnr/run.tcl          $TOPDIR/asic/build-gcd/04-cadence-innovus-pnr/run.tcl
+% cp $TOPDIR/asic/build-sort/05-synopsys-vcs-baglsim/run             $TOPDIR/asic/build-gcd/05-synopsys-vcs-baglsim/run
+% cp $TOPDIR/asic/build-sort/06-synopsys-pt-pwr/run                  $TOPDIR/asic/build-gcd/06-synopsys-pt-pwr/run
+% cp $TOPDIR/asic/build-sort/06-synopsys-pt-pwr/run.tcl              $TOPDIR/asic/build-gcd/06-synopsys-pt-pwr/run.tcl
+```
+
+Now open up each of these files and modify so they push the GCD unit
+instead of the sort unit through the flow. You will need to update the
+name of the Verilog source files and the top module name as follows:
+
+ - Verilog source file name: `GcdUnit__pickled.v`
+ - Verilog test source file name: `GcdUnit_random_tb.v`
+ - Top module name for synthesis: `GcdUnit`
+
+Basically, you just need to change `SortUnitStruct` to `GcdUnit` in all
+of the run scripts. You can use `sed` to do this:
+
+```
+% cd $TOPDIR/asic/build-gcd
+% find . -type f -exec sed -i.bak 's/SortUnitStruct/GcdUnit/' {} \;
+```
+
+Keep the cycle time constraint as 700ps and the other constraints as
+before. Once you have updated the scripts you can then push the GCD unit
+through the flow like this:
+
+```bash
+% cd $TOPDIR/asic/build-gcd
+% ./01-synopsys-vcs-rtlsim/run
+% ./02-synopsys-dc-synth/run
+% ./03-synopsys-vcs-ffglsim/run
+% ./04-cadence-innovus-pnr/run
+% ./05-synopsys-vcs-baglsim/run
+% ./06-synopsys-pt-pwr/run
+```
+
+Carefully look at the post-synthesis and post-pnr timing reports to ensure
+your design meetings timing:
+
+```bash
+% cd $TOPDIR/asic/build-gcd
+% cat 02-synopsys-dc-synth/timing.rpt
+% cat 04-cadence-innovus-pnr/timing-setup.rpt
+% cat 04-cadence-innovus-pnr/timing-hold.rpt
+```
+
+If your design does not meet timing post-pnr, increase the cycle time
+constraint and try again until it does meet timing. If your design does
+not meet timing post-synthesis but _does_ meet timing post-pnr this is
+means your overall design _does_ meet timing. It just means the timing
+analysis used by Synopsys DC was overly conservative and/or Cadence
+Innovus was able to further optimize your design to meet timing.
+Carefully look and the results from running the four-state RTL
+simulation, fast-functional gate-level simulation, and back-annotated
+gate-level simulation to verify that the design is passing the
+simulations. Spend time looking at the post-synthesis gate-level netlist
+in `post-pnr.v` and load the design into Cadence Innovus to examine the
+placement. Convince yourself that the GCD unit was successfully pushed
+through the entire ASIC flow.
+

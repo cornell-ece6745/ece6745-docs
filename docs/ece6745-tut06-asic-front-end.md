@@ -227,7 +227,7 @@ Take a moment to open up the translated Verilog which should be in a file
 named `SortUnitStruct__pickled.v`. The Verilog module name includes a
 suffix to make it unique for a specific set of parameters.
 
-2. Using Synopsys VCS for 4-state RTL simulation
+2. Synopsys VCS for 4-state RTL simulation
 -------------------------------------------------------------------------
 
 Using the PyMTL simulation framework can give us a good foundation in
@@ -343,7 +343,7 @@ will only be doing power analysis using the gate-level netlist.
 ```
 
 To simplify rerunning a simulation, we can put the above command lines in
-a shell script. We have created such run scripts for you. Let's take a
+a shell script. We have created such a run script for you. Let's take a
 look to confirm these scripts match the manual commands we used above.
 
 ```bash
@@ -358,7 +358,7 @@ You can rerun four-state RTL simulation as follows.
 % ./01-synopsys-vcs-rtlsim/run
 ```
 
-3. Using Synopsys Design Compiler for Synthesis
+3. Synopsys Design Compiler for Synthesis
 --------------------------------------------------------------------------
 
 We use Synopsys Design Compiler (DC) to synthesize Verilog RTL models
@@ -406,7 +406,25 @@ Note that we can use `$env(ECE6745_STDCELLS)` to get access to the
 containing the standard cells, and that we are referencing the abstract
 logical and timing views in the `.db` format.
 
-### 3.2. Elaborate
+We also need to tell Synopsys DC not use a specific kind of scan
+flip-flop which is included in our standard-cell library. If Synopsys DC
+uses these flip-flops it can cause isses with gate-level simulation. We
+can do this using the `set_dont_use` command as fllows.
+
+```
+dc_shell> set_dont_use {
+  NangateOpenCellLibrary/SDFF_X1
+  NangateOpenCellLibrary/SDFF_X2
+  NangateOpenCellLibrary/SDFFS_X1
+  NangateOpenCellLibrary/SDFFS_X2
+  NangateOpenCellLibrary/SDFFR_X1
+  NangateOpenCellLibrary/SDFFR_X2
+  NangateOpenCellLibrary/SDFFRS_X1
+  NangateOpenCellLibrary/SDFFRS_X2
+}
+```
+
+### 3.2. Inputs
 
 As an aside, if you want to learn more about any command in any Synopsys
 tool, you can simply type `man toolname` at the shell prompt. We are now
@@ -558,7 +576,7 @@ free to go back and experiment with this command.
 dc_shell> compile_ultra -no_autoungroup -gate_clock`
 ```
 
-### 3.4. Outputs and Reports
+### 3.4. Outputs
 
 Now that we have synthesized the design, we output the resulting
 gate-level netlist in two different file formats: `.ddc` (which we will
@@ -570,7 +588,7 @@ place and route portion of the flow.
 ```
 dc_shell> write -format ddc     -hierarchy -output post-synth.ddc
 dc_shell> write -format verilog -hierarchy -output post-synth.v
-dc_shell> write_sdc -nosplit post-synth.sdc
+dc_shell> write_sdc post-synth.sdc
 ```
 
 We can use various commands to generate reports about timing and area.
@@ -579,7 +597,7 @@ design. Part of the report is displayed below. Note that this report was
 generated using a clock constraint of 400ps.
 
 ```
-dc_shell> report_timing -nosplit -nets
+dc_shell> report_timing -nets
  ...
  Point                                      Fanout Incr  Path
  ---------------------------------------------------------------
@@ -768,7 +786,7 @@ You can rerun synthesis as follows.
 % ./02-synopsys-dc-synth/run
 ```
 
-4. Using Synopsys VCS for Fast-Functional Gate-Level Simulation
+4. Synopsys VCS for Fast-Functional Gate-Level Simulation
 --------------------------------------------------------------------------
 
 Before synthesis, we used Synopsys VCS to do a 4-state simulation. This
@@ -806,7 +824,7 @@ long after the rising edge we change the inputs and how long after the
 rising edge we check the outputs.
 
 To simplify rerunning a simulation, we can put the above command lines in
-a shell script. We have created such run scripts for you. Let's take a
+a shell script. We have created such a run script for you. Let's take a
 look to confirm these scripts match the manual commands we used above.
 
 ```bash
@@ -825,7 +843,7 @@ You can rerun fast-functional gate-level simulation as follows.
 --------------------------------------------------------------------------
 
 Now we can use what you have learned so far to push the GCD unit through
-the flow. First, run a simulation of the GCD unit.
+the ASIC front-end flow. First, run a simulation of the GCD unit.
 
 ```
 % cd $TOPDIR/sim/build
@@ -856,9 +874,16 @@ name of the Verilog source files and the top module name as follows:
  - Top module name for synthesis: `GcdUnit`
 
 Basically, you just need to change `SortUnitStruct` to `GcdUnit` in all
-of the run scripts. Keep the cycle time constraint as 700ps and the other
-constraints as before. Once you have updated the scripts you can then
-push the GCD unit through the flow like this:
+of the run scripts. You can use `sed` to do this:
+
+```
+% cd $TOPDIR/asic/build-gcd
+% find . -type f -exec sed -i.bak 's/SortUnitStruct/GcdUnit/' {} \;
+```
+
+Keep the cycle time constraint as 700ps and the other constraints as
+before. Once you have updated the scripts you can then push the GCD unit
+through the flow like this:
 
 ```bash
 % cd $TOPDIR/asic/build-gcd
