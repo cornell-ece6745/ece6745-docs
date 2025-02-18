@@ -549,7 +549,8 @@ delay of the critical path) and hold time violations (e.g., by inserting
 buffers to increase the delay of certain fast paths).
 
 ```
-innovus> optDesign -postCTS -setup -hold
+innovus> optDesign -postCTS -setup
+innovus> optDesign -postCTS -hold
 ```
 
 ### 2.7. Routing
@@ -582,7 +583,8 @@ reduce the delay of the critical path) and hold time violations (e.g., by
 inserting buffers to increase the delay of certain fast paths).
 
 ```
-innovus> optDesign -postRoute -setup -hold
+innovus> optDesign -postRoute -setup
+innovus> optDesign -postRoute -hold
 ```
 
 ### 2.8. Finishing
@@ -668,8 +670,8 @@ chip.
 
 ```
 innovus> streamOut post-pnr.gds \
-            -merge "$env(ECE6745_STDCELLS)/stdcells.gds" \
-            -mapFile "$env(ECE6745_STDCELLS)/rtk-stream-out.map"
+  -merge "$env(ECE6745_STDCELLS)/stdcells.gds" \
+  -mapFile "$env(ECE6745_STDCELLS)/rtk-stream-out.map"
 ```
 
 We can also use Cadence Innovus to do timing, area, and power analysis

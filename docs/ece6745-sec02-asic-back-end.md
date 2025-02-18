@@ -501,8 +501,8 @@ chip.
 
 ```
 innovus> streamOut post-pnr.gds \
-           -merge "$env(ECE6745_STDCELLS)/stdcells.gds" \
-           -mapFile "$env(ECE6745_STDCELLS)/rtk-stream-out.map"
+  -merge "$env(ECE6745_STDCELLS)/stdcells.gds" \
+  -mapFile "$env(ECE6745_STDCELLS)/rtk-stream-out.map"
 ```
 
 We can also use Cadence Innovus to do timing and area analysis similar to
