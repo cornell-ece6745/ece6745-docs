@@ -183,7 +183,7 @@ flow.
 ### 2.2. Simulate, Synthesize, Simulate
 
 We have provided you run scripts that will reproduce the three key steps
-we learned about in the previous discussion sections:
+we learned about in the previous discussion section:
 
  - Use Synopsys VCS for four-state RTL simulation
  - Use Synopsys DC to synthesize RTL to gate-level netlist
@@ -194,14 +194,14 @@ commands we used in the previous discussion section. Here is the run
 script for four-start RTL simulation.
 
 ```bash
-% cd $TOPDIR/asic
+% cd $TOPDIR/asic/build-regincr
 % cat ./01-synopsys-vcs-rtlsim/run
 ```
 
 Here is the run script for synthesis.
 
 ```bash
-% cd $TOPDIR/asic
+% cd $TOPDIR/asic/build-regincr
 % cat ./02-synopsys-dc-synth/run
 ```
 
@@ -212,7 +212,7 @@ the design; write outputs; and write final outputs (i.e., Verilog and
 DDC) and reports (i.e., timing report and area report).
 
 ```bash
-% cd $TOPDIR/asic
+% cd $TOPDIR/asic/build-regincr
 % cat ./02-synopsys-dc-synth/run.tcl
 ```
 
@@ -222,14 +222,14 @@ this simulation takes as input the Verilog for the standard-cell library
 and the Verilog for the post-synthesis gate-level netlist.
 
 ```bash
-% cd $TOPDIR/asic
+% cd $TOPDIR/asic/build-regincr
 % cat ./03-synopsys-vcs-ffglsim/run
 ```
 
 You can run these steps as follows:
 
 ```bash
-% cd $TOPDIR/asic
+% cd $TOPDIR/asic/build-regincr
 % ./01-synopsys-vcs-rtlsim/run
 % ./02-synopsys-dc-synth/run
 % ./03-synopsys-vcs-ffglsim/run
@@ -240,7 +240,7 @@ fast-functional gate-level simulation. Then take a look at the synthesis
 reports.
 
 ```bash
-% cd $TOPDIR/asic
+% cd $TOPDIR/asic/build-regincr
 % less ./02-synopsys-dc-synth/area.rpt
 % less ./02-synopsys-dc-synth/timing.rpt
 ```
@@ -249,7 +249,7 @@ Finally, take a few minutes to examine the resulting Verilog gate-level
 netlist. Notice that the module hierarchy is preserved.
 
 ```bash
-% cd $TOPDIR/asic
+% cd $TOPDIR/asic/build-regincr
 % less ./02-synopsys-dc-synth/post-synth.v
 ```
 
@@ -263,8 +263,8 @@ We will be running Cadence Innovus in a separate directory to keep the
 input and output files separate.
 
 ```bash
-% mkdir -p $TOPDIR/asic/04-cadence-innovus-pnr
-% cd $TOPDIR/asic/04-cadence-innovus-pnr
+% mkdir -p $TOPDIR/asic/build-regincr/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-regincr/04-cadence-innovus-pnr
 ```
 
 ### 3.1. Constraint and Timing Input Files
@@ -278,7 +278,7 @@ stable 200ps before the rising edge). Use VS Code to create a file named
 `constraints.sdc`.
 
 ```bash
-% cd $TOPDIR/asic/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-regincr/04-cadence-innovus-pnr
 % code constraints.sdc
 ```
 
@@ -307,7 +307,7 @@ corner (i.e., average PVT). Use VS Code to create a file named
 `setup-timing.tcl`.
 
 ```bash
-% cd $TOPDIR/asic/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-regincr/04-cadence-innovus-pnr
 % code setup-timing.tcl
 ```
 
@@ -546,8 +546,8 @@ that it meets all setup and hold time constraints. Here is how to run VCS
 for RTL simulation:
 
 ```bash
-% mkdir -p $TOPDIR/asic/05-synopsys-vcs-baglsim
-% cd $TOPDIR/asic/05-synopsys-vcs-baglsim
+% mkdir -p $TOPDIR/asic/build-regincr/05-synopsys-vcs-baglsim
+% cd $TOPDIR/asic/build-regincr/05-synopsys-vcs-baglsim
 % vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
     +neg_tchk +sdfverbose \
     -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
@@ -565,7 +565,7 @@ You should see a `simv` binary which is the compiled RTL simulator which
 you can run like this:
 
 ```bash
-% cd $TOPDIR/asic/05-synopsys-vcs-baglsim
+% cd $TOPDIR/asic/build-regincr/05-synopsys-vcs-baglsim
 % ./simv
 ```
 
@@ -573,7 +573,7 @@ It should pass the test. Now let's look at the resulting waveforms using
 Surfer.
 
 ```bash
-% cd $TOPDIR/asic/05-synopsys-vcs-baglsim
+% cd $TOPDIR/asic/build-regincr/05-synopsys-vcs-baglsim
 % code waves.vcd
 ```
 
@@ -592,7 +592,7 @@ faster than the 1ns clock constraint we used during synthesis and
 place-and-route).
 
 ```bash
-% cd $TOPDIR/asic/05-synopsys-vcs-baglsim
+% cd $TOPDIR/asic/build-regincr/05-synopsys-vcs-baglsim
 % vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
     +neg_tchk +sdfverbose \
     -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
@@ -612,7 +612,7 @@ the resulting waveforms you can see that the adder does not have time to
 finish its calculation and cannot meet the setup time contraint.
 
 ```bash
-% cd $TOPDIR/asic/05-synopsys-vcs-baglsim
+% cd $TOPDIR/asic/build-regincr/05-synopsys-vcs-baglsim
 % code waves-300ps.vcd
 ```
 
@@ -620,7 +620,7 @@ For power analysis we need to convert our VCD file into an SAIF file. The
 SAIF file has just the activity factors for every net in the design.
 
 ```bash
-% cd $TOPDIR/asic/05-synopsys-vcs-baglsim
+% cd $TOPDIR/asic/build-regincr/05-synopsys-vcs-baglsim
 % vcd2saif -input waves.vcd -output waves.saif
 ```
 
@@ -641,8 +641,8 @@ We start by creating a subdirectory for our work and then launching
 Synopsys PT.
 
 ```bash
-% mkdir -p $TOPDIR/asic/06-synopsys-pt-pwr
-% cd $TOPDIR/asic/06-synopsys-pt-pwr
+% mkdir -p $TOPDIR/asic/build-regincr/06-synopsys-pt-pwr
+% cd $TOPDIR/asic/build-regincr/06-synopsys-pt-pwr
 % pt_shell
 ```
 

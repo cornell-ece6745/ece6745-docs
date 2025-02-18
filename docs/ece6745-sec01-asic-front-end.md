@@ -143,7 +143,7 @@ will write a generic multi-stage registered incrementer. For this section
 Python for test harnesses, simulation drivers, function-level models, and
 cycle-level models.
 
-### 2.1. Implement, Test, and Translate a Registered Incrementer
+### 2.1. Implement and Test a Registered Incrementer
 
 Now let's run all of the tests for the registered incrementer:
 
@@ -257,24 +257,17 @@ ASIC flow. Take a look at the generated pickled Verilog file.
 % less RegIncr_noparam__pickled.v
 ```
 
-### 2.2. Implement, Test, and Translate Multi-Stage Registered Incrementer
+### 2.2. Test the Multi-Stage Registered Incrementer
 
 Now let's work on composing a single registered incrementer into a
 multi-stage registered incrementer. We will be using _static elaboration_
 to make the multi-stage registered incrementer _generic_. In other words,
 our design will be parameterized by the number of stages so we can easily
-generate a pipeline with one stage, two stages, four stages, etc. Let's
-start by running all of the tests for the multi-stage registered
-incrementer.
+generate a pipeline with one stage, two stages, four stages, etc.
 
-```bash
-% cd $TOPDIR/sim/build
-% pytest ../tut3_verilog/regincr/test/RegIncrNstage_test.py
-```
-
-Use VS Code to open the implementation and uncomment the static
-elabroation logic to instantiate a pipeline of registered incrementers.
-The Verilog RTL implementation should look as follows:
+Use VS Code to open the implementation and look at the static elaboration
+logic to instantiate a pipeline of registered incrementers. The Verilog
+RTL implementation looks as follows:
 
     `ifndef TUT3_VERILOG_REGINCR_REG_INCR_NSTAGE_V
     `define TUT3_VERILOG_REGINCR_REG_INCR_NSTAGE_V
@@ -329,7 +322,7 @@ The Verilog RTL implementation should look as follows:
 
     `endif /* TUT3_VERILOG_REGINCR_REG_INCR_NSTAGE_V */
 
-Before re-running the tests, let's take a look at how we are doing the
+Before running the tests, let's take a look at how we are doing the
 testing in the corresponding test script. Use VS Code to open up
 `RegIncrNstage_test.py`. Notice how PyMTL enables sophisticated testing
 for highly parameterized components. The test script includes directed
@@ -338,35 +331,22 @@ random values, and also includes random testing with 1, 2, 3, 4, 5, 6
 stages. Writing a similar test harness in Verilog would likely require
 10x more code and be significantly more tedious!
 
-Let's re-run a single test and use line tracing to see the data moving
-through the pipeline:
-
-```bash
-% cd $TOPDIR/sim/build
-% pytest ../tut3_verilog/regincr/test/RegIncrNstage_test.py -sv -k test_random[4]
-```
-
-And now let's run all of the tests:
+Let's run all of the tests for the multi-stage registered incrementer.
 
 ```bash
 % cd $TOPDIR/sim/build
 % pytest ../tut3_verilog/regincr/test/RegIncrNstage_test.py -sv
-% less RegIncrNstage__p_nstages_4__pickled.v
 ```
 
-Notice how PyMTL3 has generated a wrapper which picks a specific
-parameter value for this instance of the multi-stage registered
-incrementer.
-
-### 2.3. Simulate Multi-Stage Registered Incrementer
+### 2.3. Interactive Simulator for Multi-Stage Registered Incrementer
 
 Test scripts are great for verification, but when we want to push a
-design through the flow we usually want to use a simulator to drive that
-process. A simulator is meant for evaluting the area, energy, and
-performance of a design as opposed to verification. We have included a
-simple simulator called `regincr-sim` which takes a list of values on the
-command line and sends these values through the pipeline. Let's see the
-simulator in action:
+design through the flow we usually want to use an interactive simulator
+to drive that process. An interactive simulator is meant for evaluting
+the area, energy, and performance of a design as opposed to verification.
+We have included a simple interactive simulator called `regincr-sim`
+which takes a list of values on the command line and sends these values
+through the pipeline. Let's see the simulator in action:
 
 ```bash
 % cd $TOPDIR/sim/build
@@ -381,9 +361,11 @@ push through the ASIC front-end flow.
 % less RegIncr4stage__pickled.v
 ```
 
-The simulator will also generate pure-Verilog test bench with associated
-test cases which we can use to run four-state RTL and gate-level
-simulation.
+Notice how PyMTL3 has generated a wrapper which picks a specific
+parameter value for this instance of the multi-stage registered
+incrementer. The interactive simulator will also generate pure-Verilog
+test bench with associated test cases which we can use to run four-state
+RTL and gate-level simulation.
 
 ```bash
 % cd $TOPDIR/sim/build
@@ -404,20 +386,20 @@ Verilog test-bench from scratch). Here is how to run VCS for RTL
 simulation:
 
 ```bash
-% mkdir -p $TOPDIR/asic/01-synopsys-vcs-rtlsim
-% cd $TOPDIR/asic/01-synopsys-vcs-rtlsim
+% mkdir -p $TOPDIR/asic/build-regincr/01-synopsys-vcs-rtlsim
+% cd $TOPDIR/asic/build-regincr/01-synopsys-vcs-rtlsim
 % vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
     +vcs+dumpvars+waves.vcd \
-    +incdir+../../sim/build \
-    ../../sim/build/RegIncr4stage__pickled.v \
-    ../../sim/build/RegIncr4stage_basic_tb.v
+    +incdir+${TOPDIR}/sim/build \
+    ${TOPDIR}/sim/build/RegIncr4stage__pickled.v \
+    ${TOPDIR}/sim/build/RegIncr4stage_basic_tb.v
 ```
 
 You should see a `simv` binary which is the compiled RTL simulator which
 you can run like this:
 
 ```bash
-% cd $TOPDIR/asic/01-synopsys-vcs-rtlsim
+% cd $TOPDIR/asic/build-regincr/01-synopsys-vcs-rtlsim
 % ./simv
 ```
 
@@ -450,8 +432,8 @@ We start by creating a subdirectory for our work, and then launching
 Synopsys DC.
 
 ```bash
-% mkdir -p $TOPDIR/asic/02-synopsys-dc-synth
-% cd $TOPDIR/asic/02-synopsys-dc-synth
+% mkdir -p $TOPDIR/asic/build-regincr/02-synopsys-dc-synth
+% cd $TOPDIR/asic/build-regincr/02-synopsys-dc-synth
 % dc_shell-xg-t
 ```
 
@@ -477,7 +459,7 @@ module references starting from the top-level module, and also infers
 various registers and/or advanced data-path components.
 
 ```
-dc_shell> analyze -format sverilog ../../sim/build/RegIncr4stage__pickled.v
+dc_shell> analyze -format sverilog ../../../sim/build/RegIncr4stage__pickled.v
 dc_shell> elaborate RegIncr4stage
 ```
 
@@ -595,15 +577,15 @@ time and all signals will still change on the rising clock edge just like
 in RTL simulation. Here is how to run VCS for RTL simulation.
 
 ```bash
-% mkdir -p $TOPDIR/asic/03-synopsys-vcs-ffglsim
-% cd $TOPDIR/asic/03-synopsys-vcs-ffglsim
+% mkdir -p $TOPDIR/asic/build-regincr/03-synopsys-vcs-ffglsim
+% cd $TOPDIR/asic/build-regincr/03-synopsys-vcs-ffglsim
 % vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top\
     +delay_mode_zero \
     +vcs+dumpvars+waves.vcd \
-    +incdir+../../sim/build \
+    +incdir+${TOPDIR}/sim/build \
     ${ECE6745_STDCELLS}/stdcells.v \
     ../02-synopsys-dc-synth/post-synth.v \
-    ../../sim/build/RegIncr4stage_basic_tb.v
+    ${TOPDIR}/sim/build/RegIncr4stage_basic_tb.v
 ```
 
 The key difference from four-state RTL simulation is that this simulation
@@ -612,7 +594,7 @@ for the post-synthesis gate-level netlist. You should see a `simv` binary
 which is the compiled RTL simulator which you can run as follows.
 
 ```
-% cd $TOPDIR/asic/03-synopsys-vcs-ffglsim
+% cd $TOPDIR/asic/build-regincr/03-synopsys-vcs-ffglsim
 % ./simv
 ```
 
@@ -620,7 +602,7 @@ It should pass the test. Now let's look at the resulting waveforms using
 Surfer.
 
 ```
-% cd $TOPDIR/asic/03-synopsys-vcs-ffglsim
+% cd $TOPDIR/asic/build-regincr/03-synopsys-vcs-ffglsim
 % code waves.vcd
 ```
 
