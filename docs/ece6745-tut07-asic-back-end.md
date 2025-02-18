@@ -194,8 +194,8 @@ reports.
 
 ```bash
 % cd $TOPDIR/asic/build-sort
-% less ./02-synopsys-dc-synth/area.rpt
 % less ./02-synopsys-dc-synth/timing.rpt
+% less ./02-synopsys-dc-synth/area.rpt
 ```
 
 Finally, take a few minutes to examine the resulting Verilog gate-level
@@ -1394,7 +1394,7 @@ through the flow like this:
 ```
 
 Carefully look at the post-synthesis and post-pnr timing reports to ensure
-your design meetings timing:
+your design meetings timing.
 
 ```bash
 % cd $TOPDIR/asic/build-gcd

@@ -211,10 +211,10 @@ check every cycle on the outputs.
 % less SortUnitStruct__p_nbits_8_test_basic_tb.v
 ```
 
-### 2.2. Simulate Sort Unit
+### 2.2. Interactive Simulator for Sort Unit
 
-After running the tests we use the sort unit simulator to do the final
-evaluation.
+After running the tests we use the interactive simulator for the sort
+unit to do the final evaluation.
 
 ```bash
 % cd $TOPDIR/sim/build
@@ -593,12 +593,10 @@ dc_shell> write_sdc post-synth.sdc
 
 We can use various commands to generate reports about timing and area.
 The `report_timing` command will show the critical path through the
-design. Part of the report is displayed below. Note that this report was
-generated using a clock constraint of 400ps.
+design. Part of the report is displayed below.
 
 ```
 dc_shell> report_timing -nets
- ...
  Point                                      Fanout Incr  Path
  ---------------------------------------------------------------
  clock ideal_clock1 (rise edge)                    0.00  0.00
@@ -685,6 +683,48 @@ designs, sometimes the best situation is to tune the baseline so it meets
 timing and then ensure the alternative designs have similar cycle times.
 This will enable a fair comparison since all designs will be running at
 the same cycle time.
+
+The `report_area` command will show how much area is required to
+implement each module in the design.
+
+```
+                    Global cell area          Local cell area
+                    ------------------  ---------------------------
+Hierarchical cell   Absolute   Percent  Combi-    Noncombi-  Black-
+                    Total      Total    national  national   boxes   Design
+------------------  ---------  -------  --------  ---------  ------  -----------------------------------------
+SortUnitStruct       745.0660    100.0    0.0000     0.0000  0.0
+  SortUnitStruct
+v                    745.0660    100.0   35.9100     0.0000  0.0000  tut3_verilog_sort_SortUnitStruct_p_nbits8
+v/elm0_S0S1           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_0
+v/elm0_S1S2           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_8
+v/elm0_S2S3           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_4
+v/elm1_S0S1           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_11
+v/elm1_S1S2           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_7
+v/elm1_S2S3           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_3
+v/elm2_S0S1           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_10
+v/elm2_S1S2           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_6
+v/elm2_S2S3           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_2
+v/elm3_S0S1           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_9
+v/elm3_S1S2           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_5
+v/elm3_S2S3           36.1760      4.9    0.0000    36.1760  0.0000  vc_Reg_p_nbits8_1
+v/mmuA_S1             50.0080      6.7   50.0080     0.0000  0.0000  tut3_verilog_sort_MinMaxUnit_p_nbits8_0
+v/mmuA_S2             50.0080      6.7   50.0080     0.0000  0.0000  tut3_verilog_sort_MinMaxUnit_p_nbits8_3
+v/mmuA_S3             57.1900      7.7   57.1900     0.0000  0.0000  tut3_verilog_sort_MinMaxUnit_p_nbits8_1
+v/mmuB_S1             50.2740      6.7   50.2740     0.0000  0.0000  tut3_verilog_sort_MinMaxUnit_p_nbits8_4
+v/mmuB_S2             50.0080      6.7   50.0080     0.0000  0.0000  tut3_verilog_sort_MinMaxUnit_p_nbits8_2
+v/val_S0S1             5.8520      0.8    1.3300     4.5220  0.0000  vc_ResetReg_p_nbits1_0
+v/val_S1S2             5.8520      0.8    1.3300     4.5220  0.0000  vc_ResetReg_p_nbits1_2
+v/val_S2S3             5.8520      0.8    1.3300     4.5220  0.0000  vc_ResetReg_p_nbits1_1
+------------------  ---------  -------  --------  ---------  ------  -----------------------------------------
+Total                                   297.3880   447.6780  0.0000
+```
+
+The design requires 745um^2. Each pipeline register requires about 5% of
+the total area and each min/max unit requires about 7% of the total area.
+The area required for all 12 pipeline registers is about 60% of the total
+area, and the area required for all five of the min/max units is about
+35% of the total area.
 
 Finally, we go ahead and exit Synopsys DC.
 
