@@ -39,9 +39,9 @@ for the entire cluster of 25 servers. These servers are named as follows:
  - `ecelinux-02.ece.cornell.edu`
  - `ecelinux-03.ece.cornell.edu`
  - ...
- - `ecelinux-23.ece.cornell.edu`
- - `ecelinux-24.ece.cornell.edu`
- - `ecelinux-25.ece.cornell.edu`
+ - `ecelinux-18.ece.cornell.edu`
+ - `ecelinux-19.ece.cornell.edu`
+ - `ecelinux-20.ece.cornell.edu`
 
 At the beginning of the semester, **select a server and always use that
 same server.** Do not just log into `ecelinux.ece.cornell.edu`. Avoid
