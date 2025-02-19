@@ -132,7 +132,7 @@ simulator for our sort unit like this:
 
 ```bash
 % cd $TOPDIR/sim/build
-% ../tut3_verilog/sort/sort-sim --simple-mname --impl rtl-struct -stats \
+% ../tut3_verilog/sort/sort-sim --short-mname --impl rtl-struct --stats \
                                 --translate --dump-vtb
 num_cycles          = 106
 num_cycles_per_sort = 1.06
