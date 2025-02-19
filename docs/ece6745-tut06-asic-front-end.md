@@ -218,7 +218,8 @@ unit to do the final evaluation.
 
 ```bash
 % cd $TOPDIR/sim/build
-% ../tut3_verilog/sort/sort-sim --impl rtl-struct --stats --translate --dump-vtb
+% ../tut3_verilog/sort/sort-sim --simple-mname --impl rtl-struct -stats \
+                                --translate --dump-vtb
 num_cycles          = 106
 num_cycles_per_sort = 1.06
 ```
@@ -887,7 +888,8 @@ the ASIC front-end flow. First, run a simulation of the GCD unit.
 
 ```
 % cd $TOPDIR/sim/build
-% ../tut3_verilog/gcd/gcd-sim --impl rtl --input random --stats --translate --dump-vtb
+% ../tut3_verilog/gcd/gcd-sim --short-mname --impl rtl --input random --stats \
+                              --translate --dump-vtb
 % less GcdUnit__pickled.v
 ```
 

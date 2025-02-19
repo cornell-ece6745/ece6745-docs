@@ -350,7 +350,7 @@ through the pipeline. Let's see the simulator in action:
 
 ```bash
 % cd $TOPDIR/sim/build
-% ../tut3_verilog/regincr/regincr-sim 0xff 0x20 0x30 0x40 0x00
+% ../tut3_verilog/regincr/regincr-sim -s 0xff 0x20 0x30 0x40 0x00
 ```
 
 The simulator will generate the pickled Verilog file we want to

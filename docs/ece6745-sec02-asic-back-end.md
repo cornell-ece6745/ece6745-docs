@@ -173,7 +173,7 @@ this:
 
 ```bash
 % cd $TOPDIR/sim/build
-% ../tut3_verilog/regincr/regincr-sim 0xff 0x20 0x30 0x04 0x00
+% ../tut3_verilog/regincr/regincr-sim -s 0xff 0x20 0x30 0x04 0x00
 % less RegIncr4stage__pickled.v
 ```
 
