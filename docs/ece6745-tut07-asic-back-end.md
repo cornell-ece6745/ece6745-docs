@@ -942,9 +942,9 @@ And you can then open up the Cadence Innovus design in the GUI as
 follows.
 
 ```bash
-% cd $TOPDIR/asic/build-sort
+% cd $TOPDIR/asic/build-sort/04-cadence-innovus-pnr
 % innovus
-innovus> source ./04-cadence-innovus-pnr/post-pnr.enc
+innovus> source post-pnr.enc
 ```
 
 3. Using Synopsys VCS for Back-Annotated Gate-Level Simulation

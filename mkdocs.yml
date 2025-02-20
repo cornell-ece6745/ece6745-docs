@@ -83,7 +83,8 @@ nav:
     - 'Tutorial 5: ASIC Standard Cells': ece6745-tut05-asic-stdcells.md
     - 'Tutorial 6: ASIC Front-End Flow': ece6745-tut06-asic-front-end.md
     - 'Tutorial 7: ASIC Back-End Flow': ece6745-tut07-asic-back-end.md
-    - 'Tutorial 8: SPICE Simulation': ece6745-tut08-spice-sim.md
+    - 'Tutorial 8: ASIC Automated Flow': ece6745-tut08-asic-auto.md
+    - 'Tutorial 9: SPICE Simulation': ece6745-tut09-spice-sim.md
 
   - 'Sections':
     - 'Section 1: ASIC Front-End Flow': ece6745-sec01-asic-front-end.md

@@ -27,8 +27,8 @@ directory for the project.
 % source setup-ece6745.sh
 % mkdir $HOME/ece6745
 % cd $HOME/ece6745
-% git clone git@github.com:cornell-ece6745/ece6745-tut08-spice tut08
-% cd tut08
+% git clone git@github.com:cornell-ece6745/ece6745-tut09-spice tut09
+% cd tut09
 % TOPDIR=$PWD
 ```
 
@@ -191,7 +191,7 @@ plot should pop up that looks like the following. This plot clearly shows
 Vin going from 0V to 1.1V and Vout going from 1.1V to 0V. Everything is
 "full rail".
 
-![](img/tut08-nmos-discharge-cap.png)
+![](img/tut09-nmos-discharge-cap.png)
 
 **To Do On Your Own:** Increase the load capacitance by 10x and then 100x
 and observe the impact on the time to discharge the capacitor.
@@ -273,7 +273,7 @@ still slowly increasing ... this is probably due to some second order
 effect like leakage or more likely that the NMOS is not 100% off since
 Vgs is right around the threshold voltage.
 
-![](img/tut08-nmos-charge-cap.png)
+![](img/tut09-nmos-charge-cap.png)
 
 **To Do On Your Own:** Increase the load capacitance by 10x and then 100x
 and observe the impact on the time to discharge the capacitor.
@@ -394,7 +394,7 @@ inverter but with DC instead of transient analysis:
 Here is the resulting DC transfer curve showing Vin vs Vout (after I
 manually annotated the noise margins):
 
-![](img/tut08-inv-xfer-curve-pmos625-nmos450.png)
+![](img/tut09-inv-xfer-curve-pmos625-nmos450.png)
 
 Recall that the noise margins are with respect to where the slope of the
 transfer curve is -1 (i.e., maximum gain). V_IL is the maximum low input
@@ -429,7 +429,7 @@ M2 gnd  in   out   gnd  NMOS_VTL W=0.450um L=0.045um
 Rerun the simulation and you should see something like the following
 (after I manually annotated the noise margins):
 
-![](img/tut08-inv-xfer-curve-pmos450-nmos450.png)
+![](img/tut09-inv-xfer-curve-pmos450-nmos450.png)
 
 And here are roughly the corresponding noise margins:
 
@@ -718,5 +718,5 @@ Weste & Harris, for more accurate performance analysis you would need to
 add inverters to the inputs for realistic waveform shaping and to the
 outputs for realistic load capacitance.
 
-![](img/tut08-fa.png)
+![](img/tut09-fa.png)
 
