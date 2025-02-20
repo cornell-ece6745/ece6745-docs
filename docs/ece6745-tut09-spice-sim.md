@@ -1,5 +1,5 @@
 
-ECE 6745 Tutorial 8: SPICE Simulation
+ECE 6745 Tutorial 9: SPICE Simulation
 ==========================================================================
 
 ngspice is an open-source SPICE simulator for electrical circuits. We
