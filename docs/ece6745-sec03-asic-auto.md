@@ -35,7 +35,7 @@ of the top directory for the project.
 % source setup-gui.sh
 % mkdir -p $HOME/ece6745
 % cd $HOME/ece6745
-% git clone git@github.com:cornell-ece6745/ece6745-sec04-asic-auto sec03
+% git clone git@github.com:cornell-ece6745/ece6745-sec03-asic-auto sec03
 % cd sec03
 % export TOPDIR=$PWD
 ```
@@ -243,18 +243,11 @@ errors, you can run the remaning steps.
 % 07-summarize-results
 ```
 
-### 1.2. Running ASIC Flow with All Tests and Evals
-
-If all looks good, then you can regenerate the with all of the tests and
-evals. **pyhflow will also create a `run-flow` script which will run all
-of the steps in sequence for you, but only use this if you are confident
-there are no errors!**
-
-```bash
-% cd $TOPDIR/asic/build-sec03-regincr
-% pyhflow ../designs/sec03-regincr.yml
-% ./run-flow
-```
+If all looks good, then you would regenerate the with all of the tests
+and evals; however, we will stick to just running one test though to save
+time in this discussion section. **pyhflow will also create a `run-flow`
+script which will run all of the steps in sequence for you, but only use
+this if you are confident there are no errors!**
 
 For the results to be valid, the following must be true:
 
@@ -361,14 +354,11 @@ Now let's look at the place-and-route setup and hold time reports.
 % cat 04-cadence-innovus-pnr/timing-hold.rpt
 ```
 
-We can also look at the detailed area report and the detailed power
-report to understand the overall area/power as well as the area/power of
-each individual module.
+We can also look at the detailed area report.
 
 ```bash
 % cd $TOPDIR/asic/build-sec03-regincr
 % cat 04-cadence-innovus-pnr/area.rpt
-% cat 06-synopsys-pt-pwr/*-detailed.rpt
 ```
 
 3. Case Studies
@@ -386,12 +376,12 @@ or (2) specifying the clock period on the pyflow command line. Let's use
 the second approach. If you look at the setup timing report you will see
 with a 1ns clock period you have maybe 550ps of positive slack. So a good
 starting point would be to maybe try a clock period of 1ns - 550ps =
-450ps. Let's try 500ps.
+450ps. Let's try 400ps.
 
 ```
 % mkdir -p $TOPDIR/asic/build-sec03-regincr-decrease-clk
 % cd $TOPDIR/asic/build-sec03-regincr-decrease-clk
-% pyhflow --one-test --clock_period=0.5 ../designs/sec03-regincr.yml
+% pyhflow --one-test --clock_period=0.400 ../designs/sec03-regincr.yml
 % ./run-flow
 ```
 
@@ -399,29 +389,18 @@ Notice how we are working in a new build directory. You can use multiple
 build directories to build different blocks through the flow and/or for
 design-space exploration. Also notice how we are using `--one-test` so we
 can quickly experiment with pushing the design through the flow with a
-single test and no evals.
+single test and no evals. You could continue to decrease the clock period
+in 100ps increments until the design no longer meets timing, but for now
+we will just stick with the shorter 400ps clock period. **Do not be too
+zealous and push the tools to try and meet a clock period constraint that
+is way too small! This can cause the tools to freak out and run
+forever.**
 
-Continue to decrease the clock period in 100ps increments until the
-design no longer meets timing. Then rerun the flow at (roughly) the
-shortest clock period which still meets timing. **Do not be too zealous
-and push the tools to try and meet a clock period constraint that is way
-too small! This can cause the tools to freak out and run forever.**
-
-Once you find a shorter clock period, be sure to rerun with all tests and
-evaluations by removing the "--one-test" command line option.
-
-```
-% mkdir -p $TOPDIR/asic/build-sec03-regincr-decrease-clk
-% cd $TOPDIR/asic/build-sec03-regincr-decrease-clk
-% pyhflow --clock_period=XX ../designs/sec03-regincr.yml
-% ./run-flow
-```
-
-Where `XX` is the shortest clock period which meets timing. Now compare
-the results from the longer and shorter clock periods. Start by looking
-at the summary statistics. How does the number of standard cells and area
-compare? We can also look at what kind of adder implementation Synopsys
-DC chose to meet the shorter clock period constraint.
+Now compare the results from the longer and shorter clock periods. Start
+by looking at the summary statistics. How does the number of standard
+cells and area compare? We can also look at what kind of adder
+implementation Synopsys DC chose to meet the shorter clock period
+constraint.
 
 ```bash
 % cd $TOPDIR/asic
@@ -452,7 +431,7 @@ clock period that still meets timing from the previous case study.
 ```
 % mkdir -p $TOPDIR/asic/build-sec03-regincr-flatten
 % cd $TOPDIR/asic/build-sec03-regincr-flatten
-% pyhflow --clock_period=XX ../designs/sec03-regincr.yml
+% pyhflow --one-test --clock_period=0.400 ../designs/sec03-regincr.yml
 % code 02-synopsys-dc-synth/run.tcl
 ```
 
@@ -467,7 +446,7 @@ compile_ultra -no_autoungroup -gate_clock
 Change this by removing `-no_autoungroup`.
 
 ```
-compile_ultra -no_autoungroup -gate_clock
+compile_ultra -gate_clock
 ```
 
 Now run the flow.
