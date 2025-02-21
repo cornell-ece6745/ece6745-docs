@@ -445,15 +445,20 @@ logic on the critical path.
 ### 3.1. Flattening the Design
 
 Let's modify our scripts to flatten our design and see how this impacts
-various metrics. Open the `run.tcl` script in the `02-synopsys-dc-synth`
-step template.
+various metrics. We can run pyhflow to instantiate the flow scripts and
+then modify these flow scripts in the build directory. Use the shortest
+clock period that still meets timing from the previous case study.
 
 ```
-% cd $TOPDIR/asic/steps/02-synopsys-dc-synth
-% code run.tcl
+% mkdir -p $TOPDIR/asic/build-sec03-regincr-flatten
+% cd $TOPDIR/asic/build-sec03-regincr-flatten
+% pyhflow --clock_period=XX ../designs/sec03-regincr.yml
+% code 02-synopsys-dc-synth/run.tcl
 ```
 
-We are currently using the following command to synthesize our design.
+Where `XX` is the shortest clock period which meets timing. We are
+currently using the following command in `02-synopsys-dc-synth/run.tcl`
+to synthesize our design.
 
 ```
 compile_ultra -no_autoungroup -gate_clock
@@ -465,19 +470,14 @@ Change this by removing `-no_autoungroup`.
 compile_ultra -no_autoungroup -gate_clock
 ```
 
-Then create a new build directory and push the four-stage registered
-incrementer through the flow again. Use the shortest clock period that
-still meets timing from the previous case study.
+Now run the flow.
 
 ```
-% mkdir -p $TOPDIR/asic/build-sec03-regincr-flatten
 % cd $TOPDIR/asic/build-sec03-regincr-flatten
-% pyhflow --clock_period=XX ../designs/sec03-regincr.yml
 % ./run-flow
 ```
 
-Where `XX` is the shortest clock period which meets timing. Revisit the
-post-synthesis gate-level netlist without flattening.
+Revisit the post-synthesis gate-level netlist without flattening.
 
 ```bash
 % cd $TOPDIR/asic
