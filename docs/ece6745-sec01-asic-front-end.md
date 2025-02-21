@@ -48,15 +48,16 @@ course page:
 
  - <https://www.csl.cornell.edu/courses/ece6745/asicdocs>
 
-The first step is to access `ecelinux`. You should use VS Code for
-working at the command line, but you will also need to use Microsoft
-Remote Desktop for using Linux GUI applications. Once you are at the
-`ecelinux` prompt, source the setup script, clone this repository from
-GitHub, and define an environment variable to keep track of the top
-directory for the project.
+The first step is to access `ecelinux`. Use Microsoft Remote Desktop to
+log into a specific `ecelinux` server. Then use VS Code to log into the
+same specific `ecelinux` server. Once you are at the `ecelinux` prompt,
+source the setup script, source the GUI setup script, clone this
+repository from GitHub, and define an environment variable to keep track
+of the top directory for the project.
 
 ```bash
 % source setup-ece6745.sh
+% source setup-gui.sh
 % mkdir -p $HOME/ece6745
 % cd $HOME/ece6745
 % git clone https://github.com/cornell-ece6745/ece6745-sec01-asic-front-end sec01

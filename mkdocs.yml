@@ -89,4 +89,5 @@ nav:
   - 'Sections':
     - 'Section 1: ASIC Front-End Flow': ece6745-sec01-asic-front-end.md
     - 'Section 2: ASIC Back-End Flow': ece6745-sec02-asic-back-end.md
+    - 'Section 3: ASIC Automated Flow': ece6745-sec03-asic-auto.md
 

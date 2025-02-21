@@ -87,12 +87,16 @@ you on the public course webpage:
 
  - <https://www.csl.cornell.edu/courses/ece6745/asicdocs>
 
-The first step is to source the setup script, clone this repository from
-GitHub, and define an environment variable to keep track of the top
-directory for the project.
+The first step is to access `ecelinux`. Use Microsoft Remote Desktop to
+log into a specific `ecelinux` server. Then use VS Code to log into the
+same specific `ecelinux` server. Once you are at the `ecelinux` prompt,
+source the setup script, source the GUI setup script, clone this
+repository from GitHub, and define an environment variable to keep track
+of the top directory for the project.
 
 ```bash
 % source setup-ece6745.sh
+% source setup-gui.sh
 % mkdir -p $HOME/ece6745
 % cd $HOME/ece6745
 % git clone git@github.com:cornell-ece6745/ece6745-tut08-asic-auto tut08
@@ -157,7 +161,7 @@ Verify the Verilog RTL and test benches have been generated.
 % SortUnitStruct__p_nbits_8_sort-sim-rtl-struct-zeros_tb.v
 ```
 
-1. pyhflow For Generating Flows
+2. pyhflow For Generating Flows
 --------------------------------------------------------------------------
 
 pyflow is based on the idea of _step templates_ which are located in the
@@ -263,7 +267,7 @@ the YAML file to figure out what to substitute into the templated steps
 and then copy the run scripts into the current working directory. You can
 also override parameters on pyhflow command line.
 
-### 1.1. Running ASIC Flow with One Test
+### 2.1. Running ASIC Flow with One Test
 
 Let's go ahead and use pyhflow to generate the flow scripts for the sort
 unit.
@@ -341,7 +345,7 @@ errors, you can run the remaning steps.
 % 07-summarize-results
 ```
 
-### 1.2. Running ASIC Flow with All Tests and Evals
+### 2.2. Running ASIC Flow with All Tests and Evals
 
 If all looks good, then you can regenerate the with all of the tests and
 evals. **pyhflow will also create a `run-flow` script which will run all
@@ -409,7 +413,7 @@ timing after place-and-route then these are still valid results. It just
 means Synopsys DC was conservative and/or Cadence Innovus did a good job
 further optimizing the design.
 
-### 1.3. Debugging Issues
+### 2.3. Debugging Issues
 
 Every step logs its output to a `run.log` file. The four-state RTL
 simulation, fast-functional gate-level simulation, and back-annotated
@@ -441,7 +445,7 @@ Innovus TCL script has an issue. While you can look at waveforms for
 gate-level simulation it is not fun; it might be best to carefully look
 through the `run.log` file for the place-and-route step first.
 
-### 1.4. Interactive Debugging
+### 2.4. Interactive Debugging
 
 You can use Synopsys DV to look at the synthesis results as follows.
 
@@ -497,7 +501,7 @@ you have successfully taken a design from RTL to layout.
 % klayout -l $ECE6745_STDCELLS/klayout.lyp 04-cadence-innovus-pnr/post-pnr.gds
 ```
 
-### 1.5. Key Reports
+### 2.5. Key Reports
 
 Here is a list of key reports.
 
@@ -523,7 +527,7 @@ the area of every module in your design. You can use the detailed power
 reports to determine the power consumption of every module in your
 design.
 
-2. To Do On Your Own
+3. To Do On Your Own
 --------------------------------------------------------------------------
 
 Now we can use what you have learned so far to push the GCD unit through

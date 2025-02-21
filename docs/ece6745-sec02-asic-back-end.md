@@ -54,15 +54,16 @@ course page:
 
  - <https://www.csl.cornell.edu/courses/ece6745/asicdocs>
 
-The first step is to access `ecelinux`. You should use VS Code for
-working at the command line, but you will also need to use Microsoft
-Remote Desktop for using Linux GUI applications. Once you are at the
-`ecelinux` prompt, source the setup script, clone this repository from
-GitHub, and define an environment variable to keep track of the top
-directory for the project.
+The first step is to access `ecelinux`. Use Microsoft Remote Desktop to
+log into a specific `ecelinux` server. Then use VS Code to log into the
+same specific `ecelinux` server. Once you are at the `ecelinux` prompt,
+source the setup script, source the GUI setup script, clone this
+repository from GitHub, and define an environment variable to keep track
+of the top directory for the project.
 
 ```bash
 % source setup-ece6745.sh
+% source setup-gui.sh
 % mkdir -p $HOME/ece6745
 % cd $HOME/ece6745
 % git clone https://github.com/cornell-ece6745/ece6745-sec02-asic-back-end sec02
@@ -460,6 +461,14 @@ Watch the physical view to see the result before and after running this
 command. You should be able to appreciate that the final result requires
 fewer and shorter wires.
 
+Now that our design is fully placed and routed, we can extract the
+parasitic resistance and capacitances to enable more accurate timing and
+power analysis.
+
+```
+innovus> extractRC
+```
+
 ### 2.6. Final Output and Reports
 
 The final step is to insert "filler" cells. Filler cells are essentially
@@ -484,13 +493,12 @@ new cells or change cells during its optimization passes.
 innovus> saveNetlist post-pnr.v
 ```
 
-We can also extract resistance and capacitance for the metal interconnect
-and write this to a special `.spef` file and `.sdf` file. These files can
-be used for later back-annotated gate-level simulation and/or power
-analysis.
+We can write parasitic information to a special `.spef` file and all of
+the delay information (including interconnect delays) to a `.sdf` file.
+These files can be used for later back-annotated gate-level simulation
+and/or power analysis.
 
 ```
-innovus> extractRC
 innovus> rcOut -rc_corner typical -spef post-pnr.spef
 innovus> write_sdf post-pnr.sdf
 ```

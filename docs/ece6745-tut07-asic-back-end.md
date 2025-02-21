@@ -86,12 +86,16 @@ you on the public course webpage:
 
  - <https://www.csl.cornell.edu/courses/ece6745/asicdocs>
 
-The first step is to source the setup script, clone this repository from
-GitHub, and define an environment variable to keep track of the top
-directory for the project.
+The first step is to access `ecelinux`. Use Microsoft Remote Desktop to
+log into a specific `ecelinux` server. Then use VS Code to log into the
+same specific `ecelinux` server. Once you are at the `ecelinux` prompt,
+source the setup script, source the GUI setup script, clone this
+repository from GitHub, and define an environment variable to keep track
+of the top directory for the project.
 
 ```bash
 % source setup-ece6745.sh
+% source setup-gui.sh
 % mkdir -p $HOME/ece6745
 % cd $HOME/ece6745
 % git clone git@github.com:cornell-ece6745/ece6745-tut07-asic-back-end tut07
@@ -588,6 +592,14 @@ innovus> optDesign -postRoute -setup
 innovus> optDesign -postRoute -hold
 ```
 
+Now that our design is fully placed and routed, we can extract the
+parasitic resistance and capacitances to enable more accurate timing and
+power analysis.
+
+```
+innovus> extractRC
+```
+
 ### 2.8. Finishing
 
 One final step is to insert "filler" cells. Filler cells are essentially
@@ -644,12 +656,10 @@ insert new cells or change cells during its optimization passes.
 innovus> saveNetlist post-pnr.v
 ```
 
-We can also extract resistance and capacitance for the metal wires used
-in the design and write this to a special `.spef` file. This file can be
-used for later power analysis.
+We can write parasitic information to a special `.spef` file. This file
+can be used for later power analysis.
 
 ```
-innovus> extractRC
 innovus> rcOut -rc_corner typical -spef post-pnr.spef
 ```
 
