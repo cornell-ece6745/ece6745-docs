@@ -562,6 +562,7 @@ for RTL simulation:
     +define+CYCLE_TIME=1.000 \
     +define+VTB_INPUT_DELAY=0.025 \
     +define+VTB_OUTPUT_DELAY=0.025 \
+    +define+VTB_DUMP_SAIF=waves.saif \
     +vcs+dumpvars+waves.vcd \
     +incdir+$TOPDIR/sim/build \
     ${ECE6745_STDCELLS}/stdcells.v \
@@ -577,7 +578,9 @@ you can run like this:
 % ./simv
 ```
 
-It should pass the test. Now let's look at the resulting waveforms using
+It should pass the test and also dump out an SAIF file which has the
+activity factors for every net in the design. We will use the SAIF file
+in power analysis. Now let's look at the resulting waveforms using
 Surfer.
 
 ```bash
@@ -622,14 +625,6 @@ finish its calculation and cannot meet the setup time contraint.
 ```bash
 % cd $TOPDIR/asic/build-regincr/05-synopsys-vcs-baglsim
 % code waves-300ps.vcd
-```
-
-For power analysis we need to convert our VCD file into an SAIF file. The
-SAIF file has just the activity factors for every net in the design.
-
-```bash
-% cd $TOPDIR/asic/build-regincr/05-synopsys-vcs-baglsim
-% vcd2saif -input waves.vcd -output waves.saif
 ```
 
 5. Synopsys PrimeTime for Power Analysis

@@ -31,16 +31,15 @@ the ASIC front-end flow tutorial.
     gate-level simulations. These simulations help us to build confidence
     in our design as we push our designs through different stages of the
     flow. From these simulations, we also generate waveforms in `.vcd`
-    (Verilog Change Dump) format, and we use `vcd2saif` to convert these
-    waveforms into per-net average activity factors stored in `.saif`
-    format. These activity factors will be used for power analysis.
-    Gate-level simulation is an valuable tool for ensuring the tools did
-    not optimize something away which impacts the correctness of the
-    design, and also provides an avenue for obtaining a more accurate
-    power analysis than RTL simulation. While static timing analysis
-    (STA) analyzes all paths, GL simulation can also serve as a backup to
-    check for hold and setup time violations (chip designers must be
-    paranoid!)
+    (Verilog Change Dump) format, and per-net average activity factors
+    stored in `.saif` format. These activity factors will be used for
+    power analysis. Gate-level simulation is an valuable tool for
+    ensuring the tools did not optimize something away which impacts the
+    correctness of the design, and also provides an avenue for obtaining
+    a more accurate power analysis than RTL simulation. While static
+    timing analysis (STA) analyzes all paths, GL simulation can also
+    serve as a backup to check for hold and setup time violations (chip
+    designers must be paranoid!)
 
  3. We use **Synopsys Design Compiler (DC)** to synthesize our design,
     which means to transform the Verilog RTL model into a Verilog
@@ -1059,6 +1058,7 @@ verify back-annotated gate-level simulation passes the simulation.
   +define+CYCLE_TIME=0.700 \
   +define+VTB_INPUT_DELAY=0.025 \
   +define+VTB_OUTPUT_DELAY=0.025 \
+  +define+VTB_DUMP_SAIF=waves.saif \
   +vcs+dumpvars+waves.vcd \
   +incdir+${TOPDIR}/sim/build \
   ${ECE6745_STDCELLS}/stdcells.v \
@@ -1070,14 +1070,8 @@ verify back-annotated gate-level simulation passes the simulation.
 The `.vcd` file contains information about the state of every net in the
 design on every cycle. This can make these `.vcd` files very large and
 thus slow to analyze. For average power analysis, we only need to know
-the activity factor on each net. We can use the `vcd2saif` tool to
-convert `.vcd` files into `.saif` files. An `.saif` file only contains a
-single average activity factor for every net.
-
-```bash
-% cd $TOPDIR/asic/build-sort/05-synopsys-vcs-baglsim
-% vcd2saif -input ./waves.vcd -output ./waves.saif
-```
+the activity factor on each net, so we also dump out an `.saif` file that
+only contains a single average activity factor for every net.
 
 Take a look at the vcd file from this simulation. Here we can see some
 subcycle delays that shows us how long it takes for data to stabilize

@@ -30,16 +30,15 @@ tutorial so you can understand all of these views.
     gate-level simulations. These simulations help us to build confidence
     in our design as we push our designs through different stages of the
     flow. From these simulations, we also generate waveforms in `.vcd`
-    (Verilog Change Dump) format, and we use `vcd2saif` to convert these
-    waveforms into per-net average activity factors stored in `.saif`
-    format. These activity factors will be used for power analysis.
-    Gate-level simulation is an valuable tool for ensuring the tools did
-    not optimize something away which impacts the correctness of the
-    design, and also provides an avenue for obtaining a more accurate
-    power analysis than RTL simulation. While static timing analysis
-    (STA) analyzes all paths, GL simulation can also serve as a backup to
-    check for hold and setup time violations (chip designers must be
-    paranoid!)
+    (Verilog Change Dump) format, and per-net average activity factors
+    stored in `.saif` format. These activity factors will be used for
+    power analysis. Gate-level simulation is an valuable tool for
+    ensuring the tools did not optimize something away which impacts the
+    correctness of the design, and also provides an avenue for obtaining
+    a more accurate power analysis than RTL simulation. While static
+    timing analysis (STA) analyzes all paths, GL simulation can also
+    serve as a backup to check for hold and setup time violations (chip
+    designers must be paranoid!)
 
  3. We use **Synopsys Design Compiler (DC)** to synthesize our design,
     which means to transform the Verilog RTL model into a Verilog

@@ -32,16 +32,15 @@ tutorial.
     gate-level simulations. These simulations help us to build confidence
     in our design as we push our designs through different stages of the
     flow. From these simulations, we also generate waveforms in `.vcd`
-    (Verilog Change Dump) format, and we use `vcd2saif` to convert these
-    waveforms into per-net average activity factors stored in `.saif`
-    format. These activity factors will be used for power analysis.
-    Gate-level simulation is an valuable tool for ensuring the tools did
-    not optimize something away which impacts the correctness of the
-    design, and also provides an avenue for obtaining a more accurate
-    power analysis than RTL simulation. While static timing analysis
-    (STA) analyzes all paths, GL simulation can also serve as a backup to
-    check for hold and setup time violations (chip designers must be
-    paranoid!)
+    (Verilog Change Dump) format, and per-net average activity factors
+    stored in `.saif` format. These activity factors will be used for
+    power analysis. Gate-level simulation is an valuable tool for
+    ensuring the tools did not optimize something away which impacts the
+    correctness of the design, and also provides an avenue for obtaining
+    a more accurate power analysis than RTL simulation. While static
+    timing analysis (STA) analyzes all paths, GL simulation can also
+    serve as a backup to check for hold and setup time violations (chip
+    designers must be paranoid!)
 
  3. We use **Synopsys Design Compiler (DC)** to synthesize our design,
     which means to transform the Verilog RTL model into a Verilog
@@ -244,8 +243,10 @@ steps:
  - 06-synopsys-pt-pwr
  - 07-summarize-results
 
+src_dir      : ../../../sim/build
 design_name  : SortUnitStruct__p_nbits_8
 clock_period : 0.7
+dump_vcd     : true
 
 tests:
  - SortUnitStruct__p_nbits_8_test_basic
@@ -259,13 +260,14 @@ evals:
 ```
 
 This design YAML file specifies the generated flow should use all seven
-steps. Currently the only parameters are the design name and the clock
-period. We run RTL sim, FFGL sim, and BAGL sim on all tests and evals,
-but we only do energy analysis on the evals. The evals usually come from
-running an interactive simulator like `sort-sim`. All pyhflow does is use
-the YAML file to figure out what to substitute into the templated steps
-and then copy the run scripts into the current working directory. You can
-also override parameters on pyhflow command line.
+steps. Currently the only parameters are the source directory, design
+name, and the clock period. We run RTL sim, FFGL sim, and BAGL sim on all
+tests and evals, but we only do energy analysis on the evals. The evals
+usually come from running an interactive simulator like `sort-sim`. All
+pyhflow does is use the YAML file to figure out what to substitute into
+the templated steps and then copy the run scripts into the current
+working directory. You can also override parameters on pyhflow command
+line.
 
 ### 2.1. Running ASIC Flow with One Test
 

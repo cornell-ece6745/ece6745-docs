@@ -154,8 +154,10 @@ steps:
  - 06-synopsys-pt-pwr
  - 07-summarize-results
 
+src_dir      : ../../../sim/build
 design_name  : RegIncrNstage__p_nstages_4
 clock_period : 1.0
+dump_vcd     : true
 
 tests:
  - RegIncrNstage__p_nstages_4_test_4stage_large
@@ -168,9 +170,8 @@ evals:
 ```
 
 This design YAML file specifies the generated flow should use all seven
-steps. Currently the only parameters are the design name and the clock
-period. We run RTL sim, FFGL sim, and BAGL sim on all tests and evals,
-but we only do energy analysis on the evals. The evals usually come from
+steps. We run RTL sim, FFGL sim, and BAGL sim on all tests and evals, but
+we only do energy analysis on the evals. The evals usually come from
 running an interactive simulator like `regincr-sim`. All pyhflow does is
 use the YAML file to figure out what to substitute into the templated
 steps and then copy the run scripts into the current working directory.
