@@ -84,6 +84,7 @@ nav:
     - 'Tutorial 6: ASIC Front-End Flow': ece6745-tut06-asic-front-end.md
     - 'Tutorial 7: ASIC Back-End Flow': ece6745-tut07-asic-back-end.md
     - 'Tutorial 8: ASIC Automated Flow': ece6745-tut08-asic-auto.md
+    - 'Tutorial 9: TinyRV2 Accelerator RTL Design': ece6745-tut09-xcel-rtl.md
     - 'Tutorial 9: SPICE Simulation': ece6745-tut09-spice-sim.md
 
   - 'Sections':

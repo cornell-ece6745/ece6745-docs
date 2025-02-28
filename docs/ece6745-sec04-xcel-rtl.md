@@ -131,7 +131,7 @@ implementing load/store instructions. The system includes both
 instruction and data caches. The xcel master/minion interface is used for
 the processor to send messages to the accelerator.
 
-![](img/sec04-proc-xcel.png)
+![](img/tut09-proc-xcel.png)
 
 We provide two implementations of the TinyRV2 processor. The FL model in
 `sim/proc/ProcFL.py` is essentially an instruction-set-architecture (ISA)
@@ -146,7 +146,7 @@ single-cycle integer multiplier. Second, the new processor design
 includes the ability to handle new CSRs for interacting with medium-grain
 accelerators. The datapath diagram for the processor is shown below.
 
-![](img/sec04-proc-dpath.png)
+![](img/tut09-proc-dpath.png)
 
 We should run all of the unit tests on both the FL and RTL processor
 models to verify that we are starting with a working processor.
