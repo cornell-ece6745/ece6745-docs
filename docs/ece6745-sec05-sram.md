@@ -474,8 +474,8 @@ Now we can use Cadence Innovus to place the SRAM macro and the standard
 cells, and then automatically route everything together.
 
 ```bash
-% mkdir -p $TOPDIR/asic-v0/build-sram/04-cadence-innovus-pnr
-% cd $TOPDIR/asic-v0/build-sram/04-cadence-innovus-pnr
+% mkdir -p $TOPDIR/asic/build-sram/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-sram/04-cadence-innovus-pnr
 ```
 
 As in the ASIC back-end flow section, we need to create two files before
