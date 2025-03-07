@@ -35,7 +35,7 @@ of the top directory for the project.
 % source setup-gui.sh
 % mkdir -p $HOME/ece6745
 % cd $HOME/ece6745
-% git clone git@github.com:cornell-ece6745/ece6745-sec05-srams sec05
+% git clone git@github.com:cornell-ece6745/ece6745-sec05-sram sec05
 % cd sec05
 % export TOPDIR=$PWD
 ```
