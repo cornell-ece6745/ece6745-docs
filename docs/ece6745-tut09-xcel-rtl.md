@@ -1,8 +1,8 @@
 
-ECE 5745 Tutorial 9: TinyRV2 Accelerator RTL Design
+ECE 6745 Tutorial 9: TinyRV2 Accelerator RTL Design
 ==========================================================================
 
-The infrastructure for the ECE 5745 lab assignments and projects has
+The infrastructure for the ECE 6745 lab assignments and projects has
 support for implementing medium-grain accelerators. Fine-grain
 accelerators are tightly integrated within the processor pipeline (e.g.,
 a specialized functional unit for bit-reversed addressing useful in
@@ -25,16 +25,14 @@ acceleration for this simple microbenchmark. This tutorial assumes you
 have already completed the tutorials on Linux, Git, Verilog, ASIC
 front-end flow, ASIC back-end flow, and ASIC automated ASIC flow.
 
-The first step is to access `ecelinux`. Use Microsoft Remote Desktop to
-log into a specific `ecelinux` server. Then use VS Code to log into the
-same specific `ecelinux` server. Once you are at the `ecelinux` prompt,
-source the setup script, source the GUI setup script, clone this
-repository from GitHub, and define an environment variable to keep track
-of the top directory for the project.
+The first step is to access `ecelinux`. Use VS Code to log into the same
+specific `ecelinux` server. Once you are at the `ecelinux` prompt, source
+the setup script, source the GUI setup script, clone this repository from
+GitHub, and define an environment variable to keep track of the top
+directory for the project.
 
 ```bash
 % source setup-ece6745.sh
-% source setup-gui.sh
 % mkdir -p $HOME/ece6745
 % cd $HOME/ece6745
 % git clone git@github.com:cornell-ece6745/ece6745-tut09-xcel-rtl tut09
@@ -57,7 +55,8 @@ the processor to send messages to the accelerator. The
 mngr2proc/proc2mngr and memreq/memresp interfaces were all introduced in
 ECE 4750. For now we will largely ignore the accelerator, and we will
 defer discussion of the xcel master/minion interfaces to later in this
-tutorial.
+tutorial. **The cache is not ported to work with the ASIC flow so it is
+not currently included!**
 
 ![](img/tut09-proc-xcel.png)
 
@@ -67,7 +66,7 @@ simulator; it simulates only the instruction semantics and makes no
 attempt to model any timing behavior. As a reminder, the TinyRV2
 instruction set is defined here:
 
- - <http://www.csl.cornell.edu/courses/ece5745/handouts/ece5745-tinyrv-isa.txt>
+ - <http://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-tinyrv-isa.txt>
 
 The RTL model in `sim/proc/ProcPRTL.py` is similar to the alternative
 design for lab 2 in ECE 4750. It is a five-stage pipelined processor that
@@ -90,220 +89,154 @@ models to verify that we are starting with a working processor.
 % mkdir -p $TOPDIR/sim/build
 % cd $TOPDIR/sim/build
 % pytest ../proc
-% pytest ../proc --test-verilog
 ```
 
 See the handout for lab 2 from ECE 4750 for more information about how we
 use `pytest` and the mngr2proc/proc2mngr interfaces to test the TinyRV2
 processor.
 
-We also provide an RTL model in `sim/cache/BlockingCachePRTL.py` which is
-very similar to the alternative design for lab 3 of ECE 4750. It is a
-two-way set-associative cache with 16B cache lines and a
-write-back/write-allocate write policy and LRU replacement policy. There
-are three important differences from the alternative design for lab 3 of
-ECE 4750. First, the new cache design is larger with a total capacity of
-8KB. Second, the new cache design carefully merges states to enable a
-single-cycle hit latency for both reads and writes. Note that writes have
-a two cycle occupancy (i.e., back-to-back writes will only be able to be
-serviced at half throughput). Third, the previous cache design used
-combinational-read SRAMs, while the new cache design uses
-synchronous-read SRAMs. Combinational-read SRAMs mean the read data is
-valid on the same cycle we set the read address. Synchronous-read SRAMs
-mean the read data is valid on the cycle _after_ we set the read address.
-Combinational SRAMs simplify the design, but are not realistic. Almost
-all real SRAM memory generators used in ASIC toolflows produce
-synchronous-read SRAMs, and indeed the CACTI memory compiler discussed in
-the previous tutorial also produces synchronous-read SRAMs. Using
-synchronous-read SRAMs requires non-trivial changes to both the datapath
-and the control logic. The cache FSM must make sure all control signals
-for the SRAM are ready the cycle before we need the read data. The
-datapath and FSM diagrams for the new cache are shown below. Notice in
-the FSM how we are able to stay in the TAG_CHECK_READ_DATA state if
-another request is ready.
-
-![](img/cache-dpath.png)
-
-![](img/cache-ctrl.png)
-
-We should run all of the unit tests on the cache RTL model to verify that
-we are starting with a working cache, and we should also use the
-`--test-verilog` option to ensure the translated Verilog is correct.
-
-```bash
-% mkdir -p $TOPDIR/sim/build
-% cd $TOPDIR/sim/build
-% pytest ../cache
-% pytest ../cache --test-verilog
-```
-
-Cross-Compiling and Executing TinyRV2 Microbenchmarks
+2. Cross-Compiling and Executing TinyRV2 Microbenchmarks
 --------------------------------------------------------------------------
 
 We will write our microbenchmarks in C. Take a closer look at the vvadd
 microbenchmark which is located in `app/ubmark/ubmark-vvadd.c`:
 
 ```c
- __attribute__ ((noinline))
- void vvadd_scalar( int *dest, int *src0, int *src1, int size )
- {
-   for ( int i = 0; i < size; i++ )
-     dest[i] = src0[i] + src1[i];
- }
-
- ...
- int main( int argc, char* argv[] )
- {
-   int dest[size];
-
-   for ( int i = 0; i < size; i++ )
-     dest[i] = 0;
-
-   test_stats_on();
-   vvadd_scalar( dest, src0, src1, size );
-   test_stats_off();
-
-   verify_results( dest, ref, size );
-   return 0;
- }
+__attribute__ ((noinline))
+void vvadd_scalar( int *dest, int *src0, int *src1, int size )
+{
+  for ( int i = 0; i < size; i++ )
+    dest[i] = src0[i] + src1[i];
+}
 ```
 
-The `src0`, `src1`, and `ref` arrays are all defined in the
-`app/ubmark/ubmark-vvadd.dat` file. The microbenchmark first initializes
-the destination array to be all zeros, turns stats on, does the actual
-vvadd computation, turns stats off, and finally verifies that the results
-are as expected. We need the `test_stats_on()` and `test_stats_off()`
-functions to make sure we can keep track of various statistics (e.g., the
-number of cycles) only during the important part of the microbenchmark.
-We do not want to count time spent in initialization or verification when
-comparing the performance of our various microbenchmarks. These two
-functions are defined in `app/common/common-misc.h` as follows:
+We will a use microbenchmark test to verify the functionality of our
+microbenchmark and a microbenchmark eval to evaluate the performance of
+our microbenchmark. We will run both the microbenchmark test and eval on
+both FL and RTL TinyRV2 processor models.
 
-```c
- inline void test_stats_on()
- {
-   int status = 1;
-   asm( "csrw 0x7c1, %0" :: "r" (status) )
- }
+### 2.1. TinyRV2 Microbenchmark Test
 
- inline void test_stats_on()
- {
-   int status = 0;
-   asm( "csrw 0x7c1, %0" :: "r" (status) )
- }
-```
-
-We are using the GCC inline assembly extensions to enable us to directly
-insert a specific assembly instruction into our C code. You can find out
-more about inline assembly syntax here:
-
- - <https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html>
-
-At a high level, `%0` acts as a place holder for whatever register
-specifier the compiler ends up allocating for the `status` variable. The
-TinyRV2 instruction set defines CSR number 0x7c1 as the `stats_en`
-control/status register, which is why we use `0x7c1` in the inline
-assembly. Refer to the TinyRV2 instruction set for a list of the CSRs.
-
- - <http://www.csl.cornell.edu/courses/ece5745/handouts/ece5745-tinyrv-isa.txt>
-
-The idea is that the microarchitecture and/or simulator can monitor for
-writes to the `stats_en` register to determine when to start and stop
-keeping statistics. For more on writing microbenchmarks, please review
-the handout for lab 5 from ECE 4750.
-
-We have a build system that can compile these microbenchmarks natively
-for x86 and can also cross-compile these microbenchmarks for TinyRV2 so
-they can be executed on our simulators. When developing and testing
-microbenchmarks, we should always try to compile them natively to ensure
-the microbenchmark is functionally correct before we attempt to
-cross-compile the microbenchmark for TinyRV2. Debugging a microbenchmark
-natively is much easier compared to debugging a microbenchmark on our
-simulators. Here is how we compile and execute the pure-software vvadd
-microbenchmark natively:
+Let's go ahead and take a look at the microbenchmark provided for the
+vvadd microbenchmark.
 
 ```bash
-% mkdir -p $TOPDIR/app/build-native
-% cd $TOPDIR/app/build-native
-% ../configure
-% make ubmark-vvadd
-% ./ubmark-vvadd
+% cd $TOPDIR/app/ubmark
+% less ubmark-accum-test.c
 ```
 
-The microbenchmark should display `passed`. Once you are sure your
-microbenchmark is working correctly natively, you can cross-compile the
-microbenchmark for TinyRV2.
+Here is a snippet from the microbenchmark test.
+
+```c
+#include "ece6745.h"
+#include "ubmark-vvadd.h"
+#include "ubmark-vvadd.dat"
+
+void test_case_1_pos()
+{
+  ECE6745_CHECK( L"test_case_1_pos" );
+
+  int src0[] = {  1,  2,  3,  4 };
+  int src1[] = {  5,  6,  7,  8 };
+  int dest[] = {  0,  0,  0,  0 };
+  int ref[]  = {  6,  8, 10, 12 };
+
+  ubmark_vvadd( dest, src0, src1, 4 );
+
+  for ( int i = 0; i < 4; i++ )
+    ECE6745_CHECK_INT_EQ( dest[i], ref[i] );
+}
+
+...
+
+int main( int argc, char** argv )
+{
+  __n = ( argc == 1 ) ? 0 : ece6745_atoi( argv[1] );
+
+  if ( (__n <= 0) || (__n == 1) ) test_case_1_pos();
+  ...
+
+  ece6745_wprintf( L"\n\n" );
+  return ece6745_check_status;
+}
+```
+
+The test harness includes several test case functions and then we call
+these test case functions in `main`. We wave a build system that can
+compile C code natively for x86 and can also cross-compile these
+microbenchmarks for TinyRV2 so they can be executed on our simulators.
+When developing and testing C code, we should always try to compile the
+code natively to ensure the code is functionally correct before we
+attempt to cross-compile the code for TinyRV2. Debugging code natively is
+much easier compared to debugging code on our simulators. Here is how we
+compile and execute the tests for the vvadd microbenchmark natively:
+
+```bash
+% cd $TOPDIR/app
+% mkdir build-native
+% cd build-native
+% ../configure
+% make ubmark-vvadd-test
+% ./ubmark-vvadd-test
+```
+
+You can run a single test case like this:
+
+```bash
+% cd $TOPDIR/app/build-native
+% ./ubmark-accum-test 1
+```
+
+Once we are confident the microbenchmark test passes on natively, we can
+cross-compile the microbenchmark test and run it on both FL and RTL
+TinyRV2 processor models. Let's start by cross-compiling the
+microbenchmark test.
 
 ```bash
 % mkdir -p $TOPDIR/app/build
 % cd $TOPDIR/app/build
 % ../configure --host=riscv32-unknown-elf
-% make ubmark-vvadd
+% make ubmark-vvadd-test
 ```
 
-This will create a `ubmark-vvadd` binary which contains TinyRV2
+This will create a `ubmark-vvadd-test` binary which contains TinyRV2
 instructions and data. You can disassemble a TinyRV2 binary (i.e., turn a
 compiled binary back into an assembly text representation) with the
 `riscv32-objdump` command like this:
 
 ```bash
 % cd $TOPDIR/app/build
-% riscv32-objdump ubmark-vvadd | less
- 00000248 <vvadd_scalar(int*, int*, int*, int)>:
-    248:  bge   x0,  x13, 274
-    24c:  slli  x13, x13, 0x2
-    250:  add   x13, x11, x13
-    254:  lw    x15, 0(x11)   # <-.
-    258:  lw    x14, 0(x12)   #   |
-    25c:  addi  x11, x11, 4   #   |
-    260:  addi  x12, x12, 4   #   |
-    264:  add   x15, x15, x14 #   |
-    268:  sw    x15, 0(x10)   #   |
-    26c:  addi  x10, x10, 4   #   |
-    270:  bne   x11, x13, 254 # --'
-    274:  jalr  x0,  x1, 0
-
- 000002c0 <main>:
-    ...
-    304:  sw    x0,  0(x15)               # <-. initialize
-    308:  addi  x14, x14, 1               #   | dest
-    30c:  addi  x15, x15, 4               #   | array
-    310:  bne   x13, x14, 304             # --'
-    314:  addi  x15, x0, 1
-    318:  csrw  0x7c1, x15                # turn stats on
-    31c:  addi  x18, x0, 1056             #
-    320:  addi  x11, x18, 400             #
-    324:  addi  x12, x0, 1056             #
-    328:  addi  x10, x9, 0                #
-    32c:  jal   x1,  248 <vvadd_scalar()> # call vvadd_scalar
-    330:  addi  x15, x0, 0                #
-    334:  csrw  0x7c1, x15                # turn stats off
-    338:  lw    x11, -1840(x19)
-    33c:  bge   x0,  x11, 380 <main+0xc0>
-    ...
+% riscv32-objdump ubmark-vvadd-test | less -p "<ubmark_vvadd>:"
+ 00000fac <ubmark_vvadd>:
+    fac: bge    x0,  x13, fd8
+    fb0: slli   x13, x13, 0x2
+    fb4: add    x13, x11, x13
+    fb8: lw     x15, 0(x11)   # <-.
+    fbc: lw     x14, 0(x12)   #   |
+    fc0: addi   x11, x11, 4   #   |
+    fc4: addi   x12, x12, 4   #   |
+    fc8: add    x15, x15, x14 #   |
+    fcc: sw     x15, 0(x10)   #   |
+    fd0: addi   x10, x10, 4   #   |
+    fd4: bne    x11, x13, fb8 # --'
+    fd8: jalr   x0,  x1,  0
 ```
 
-Recall that you can search with `less` by simply pressing the forward
-slash key and typing in your search term. So you can find the assembly
-code for `vvadd_scalar` or `main` functions by using less to search for
-either `vvadd_scalar` or `main`. You can also redirect the output from
-`riscv32-objdump` to a text file for viewing with your favorite text
-editor. The disassembly shows the address, bytes, and assembly text for
-each instruction in the binary.
+You can also redirect the output from `riscv32-objdump` to a text file
+for viewing with VS Code. The disassembly shows the address and assembly
+text for each instruction in the binary.
 
-You can see the CSRW instructions to set and clear the `stats_en` bit
-have been inserted in the `main` function around the call to
-`vvadd_scalar`. The assembly code for the actual `vvadd_scalar` function
-is similar to what we saw in ECE 4750 although with some additional
-optimizations. I have added some comments to show the backwards branch
-for the vvadd loop. The loop has eight instructions. Four instructions do
-useful work (i.e., two LW instructions, the actual ADDU instruction, one
-SW instruction) and three ADDI instructions generate the array addresses
-by bumping the array pointers. Notice that there is no explicit loop
-counter. The compiler has instead calculated the address of one past the
-last element in the first source array, and placed this value in `x13`.
-Each iteration, the BNE instruction compares the current pointer to see
-if we have reached the end of the array.
+The assembly code for the `ubmark_vvadd` function is similar to what we
+saw in ECE 4750 although with some additional optimizations. I have added
+some comments to show the backwards branch for the vvadd loop. The loop
+has eight instructions. Four instructions do useful work (i.e., two LW
+instructions, the actual ADDU instruction, one SW instruction) and three
+ADDI instructions generate the array addresses by bumping the array
+pointers. Notice that there is no explicit loop counter. The compiler has
+instead calculated the address of one past the last element in the first
+source array, and placed this value in `x13`. Each iteration, the BNE
+instruction compares the current pointer to see if we have reached the
+end of the array.
 
 We have provided you with a simulator that composes a processor, cache,
 memory, and accelerator and is capable of executing TinyRV2 binaries. The
@@ -315,214 +248,330 @@ discuss later. So let's execute the vvadd TinyRV2 binary on the
 instruction-set simulator:
 
 ```bash
-% cd $TOPDIR/sim/build
-% ../pmx/pmx-sim ../../app/build/ubmark-vvadd
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim ./ubmark-vvadd-test
 ```
 
-After a few seconds the simulator should display `passed` which means the
-microbenchmark successfully executed on the ISA simulator. The `--trace`
-command line option will display each instruction as it is executed on
-the ISA simulator.
+The simulator should display the same test output that we saw when
+executing the microbenchmark test natively. You can run a single test
+case like this:
 
 ```bash
-% cd $TOPDIR/sim/build
-% ../pmx/pmx-sim --trace ../../app/build/ubmark-vvadd > ubmark-vvadd-fl.trace
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim ./ubmark-vvadd-test 1
+```
+
+The `--trace` command line option will display each instruction as it is
+executed on the ISA simulator.
+
+```bash
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --trace \
+    ./ubmark-vvadd-test 1 > ubmark-vvadd-test-fl.trace
 ```
 
 When dumping out large line traces, it is usually much faster to save
-them to a file and then open the file in your favorite text editor. You
-can search in the line trace for the CSRW instruction to quickly jump to
-where the actual `vvadd_scalar` function starts executing. Here is what
-the line trace looks like for one iteration of the vvadd loop:
+them to a file and then open the file in VS Code. Here is what the
+beginning of the line trace looks like.
 
 ```
-       PC       instruction          xcel imemreq            imemresp          dmemreq                   dmemresp
----------------------------------------------------------------------------------------------------------------------------
-1731: -#                             | | |                  |                  rd:00:000005c8:0:        |
-1732: -#                             | | |                  |                                           |rd:00:0:0:00000055
-1733: -00000258 lw   x15, 0x000(x11) | | |                  |                                           |
-1734: -#                             | | |rd:00:00000258:0: |                                           |
-1735: -#                             | | |                  |rd:00:0:0:00062703                         |
-1736: -#                             | | |                  |                  rd:00:00000438:0:        |
-1737: -#                             | | |                  |                                           |rd:00:0:0:0000005f
-1738: -0000025c lw   x14, 0x000(x12) | | |                  |                                           |
-1739: -#                             | | |rd:00:0000025c:0: |                                           |
-1740: -#                             | | |                  |rd:00:0:0:00458593                         |
-1741: -00000260 addi x11, x11, 0x004 | | |                  |                                           |
-1742: -#                             | | |rd:00:00000260:0: |                                           |
-1743: -#                             | | |                  |rd:00:0:0:00460613                         |
-1744: -00000264 addi x12, x12, 0x004 | | |                  |                                           |
-1745: -#                             | | |rd:00:00000264:0: |                                           |
-1746: -#                             | | |                  |rd:00:0:0:00e787b3                         |
-1747: -00000268 add  x15, x15, x14   | | |                  |                                           |
-1748: -#                             | | |rd:00:00000268:0: |                                           |
-1749: -#                             | | |                  |rd:00:0:0:00f52023                         |
-1750: -#                             | | |                  |                  wr:00:000ffe54:0:000000b4|
-1751: -#                             | | |                  |                                           |wr:00:0:0:
-1752: -0000026c sw   x15, 0x000(x10) | | |                  |                                           |
-1753: -#                             | | |rd:00:0000026c:0: |                                           |
-1754: -#                             | | |                  |rd:00:0:0:00450513                         |
-1755: -00000270 addi x10, x10, 0x004 | | |                  |                                           |
-1756: -#                             | | |rd:00:00000270:0: |                                           |
-1757: -#                             | | |                  |rd:00:0:0:fed592e3                         |
-1758: -00000254 bne  x11, x13, 0x1fe4| | |                  |                                           |
-1759: -#                             | | |rd:00:00000254:0: |                                           |
-1760: -#                             | | |                  |rd:00:0:0:0005a783                         |
-1761: -#                             | | |                  |                  rd:00:000005cc:0:        |
-1762: -#                             | | |                  |                                           |rd:00:0:0:00000039
+cycle PC       instruction                                          FL memory
+----------------------------------------------------------------------------------
+  1r  #                                |              ()                 |     |
+  2r  #                                |              ()                 |     |
+  3:  #                                |              ()            rd>  |     |
+  4:  #                                |              ()              >rd|     |
+  5:  00000200 auipc  x03, 0x00003     |              ()                 |     |
+  6:  #                                |              ()            rd>  |     |
+  7:  #                                |              ()              >rd|     |
+  8:  00000204 addi   x03, x03, 0x9f0  |              ()                 |     |
+  9:  #                                |              ()            rd>  |     |
+ 10:  #                                |              ()              >rd|     |
+ 11:  00000208 addi   x01, x00, 0x000  |              ()                 |     |
+ 12:  #                                |              ()            rd>  |     |
+ 13:  #                                |              ()              >rd|     |
+ 14:  0000020c addi   x02, x00, 0x000  |              ()                 |     |
+ 15:  #                                |              ()            rd>  |     |
+ 16:  #                                |              ()              >rd|     |
+ 17:  00000210 addi   x04, x00, 0x000  |              ()                 |     |
+ 18:  #                                |              ()            rd>  |     |
+ 19:  #                                |              ()              >rd|     |
 ```
 
-Since this is an ISA simulator, instructions can functionally execute in
-a single cycle, although technically they take multiple cycles to interact
-with the memory system. These cycles are not really modeling any kind of
-realistic timing, but can instead be thought of as the "steps" required
-for functional simulation.
+You can see the beginning of the program is initializing the registers to
+zero. Since this is an ISA simulator, instructions can functionally
+execute in a single cycle, although technically they take multiple
+"cycles" to interact with the memory system. These cycles are not really
+modeling any kind of realistic timing, but can instead be thought of as
+the "steps" required for functional simulation.
 
-Now that we have verified the microbenchmark works correctly on the ISA
-simulator, we can run the microbenchmark on the baseline TinyRV2 pipelined
-processor RTL model:
+Now that we have verified the microbenchmark test works correctly on the
+ISA simulator, we can run the microbenchmark test on the baseline TinyRV2
+pipelined processor RTL model:
 
 ```bash
-% cd $TOPDIR/sim/build
-% ../pmx/pmx-sim --proc-impl rtl --cache-impl rtl \
-     --stats ../../app/build/ubmark-vvadd
- num_cycles =  1310
- num_insts_on_processor =  811
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --proc-impl rtl ./ubmark-vvadd-test
 ```
 
-We use the `--proc-impl` command line option to choose the processor RTL
-model and the `--cache-impl` command line option to choose the cache RTL
-model. The reported number of cycles and instructions is only when stats
-are enabled. The cycles/instruction is 1.62. You can use the `--trace`
-command line option to understand how the processor is performing in more
-detail.
+Again the simulator should display the same test output that we saw when
+executing the microbenchmark test natively and on the FL simulator. You
+can run a single test case like this:
 
 ```bash
-% cd $TOPDIR/sim/build
-% ../pmx/pmx-sim --proc-impl rtl --cache-impl rtl \
-     --trace ../../app/build/ubmark-vvadd > ubmark-vvadd-rtl.trace
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --proc-impl rtl ./ubmark-vvadd-test 1
 ```
 
-This is the line trace for two iterations of the vvadd loop in the steady
-state.
-
-```
-891: -00000254|                       |     |bne  |addi [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-892: -00000258|lw     x15, 0x000(x11) |     |     |bne  [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-893: -0000025c|lw     x14, 0x000(x12) |lw   |     |     [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-894: -#       |#                      |#    |#    |     [(TC)|(TC)]              |.           |                                                  |.                                                                                          |.                                         
-895: -#       |#                      |#    |#    |     [(I )|(RR)]              |.           |                                                  |.                                         rd:00:000005c0:0:                                |.                                         
-896: -#       |#                      |#    |#    |     [(I )|(RW)]              |.           |                                                  |.                                                                                          |rd:00:0:0:00000039000000550000004700000019
-897: -#       |#                      |#    |#    |     [(I )|(RU)]              |.           |                                                  |.                                                                                          |.                                         
-898: -#       |#                      |#    |#    |     [(I )|(RD)]              |.           |                                                  |.                                                                                          |.                                         
-899: -00000260|addi   x11, x11, 0x004 |lw   |lw   |     [(I )|(Wm)]              |.           |                                                  |.                                                                                          |.                                         
-900: -#       |#                      |#    |#    |lw   [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-901: -#       |#                      |#    |#    |     [(I )|(TC)]              |.           |                                                  |.                                                                                          |.                                         
-902: -#       |#                      |#    |#    |     [(I )|(RR)]              |.           |                                                  |.                                         rd:00:00000430:0:                                |.                                         
-903: -#       |#                      |#    |#    |     [(I )|(RW)]              |.           |                                                  |.                                                                                          |rd:00:0:0:000000200000005f000000040000002b
-904: -#       |#                      |#    |#    |     [(I )|(RU)]              |.           |                                                  |.                                                                                          |.                                         
-905: -#       |#                      |#    |#    |     [(I )|(RD)]              |.           |                                                  |.                                                                                          |.                                         
-906: -00000264|addi   x12, x12, 0x004 |addi |lw   |     [(I )|(Wm)]              |.           |                                                  |.                                                                                          |.                                         
-907: -00000268|add    x15, x15, x14   |addi |addi |lw   [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-908: -0000026c|sw     x15, 0x000(x10) |add  |addi |addi [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-909: -00000270|addi   x10, x10, 0x004 |sw   |add  |addi [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-910: -00000274|bne    x11, x13, 0x1fe4|addi |sw   |add  [(TC)|(TC)]              |.           |                                                  |.                                                                                          |.                                         
-911: -~       |~                      |bne  |addi |sw   [(TC)|(WD)]              |.           |                                                  |.                                                                                          |.                                         
-912: -00000254|                       |     |bne  |addi [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-913: -00000258|lw     x15, 0x000(x11) |     |     |bne  [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-914: -0000025c|lw     x14, 0x000(x12) |lw   |     |     [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-915: -00000260|addi   x11, x11, 0x004 |lw   |lw   |     [(TC)|(TC)]              |.           |                                                  |.                                                                                          |.                                         
-916: -00000264|addi   x12, x12, 0x004 |addi |lw   |lw   [(TC)|(TC)]              |.           |                                                  |.                                                                                          |.                                         
-917: -00000268|add    x15, x15, x14   |addi |addi |lw   [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-918: -0000026c|sw     x15, 0x000(x10) |add  |addi |addi [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-919: -00000270|addi   x10, x10, 0x004 |sw   |add  |addi [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-920: -00000274|bne    x11, x13, 0x1fe4|addi |sw   |add  [(TC)|(TC)]              |.           |                                                  |.                                                                                          |.                                         
-921: -~       |~                      |bne  |addi |sw   [(TC)|(WD)]              |.           |                                                  |.                                                                                          |.                                         
-922: -00000254|                       |     |bne  |addi [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-923: -00000258|lw     x15, 0x000(x11) |     |     |bne  [(TC)|(I )]              |.           |                                                  |.                                                                                          |.                                         
-```
-
-We see the first and second LW instructions miss in the data cache
-causing the data cache FSM to issue a refill request to the main memory
-(notice the data cache FSM moving through the TC->RR->RW->RU->RD->W
-states). The BNE instruction is resolved in the X stage and causes a
-two-cycle bubble. Notice that the SW instruction hit in the data cache.
-If we look at the C code, we can see that the vvadd microbenchmark
-initializes the destination array to all zeros. This essentially
-prefetches the destination array into the cache so that all SW
-instructions in the vvadd loop will hit in the cache. The two LW
-instructions hit in the data cache during the second iteration. This is
-due to spatial locality: the LW instructions in the first iteration bring
-in the source arrays, and then the LW instructions in the second
-iteration are able to access this same cache line.
-
-We know that every fourth iteration should look like the first iteration
-(21 cycles) and the remaining iterations should look like the second
-iteration (10 cycles). Since there are 100 iterations, this means the
-total number of cycles should be about 1275 cycles, but our simulator
-reported 1310 cycles. The discrepancy is due to the extra cycles required
-to call and return from the `vvadd_scalar` function.
-
-Sometimes it is useful to run experiments where we assume a perfect cache
-to help isolate the impact of the memory system. This is easy to do with
-our simulator. We simply avoid inserting any cache at all and instead
-have the processor directly communicate with the test memory. This means
-all memory requests take a single cycle.
+Let's use the `--trace` command line option to dump out the trace.
 
 ```bash
-% cd $TOPDIR/sim/build
-% ../pmx/pmx-sim --proc-impl rtl \
-     --stats ../../app/build/ubmark-vvadd
- num_cycles =  1012
- num_insts_on_processor =  811
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --proc-impl rtl --trace \
+    ./ubmark-vvadd-test 1 > ubmark-vvadd-test-rtl.trace
 ```
 
-We can look at the line trace to see how the processor is executing with
-a perfect cache:
+Here is what the first few cycles of the simulation look like.
+
+```
+cycle F        D                       X    M    W     imem  dmem
+-------------------------------------------------------------------
+  1r          |                       |    |    |    |      |     |
+  2r          |                       |    |    |    |      |     |
+  3:          |                       |    |    |    | rd>  |     |
+  4:  00000200|                       |    |    |    | rd>rd|     |
+  5:  00000204|auipc  x03, 0x00003    |    |    |    | rd>rd|     |
+  6:  00000208|addi   x03, x03, 0x9f0 |auiP|    |    | rd>rd|     |
+  7:  0000020c|addi   x01, x00, 0x000 |addi|auiP|    | rd>rd|     |
+  8:  00000210|addi   x02, x00, 0x000 |addi|addi|auiP| rd>rd|     |
+  9:  00000214|addi   x04, x00, 0x000 |addi|addi|addi| rd>rd|     |
+ 10:  00000218|addi   x05, x00, 0x000 |addi|addi|addi| rd>rd|     |
+ 11:  0000021c|addi   x06, x00, 0x000 |addi|addi|addi| rd>rd|     |
+```
+
+We can see the five stages of the processor pipeline. The PC is displayed
+in the F stage, the full instruction is displayed in the D stage, and a
+shorter version of the instruction is displayed in the X, M, and W
+stages. We are using a single-cycle magic memory, so we can see
+instruction memory requests being sent and the responses being returned
+the next cycle. Again you can see the beginning of the program is
+initializing the registers to zero.
+
+### 2.2. TinyRV2 Microbenchmark Eval
+
+Once we are sure the microbenchmark test is working natively, on the FL
+simulator, and the RTL simulator, we can then turn our focus to the
+microbenchmark eval.
 
 ```bash
-% cd $TOPDIR/sim/build
-% ../pmx/pmx-sim --proc-impl rtl \
-     --trace ../../app/build/ubmark-vvadd > ubmark-vvadd-rtl.trace
+% cd $TOPDIR/app/ubmark
+% less ubmark-accum-eval.c
 ```
 
-This is the line trace for two iterations of the loop in the steady
-state:
+Here is the microbenchmark eval.
+
+```c
+#include "ece6745.h"
+#include "ubmark-vvadd.h"
+#include "ubmark-vvadd.dat"
+
+int main( void )
+{
+  // Allocate destination array for results
+
+  int* dest = ece6745_malloc( eval_size * (int)sizeof(int) );
+
+  // Run the evaluation
+
+  ece6745_stats_on();
+  ubmark_vvadd( dest, eval_src0, eval_src1, eval_size );
+  ece6745_stats_off();
+
+  // Verify the results
+
+  for ( int i = 0; i < eval_size; i++ ) {
+    if ( dest[i] != eval_ref[i] ) {
+      ece6745_wprintf( L"\n FAILED: dest[%d] != eval_ref[%d] (%d != %d)\n\n",
+                       i, i, dest[i], eval_ref[i] );
+      ece6745_exit(1);
+    }
+  }
+
+  // Free destination array
+
+  ece6745_free(dest);
+
+  // Check for no memory leaks
+
+  if ( ece6745_get_heap_usage() != 0 ) {
+    ece6745_wprintf( L"\n FAILED: memory leak of %d bytes!\n\n",
+                     ece6745_get_heap_usage() );
+    ece6745_exit(1);
+  }
+
+  // Otherwise we passed
+
+  ece6745_wprintf( L"\n **PASSED** \n\n" );
+
+  return 0;
+}
+
+The `eval_src0`, `eval_src1`, and `eval_ref` arrays are all defined in
+the `app/ubmark/ubmark-vvadd.dat` file. The microbenchmark first
+allocates the destination array on the heap, turns stats on, does the
+actual vvadd computation, turns stats off, verifies that the results are
+as expected, and makes sure there are no memory leaks. We need the
+`ece6745_stats_on()` and `ece6745_stats_off()` functions to make sure we
+can keep track of various statistics (e.g., the number of cycles) only
+during the important part of the microbenchmark. We do not want to count
+time spent in initialization or verification when comparing the
+performance of our various microbenchmarks. The `ece6745_stats_on`
+function is defined in `app/ece6745/ece6745-misc.h` as follows:
+
+```c
+#ifdef _RISCV
+
+inline
+void ece6745_stats_on()
+{
+  int status = 1;
+  __asm__ ( "csrw 0x7c1, %0" :: "r"(status) );
+}
+
+#else
+
+inline
+void ece6745_stats_on()
+{ }
+
+#endif
+```
+
+Notice that if `_RISCV` is not defined (i.e., we are compiling the
+microbenchmark eval natively on x86) this function is empty. If `_RISCV`
+is defined (i.e., we are cross-compilng the microbenchmark eval for
+TinyRV2) then this function uses GCC inline assembly to insert a CSRW
+instruction into the program. You can find out more about inline assembly
+syntax here:
+
+ - <https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html>
+
+At a high level, `%0` acts as a place holder for whatever register
+specifier the compiler ends up allocating for the `status` variable. The
+TinyRV2 instruction set defines CSR number 0x7c1 as the `stats_en`
+control/status register, which is why we use `0x7c1` in the inline
+assembly. Refer to the TinyRV2 instruction set for a list of the CSRs.
+
+ - <http://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-tinyrv-isa.txt>
+
+The idea is that the microarchitecture and/or simulator can monitor for
+writes to the `stats_en` register to determine when to start and stop
+keeping statistics. For more on writing microbenchmarks, please review
+the handout for lab 5 from ECE 4750.
+
+Here is how we compile and execute the evaluation for the vvadd
+microbenchmark natively:
+
+```bash
+% cd $TOPDIR/app/build-native
+% make ubmark-vvadd-eval
+% ./ubmark-vvadd-eval
+```
+
+The microbenchmark eval should display `passed`. Once you are sure your
+microbenchmark eval is working correctly natively, you can cross-compile
+the microbenchmark eval for TinyRV2 and look at the main function.
+
+```bash
+% cd $TOPDIR/app/build
+% riscv32-objdump ./ubmark-vvadd-eval | less -p "<main>:"
+```
+
+If you look in the disassembly for the main function you should be able
+to see the two CSRW instructions used to turn stats on and off.
 
 ```
-      F stage  D stage               X    M    W    dmemreq        dmemresp
--------------------------------------------------------------------------------------
-658: -00000254|                     |    |bne |addi|              >.
-659: -00000258|lw   x15, 0x000(x11) |    |    |bne |              >.
-660: -0000025c|lw   x14, 0x000(x12) |lw  |    |    |rd:00:000005b4>.
-661: -00000260|addi x11, x11, 0x004 |lw  |lw  |    |rd:00:00000424>rd:00
-662: -00000264|addi x12, x12, 0x004 |addi|lw  |lw  |              >rd:00
-663: -00000268|add  x15, x15, x14   |addi|addi|lw  |              >.
-664: -0000026c|sw   x15, 0x000(x10) |add |addi|addi|              >.
-665: -00000270|addi x10, x10, 0x004 |sw  |add |addi|wr:00:000ffe40>.
-666: -00000274|bne  x11, x13, 0x1fe4|addi|sw  |add |              >wr:00
-667: -~       |~                    |bne |addi|sw  |              >.
-668: -00000254|                     |    |bne |addi|              >.
-669: -00000258|lw   x15, 0x000(x11) |    |    |bne |              >.
-670: -0000025c|lw   x14, 0x000(x12) |lw  |    |    |rd:00:000005b8>.
-671: -00000260|addi x11, x11, 0x004 |lw  |lw  |    |rd:00:00000428>rd:00
-672: -00000264|addi x12, x12, 0x004 |addi|lw  |lw  |              >rd:00
-673: -00000268|add  x15, x15, x14   |addi|addi|lw  |              >.
-674: -0000026c|sw   x15, 0x000(x10) |add |addi|addi|              >.
-675: -00000270|addi x10, x10, 0x004 |sw  |add |addi|wr:00:000ffe44>.
-676: -00000274|bne  x11, x13, 0x1fe4|addi|sw  |add |              >wr:00
-677: -~       |~                    |bne |addi|sw  |              >.
-678: -00000254|                     |    |bne |addi|              >.
-679: -00000258|lw   x15, 0x000(x11) |    |    |bne |              >.
+ 6f8:   addi    x15,x0,1              # \
+ 6fc:   csrw    0x7c1,x15             # / turn stats on
+ 700:   lui     x12,0x1               # \
+ 704:   lw      x13,-2048(x3)         # | setup arguments
+ 708:   addi    x9,x12,-1072          # |
+ 70c:   addi    x11,x9,400            # |
+ 710:   addi    x12,x12,-1072         # /
+ 714:   jal     x1,2fc <ubmark_vvadd> # call the ubmark_vvadd function
+ 718:   addi    x15,x0,0              # \
+ 71c:   csrw    0x7c1,x15             # / turn stats off
 ```
 
-Notice how there is no cache, so all instruction fetches and data
-accesses go straight to the test memory. There are 10 cycles per
-iteration for a total of 1000 cycles. The simulator reported 1012 cycles
-with the extra 12 cycles due to the extra instructions required to call
-and return from the `vvadd_scalar` function.
+Now let's run the microbenchmark eval on the FL simulator.
 
-VVADD Accelerator FL, CL, and RTL Models
+```bash
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim ./ubmark-vvadd-eval
+```
+
+The microbenchmark eval should display `passed`. Once you are sure your
+microbenchmark eval is working correctly natively and on the FL simulator
+you are finally ready to run it on the actual RTL simulator to do a real
+performance evaluation.
+
+```bash
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --proc-impl rtl --stats ./ubmark-vvadd-eval
+ **PASSED**
+
+ num_cycles        = 1013
+ num_inst          = 812
+ CPI               = 1.25
+```
+
+Now let's look in more detail at the trace.
+
+```
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --trace ./ubmark-vvadd-eval > ubmark-vvadd-eval-rtl.trace
+```
+
+Open up the trace in VS code and search for 0fbc which is the address of
+the first instruction in the loop.
+
+```
+cycle F        D                       X    M    W     imem  dmem
+-------------------------------------------------------------------
+841:  00000fbc|lw     x15, 0x000(x11) |add |slli|bge | rd>rd|     |
+842:  00000fc0|lw     x14, 0x000(x12) |lw  |add |slli| rd>rd|rd>  |
+843:  00000fc4|addi   x11, x11, 0x004 |lw  |lw  |add | rd>rd|rd>rd|
+844:  00000fc8|addi   x12, x12, 0x004 |addi|lw  |lw  | rd>rd|  >rd|
+845:  00000fcc|add    x15, x15, x14   |addi|addi|lw  | rd>rd|     |
+846:  00000fd0|sw     x15, 0x000(x10) |add |addi|addi| rd>rd|     |
+847:  00000fd4|addi   x10, x10, 0x004 |sw  |add |addi| rd>rd|wr>  |
+848:  00000fd8|bne    x11, x13, 0x1fe4|addi|sw  |add | rd>rd|  >wr|
+849:  /       |/                      |bne |addi|sw  | rd>rd|     |
+850:  00000fb8|                       |    |bne |addi| rd>rd|     |
+851:  00000fbc|lw     x15, 0x000(x11) |    |    |bne | rd>rd|     |
+852:  00000fc0|lw     x14, 0x000(x12) |lw  |    |    | rd>rd|rd>  |
+853:  00000fc4|addi   x11, x11, 0x004 |lw  |lw  |    | rd>rd|rd>rd|
+854:  00000fc8|addi   x12, x12, 0x004 |addi|lw  |lw  | rd>rd|  >rd|
+```
+
+We can see the eight instructions in the loop going through the five
+stages of the pipeline. We can see the memory requests for the two loads
+and store going to the data memory and the responses coming back on the
+next cycle. We can also see the branch misprediction squashing two
+instructions. The `eval_size` is 100 so there are 100 iterations of the
+loop and 800 instructions, which should take a total of 1000 cycles
+resulting in a CPI of 1.25.
+
+When we used `--stats` the instruction count and number of cycles was
+slightly higher due to the extra instructions required to setup the
+arguments before calling `ubmark_vvadd` and the extra instructions within
+`ubmark_vvadd` before we start the loop.
+
+==========================================================================
+STOPPED HERE
+==========================================================================
+
+3. VVADD Accelerator FL and RTL Models
 --------------------------------------------------------------------------
 
 We will take an incremental approach when designing, implementing,
@@ -702,7 +751,7 @@ We could use the simulator to help evaluate the cycle-level performance
 of the accelerator on various different datasets as we try out various
 optimizations.
 
-Integrating the TinyRV2 Processor and the VVADD Accelerator
+4. Integrating the TinyRV2 Processor and the VVADD Accelerator
 --------------------------------------------------------------------------
 
 Now that we have unit tested and evaluated both the baseline TinyRV2
@@ -807,7 +856,7 @@ stage since the data has not returned from the accelerator yet. In cycle
 34, the CSRW instruction in the decode stage needs to stall to wait for
 the CSRR instruction in the X stage to move into the M stage.
 
-Accelerating a TinyRV2 Microbenchmark
+5. Accelerating a TinyRV2 Microbenchmark
 --------------------------------------------------------------------------
 
 To use an accelerator from a C microbenchmark, we can use the same GCC

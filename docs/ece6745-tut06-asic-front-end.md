@@ -493,8 +493,8 @@ delay constraint to be 0ps (i.e., the block needs to meet the hold time
 constraints even if the inputs change right on the rising edge clock).
 
 ```
-dc_shell> set_input_delay -clock ideal_clock1 -max 0.000 [all_inputs -exclude_clock_ports]
-dc_shell> set_input_delay -clock ideal_clock1 -min 0.050 [all_inputs -exclude_clock_ports]
+dc_shell> set_input_delay -clock ideal_clock1 -max 0.050 [all_inputs -exclude_clock_ports]
+dc_shell> set_input_delay -clock ideal_clock1 -min 0.000 [all_inputs -exclude_clock_ports]
 ```
 
 We also need to constrain the output ports since there will be some logic

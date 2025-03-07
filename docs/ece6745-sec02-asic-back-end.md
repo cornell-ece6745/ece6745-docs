@@ -362,6 +362,7 @@ files we can start Cadence Innovus. Note that we are using the Cadence
 Innovus GUI so you will need to use Microsoft Remote Desktop.
 
 ```bash
+% cd $TOPDIR/asic/build-regincr/04-cadence-innovus-pnr
 % innovus
 ```
 
@@ -532,6 +533,7 @@ innovus> exit
 Open the final layout using Klayout.
 
 ```bash
+% cd $TOPDIR/asic/build-regincr/04-cadence-innovus-pnr
 % klayout -l ${ECE6745_STDCELLS}/klayout.lyp post-pnr.gds
 ```
 

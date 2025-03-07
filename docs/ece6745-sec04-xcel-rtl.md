@@ -37,87 +37,6 @@ of the top directory for the project.
 % export TOPDIR=$PWD
 ```
 
-0. Stress Testing `ecelinux`
---------------------------------------------------------------------------
-
-We have one of our awesome system adminstrators with us today who is
-going to help us learn more why `ecelinux` has been locking up during our
-discussion sections. We will be working through the following steps
-one-by-one as a class. **Do not go ahead! You must wait until the
-instructor tells you to start the next step to ensure we can accurately
-stress test ecelinux!**
-
-**Step 1: Log out of Microsoft Remote Desktop**
-
-Go ahead and completely log out and close Microsoft Remote Desktop so we
-can test things first without Microsoft Remote Desktop.
-
-**Step 2: Clone Test Repo**
-
-Let's use the repo from last week's discussion section to stress test.
-
-```bash
-% mkdir -p $HOME/ece6745
-% cd $HOME/ece6745
-% rm -rf sec03
-% git clone git@github.com:cornell-ece6745/ece6745-sec03-asic-auto sec03
-% cd sec03
-```
-
-**Step 3: Simulate Registered Incrementer**
-
-Let's now all simulate the registered incrementer at the same time.
-
-```bash
-% mkdir -p $HOME/ece6745/sec03/sim/build
-% cd $HOME/ece6745/sec03/sim/build
-% pytest ../tut3_verilog/regincr  --test-verilog --dump-vtb
-% ../tut3_verilog/regincr/regincr-sim 0xff 0x20 0x30 0x04 0x00
-```
-
-**Step 4: Push Registered Incrementer Through ASIC Flow**
-
-Let's now all push the registered incrementer through the ASIC flow
-together at the same time.
-
-```bash
-% mkdir -p $HOME/ece6745/sec03/asic/build-sec03-regincr
-% cd $HOME/ece6745/sec03/asic/build-sec03-regincr
-% pyhflow ../designs/sec03-regincr.yml
-% ./run-flow
-```
-
-**Step 5: Start Microsoft Remote Desktop**
-
-Let's all now start Microsoft Remote Desktop again. Remember to use the
-same server that you are using with VS Code.
-
-**Step 6: View Layout with Klayout**
-
-Let's all start Klayout at the same time. Go ahead and interact with the
-GUI. Show/hide different layers and move the window around. Try
-zooming in by pressing return and then zooming out by pressing
-shift-return.
-
-```bash
-% source setup-gui.sh
-% cd $HOME/ece6745/sec03/asic/build-sec03-regincr
-% klayout -l $ECE6745_STDCELLS/klayout.lyp 04-cadence-innovus-pnr/post-pnr.gds
-```
-
-**Step 8: Launch Innovus GUI**
-
-Let's all start the Cadence Innovus GUI at the same time. Go ahead and
-interact with the GUI. Show/hide different layers and move the window
-around. Try zooming in by pressing the z key and then zooming out by
-pressing shift-z.
-
-```bash
-% cd $HOME/ece6745/sec03/asic/build-sec03-regincr
-% innovus
-innovus> source 04-cadence-innovus-pnr/post-pnr.enc
-```
-
 1. Baseline TinyRV2 Processor FL and RTL Models
 --------------------------------------------------------------------------
 
@@ -129,7 +48,8 @@ data back to the test harness. The imem master/minion interface is used
 for instruction fetch, and the dmem master/minion interface is used for
 implementing load/store instructions. The system includes both
 instruction and data caches. The xcel master/minion interface is used for
-the processor to send messages to the accelerator.
+the processor to send messages to the accelerator. **The cache is not
+ported to work with the ASIC flow so it is not currently included!**
 
 ![](img/tut09-proc-xcel.png)
 
