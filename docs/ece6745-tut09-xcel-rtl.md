@@ -95,7 +95,7 @@ See the handout for lab 2 from ECE 4750 for more information about how we
 use `pytest` and the mngr2proc/proc2mngr interfaces to test the TinyRV2
 processor.
 
-2. Cross-Compiling and Executing TinyRV2 Microbenchmarks
+2. Testing and Evaluating TinyRV2 Microbenchmarks
 --------------------------------------------------------------------------
 
 We will write our microbenchmarks in C. Take a closer look at the vvadd
@@ -115,10 +115,10 @@ microbenchmark and a microbenchmark eval to evaluate the performance of
 our microbenchmark. We will run both the microbenchmark test and eval on
 both FL and RTL TinyRV2 processor models.
 
-### 2.1. TinyRV2 Microbenchmark Test
+### 2.1. TinyRV2 VVADD Test
 
-Let's go ahead and take a look at the microbenchmark provided for the
-vvadd microbenchmark.
+Let's go ahead and take a look at the microbenchmark test provided for
+the vvadd microbenchmark.
 
 ```bash
 % cd $TOPDIR/app/ubmark
@@ -207,7 +207,7 @@ compiled binary back into an assembly text representation) with the
 ```bash
 % cd $TOPDIR/app/build
 % riscv32-objdump ubmark-vvadd-test | less -p "<ubmark_vvadd>:"
- 00000fac <ubmark_vvadd>:
+00000fac <ubmark_vvadd>:
     fac: bge    x0,  x13, fd8
     fb0: slli   x13, x13, 0x2
     fb4: add    x13, x11, x13
@@ -357,7 +357,7 @@ instruction memory requests being sent and the responses being returned
 the next cycle. Again you can see the beginning of the program is
 initializing the registers to zero.
 
-### 2.2. TinyRV2 Microbenchmark Eval
+### 2.2. TinyRV2 VVADD Eval
 
 Once we are sure the microbenchmark test is working natively, on the FL
 simulator, and the RTL simulator, we can then turn our focus to the
@@ -415,6 +415,7 @@ int main( void )
 
   return 0;
 }
+```
 
 The `eval_src0`, `eval_src1`, and `eval_ref` arrays are all defined in
 the `app/ubmark/ubmark-vvadd.dat` file. The microbenchmark first
@@ -484,6 +485,7 @@ the microbenchmark eval for TinyRV2 and look at the main function.
 
 ```bash
 % cd $TOPDIR/app/build
+% make ubmark-vvadd-eval
 % riscv32-objdump ./ubmark-vvadd-eval | less -p "<main>:"
 ```
 
@@ -567,11 +569,7 @@ slightly higher due to the extra instructions required to setup the
 arguments before calling `ubmark_vvadd` and the extra instructions within
 `ubmark_vvadd` before we start the loop.
 
-==========================================================================
-STOPPED HERE
-==========================================================================
-
-3. VVADD Accelerator FL and RTL Models
+3. Testing and Evaluating Accelerators in Isolation
 --------------------------------------------------------------------------
 
 We will take an incremental approach when designing, implementing,
@@ -623,21 +621,24 @@ want to integrate a "real" accelerator, but this null accelerator is also
 useful in illustrating the basic accelerator interface. The null
 accelerator has a single accelerator register (xr0) which can be read and
 written. Take a closer look at this null accelerator in
-`sim/proc/NullXcelRTL.py`.
+`sim/proc/NullXcel.v`.
 
-```python
-    @update
-    def block():
+```verilog
+  always_comb begin
 
-      # Mux to force xcelresp data to zero on a write
-      # Enable xr0 only upon write requests and both val/rdy on resp side
+    // Mux to force xcelresp data to zero on a write
+    // Enable xr0 only upon write requests and both val/rdy on resp side
 
-      if s.xcelreq_q.send.msg.type_ == XCEL_TYPE_WRITE:
-        s.xr0.en @= s.xcel.resp.val & s.xcel.resp.rdy
-        s.xcel.resp.msg.data @= 0
-      else:
-        s.xr0.en @= 0
-        s.xcel.resp.msg.data @= s.xr0.out
+    if ( xcelreq_deq_msg.type_ == `VC_XCEL_REQ_MSG_TYPE_WRITE ) begin
+      xr0_en = xcel_respstream_val && xcel_respstream_rdy;
+      xcel_respstream_msg.data = '0;
+    end
+    else begin
+      xr0_en = 0;
+      xcel_respstream_msg.data = xr0;
+    end
+
+  end
 ```
 
 The null accelerator simply waits for a xcel.req message to arrive. If
@@ -649,7 +650,7 @@ xr0 register and then reads it back:
 
 ```bash
 % cd $TOPDIR/sim/build
-% pytest ../proc/test/NullXcelRTL_test.py -k basic -s
+% pytest ../proc/test/NullXcel_test.py -k basic -s
 
   1r                >               |.           > .
   2r                >               |.           > .
@@ -660,7 +661,7 @@ xr0 register and then reads it back:
   7: wr:00:0000000a > wr:00:0000000a|            >
   8: rd:00:         > rd:00:        |wr:         > wr:
   9:                >               |rd:0000000a > rd:0000000a
- 10:                >               |.           > .
+ 10:                >               |            >
 ```
 
 From the line trace, you can see the write request message (with write
@@ -710,7 +711,7 @@ useful in this context. The vvadd accelerator RTL model is in
 `sim/tut9_xcel/VvaddXcelPRTL.py` and (roughly) implements the following
 FSM:
 
-![](img/vvadd-xcel-ctrl.png)
+![](img/tut09-vvadd-xcel-ctrl.png)
 
 While the accelerator is in the XCFG state, it will update its internal
 registers when it receives accelerator requests. When the accelerator
@@ -744,21 +745,28 @@ isolation which can be used to evaluate its performance.
 ```bash
 % cd $TOPDIR/sim/build
 % ../tut9_xcel/vvadd-xcel-sim --impl rtl --input multiple --stats
- num_cycles = 1058
+  num_cycles = 1058
 ```
 
 We could use the simulator to help evaluate the cycle-level performance
 of the accelerator on various different datasets as we try out various
 optimizations.
 
-4. Integrating the TinyRV2 Processor and the VVADD Accelerator
+4. Testing and Evaluating TinyRV2 Microbenchmarks with Accelerators
 --------------------------------------------------------------------------
 
 Now that we have unit tested and evaluated both the baseline TinyRV2
 pipelined processor and the vvadd accelerator in isolation, we are
-finally ready to compose them. The processor will send messages to the
-accelerator by reading and writing 32 special CSRs using the standard
-CSRW and CSRR instructions. These 32 special CSRs are as follows:
+finally ready to compose them. We will start by looking at a basic null
+accelerator to understand how we will integrate processors and
+accelerators before looking at the vvadd accelerator in the next section.
+
+### 4.1. Integrating the TinyRV2 Processor and a Null Accelerator
+
+The key way the processor interacts with an accelerator is by sending
+messages that read and write 32 special accelerator registers using the
+standard CSRW and CSRR instructions. These 32 special CSRs are as
+follows:
 
 ```
   0x7e0 : accelerator register  0 (xr0)
@@ -796,49 +804,48 @@ write/read an accelerator register like this:
 ```bash
 % cd $TOPDIR/sim/build
 % pytest ../proc/test/ProcFL_xcel_test.py
-% pytest ../proc/test/ProcRTL_xcel_test.py
-% pytest ../proc/test/ProcRTL_xcel_test.py -k [bypass -s
+% pytest ../proc/test/Proc_xcel_test.py
+% pytest ../proc/test/Proc_xcel_test.py -k [bypass -s
 
-     src        F-stage  D-stage         X     M     W     xcelreq         xcelresp    sink
- -----------------------------------------------------------------------------------------------
-  2r .        >         |               |     |     |     |              |.          > .
-  3: .        >         |               |     |     |     |              |.          > .
-  4: .        > 00000200|               |     |     |     |              |.          > .
-  5: .        > #       |#              |     |     |     |              |.          > .
-  6: .        > #       |#              |     |     |     |              |.          > .
-  7: deadbeef > 00000204|csrr x02, 0xfc0|     |     |     |              |.          >
-  8: #        > 00000208|nop            |csrr |     |     |              |.          >
-  9: #        > 0000020c|nop            |nop  |csrr |     |              |.          >
- 10: #        > 00000210|nop            |nop  |nop  |csrr |              |.          >
- 11: #        > 00000214|csrw 0x7e0, x02|nop  |nop  |nop  |              |.          >
- 12: #        > 00000218|csrr x03, 0x7e0|csrw |nop  |nop  |wr:00:deadbeef|.          >
- 13: #        > 0000021c|nop            |csrrx|csrw |nop  |rd:00:        |wr:        >
- 14: #        > 00000220|nop            |nop  |csrrx|csrw |              |rd:deadbeef>
- 15: #        > 00000224|nop            |nop  |nop  |csrrx|              |.          >
- 16: #        > 00000228|csrw 0x7c0, x03|nop  |nop  |nop  |              |.          >
- 17: deadbe00 > 0000022c|csrr x02, 0xfc0|csrw |nop  |nop  |              |.          >
- 18: #        > 00000230|nop            |csrr |csrw |nop  |              |.          >
- 19: #        > 00000234|nop            |nop  |csrr |csrw |              |.          > deadbeef
- 20: #        > 00000238|csrw 0x7e0, x02|nop  |nop  |csrr |              |.          >
- 21: #        > 0000023c|csrr x03, 0x7e0|csrw |nop  |nop  |wr:00:deadbe00|.          >
- 22: #        > 00000240|nop            |csrrx|csrw |nop  |rd:00:        |wr:        >
- 23: #        > 00000244|nop            |nop  |csrrx|csrw |              |rd:deadbe00>
- 24: #        > 00000248|csrw 0x7c0, x03|nop  |nop  |csrrx|              |.          >
- 25: 00adbe00 > 0000024c|csrr x02, 0xfc0|csrw |nop  |nop  |              |.          >
- 26: #        > 00000250|nop            |csrr |csrw |nop  |              |.          >
- 27: #        > 00000254|csrw 0x7e0, x02|nop  |csrr |csrw |              |.          > deadbe00
- 28: #        > 00000258|csrr x03, 0x7e0|csrw |nop  |csrr |wr:00:00adbe00|.          >
- 29: #        > 0000025c|nop            |csrrx|csrw |nop  |rd:00:        |wr:        >
- 30: #        > 00000260|csrw 0x7c0, x03|nop  |csrrx|csrw |              |rd:00adbe00>
- 31: dea00eef > 00000264|csrr x02, 0xfc0|csrw |nop  |csrrx|              |.          >
- 32: .        > 00000268|csrw 0x7e0, x02|csrr |csrw |nop  |              |.          >
- 33: .        > 0000026c|csrr x03, 0x7e0|csrw |csrr |csrw |wr:00:dea00eef|.          > 00adbe00
- 34: .        > #       |#              |csrrx|csrw |csrr |rd:00:        |wr:        >
- 35: .        > 00000270|csrw 0x7c0, x03|     |csrrx|csrw |              |rd:dea00eef>
- 36: .        > 00000274|               |csrw |     |csrrx|              |.          >
- 37: .        > 00000278|               |???? |csrw |     |              |.          >
- 38: .        > 0000027c|               |???? |???? |csrw |              |.          > dea00eef
- 39: .        > 00000280|               |???? |???? |???? |              |.          > .
+     src        F-stage   D-stage                 X    M    W    xcelreq         xcelresp    sink
+ ------------------------------------------------------------------------------------------------------
+  1r .        >          |                       |    |    |    |              ().           >
+  2r .        >          |                       |    |    |    |              ().           >
+  3: .        >          |                       |    |    |    |              ().           >
+  4: #        >  00000200|                       |    |    |    |              ().           >
+  5: deadbeef >  00000204|csrr   x02, mngr2proc  |    |    |    |              ().           >
+  6: #        >  00000208|nop                    |csrr|    |    |              ().           >
+  7: #        >  0000020c|nop                    |nop |csrr|    |              ().           >
+  8: #        >  00000210|nop                    |nop |nop |csrr|              ().           >
+  9: #        >  00000214|csrw   0x7e0, x02      |nop |nop |nop |              ().           >
+ 10: #        >  00000218|csrr   x03,     0x7e0  |csrw|nop |nop |wr:00:deadbeef().           >
+ 11: #        >  0000021c|nop                    |csrr|csrw|nop |rd:00:        ()wr:         >
+ 12: #        >  00000220|nop                    |nop |csrr|csrw|              ()rd:deadbeef >
+ 13: #        >  00000224|nop                    |nop |nop |csrr|              ().           >
+ 14: #        >  00000228|csrw   proc2mngr, x03  |nop |nop |nop |              ().           >
+ 15: deadbe00 >  0000022c|csrr   x02, mngr2proc  |csrw|nop |nop |              ().           >
+ 16: #        >  00000230|nop                    |csrr|csrw|nop |              ().           >
+ 17: #        >  00000234|nop                    |nop |csrr|csrw|              ().           > deadbeef
+ 18: #        >  00000238|csrw   0x7e0, x02      |nop |nop |csrr|              ().           >
+ 19: #        >  0000023c|csrr   x03,     0x7e0  |csrw|nop |nop |wr:00:deadbe00().           >
+ 20: #        >  00000240|nop                    |csrr|csrw|nop |rd:00:        ()wr:         >
+ 21: #        >  00000244|nop                    |nop |csrr|csrw|              ()rd:deadbe00 >
+ 22: #        >  00000248|csrw   proc2mngr, x03  |nop |nop |csrr|              ().           >
+ 23: 00adbe00 >  0000024c|csrr   x02, mngr2proc  |csrw|nop |nop |              ().           >
+ 24: #        >  00000250|nop                    |csrr|csrw|nop |              ().           >
+ 25: #        >  00000254|csrw   0x7e0, x02      |nop |csrr|csrw|              ().           > deadbe00
+ 26: #        >  00000258|csrr   x03,     0x7e0  |csrw|nop |csrr|wr:00:00adbe00().           >
+ 27: #        >  0000025c|nop                    |csrr|csrw|nop |rd:00:        ()wr:         >
+ 28: #        >  00000260|csrw   proc2mngr, x03  |nop |csrr|csrw|              ()rd:00adbe00 >
+ 29: dea00eef >  00000264|csrr   x02, mngr2proc  |csrw|nop |csrr|              ().           >
+ 30: .        >  00000268|csrw   0x7e0, x02      |csrr|csrw|nop |              ().           >
+ 31: .        >  0000026c|csrr   x03,     0x7e0  |csrw|csrr|csrw|wr:00:dea00eef().           > 00adbe00
+ 32: .        >  #       |#                      |csrr|csrw|csrr|rd:00:        ()wr:         >
+ 33: .        >  00000270|csrw   proc2mngr, x03  |    |csrr|csrw|              ()rd:dea00eef >
+ 34: .        >  #       |#                      |csrw|    |csrr|              ().           >
+ 35: .        >  #       |#                      |    |csrw|    |              ().           >
+ 36: .        >  #       |#                      |    |    |csrw|              ().           > dea00eef
+ 37: .        >  #       |#                      |    |    |    |              ().           >
 ```
 
 I have cleaned up the line trace a bit to annotate the columns and make
@@ -853,23 +860,21 @@ logic. CSRR instructions which read from accelerator registers send out
 the xcel.req in the X stage and receive the xcelresp in the M stage. This
 means we cannot bypass data from a CSRR instruction if it is in the X
 stage since the data has not returned from the accelerator yet. In cycle
-34, the CSRW instruction in the decode stage needs to stall to wait for
+32, the CSRW instruction in the decode stage needs to stall to wait for
 the CSRR instruction in the X stage to move into the M stage.
 
-5. Accelerating a TinyRV2 Microbenchmark
---------------------------------------------------------------------------
 
 To use an accelerator from a C microbenchmark, we can use the same GCC
 inline assembly extensions we used to write the `stats_en` CSR earlier in
-the tutorial. Take a closer look at the `app/ubmark/ubmark-null-xcel.c`
-example:
+the tutorial. Take a closer look at the
+`app/ubmark/ubmark-null-xcel-test.c` example:
 
 ```c
  __attribute__ ((noinline))
- unsigned int null_xcel( unsigned int in )
+ int ubmark_null_xcel( int in )
  {
-   unsigned int result;
-   asm volatile (
+   int result;
+   __asm__ (
      "csrw 0x7E0,     %[in];\n"
      "csrr %[result], 0x7E0;\n"
 
@@ -901,12 +906,12 @@ not have any accelerators!
 
 ```bash
 % cd $TOPDIR/app/build
-% make ubmark-null-xcel
-% riscv32-objdump ubmark-null-xcel | less -p"<null_xcel"
- 00000248 <null_xcel(unsigned int)>:
-    248:  csrw 0x7e0, x10
-    24c:  csrr x10, 0x7e0
-    250:  jalr x0,  x1, 0
+% make ubmark-null-xcel-test
+% riscv32-objdump ubmark-null-xcel-test | less -p"<ubmark_null_xcel>:"
+000002fc <ubmark_null_xcel>:
+    2fc:  csrw 0x7e0,x10
+    300:  csrr x10,0x7e0
+    304:  jalr x0,x1,0
 ```
 
 Always a good idea to use `riscv32-objdump` so you can verify your C code
@@ -921,6 +926,8 @@ then we can run it on our RTL simulator.
 % ../pmx/pmx-sim --proc-impl rtl --cache-impl rtl --xcel-impl null-rtl \
      --trace ../../app/build/ubmark-null-xcel
 ```
+
+### 4.2. TinyRV2 VVADD Xcel Test
 
 Let's turn out attention to our vvadd accelerator. Take a closer look at
 the accelerated version of the vvadd microbenchmark in
@@ -962,117 +969,125 @@ pointers, the destination base pointer, and the size before starting the
 accelerator by writing to `xr0` and then waiting for the accelerator to
 finish by reading `xr0`. We need a final `"memory"` argument in our
 inline assembly block to tell the compiler that this accelerator reads
-and writes memory. Let's cross-compile the accelerated version of the
-vvadd microbenchmark:
+and writes memory. Let's cross-compile the test for the vvadd
+microbenchmark:
 
 ```bash
 % cd $TOPDIR/app/build
-% make ubmark-vvadd-xcel
-% riscv32-objdump ubmark-vvadd-xcel | less -p"<vvadd_xcel"
- 00000248 <vvadd_xcel(int*, int*, int*, int)>:
-    248:  csrw 0x7e1, x11
-    24c:  csrw 0x7e2, x12
-    250:  csrw 0x7e3, x10
-    254:  csrw 0x7e4, x13
-    258:  csrw 0x7e0, x0
-    25c:  csrr x0, 0x7e0
-    260:  jalr x0, x1, 0
+% make ubmark-vvadd-xcel-test
+% riscv32-objdump ubmark-vvadd-xcel-test | less -p"<ubmark_vvadd_xcel>:"
+00000fac <ubmark_vvadd_xcel>:
+    fac:  csrw 0x7e1, x11
+    fb0:  csrw 0x7e2, x12
+    fb4:  csrw 0x7e3, x10
+    fb8:  csrw 0x7e4, x13
+    fbc:  csrw 0x7e0, x0
+    fc0:  csrr x0, 0x7e0
+    fc4:  jalr x0, x1, 0
 ```
 
 Everything looks as expected, so we can now test our accelerated vvadd
 microbenchmark on the ISA simulator.
 
 ```bash
-% cd $TOPDIR/sim/build
-% ../pmx/pmx-sim --xcel-impl vvadd-fl ../../app/build/ubmark-vvadd-xcel
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --xcel-impl vvadd-fl ./ubmark-vvadd-xcel-test
 ```
 
 Notice that we needed to specify the accelerator implementation as a
 command line option. If we forgot to include this option, then the
 simulator would use the null accelerator and clearly the accelerated
-vvadd microbenchmark does not work with the null accelerator! Finally, we
-can run the accelerated vvadd microbenchmark on the RTL implementation of
-the processor augmented with the RTL implementation of the vvadd
-accelerator:
+vvadd microbenchmark does not work with the null accelerator!
+
+Finally, we can run the test on the RTL implementation of the
+processor and accelerator.
 
 ```bash
-% cd $TOPDIR/sim/build
-% ../pmx/pmx-sim --proc-impl rtl --cache-impl rtl --xcel-impl vvadd-rtl \
-     --stats ../../app/build/ubmark-vvadd-xcel
- num_cycles =  1111
- num_insts_on_processor =  14
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --proc-impl rtl --xcel-impl vvadd-rtl \
+    ./ubmark-vvadd-xcel-test
 ```
 
-Recall that the pure-software vvadd microbenchmark required 1310 cycles.
-So our accelerator results in a cycle-level speedup of 1.18x. We might
-ask, where did this speedup come from? Why isn't the speedup larger?
-Let's look at the line trace.
+All of the tests should pass.
+
+### 4.3. TinyRV2 VVADD Xcel Eval
+
+We are now ready to run the microbenchmark eval. We first make sure it
+works on the FL simulator.
 
 ```bash
-% cd $TOPDIR/sim/build
-% ../pmx/pmx-sim --proc-impl rtl --cache-impl rtl --xcel-impl vvadd-rtl \
-     --trace ../../app/build/ubmark-vvadd-xcel > ubmark-vvadd-xcel.trace
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --xcel-impl vvadd-fl ./ubmark-vvadd-xcel-eval
+```
+
+Finally, we can run the accelerated vvadd microbenchmark on the RTL
+implementation of the processor augmented with the RTL implementation of
+the vvadd accelerator:
+
+```bash
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --proc-impl rtl --xcel-impl vvadd-rtl \
+     --stats ./ubmark-vvadd-xcel-eval
+ **PASSED**
+
+ num_cycles        = 818
+ num_inst          = 15
+ CPI               = 54.53
+```
+
+The CPI is so large because there are only a few CSR instructions. All of
+the work is done by the vvadd accelerator. Recall that the pure-software
+vvadd microbenchmark required 1013 cycles. So our accelerator results in
+a cycle-level speedup of 1.23x. We might ask, where did this speedup come
+from? Why isn't the speedup larger? Let's look at the line trace.
+
+```bash
+% cd $TOPDIR/app/build
+% ../../sim/pmx/pmx-sim --proc-impl rtl --xcel-impl vvadd-rtl \
+     --trace ./ubmark-vvadd-xcel-eval > ubmark-vvadd-xcel-eval-rtl.trace
 ```
 
 Here is what the line trace looks like for the initial configuration of
 the accelerator and the first two iterations of the vvadd loop:
 
 ```
-cyc   F-stage  D-stage              X     M     W      I$   D$  xcelreq        ST              xcel->memreq            xcel<-memresp    xcelresp
-------------------------------------------------------------------------------------------------------------------------------------------------
-818:  00000308|csrw 0x7c1, x15     |addi |bne  |addi [(TC)|(I )]              (X  0:0:00000000|.                                       ).
-819:  0000030c|addi x18, x00, 0x400|csrw |addi |bne  [(TC)|(I )]              (X  0:0:00000000|.                                       ).
-820:  #       |addi x11, x18, 0x190|addi |csrw |addi [(TC)|(I )]              (X  0:0:00000000|.                                       ).
-821:  #       |                    |addi |addi |csrw [(RR)|(I )]              (X  0:0:00000000|.                                       ).
-822: -#       |                    |     |addi |addi [(RW)|(I )]              (X  0:0:00000000|.                                       ).
-823: -#       |                    |     |     |addi [(RU)|(I )]              (X  0:0:00000000|.                                       ).
-824: -#       |                    |     |     |     [(RD)|(I )]              (X  0:0:00000000|.                                       ).
-825: -00000310|                    |     |     |     [(Wm)|(I )]              (X  0:0:00000000|.                                       ).
-826: -#       |addi x12, x00, 0x400|     |     |     [(I )|(I )]              (X  0:0:00000000|.                                       ).
-827: -00000314|                    |addi |     |     [(TC)|(I )]              (X  0:0:00000000|.                                       ).
-828: -00000318|addi x10, x09, 0x000|     |addi |     [(TC)|(I )]              (X  0:0:00000000|.                                       ).
-829: -~       |jal  x01, 0x1fff30  |addi |     |addi [(TC)|(I )]              (X  0:0:00000000|.                                       ).
-830: -00000248|                    |jal  |addi |     [(TC)|(I )]              (X  0:0:00000000|.                                       ).
-831: -0000024c|csrw 0x7e1, x11     |     |jal  |addi [(TC)|(I )]              (X  0:0:00000000|.                                       ).
-832: -#       |csrw 0x7e2, x12     |csrw |     |jal  [(TC)|(I )]wr:01:00000590(X  0:0:00000000|.                                       ).
-833: -#       |                    |csrw |csrw |     [(RR)|(I )]wr:02:00000400(X  0:0:00000000|.                                       )wr:
-834: -#       |                    |     |csrw |csrw [(RW)|(I )]              (X  0:0:00000000|.                                       )wr:
-835: -#       |                    |     |     |csrw [(RU)|(I )]              (X  0:0:00000000|.                                       ).
-836: -#       |                    |     |     |     [(RD)|(I )]              (X  0:0:00000000|.                                       ).
-837: -00000250|                    |     |     |     [(Wm)|(I )]              (X  0:0:00000000|.                                       ).
-838: -#       |csrw 0x7e3, x10     |     |     |     [(I )|(I )]              (X  0:0:00000000|.                                       ).
-839: -00000254|                    |csrw |     |     [(TC)|(I )]wr:03:000ffe3c(X  0:0:00000000|.                                       ).
-840: -00000258|csrw 0x7e4, x13     |     |csrw |     [(TC)|(I )]              (X  0:0:00000000|.                                       )wr:
-841: -0000025c|csrw 0x7e0, x00     |csrw |     |csrw [(TC)|(I )]wr:04:00000064(X  0:0:00000000|.                                       ).
-842: -#       |csrr x00, 0x7e0     |csrw |csrw |     [(TC)|(I )]wr:00:00000000(X  0:0:00000000|.                                       )wr:
-843: -#       |                    |csrrx|csrw |csrw [(RR)|(I )]rd:00:        (X  0:0:00000000|.                                       )wr:
-844: -#       |                    |     |#    |csrw [(RW)|(I )].             (RD 0:0:00000000|rd:00:00000590:                         ).
-845: -#       |                    |     |#    |     [(RU)|(TC)].             (RD 0:0:00000000|#                                       ).
-846: -#       |                    |     |#    |     [(RD)|(RR)].             (RD 0:0:00000000|#                                       ).
-847: -#       |                    |     |#    |     [(Wm)|(RW)].             (RD 0:0:00000000|#                                       ).
-848: -#       |                    |     |#    |     [(Wm)|(RU)].             (RD 0:0:00000000|#                                       ).
-849: -#       |                    |     |#    |     [(Wm)|(RD)].             (RD 0:0:00000000|#                                       ).
-850: -#       |                    |     |#    |     [(Wm)|(Wm)].             (RD 0:0:00000000|#                       rd:01:0:00000017).
-851: -#       |                    |     |#    |     [(Wm)|(I )].             (RD 1:1:00000000|rd:00:00000400:                         ).
-852: -#       |                    |     |#    |     [(Wm)|(TC)].             (RD 0:1:00000000|.                                       ).
-853: -#       |                    |     |#    |     [(Wm)|(RR)].             (RD 0:1:00000000|.                                       ).
-854: -#       |                    |     |#    |     [(Wm)|(RW)].             (RD 0:1:00000000|.                                       ).
-855: -#       |                    |     |#    |     [(Wm)|(RU)].             (RD 0:1:00000000|.                                       ).
-856: -#       |                    |     |#    |     [(Wm)|(RD)].             (RD 0:1:00000000|.                                       ).
-857: -#       |                    |     |#    |     [(Wm)|(Wm)].             (RD 0:1:00000000|.                       rd:01:0:00000033).
-858: -#       |                    |     |#    |     [(Wm)|(I )].             (RD 1:2:00000000|.                                       ).
-859: -#       |                    |     |#    |     [(Wm)|(I )].             (+  0:2:00000033|.                                       ).
-860: -#       |                    |     |#    |     [(Wm)|(I )].             (WR 0:2:00000033|wr:00:000ffe3c:0000004a                 ).
-861: -#       |                    |     |#    |     [(Wm)|(TC)].             (W  0:0:00000033|.                       wr:01:1:        ).
-862: -#       |                    |     |#    |     [(Wm)|(WD)].             (W  1:0:00000000|.                                       ).
-863: -#       |                    |     |#    |     [(Wm)|(I )].             (RD 0:0:00000000|rd:00:00000594:                         ).
-864: -#       |                    |     |#    |     [(Wm)|(TC)].             (RD 0:0:00000000|rd:00:00000404:         rd:01:1:00000000).
-865: -#       |                    |     |#    |     [(Wm)|(TC)].             (RD 1:1:00000000|.                       rd:01:1:00000047).
-866: -#       |                    |     |#    |     [(Wm)|(I )].             (RD 1:2:00000000|.                                       ).
-867: -#       |                    |     |#    |     [(Wm)|(I )].             (+  0:2:00000047|.                                       ).
-868: -#       |                    |     |#    |     [(Wm)|(I )].             (WR 0:2:00000047|wr:00:000ffe40:00000047                 ).
-869: -#       |                    |     |#    |     [(Wm)|(TC)].             (W  0:0:00000047|.                       wr:01:1:        ).
-870: -#       |                    |     |#    |     [(Wm)|(WD)].             (W  1:0:00000000|.                                       ).
+cyc   F-stage  D-stage                 X    M    W    xcelreq        ST xcelresp    imem  dmem  xmem
+-----------------------------------------------------------------------------------------------------
+186:  000006ec|csrw   stats_en , x15  |addi|addi|    |              (X ).           rd>rd|     |
+187:  000006f0|lui    x12, 0x00001    |csrw|addi|addi|              (X ).           rd>rd|     |
+188:  000006f4|lw     x13, 0x800(x03) |lui |csrw|addi|              (X ).           rd>rd|     |
+189:  000006f8|addi   x09, x12, 0xbc0 |lw  |lui |csrw|              (X ).           rd>rd|rd>  |
+190: *000006fc|addi   x11, x09, 0x190 |addi|lw  |lui |              (X ).           rd>rd|  >rd|
+191: *00000700|addi   x12, x12, 0xbc0 |addi|addi|lw  |              (X ).           rd>rd|     |
+192: */       |jal    x01, 0x1ffbfc   |addi|addi|addi|              (X ).           rd>rd|     |
+193: *000002fc|                       |jal |addi|addi|              (X ).           rd>rd|     |
+194: *00000300|csrw   0x7e1, x11      |    |jal |addi|              (X ).           rd>rd|     |
+195: *00000304|csrw   0x7e2, x12      |csrw|    |jal |wr:01:00000d50(X ).           rd>rd|     |
+196: *00000308|csrw   0x7e3, x10      |csrw|csrw|    |wr:02:00000bc0(X )wr:         rd>rd|     |
+197: *0000030c|csrw   0x7e4, x13      |csrw|csrw|csrw|wr:03:000010c4(X )wr:         rd>rd|     |
+198: *00000310|csrw   0x7e0, x00      |csrw|csrw|csrw|wr:04:00000064(X )wr:         rd>rd|     |
+199: *00000314|csrr   x00,     0x7e0  |csrw|csrw|csrw|wr:00:00000000(X )wr:         rd>rd|     |
+200: *00000318|jalr   x00, x01, 0x000 |csrr|csrw|csrw|rd:00:        (X )wr:         rd>rd|     |
+201: *#       |#                      |#   |#   |csrw|.             (RD).                |     |rd>
+202: *#       |#                      |#   |#   |    |.             (RD).                |     |rd>rd
+203: *#       |#                      |#   |#   |    |.             (RD).                |     |  >rd
+204: *#       |#                      |#   |#   |    |.             (RD).                |     |
+205: *#       |#                      |#   |#   |    |.             (+ ).                |     |
+206: *#       |#                      |#   |#   |    |.             (WR).                |     |wr>
+207: *#       |#                      |#   |#   |    |.             (W ).                |     |  >wr
+208: *#       |#                      |#   |#   |    |.             (W ).                |     |
+209: *#       |#                      |#   |#   |    |.             (RD).                |     |rd>
+210: *#       |#                      |#   |#   |    |.             (RD).                |     |rd>rd
+211: *#       |#                      |#   |#   |    |.             (RD).                |     |  >rd
+212: *#       |#                      |#   |#   |    |.             (RD).                |     |
+213: *#       |#                      |#   |#   |    |.             (+ ).                |     |
+214: *#       |#                      |#   |#   |    |.             (WR).                |     |wr>
+215: *#       |#                      |#   |#   |    |.             (W ).                |     |  >wr
+216: *#       |#                      |#   |#   |    |.             (W ).                |     |
+217: *#       |#                      |#   |#   |    |.             (RD).                |     |rd>
+218: *#       |#                      |#   |#   |    |.             (RD).                |     |rd>rd
+219: *#       |#                      |#   |#   |    |.             (RD).                |     |  >rd
+220: *#       |#                      |#   |#   |    |.             (RD).                |     |
 ```
 
 I have cleaned up the line trace a bit to annotate the columns and make
@@ -1082,27 +1097,14 @@ instructions to configure the accelerator, and these instructions then
 turn into messages over the xcel.req interface. The accelerator is in the
 XCFG state receiving these messages until it receives the write to `xr0`
 which causes the accelerator to move into the RD stage. The accelerator
-sends the first memory read request request into the memory system, but
-this causes a data cache miss so the accelerator stalls in the RD state.
-Once the data from the first read is returned, the accelerator sends out
-a second memory read request but again this causes a cache miss. Once the
-data from both reads have returned, the accelerator does the addition,
-and finally sends a memory write request with the result into the memory
-system. The second iteration is faster for the same reason the second
-iteration of the pure-software vvadd microbenchmark was faster: we are
-exploiting spatial locality in the data cache so the sequential reads hit
-in the same cache line.
-
-We know that every fourth iteration should look like the first iteration
-(19 cycles) and the remaining iterations should look like the second
-iteration (8 cycles). Since there are 100 iterations, this means the
-total number of cycles should be about 1075 cycles, but our simulator
-reported 1111 cycles. Again, the discrepancy is due to the extra cycles
-required to call and return from the `vvadd_scalar` function. So the
-accelerator is a little faster than the processor since it requires fewer
-cycles per iteration, but notice that the execution time is largely
-dominated by the miss penalty. The accelerator does not really help
-reduce nor hide this miss latency.
+sends memory read requests inot the memory system, then does the
+accumulation, then writes the result back to the memory system. We know
+that every iteration should look like the first iteration (8 cycles).
+Since there are 100 iterations, this means the total number of cycles
+should be about 800 cycles, but our simulator reported 818 cycles. Again,
+the discrepancy is due to the extra cycles required to call and return
+from the `ubmark_vvadd_xcel` function. So the accelerator is a little
+faster than the processor since it requires fewer cycles per iteration.
 
 There is certainly room for improvement. We can probably remove some of
 the bubbles and improve the accelerator performance by a couple more
@@ -1113,22 +1115,4 @@ performance by issuing multiple memory requests to a non-blocking cache.
 Eventually we should be able to optimize such an accelerator so that it
 is memory bandwidth limited (i.e., we are doing a memory request every
 cycle).
-
-As with the pure-software vvadd microbenchmark, sometimes it is useful to
-run experiments where we assume a perfect cache to help isolate the
-impact of the memory system. Again, this is easy to do with our
-simulator. We simply avoid inserting any cache at all and instead have
-the processor directly communicate with the test memory. This means all
-memory requests take a single cycle.
-
-```bash
-% cd $TOPDIR/sim/build
-% ../pmx/pmx-sim --proc-impl rtl --xcel-impl vvadd-rtl \
-     --stats ../../app/build/ubmark-vvadd-xcel
- num_cycles =  817
-```
-
-Recall the pure-software vvadd microbenchmark took 1012 cycles without
-any cache misses, so the accelerator is now able to improve the
-performance by 1.23x.
 

@@ -95,8 +95,16 @@ int accum_scalar( int* src, int size )
 }
 ```
 
-Go ahead and implement the `accum_scalar` function. Then take a look at
-the test harness.
+Go ahead and implement the `accum_scalar` function. We will a use
+microbenchmark test to verify the functionality of our microbenchmark and
+a microbenchmark eval to evaluate the performance of our microbenchmark.
+We will run both the microbenchmark test and eval on both FL and RTL
+TinyRV2 processor models.
+
+### 2.1. TinyRV2 Microbenchmark Test
+
+Let's go ahead and take a look at the microbenchmark test provided for
+the accumulation microbenchmark.
 
 ```bash
 % cd $TOPDIR/app/ubmark
@@ -126,50 +134,22 @@ You can run a single test case like this:
 % ./ubmark-accum-test 1
 ```
 
-Now let's take a look at the evaluation.
+Once we are confident the microbenchmark test passes on natively, we can
+cross-compile the microbenchmark test and run it on both FL and RTL
+TinyRV2 processor models. Let's start by cross-compiling the
+microbenchmark test.
 
 ```bash
-% cd $TOPDIR/app/ubmark
-% less ubmark-accum-eval.c
-```
-
-The `eval_src` and `eval_ref` arrays are all defined in the
-`app/ubmark/ubmark-accum.dat` file. The microbenchmark turns stats on,
-does the actual computation, turns stats off, and finally verifies that
-the results are as expected. We need the `ece6745_stats_on()` and
-`ece6745_stats_off()` functions to make sure we can keep track of various
-statistics (e.g., the number of cycles) only during the important part of
-the microbenchmark. We do not want to count time spent in initialization
-or verification when comparing the performance of our various
-microbenchmarks. These two functions are defined in
-`app/ece6745/ece6745-misc.h`.
-
-Here is how we can compile and execute the evaluation for the
-pure-software accumulation microbenchmark natively:
-
-```bash
-% cd $TOPDIR/app/build-native
-% make ubmark-accum-eval
-% ./ubmark-accum-eval
-```
-
-The microbenchmark should display passed. Once you are sure your
-pure-software implementation is working correctly natively, you can
-cross-compile the microbenchmark tests and evaluation for TinyRV2.
-
-```bash
-% cd $TOPDIR/app
-% mkdir build
-% cd build
+% mkdir -p $TOPDIR/app/build
+% cd $TOPDIR/app/build
 % ../configure --host=riscv32-unknown-elf
 % make ubmark-accum-test
-% make ubmark-accum-eval
 ```
 
-This will create a `ubmark-accum-test` and `ubmark-accum-eval` binaries
-which contains TinyRV2 instructions and data. You can disassemble a
-TinyRV2 binary (i.e., turn a compiled binary back into an assembly text
-representation) with the `riscv32-objdump` command like this:
+This will create a `ubmark-accum-test` binaries which contains TinyRV2
+instructions and data. You can disassemble a TinyRV2 binary (i.e., turn a
+compiled binary back into an assembly text representation) with the
+`riscv32-objdump` command like this:
 
 ```bash
 % cd $TOPDIR/app/build
@@ -190,7 +170,6 @@ simulator:
 ```bash
 % cd $TOPDIR/app/build
 % ../../sim/pmx/pmx-sim ./ubmark-accum-test
-% ../../sim/pmx/pmx-sim ./ubmark-accum-eval
 ```
 
 The `--trace` command line option will display each instruction as it is
@@ -198,27 +177,67 @@ executed on the ISA simulator.
 
 ```bash
 % cd $TOPDIR/app/build
-% ../../sim/pmx/pmx-sim --trace ./ubmark-accum-eval > trace.txt
-```
-
-When dumping out large line traces, it is usually much faster to save
-them to a file and then open the file using VS Code. Search in the line
-trace for the CSRW instruction to quickly jump to where the actual
-`ubmark_accum` function starts executing. Verify that the simulator is
-executing the accumulation loop as you expect.
-
-```bash
-% cd $TOPDIR/app/build
-% code trace.txt
+% ../../sim/pmx/pmx-sim --trace ./ubmark-accum-test > ubmark-accum-test-fl.trace
+% code ubmark-accum-test-fl.trace
 ```
 
 Now that we have verified the microbenchmark works correctly on the ISA
-simulator, we can run the test and the microbenchmark on the baseline
-TinyRV2 pipelined processor RTL model:
+simulator, we can run the test on the baseline TinyRV2 pipelined
+processor RTL model:
 
 ```bash
 % cd $TOPDIR/app/build
 % ../../sim/pmx/pmx-sim --proc-impl rtl ./ubmark-accum-test
+```
+
+The simulation should show all tests are passing.
+
+### 2.2. TinyRV2 Microbenchmark Eval
+
+Once we are sure the microbenchmark test is working natively, on the FL
+simulator, and the RTL simulator, we can then turn our focus to the
+microbenchmark eval.
+
+```bash
+% cd $TOPDIR/app/ubmark
+% less ubmark-accum-eval.c
+```
+
+The `eval_src` and `eval_ref` arrays are all defined in the
+`app/ubmark/ubmark-accum.dat` file. The microbenchmark turns stats on,
+does the actual computation, turns stats off, and finally verifies that
+the results are as expected. We need the `ece6745_stats_on()` and
+`ece6745_stats_off()` functions to make sure we can keep track of various
+statistics (e.g., the number of cycles) only during the important part of
+the microbenchmark. We do not want to count time spent in initialization
+or verification when comparing the performance of our various
+microbenchmarks. These two functions are defined in
+`app/ece6745/ece6745-misc.h`.
+
+Here is how we can compile and execute the evaluation for the
+accumulation microbenchmark eval natively:
+
+```bash
+% cd $TOPDIR/app/build-native
+% make ubmark-accum-eval
+% ./ubmark-accum-eval
+```
+
+The microbenchmark should display passed. Once you are sure your
+microbenchmark eval is working correctly natively, you can cross-compile
+the microbenchmark eval for TinyRV2 and run it on the FL simulator.
+
+```bash
+% cd $TOPDIR/app/build
+% make ubmark-accum-eval
+% ../../sim/pmx/pmx-sim ./ubmark-accum-eval
+```
+
+Finally we can run the microbenchmark eval on the baseline TinyRV2
+pipelined processor RTL model:
+
+```bash
+% cd $TOPDIR/app/build
 % ../../sim/pmx/pmx-sim --proc-impl rtl --stats ./ubmark-accum-eval
 num_cycles = 613
 ```
@@ -229,7 +248,8 @@ trace to dig into the performance:
 
 ```bash
 % cd $TOPDIR/app/build
-% ../../sim/pmx/pmx-sim --proc-impl rtl --trace ubmark-accum-eval > trace-base.txt
+% ../../sim/pmx/pmx-sim --proc-impl rtl --trace \
+    ./ubmark-accum-eval > ubmark-accum-eval-rtl.trace
 ```
 
 The instructor will walk through and explain the line trace.
