@@ -122,7 +122,7 @@ the vvadd microbenchmark.
 
 ```bash
 % cd $TOPDIR/app/ubmark
-% less ubmark-accum-test.c
+% less ubmark-vvadd-test.c
 ```
 
 Here is a snippet from the microbenchmark test.
@@ -184,7 +184,7 @@ You can run a single test case like this:
 
 ```bash
 % cd $TOPDIR/app/build-native
-% ./ubmark-accum-test 1
+% ./ubmark-vvadd-test 1
 ```
 
 Once we are confident the microbenchmark test passes on natively, we can
@@ -365,7 +365,7 @@ microbenchmark eval.
 
 ```bash
 % cd $TOPDIR/app/ubmark
-% less ubmark-accum-eval.c
+% less ubmark-vvadd-eval.c
 ```
 
 Here is the microbenchmark eval.
@@ -1097,14 +1097,14 @@ instructions to configure the accelerator, and these instructions then
 turn into messages over the xcel.req interface. The accelerator is in the
 XCFG state receiving these messages until it receives the write to `xr0`
 which causes the accelerator to move into the RD stage. The accelerator
-sends memory read requests inot the memory system, then does the
-accumulation, then writes the result back to the memory system. We know
-that every iteration should look like the first iteration (8 cycles).
-Since there are 100 iterations, this means the total number of cycles
-should be about 800 cycles, but our simulator reported 818 cycles. Again,
-the discrepancy is due to the extra cycles required to call and return
-from the `ubmark_vvadd_xcel` function. So the accelerator is a little
-faster than the processor since it requires fewer cycles per iteration.
+sends memory read requests into the memory system, then does the vvadd,
+then writes the result back to the memory system. We know that every
+iteration should look like the first iteration (8 cycles). Since there
+are 100 iterations, this means the total number of cycles should be about
+800 cycles, but our simulator reported 818 cycles. Again, the discrepancy
+is due to the extra cycles required to call and return from the
+`ubmark_vvadd_xcel` function. So the accelerator is a little faster than
+the processor since it requires fewer cycles per iteration.
 
 There is certainly room for improvement. We can probably remove some of
 the bubbles and improve the accelerator performance by a couple more
