@@ -223,13 +223,14 @@ module sram_SRAM
   parameter c_addr_nbits  = $clog2(p_num_entries),
   parameter c_data_nbytes = (p_data_nbits+7)/8 // $ceil(p_data_nbits/8)
 )(
-  input  logic                      clk,
-  input  logic                      reset,
-  input  logic                      port0_val,
-  input  logic                      port0_type,
-  input  logic [c_addr_nbits-1:0]   port0_idx,
-  input  logic [p_data_nbits-1:0]   port0_wdata,
-  output logic [p_data_nbits-1:0]   port0_rdata
+  input  logic                        clk,
+  input  logic                        reset,
+  input  logic                        port0_val,
+  input  logic                        port0_type,
+  input  logic [c_addr_nbits-1:0]     port0_idx,
+  input  logic [(p_data_nbits/8)-1:0] port0_wben,
+  input  logic [p_data_nbits-1:0]     port0_wdata,
+  output logic [p_data_nbits-1:0]     port0_rdata
 );
 ```
 
@@ -239,6 +240,7 @@ word, and has the following pin-level interface:
  - `port0_val`: port enable
  - `port0_type`: transaction type (0 = read, 1 = write)
  - `port0_idx`: which row to read/write
+ - `port0_wben`: write byte enables
  - `port0_wdata`: write data
  - `port0_rdata`: read data
 
@@ -322,6 +324,7 @@ sram_SRAM#(32,128) sram
   .port0_idx   (sram_addr_M0),
   .port0_type  (sram_wen_M0),
   .port0_val   (sram_en_M0),
+  .port0_wben  (sram_wben_M0),
   .port0_wdata (memreq_msg_data_M0),
   .port0_rdata (sram_read_data_M1)
 );
@@ -483,7 +486,7 @@ starting Cadence Innovus. Use VS Code to create a file named
 `constraints.sdc`.
 
 ```bash
-% cd $TOPDIR/asic/build-regincr/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-sram/04-cadence-innovus-pnr
 % code constraints.sdc
 ```
 
@@ -496,7 +499,7 @@ create_clock clk -name ideal_clock -period 2.0
 Now use VS Code to create a file named `setup-timing.tcl`.
 
 ```bash
-% cd $TOPDIR/asic/build-regincr/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-sram/04-cadence-innovus-pnr
 % code setup-timing.tcl
 ```
 
@@ -533,7 +536,7 @@ overloading the ecelinux servers by running so many copies of Cadence
 Innovus as the same time.**
 
 ```
-% cd $TOPDIR/asic/build-regincr/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-sram/04-cadence-innovus-pnr
 % innovus
 innovus> set init_mmmc_file "setup-timing.tcl"
 innovus> set init_verilog   "../02-synopsys-dc-synth/post-synth.v"
@@ -604,7 +607,7 @@ innovus> exit
 Then we can use Klayout to take a look at the final layout.
 
 ```
-% cd $TOPDIR/asic/build-regincr/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-sram/04-cadence-innovus-pnr
 % klayout -l ${ECE6745_STDCELLS}/klayout.lyp post-pnr.gds
 ```
 
