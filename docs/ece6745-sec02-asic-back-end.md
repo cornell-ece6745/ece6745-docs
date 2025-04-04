@@ -405,13 +405,30 @@ cell utilization to be 0.7, and we have added 4.0um of margin around the
 top, bottom, left, and right of the chip. This margin gives us room for
 the power ring which will go around the entire chip.
 
-### 2.3. Power Routing
+### 3.3. Placement
 
-Often when working with the ASIC flow back-end, we need to explicitly
-tell the tools how the logical design connects to the physical aspects of
-the chip. For example, the next step is to tell Cadence Innovus that
-`VDD` and `VSS` in the gate-level netlist correspond to the physical pins
-labeled `VDD` and `VSS` in the `.lef` files.
+The first step is to place all of the standard cells and perform a very
+preliminary routing using the `place_design` command:
+
+```
+innovus> place_design
+```
+
+You should be able to see the standard cells placed in the rows along
+with preliminary routing to connect all of the standard cells together.
+You can toggle the visibility of metal layers by pressing the number keys
+on the keyboard. So try toggling the visibility of M1, M2, M3, etc. You
+can visualize how the modules in the original Verilog mapped to the
+place-and-routed design by using the Design Browser. Choose the
+_Windows > Workspaces > Design Browser + Physical_ menu option.
+Then use the _Design Browser_ to click on specific modules or nets to
+highlight them in the physical view.
+
+### 3.4. Power Routing
+
+Now we need to tell Cadence Innovus that `VDD` and `VSS` in the
+gate-level netlist correspond to the physical pins labeled `VDD` and
+`VSS` in the `.lef` files.
 
 ```
 innovus> globalNetConnect VDD -type pgpin -pin VDD -inst * -verbose
@@ -428,27 +445,7 @@ innovus> sroute -nets {VDD VSS}
 In a more realistic flow we would also create a power ring and connect
 the rows of standard cells to this power ring.
 
-### 2.4. Placement
-
-Now that we have finished our basic power planning we can do the initial
-placement and routing of the standard cells using the `place_design`
-command:
-
-```
-innovus> place_design
-```
-
-You should be able to see the standard cells placed in the rows along
-with preliminary routing to connect all of the standard cells together.
-You can toggle the visibility of metal layers by pressing the number keys
-on the keyboard. So try toggling the visibility of M1, M2, M3, etc. You
-can visualize how the modules in the original Verilog mapped to the
-place-and-routed design by using the Design Browser. Choose the
-_Windows > Workspaces > Design Browser + Physical_ menu option.
-Then use the _Design Browser_ to click on specific modules or nets to
-highlight them in the physical view.
-
-### 2.5. Routing
+### 3.5. Signal Routing
 
 The `place_design` command will perform a very preliminary route to help
 ensure a good placement, but we will now use the `routeDesign` command to
@@ -470,7 +467,7 @@ power analysis.
 innovus> extractRC
 ```
 
-### 2.6. Final Output and Reports
+### 3.6. Final Output and Reports
 
 The final step is to insert "filler" cells. Filler cells are essentially
 empty standard cells whose sole purpose is to connect the wells across
@@ -568,8 +565,8 @@ for RTL simulation:
     +vcs+dumpvars+waves.vcd \
     +incdir+$TOPDIR/sim/build \
     ${ECE6745_STDCELLS}/stdcells.v \
-    ${TOPDIR}/sim/build/RegIncr4stage_basic_tb.v \
-    ../04-cadence-innovus-pnr/post-pnr.v
+    ../04-cadence-innovus-pnr/post-pnr.v \
+    ${TOPDIR}/sim/build/RegIncr4stage_basic_tb.v
 ```
 
 You should see a `simv` binary which is the compiled RTL simulator which
@@ -615,8 +612,8 @@ place-and-route).
     +vcs+dumpvars+waves-300ps.vcd \
     +incdir+$TOPDIR/sim/build \
     ${ECE6745_STDCELLS}/stdcells.v \
-    ${TOPDIR}/sim/build/RegIncr4stage_basic_tb.v \
-    ../04-cadence-innovus-pnr/post-pnr.v
+    ../04-cadence-innovus-pnr/post-pnr.v \
+    ${TOPDIR}/sim/build/RegIncr4stage_basic_tb.v
 % ./simv
 ```
 

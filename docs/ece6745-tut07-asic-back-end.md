@@ -254,25 +254,25 @@ corners. In this course, we will keep things simple by only considering a
 The file should have the following content:
 
 ```
- create_rc_corner -name typical \
-    -cap_table "$env(ECE6745_STDCELLS)/rtk-typical.captable" \
-    -T 25
+create_rc_corner -name typical \
+   -cap_table "$env(ECE6745_STDCELLS)/rtk-typical.captable" \
+   -T 25
 
- create_library_set -name libs_typical \
-    -timing [list "$env(ECE6745_STDCELLS)/stdcells.lib"]
+create_library_set -name libs_typical \
+   -timing [list "$env(ECE6745_STDCELLS)/stdcells.lib"]
 
- create_delay_corner -name delay_default \
-    -library_set libs_typical \
-    -rc_corner typical
+create_delay_corner -name delay_default \
+   -library_set libs_typical \
+   -rc_corner typical
 
- create_constraint_mode -name constraints_default \
-    -sdc_files [list ../02-synopsys-dc-synth/post-synth.sdc]
+create_constraint_mode -name constraints_default \
+   -sdc_files [list ../02-synopsys-dc-synth/post-synth.sdc]
 
- create_analysis_view -name analysis_default \
-    -constraint_mode constraints_default \
-    -delay_corner delay_default
+create_analysis_view -name analysis_default \
+   -constraint_mode constraints_default \
+   -delay_corner delay_default
 
- set_analysis_view -setup analysis_default -hold analysis_default
+set_analysis_view -setup analysis_default -hold analysis_default
 ```
 
 The `create_rc_corner` command loads in the `.captable` file that we
@@ -386,9 +386,63 @@ The following screen capture illustrates what you should see: a square
 floorplan with rows where the standard cells will eventually be placed.
 You can use the _View > Fit_ menu option to see the entire chip.
 
-![](assets/fig/cadence-innovus-1.png)
+![](img/tut07-cadence-innovus-1.png)
 
-### 2.4. Power Routing
+### 2.4. Placement
+
+The next substep is cell placement. We can do the initial placement and
+routing of the standard cells using the `place_design` command:
+
+```
+innovus> place_design
+```
+
+The following screen capture illustrates what you should see: the gates
+have been placed underneath a sea of wiring on the various metal layers.
+
+![](img/tut07-cadence-innovus-2.png)
+
+Note that Cadence Innovus has only done a very preliminary routing,
+primarily to help improve placement. You can use the Amobea workspace to
+help visualize how modules are mapped across the chip. Choose _Windows >
+Workspaces > Amoeba_ from the menu. However, we recommend using the
+design browser to help visualize how modules are mapped across the chip.
+Here are the steps:
+
+ - Choose _Windows > Workspaces > Design Browser + Physical_ from the menu
+ - Hide all of the metal layers by pressing the number keys
+ - Browse the design hierarchy using the panel on the left
+ - Right click on a module, click _Highlight_, select a color
+
+In this way you can view where various modules are located on the chip.
+The following screen capture illustrates the location of the five min/max
+units.
+
+![](img/tut07-cadence-innovus-3.png)
+
+Notice how Cadence Innovus has grouped each module together. The
+placement algorithm tries to keep connected standard cells close together
+to minimize wiring.
+
+If our design has any constant values, then we need to insert special
+standard cells to "tie" those constant values to either VDD or ground
+using the `addTieHiLo` command.
+
+```
+innovus> addTieHiLo -cell "LOGIC1_X1 LOGIC0_X1"
+```
+
+After placement and tie cell insertion, we can assign IO pin locations
+for our block-level design. Since this is not a full chip with IO pads,
+or a hierarchical block, we don't really care exactly where all of the
+pins line up, so we'll let the tool assign the location for all of the
+pins.
+
+```
+innovus> assignIoPins -pin *
+```
+
+### 2.5. Power Routing
 
 The next substep is power routing. Recall that each standard cell has
 internal M1 power and ground rails which will connect via abutment when
@@ -404,8 +458,10 @@ and which nets are ground (there are _many_ possible names for power and
 ground!).
 
 ```
-innovus> globalNetConnect VDD -type pgpin -pin VDD -inst * -verbose
-innovus> globalNetConnect VSS -type pgpin -pin VSS -inst * -verbose
+innovus> globalNetConnect VDD -type pgpin -pin VDD -all -verbose
+innovus> globalNetConnect VSS -type pgpin -pin VSS -all -verbose
+innovus> globalNetConnect VDD -type tiehi -pin VDD -all -verbose
+innovus> globalNetConnect VSS -type tielo -pin VSS -all -verbose
 ```
 
 We can now draw M1 "rails" for the power and ground rails that go along
@@ -459,7 +515,7 @@ The following screen capture illustrates what you should see: a power
 ring and grid on M7 and M8 connected to the horizontal power and ground
 rails on M1.
 
-![](img/tut07-cadence-innovus-2.png)
+![](img/tut07-cadence-innovus-4.png)
 
 You can toggle the visibility of metal layers by using the panel on the
 right. Click the checkbox in the V column to toggle the visibility of the
@@ -468,51 +524,6 @@ keyboard. Pressing the 7 key will toggle M7 and pressing the 8 key will
 toggle M8. Zoom in on a via and toggle the visibility of the metal layers
 to see how Cadence Innovus has automatically inserted a via stack that
 goes from M1 all the way up to M7 or M8.
-
-### 2.5. Placement
-
-The next substep is cell placement. We can do the initial placement and
-routing of the standard cells using the `place_design` command:
-
-```
-innovus> place_design
-```
-
-The following screen capture illustrates what you should see: the gates
-have been placed underneath a sea of wiring on the various metal layers.
-
-![](img/tut07-cadence-innovus-3.png)
-
-Note that Cadence Innovus has only done a very preliminary routing,
-primarily to help improve placement. You can use the Amobea workspace to
-help visualize how modules are mapped across the chip. Choose _Windows >
-Workspaces > Amoeba_ from the menu. However, we recommend using the
-design browser to help visualize how modules are mapped across the chip.
-Here are the steps:
-
- - Choose _Windows > Workspaces > Design Browser + Physical_ from the menu
- - Hide all of the metal layers by pressing the number keys
- - Browse the design hierarchy using the panel on the left
- - Right click on a module, click _Highlight_, select a color
-
-In this way you can view where various modules are located on the chip.
-The following screen capture illustrates the location of the five min/max
-units.
-
-![](img/tut07-cadence-innovus-4.png)
-
-Notice how Cadence Innovus has grouped each module together. The
-placement algorithm tries to keep connected standard cells close together
-to minimize wiring.
-
-After placement, we can assign IO pin locations for our block-level
-design. Since this is not a full chip with IO pads, or a hierarchical
-block, we don't really care exactly where all of the pins line up, so
-we'll let the tool assign the location for all of the pins.
-
-```
-innovus> assignIoPins -pin *
-```
 
 ### 2.6. Clock-Tree Synthesis
 
@@ -990,16 +1001,16 @@ gate-level simulation command from the previous tutorial.
 ```bash
 % cd $TOPDIR/asic/build-sort/05-synopsys-vcs-baglsim
 % vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
-  +neg_tchk +sdfverbose \
-  -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
-  +define+CYCLE_TIME=0.400 \
-  +define+VTB_INPUT_DELAY=0.025 \
-  +define+VTB_OUTPUT_DELAY=0.025 \
-  +vcs+dumpvars+waves.vcd \
-  +incdir+${TOPDIR}/sim/build \
-  ${ECE6745_STDCELLS}/stdcells.v \
-  ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v \
-  ../04-cadence-innovus-pnr/post-pnr.v
+    +neg_tchk +sdfverbose \
+    -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
+    +define+CYCLE_TIME=0.400 \
+    +define+VTB_INPUT_DELAY=0.025 \
+    +define+VTB_OUTPUT_DELAY=0.025 \
+    +vcs+dumpvars+waves.vcd \
+    +incdir+${TOPDIR}/sim/build \
+    ${ECE6745_STDCELLS}/stdcells.v \
+    ../04-cadence-innovus-pnr/post-pnr.v \
+    ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v
 % ./simv
 ```
 
@@ -1053,17 +1064,17 @@ verify back-annotated gate-level simulation passes the simulation.
 ```bash
 % cd $TOPDIR/asic/build-sort/05-synopsys-vcs-baglsim
 % vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
-  +neg_tchk +sdfverbose \
-  -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
-  +define+CYCLE_TIME=0.700 \
-  +define+VTB_INPUT_DELAY=0.025 \
-  +define+VTB_OUTPUT_DELAY=0.025 \
-  +define+VTB_DUMP_SAIF=waves.saif \
-  +vcs+dumpvars+waves.vcd \
-  +incdir+${TOPDIR}/sim/build \
-  ${ECE6745_STDCELLS}/stdcells.v \
-  ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v \
-  ../04-cadence-innovus-pnr/post-pnr.v
+    +neg_tchk +sdfverbose \
+    -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
+    +define+CYCLE_TIME=0.700 \
+    +define+VTB_INPUT_DELAY=0.025 \
+    +define+VTB_OUTPUT_DELAY=0.025 \
+    +define+VTB_DUMP_SAIF=waves.saif \
+    +vcs+dumpvars+waves.vcd \
+    +incdir+${TOPDIR}/sim/build \
+    ${ECE6745_STDCELLS}/stdcells.v \
+    ../04-cadence-innovus-pnr/post-pnr.v \
+    ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v
 % ./simv
 ```
 

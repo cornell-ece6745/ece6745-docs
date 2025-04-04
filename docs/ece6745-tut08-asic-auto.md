@@ -113,7 +113,7 @@ a valid bit and outputs those same four integers in increasing order with
 the valid bit. The sort unit is implemented using a three-stage
 pipelined, bitonic sorting network and the datapath is shown below.
 
-![](assets/fig/tut06-sort-unit-dpath.png)
+![](img/tut06-sort-unit-dpath.png)
 
 Before using the ASIC tools we need to verify that our design passes all
 of our tests and use an interactive simulator to drive our design-space
