@@ -383,7 +383,8 @@ make them easier to use by the ASIC tools.
 
 ```bash
 % cd $TOPDIR/asic/build-sram/00-openram-memgen/SRAM_32x128_1rw
-% mv *.gds *.lib *.lef *.v ..
+% cp SRAM_32x128_1rw_TT_1p1V_25C.lib ../SRAM_32x128_1rw.lib
+% cp *.gds *.lef *.v ..
 ```
 
 We need to convert the `.lib` file into a `.db` file using the Synopsys
@@ -391,7 +392,6 @@ Library Compiler (LC) tool.
 
 ```
 % cd $TOPDIR/asic/build-sram/00-openram-memgen
-% cp SRAM_32x128_1rw_TT_1p1V_25C.lib SRAM_32x128_1rw.lib
 % lc_shell
 lc_shell> read_lib SRAM_32x128_1rw.lib
 lc_shell> write_lib SRAM_32x128_1rw_TT_1p1V_25C_lib \

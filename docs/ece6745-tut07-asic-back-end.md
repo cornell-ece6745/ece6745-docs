@@ -350,10 +350,13 @@ innovus> setOptMode -usefulSkew false
 ```
 
 Cadence Innovus can fix hold-time violations by inserting extra buffers
-to delay certain paths. We need to tell Cadence Innovus which standard
-cells to use when fixing hold-time violations as follows.
+to delay certain paths. We add an extra hold-time target slack so that
+Cadence Innovus will work extra hard to meet the hold-time, and we need
+to tell Cadence Innovus which standard cells to use when fixing hold-time
+violations as follows.
 
 ```
+innovus> setOptMode -holdTargetSlack 0.010
 innovus> setOptMode -holdFixingCells {
   BUF_X1 BUF_X1 BUF_X2 BUF_X4 BUF_X8 BUF_X16 BUF_X32
 }
