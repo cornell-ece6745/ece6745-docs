@@ -1,5 +1,5 @@
 
-ECE 6745 Tutorial 8: SRAM Generators
+ECE 6745 Tutorial 10: SRAM Generators
 ==========================================================================
 
 Small memories can be easily synthesized using flip-flop or latch
@@ -59,12 +59,14 @@ take a look at how to use the OpenRAM memory generator to generate
 various views of an SRAM macro.
 
 An SRAM generator takes as input a configuration file which specifies the
-various parameters for the desired SRAM macro. You can see an example
-configuration file for the OpenRAM memory generator here:
+various parameters for the desired SRAM macro. Let's go ahead and create
+such a configuration file for a small SRAM. For this section of the
+tutorial, we will work in the `openram` subdirectory. The name of the
+configuration file should be `SRAM_32x128_1rw_cfg.py`.
 
 ```bash
-% cd $TOPDIR/asic/build-sram/00-openram-memgen
-% cat SRAM_32x128_1rw_cfg.py
+% mkdir -p $TOPDIR/openram
+% code SRAM_32x128_1rw_cfg.py
 ```
 
 The configuration file should look like this:
@@ -108,7 +110,7 @@ tools.
 You can use the following command to run the OpenRAM memory generator.
 
 ```bash
-% cd $TOPDIR/asic/build-sram/00-openram-memgen
+% cd -p $TOPDIR/openram
 % openram -v -v SRAM_32x128_1rw_cfg.py
 ```
 
@@ -116,7 +118,7 @@ It will take about 4-5 minutes to generate the SRAM macro. You can see
 the resulting views here:
 
 ```bash
-% cd $TOPDIR/asic/build-sram/00-openram-memgen/SRAM_32x128_1rw
+% cd $TOPDIR/openram/SRAM_32x128_1rw
 % ls -1
 SRAM_32x128_1rw.v
 SRAM_32x128_1rw.sp
@@ -200,7 +202,7 @@ You can look at the behavioral Verilog produced by the OpenRAM memory
 generator like this:
 
 ```bash
-% cd $TOPDIR/asic/build-sram/00-openram-memgen/SRAM_32x128_1rw
+% cd $TOPDIR/openram/SRAM_32x128_1rw
 % less SRAM_32x128_1rw.v
 ```
 
@@ -290,7 +292,7 @@ the fact that this SRAM uses a _sequential_ read based on the clock.
 You can take a look at the generated transistor-level netlist like this:
 
 ```bash
-% cd $TOPDIR/asic/build-sram/00-openram-memgen/SRAM_32x128_1rw
+% cd $TOPDIR/openram/SRAM_32x128_1rw
 % less -p " cell_1rw " SRAM_32x128_1rw.sp
 ```
 
@@ -322,7 +324,7 @@ Now let's use Klayout look at the actual layout produced by the OpenRAM
 memory generator.
 
 ```bash
-% cd $TOPDIR/asic/build-sram/00-openram-memgen/SRAM_32x128_1rw
+% cd $TOPDIR/openram/SRAM_32x128_1rw
 % klayout -l $ECE6745_STDCELLS/klayout.lyp SRAM_32x128_1rw.gds
 ```
 
@@ -363,7 +365,7 @@ the canonical 6T SRAM bitcell transistor-level implementation.
 Let’s look at snippet of the `.lib` file for the SRAM macro.
 
 ```bash
-% cd $TOPDIR/asic/build-sram/00-openram-memgen/SRAM_32x128_1rw/SRAM_32x128_1rw
+% cd $TOPDIR/openram/SRAM_32x128_1rw
 % less SRAM_32x128_1rw_TT_1p1V_25C.lib
 ```
 
@@ -484,7 +486,7 @@ statement which uses the parameters to either: (1) instantiate an SRAM
 macro RTL model or (2) instantiate an SRAM generic RTL model. Although
 you can instantiate an SRAM with any number of words and bits per word,
 this SRAM will only result in a real SRAM macro if these parameters match
-one of the existing SRAM macros in the generate staetment. If the
+one of the existing SRAM macros in the generate statement. If the
 parameters do not match one of the existing SRAM macros, then the SRAM
 RTL model will still behave correctly in simulation but will result in
 synthesizing the memory out of flip-flops. Note that it is critical that
@@ -888,7 +890,7 @@ configuration/RTL from the previous section.
 ```verilog
 `include "sram/SRAM.v"
 ...
-sram_SramVRTL#(32,128) sram
+sram_SRAM#(32,128) sram
  (
    .clk         (clk),
    .reset       (reset),
@@ -941,11 +943,13 @@ still accepted by the SRAM val/rdy wrapper and will end up in the bypass
 queue, but the third write transaction is stalled because the request
 interface is not ready. No transactions are lost.
 
-Let's now use an interactive simulator to generate the Verilog for
-pushing through the ASIC flow.
+Let's now rerun the tests and run the interactive simulator to create the
+Verilog test benches which we can use for four-state RTL, fast-functional
+gate-level, and back-annotated gate-level simulation.
 
 ```bash
 % cd $TOPDIR/sim/build
+% pytest ../tut10_sram/test/SRAMMinion_test.py --test-verilog --dump-vtb
 % ../tut10_sram/sram-sim --impl rtl --input random --translate --dump-vtb
 % ls
 ...
@@ -953,7 +957,7 @@ SRAMMinion_noparam__pickled.v
 ```
 
 As you can see, the simulator will generate a Verilog file
-`SramMinionRTL_noparam__pickled.v` which is what we use with the ASIC
+`SRAMMinion_noparam__pickled.v` which is what we use with the ASIC
 tools.
 
 4. ASIC Front-End Flow with SRAM Macros
@@ -969,8 +973,8 @@ The first step is to run the OpenRAM memory generator to generate the
 SRAM macro corresponding to the desired 32x128 configuration.
 
 ```bash
-% mkdir -p $TOPDIR/asic/build-sram/00-openram-memgen
-% cd $TOPDIR/asic/build-sram/00-openram-memgen
+% mkdir -p $TOPDIR/asic/build-tut10-sram/00-openram-memgen
+% cd $TOPDIR/asic/build-tut10-sram/00-openram-memgen
 % openram -v -v ../../../sim/sram/SRAM_32x128_1rw_cfg.py
 % cd SRAM_32x128_1rw
 % cp SRAM_32x128_1rw_TT_1p1V_25C.lib ../SRAM_32x128_1rw.lib
@@ -981,7 +985,7 @@ We need to convert the `.lib` file into a `.db` file using the Synopsys
 Library Compiler (LC) tool.
 
 ```
-% cd $TOPDIR/asic/build-sram/00-openram-memgen
+% cd $TOPDIR/asic/build-tut10-sram/00-openram-memgen
 % lc_shell
 lc_shell> read_lib SRAM_32x128_1rw.lib
 lc_shell> write_lib SRAM_32x128_1rw_TT_1p1V_25C_lib \
@@ -992,7 +996,7 @@ lc_shell> exit
 Check that the `.db` file now exists.
 
 ```bash
-% cd $TOPDIR/asic/build-sram/00-openram-memgen
+% cd $TOPDIR/asic/build-tut10-sram/00-openram-memgen
 % ls
 ...
 SRAM_32x128_1rw.db
@@ -1004,8 +1008,8 @@ We now need to use four-state RTL simulation to further verify our
 design.
 
 ```bash
-% mkdir -p ${TOPDIR}/asic/build-sram/01-synopsys-vcs-rtlsim
-% cd ${TOPDIR}/asic/build-sram/01-synopsys-vcs-rtlsim
+% mkdir -p ${TOPDIR}/asic/build-tut10-sram/01-synopsys-vcs-rtlsim
+% cd ${TOPDIR}/asic/build-tut10-sram/01-synopsys-vcs-rtlsim
 % vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
     +vcs+dumpvars+waves.vcd \
     +incdir+${TOPDIR}/sim/build \
@@ -1020,8 +1024,8 @@ Now we can use Synopsys DC to synthesize the logic which goes around the
 SRAM macro.
 
 ```
-% mkdir -p $TOPDIR/asic/build-sram/02-synopsys-dc-synth
-% cd $TOPDIR/asic/build-sram/02-synopsys-dc-synth
+% mkdir -p $TOPDIR/asic/build-tut10-sram/02-synopsys-dc-synth
+% cd $TOPDIR/asic/build-tut10-sram/02-synopsys-dc-synth
 % dc_shell-xg-t
 dc_shell> set_app_var target_library "$env(ECE6745_STDCELLS)/stdcells.db ../00-openram-memgen/SRAM_32x128_1rw.db"
 dc_shell> set_app_var link_library   "* $env(ECE6745_STDCELLS)/stdcells.db ../00-openram-memgen/SRAM_32x128_1rw.db"
@@ -1048,7 +1052,7 @@ expect since we are not synthesizing the memory but instead using an SRAM
 macro.
 
 ```bash
-% cd $TOPDIR/asic/build-sram/synopsys-dc
+% cd $TOPDIR/asic/build-tut10-sram/synopsys-dc
 % less -p SRAM post-synth.v
 ```
 
@@ -1058,8 +1062,7 @@ We can use fast-functional gate-level simulation to simulate the
 gate-level netlist integrated with the Verilog RTL models for the SRAMs.
 
 ```bash
-% mkdir -p $TOPDIR/asic/build-sram/03-synopsys-vcs-ffglsim
-% cd $TOPDIR/asic/build-sram/03-synopsys-vcs-ffglsim
+% cd $TOPDIR/asic/build-tut10-sram/03-synopsys-vcs-ffglsim
 % vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
     +delay_mode_zero \
     +vcs+dumpvars+waves.vcd \
@@ -1077,22 +1080,19 @@ SRAM which will be simulated along with the gate-level implementation.
 5. ASIC Back-End Flow with SRAM Macros
 --------------------------------------------------------------------------
 
-Now we can use Cadence Innovus to place the SRAM macro and the standard
-cells, and then automatically route everything together.
+Now we will push our SRAM minion wrapper through the ASIC back-end flow.
+In this section, we will go through the steps manually. Later in the
+tutorial we will use the ASIC automated flow.
+
+### 5.1. Place and Route
+
+We use Cadence Innovus for placing and routing both the standard cells
+and the SRAM macros. As in the ASIC back-end flow tutorial, we need to
+create a file to setup the timing analysis.
 
 ```bash
-% mkdir -p $TOPDIR/asic/build-sram/04-cadence-innovus-pnr
-% cd $TOPDIR/asic/build-sram/04-cadence-innovus-pnr
-```
-
-### 5.1. Timing Analysis Setup File
-
-As in the ASIC back-end flow tutorial, we need to create a file to setup
-the timing analysis. Use VS Code to create a file named
-`setup-timing.tcl`.
-
-```bash
-% cd $TOPDIR/asic/04-cadence-innovus-pnr
+% mkdir -p $TOPDIR/asic/build-tut10-sram/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-tut10-sram/04-cadence-innovus-pnr
 % code setup-timing.tcl
 ```
 
@@ -1125,13 +1125,11 @@ This is very similar to the `setup-timing.tcl` file we used in the ASIC
 back-end flow tutorial, except that we have to include the `.lib` file
 generated by OpenRAM.
 
-### 5.2. Initial Setup
-
 Now let's start Cadence Innovus, load in the design, and complete the
 power routing just as in the ASIC back-end tutorial.
 
 ```
-% cd $TOPDIR/asic/build-sram/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-tut10-sram/04-cadence-innovus-pnr
 % innovus
 ```
 
@@ -1175,15 +1173,13 @@ innovus> setOptMode -holdFixingCells {
          }
 ```
 
-### 5.3. Floorplanning
-
-In the earlier tutorials, we used automatic floorplaning which determines
-the overall dimensions given a target aspect ratio and placement density.
-We used a target aspect ratio of 1.0 and a placement density of 70%.
-Because the SRAM macro has an aspect ratio closer to 2:1 we will will
-need to use a different floorplan. So instead of using automatic
-floorplanning, we will use a fixed floorplan which uses a specific width
-and height.
+In the earlier tutorials, we used automatic floorplanning which
+determines the overall dimensions given a target aspect ratio and
+placement density. We used a target aspect ratio of 1.0 and a placement
+density of 70%. Because the SRAM macro has an aspect ratio closer to 2:1
+we will will need to use a different floorplan. So instead of using
+automatic floorplanning, we will use a fixed floorplan which uses a
+specific width and height.
 
 ```
 innovus> floorPlan -d 175 175 4.0 4.0 4.0 4.0
@@ -1194,8 +1190,6 @@ know that the SRAM is about 140um wide by 75um tall, so we set the height
 and width of the floorplan to be 175um.
 
 ![](img/tut10-cadence-innovus-1.png)
-
-### 5.4. Placement
 
 The next step is to place the design. Cadence Innovus will automatically
 place the SRAM macro and the standard cells at the same time, but first
@@ -1222,8 +1216,6 @@ In the following close, up the halo is shown in a salmon color. Some of
 the standard cells placed above the SRAM macro outside the halo.
 
 ![](img/tut10-cadence-innovus-3.png)
-
-### 5.5. Power Routing
 
 The next step is power routing. We need to connect the power/ground pins
 of both the standard cells and the SRAM macro to the global power/ground
@@ -1268,8 +1260,6 @@ to the power ring which is inside the SRAM macro).
 
 ![](img/tut10-cadence-innovus-5.png)
 
-### 5.6. Clock-Tree Synthesis
-
 The next step is to route the clock tree and do an initial round of
 fixing setup-time and hold-time violations.
 
@@ -1282,8 +1272,6 @@ innovus> optDesign -postCTS -hold
 ```
 
 ![](img/tut10-cadence-innovus-6.png)
-
-### 5.7. Signal Routing
 
 The next step is to route the signals, do a final round of fixing
 setup-time and hold-time violations, and extract the interconnect RC
@@ -1306,8 +1294,6 @@ routing blockages in the SRAM macro's `.lef` file.
 
 ![](img/tut10-cadence-innovus-7.png)
 
-### 5.8. Finishing
-
 We can now finish up by adding filler cells and running some physical
 verification checks.
 
@@ -1318,10 +1304,8 @@ innovus> verifyConnectivity
 innovus> verify_drc
 ```
 
-### 5.9. Outputs and Reports
-
 As in previous tutorials, we output the design, gate-level netlist,
-interconnect parasitics, timing delays, and the final layout. Notice howe
+interconnect parasitics, timing delays, and the final layout. Notice how
 we have to include the `.gds` file for the SRAM macro so it can be merged
 into the final `.gds` file.
 
@@ -1459,12 +1443,10 @@ pipeline registers, queues, and control logic.
 innovus> exit
 ```
 
-### 5.10. Final Layout
-
 And now we can use Klayout to look at the final integrated layout.
 
 ```
-% cd $TOPDIR/asic/build-sram/04-cadence-innovus-pnr
+% cd $TOPDIR/asic/build-tut10-sram/04-cadence-innovus-pnr
 % klayout -l $ECE6745_STDCELLS/klayout.lyp post-pnr.gds
 ```
 
@@ -1479,16 +1461,15 @@ SRAM macro.
 
 ![](img/tut10-final-layout-2.png)
 
-6. Back-Annotated Gate-Level Simulation with SRAM Macros
---------------------------------------------------------------------------
+### 5.2. Back-Annotated Gate-Level Simulation with SRAM Macros
+
+Now that we have finished the place-and-route step, we need to use
+back-annotated gate-level simulation to verify that the final design
+still passes all of our tests.
 
 ```bash
-% mkdir -p $TOPDIR/asic/build-sram/05-synopsys-vcs-baglsim
-% cd $TOPDIR/asic/build-sram/05-synopsys-vcs-baglsim
-```
-
-```bash
-% cd $TOPDIR/asic/build-sram/05-synopsys-vcs-baglsim
+% mkdir -p $TOPDIR/asic/build-tut10-sram/05-synopsys-vcs-baglsim
+% cd $TOPDIR/asic/build-tut10-sram/05-synopsys-vcs-baglsim
 % vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
     +neg_tchk +sdfverbose \
     -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
@@ -1505,70 +1486,303 @@ SRAM macro.
 % ./simv
 ```
 
-7. Power Analysis with SRAM Macros
---------------------------------------------------------------------------
+Let's open-up the waveforms using Surfer and verify that the
+clock-to-data delay for the SRAM is about 300ps.
 
 ```bash
-% mkdir -p $TOPDIR/asic/build-sram/06-synopsys-pt-pwr
-% cd $TOPDIR/asic/build-sram/06-synopsys-pt-pwr
+% cd $TOPDIR/asic/build-tut10-sram/05-synopsys-vcs-baglsim
+% code waves.vcd
+```
+
+The following close-up shows the clock-to-data delay is indeed about
+300ps.
+
+![](img/tut10-sram-waveform.png)
+
+### 5.3. Power Analysis with SRAM Macros
+
+Now we can use Synopsys PrimeTime (PT) for power analysis.
+
+```bash
+% mkdir -p $TOPDIR/asic/build-tut10-sram/06-synopsys-pt-pwr
+% cd $TOPDIR/asic/build-tut10-sram/06-synopsys-pt-pwr
 % pt_shell
 ```
 
-### 4.1. Initial Setup
+The initial setup similar to the previous tutorials, except we need to
+provide Synopsys PT the `.db` files for the SRAM macro.
 
 ```
 pt_shell> set_app_var target_library "$env(ECE6745_STDCELLS)/stdcells.db ../00-openram-memgen/SRAM_32x128_1rw.db"
 pt_shell> set_app_var link_library   "* $env(ECE6745_STDCELLS)/stdcells.db ../00-openram-memgen/SRAM_32x128_1rw.db"
-```
-
-```
 pt_shell> set_app_var power_enable_analysis true
 ```
 
-### 4.2. Inputs
+We then read in the post-pnr gate-level netlist, the `.saif` file with
+the activity factors from back-annotated gate-level simulation, and the
+`.spef` file with the interconnect parasitics.
 
 ```
 pt_shell> read_verilog ../04-cadence-innovus-pnr/post-pnr.v
 pt_shell> current_design SRAMMinion_noparam
 pt_shell> link_design
-```
-
-```
 pt_shell> read_saif ../05-synopsys-vcs-baglsim/waves.saif -strip_path Top/DUT
-```
-
-```
 pt_shell> read_parasitics -format spef ../04-cadence-innovus-pnr/post-pnr.spef
 ```
 
-### 4.3. Timing Constraints
+Finally, we create the clock and perform the power analysis.
 
 ```
 pt_shell> create_clock clk -name ideal_clock1 -period 2.000
-```
-
-### 4.4. Power Analysis
-
-```
 pt_shell> update_power
-```
-
-### 4.5. Outputs
-
-```
 pt_shell> report_power
-```
-
-```
 pt_shell> report_power -hierarchy
 ```
 
 6. ASIC Automated Flow with SRAM Macros
 --------------------------------------------------------------------------
 
+Manually entering commands is a great way to understand how the tools
+work but is also tedious and error prone. The ASIC automated flow
+includes support for using OpenRAM to generate SRAMs. We just need to
+specify a list of SRAM macros we want to use in the YAML design file.
+Take a look at the following YAML design file:
+
+```bash
+% cd $TOPDIR/asic/designs
+% code tut10-sram.yml
+```
+
+The key to using SRAM macros is (1) adding `00-openram-memgen` as the
+first step and (2) adding the the `sram_dir` and `srams` variables as
+shown below.
+
+```
+steps:
+ - 00-openram-memgen
+ - 01-synopsys-vcs-rtlsim
+ - 02-synopsys-dc-synth
+ - 03-synopsys-vcs-ffglsim
+ - 04-cadence-innovus-pnr
+ - 05-synopsys-vcs-baglsim
+ - 06-synopsys-pt-pwr
+ - 07-summarize-results
+
+...
+
+sram_dir : ../../../sim/sram
+srams:
+ - SRAM_32x128_1rw
+```
+
+The ASIC automated flow includes a new step template for using OpenRAM to
+generate SRAMs. Take a look at the corresponding run script
+
+```bash
+% cd $TOPDIR/asic/steps/00-openram-memgen
+% code run
+```
+
+The template at the bottom runs the `memgen` bash function for each SRAM
+macro.
+
+```
+{% for sram in srams | default([]) -%}
+memgen {{sram}}
+{% endfor %}
+```
+
+You should recognize the steps in the `memgen` bash function which
+include running OpenRAM, copying the `.lib`, `.lef`, `.gds`, and `.v`
+files, and running library compiler to generate the `.db` file.
+
+Let's see some examples of how the remaining step templates include
+support for using SRAM macros. First, let's look at the run scripts for
+synthesis.
+
+```bash
+% cd $TOPDIR/asic/steps/02-synopsys-dc-synth
+% code run.tcl
+```
+
+The key difference for synthesis is we need to include the `.db` file for
+each SRAM macro.
+
+```
+set_app_var target_library [list \
+  "$env(ECE6745_STDCELLS)/stdcells.db" \
+  {% for sram in srams | default([]) -%}
+  "../00-openram-memgen/{{sram}}.db" \
+  {% endfor %}
+]
+```
+
+For gate-level simulation we need to include the Verilog behavioral
+models. Let's look at the run scripts for place-and-route.
+
+```
+% cd $TOPDIR/asic/steps/04-cadence-innovus-pnr
+% code run.tcl
+```
+
+The key difference is we need to include the `.lef` and `.gds` files for
+each SRAM macro.
+
+```
+set lef_files [list \
+  "$env(ECE6745_STDCELLS)/rtk-tech.lef" \
+  "$env(ECE6745_STDCELLS)/stdcells.lef" \
+  {% for sram in srams | default([]) -%}
+  "../00-openram-memgen/{{sram}}.lef" \
+  {% endfor %}
+]
+
+...
+
+set gds_files [list \
+  "$env(ECE6745_STDCELLS)/stdcells.gds" \
+  {% for sram in srams | default([]) -%}
+  "../00-openram-memgen/{{sram}}.gds" \
+  {% endfor %}
+]
+```
+
+We also need to make sure to include the `.lib` files in the
+`setup-timing.tcl` script.
+
+Now that we know understand how the step templates include support for
+using SRAM macros, let's go ahead and push the SRAM val/rdy wrapper
+through the ASIC automated flow. First let's delete the build directory
+we have been using so far so we can start over.
+
+```
+% cd $TOPDIR/asic
+% trash build-tut10-sram
+```
+
+Now let's use pyhflow to generate the run scripts and go through each
+step one at a time.
+
+```
+% mkdir -p $TOPDIR/asic/build-tut10-sram
+% cd $TOPDIR/asic/build-tut10-sram
+% pyhflow ../designs/tut10-sram.yml
+% ./00-openram-memgen/run
+% ./01-synopsys-vcs-rtlsim/run
+% ./02-synopsys-dc-synth/run
+% ./03-synopsys-vcs-ffglsim/run
+% ./04-cadence-innovus-pnr/run
+% ./05-synopsys-vcs-baglsim/run
+% ./06-synopsys-pt-pwr/run
+% ./07-summarize-results/run
+```
+
+The summary results should be similar to as shown below.
+
+```
+ timestamp           = 2025-04-06 13:32:59
+ design_name         = SRAMMinion_noparam
+ clock_period        = 2.0
+ rtlsim              = 7/7 passed
+ synth_setup_slack   = 0.4255 ns
+ synth_num_stdcells  = 354
+ synth_area          = 11508.482 um^2
+ ffglsim             = 7/7 passed
+ pnr_setup_slack     = 0.3165 ns
+ pnr_hold_slack      = 0.0102 ns
+ pnr_clk_ins_src_lat = 0 ns
+ pnr_num_stdcells    = 545
+ pnr_area            = 11680.318 um^2
+ baglsim             = 7/7 passed
+
+ SRAMMinion_noparam_sram-rtl-random
+  - exec_time = 263 cycles
+  - exec_time = 526.0000 ns
+  - power     = 0.3296 mW
+  - energy    = 0.1734 nJ
+```
+
 7. To-Do On Your Own
 --------------------------------------------------------------------------
 
-Try with all zeros ...
+Now that you understand how to use SRAM macros, try a simple experiment
+to see the difference in energy when we only read/write zeros to the SRAM
+macro. Our interactive simulator provides such a dataset.
 
+```bash
+% cd $TOPDIR/sim/build
+% ../tut10_sram/sram-sim --impl rtl --input allzero --translate --dump-vtb
+```
+
+Now modify the YAML design file to add this new evaluation.
+
+```
+evals:
+ - SRAMMinion_noparam_sram-rtl-random
+ - SRAMMinion_noparam_sram-rtl-allzero
+```
+
+Then you can regenerate the flow using pyhflow. There is no need to
+regenerate the SRAM macros, rerun synthesis, or rerun place-and-route. We
+can just just rerun four-state RTL, fast-functional gate-level,
+back-annotated gate-level simulation, power analysis, and the final
+summary.
+
+```
+% cd $TOPDIR/asic/build-tut10-sram
+% pyhflow ../designs/tut10-sram.yml
+% ./01-synopsys-vcs-rtlsim/run
+% ./03-synopsys-vcs-ffglsim/run
+% ./05-synopsys-vcs-baglsim/run
+% ./06-synopsys-pt-pwr/run
+% ./07-summarize-results/run
+```
+
+Compare the energy of the experiments with random data vs all zeros. Look
+at the detailed energy reports.
+
+```
+% cd $TOPDIR/asic/build-tut10-sram
+% code 06-synopsys-pt-pwr/SRAMMinion_noparam_sram-rtl-random-detailed.rpt
+% code 06-synopsys-pt-pwr/SRAMMinion_noparam_sram-rtl-allzero-detailed.rpt
+```
+
+The energy is not zero since even for the all zeros dataset the addresses
+are random and choosing between read/writes is also random.
+
+Now let's try another experiment to see the impact of column muxing.
+Change the column muxing for the 32x128 SRAM macro from 4 to 2 by
+updating the `words_per_row` variable in the `SRAM_32x128_1rw_cfg.py`
+configuration file. Then delete the build directory we have been using so
+far so we can start over.
+
+```
+% cd $TOPDIR/asic
+% trash build-tut10-sram
+```
+
+Use OpenRAM to regenerate the SRAM macros.
+
+```
+% mkdir -p $TOPDIR/asic/build-tut10-sram
+% cd $TOPDIR/asic/build-tut10-sram
+% pyhflow ../designs/tut10-sram.yml
+% ./00-openram-memgen/run
+```
+
+Take a look at the resulting layout using Klayout. Notice how the SRAM
+array is much taller now, but also how the output flip-flops result in
+quite a bit of white space. Go ahead and run the rest of the ASIC
+automated flow.
+
+```
+% cd $TOPDIR/asic/build-tut10-sram
+% ./01-synopsys-vcs-rtlsim/run
+% ./02-synopsys-dc-synth/run
+% ./03-synopsys-vcs-ffglsim/run
+% ./04-cadence-innovus-pnr/run
+% ./05-synopsys-vcs-baglsim/run
+% ./06-synopsys-pt-pwr/run
+% ./07-summarize-results/run
+```
 
