@@ -87,6 +87,7 @@ nav:
     - 'Tutorial 9: TinyRV2 Accelerator RTL Design': ece6745-tut09-xcel-rtl.md
     - 'Tutorial 10: SRAM Generators': ece6745-tut10-sram.md
     - 'Tutorial 12: SPICE Simulation': ece6745-tut12-spice-sim.md
+    - 'Tutorial 13: DesignWare and Retiming': ece6745-tut13-dw.md
 
   - 'Sections':
     - 'Section 1: ASIC Front-End Flow': ece6745-sec01-asic-front-end.md

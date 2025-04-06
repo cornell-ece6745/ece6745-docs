@@ -85,12 +85,12 @@ you on the public course webpage:
 
  - <https://www.csl.cornell.edu/courses/ece6745/asicdocs>
 
-The first step is to access `ecelinux`. Use Microsoft Remote Desktop to
-log into a specific `ecelinux` server. Then use VS Code to log into the
-same specific `ecelinux` server. Once you are at the `ecelinux` prompt,
-source the setup script, source the GUI setup script, clone this
-repository from GitHub, and define an environment variable to keep track
-of the top directory for the project.
+The first step is to access `ecelinux`. Use VS Code to log into a
+specific `ecelinux` server and then use Microsoft Remote Desktop to log
+into the same server. Once you are at the `ecelinux` prompt, source the
+setup script, source the GUI setup script, clone this repository from
+GitHub, and define an environment variable to keep track of the top
+directory for the project.
 
 ```bash
 % source setup-ece6745.sh

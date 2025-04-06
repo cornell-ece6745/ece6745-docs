@@ -15,12 +15,16 @@ standard-cell library we will use in this course along with the various
 "views" of the standard-cell library. This tutorial assumes you have
 already completed the tutorials on Linux, Git, and Verilog.
 
-The first step is to source the setup script, clone this repository from
+The first step is to access `ecelinux`. Use VS Code to log into a
+specific `ecelinux` server and then use Microsoft Remote Desktop to log
+into the same server. Once you are at the `ecelinux` prompt, source the
+setup script, source the GUI setup script, clone this repository from
 GitHub, and define an environment variable to keep track of the top
 directory for the project.
 
 ```bash
 % source setup-ece6745.sh
+% source setup-gui.sh
 % mkdir -p $HOME/ece6745
 % cd $HOME/ece6745
 % git clone git@github.com:cornell-ece6745/ece6745-tut05-asic-stdcells tut05
