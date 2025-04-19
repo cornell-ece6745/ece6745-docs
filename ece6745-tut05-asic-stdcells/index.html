@@ -1,0 +1,1678 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-tut02-git/">
+      
+      
+        <link rel="next" href="../ece6745-tut06-asic-front-end/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Tutorial 5: ASIC Standard Cells - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-tutorial-5-asic-standard-cells" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tutorial 5: ASIC Standard Cells
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-sec01-asic-front-end/" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-freepdk45-process-design-kit" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. FreePDK45 Process Design Kit
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-nangate-standard-cell-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. NanGate Standard-Cell Library
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. NanGate Standard-Cell Library">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-verilog-behavioral-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Verilog Behavioral View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-spice-schematic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. SPICE Schematic View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-gds-layout-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. GDS Layout View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-spice-extracted-schematic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4. SPICE Extracted Schematic View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-lib-logical-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5. LIB Logical View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-lef-physical-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6. LEF Physical View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-routing-technology-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.7. Routing Technology Files
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-to-do-on-your-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. To Do On Your Own
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut07-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut09-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut12-spice-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec01-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec02-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec03-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec04-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-freepdk45-process-design-kit" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. FreePDK45 Process Design Kit
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-nangate-standard-cell-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. NanGate Standard-Cell Library
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. NanGate Standard-Cell Library">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-verilog-behavioral-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Verilog Behavioral View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-spice-schematic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. SPICE Schematic View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-gds-layout-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. GDS Layout View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-spice-extracted-schematic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4. SPICE Extracted Schematic View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-lib-logical-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5. LIB Logical View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-lef-physical-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6. LEF Physical View
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-routing-technology-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.7. Routing Technology Files
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-to-do-on-your-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. To Do On Your Own
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-tutorial-5-asic-standard-cells">ECE 6745 Tutorial 5: ASIC Standard Cells</h1>
+<p>A standard-cell library is a collection of combinational and sequential
+logic gates that adhere to a standardized set of logical, electrical, and
+physical policies. For example, all standard cells are usually the same
+height, include pins that align to a predetermined vertical and
+horizontal grid, include power/ground rails and nwells in predetermined
+locations, and support a predetermined number of drive strengths. A
+standard-cell-based ASIC toolflow involves using automated tools to
+transform register-transfer-level (RTL) designs into placed and routed
+standard cells on a chip. This tutorial will explore the specific
+standard-cell library we will use in this course along with the various
+"views" of the standard-cell library. This tutorial assumes you have
+already completed the tutorials on Linux, Git, and Verilog.</p>
+<p>The first step is to access <code>ecelinux</code>. Use VS Code to log into a
+specific <code>ecelinux</code> server and then use Microsoft Remote Desktop to log
+into the same server. Once you are at the <code>ecelinux</code> prompt, source the
+setup script, source the GUI setup script, clone this repository from
+GitHub, and define an environment variable to keep track of the top
+directory for the project.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/ece6745-tut05-asic-stdcells<span class="w"> </span>tut05
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tut05
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>%<span class="w"> </span><span class="nv">TOPDIR</span><span class="o">=</span><span class="nv">$PWD</span>
+</span></code></pre></div>
+<h2 id="1-freepdk45-process-design-kit">1. FreePDK45 Process Design Kit</h2>
+<p>Before you can gain access to a standard-cell library, you need to gain
+access to a "physical design kit" (PDK). A PDK includes all of the design
+files required for full-custom circuit design for a specific technology.
+So this will include a design-rule manual as well as SPICE circuit models
+for transistors and other devices. Gaining access to a real PDK is
+difficult. It requires negotiating with the foundry and signing multiple
+non-disclosure agreements. So in this course we will be using the
+FreePDK45 PDK:</p>
+<ul>
+<li><a href="https://eda.ncsu.edu/freepdk/freepdk45">https://eda.ncsu.edu/freepdk/freepdk45</a></li>
+</ul>
+<p>This is an open PDK for a "fake" technology. It was created by
+universities using publically available data on several different
+commercial 45nm processes. This means you cannot actually tapeout a chip
+using this PDK, but the technology is representative enough to provide
+reasonable area, energy, and timing estimates for research and teaching
+purposes. You can find the FreePDK45 PDK installed here:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_INSTALL</span><span class="si">}</span>/adks/freepdk-45nm/pkgs/FreePDK45-1.4
+</span></code></pre></div>
+<h2 id="2-nangate-standard-cell-library">2. NanGate Standard-Cell Library</h2>
+<p>A standard-cell designer will use the PDK to implement the standard-cell
+library. A standard-cell designer will usually create a high-level
+behavioral specification (in Verilog), circuit schematics (in SPICE), and
+the actual layout (in <code>.gds</code> format) for each logic gate. The
+standard-cell-based ASIC tools do not actually use these low-level
+implementations, since they are actually <em>too</em> detailed. Instead these
+tools use <em>abstract views</em> of the standard cells, which capture logical
+functionality, timing, geometry, and power usage at a much higher level.</p>
+<p>Just like with a PDK, gaining access to a real standard-cell library is
+difficult. It requires gaining access to the PDK first, negotiating with
+a company which makes standard cells, and usually signing more
+non-disclosure agreements. In this course, we will be using the Nangate
+45nm standard-cell library which is based on the open FreePDK45 PDK.</p>
+<p>Nangate is a company which makes a tool to automatically generate
+standard-cell libraries, so they have made this library publically
+available a way to demonstrate their tool. Since it is an open library it
+is a great resource for research and teaching. Even though the
+standard-cell library is based on a "fake" 45nm PDK, the library provides
+a very reasonable estimate of a real commercial standard library in a
+real 45nm technology. In this section, we will take a look at both the
+low-level implementations and high-level views of the Nangate
+standard-cell library.</p>
+<p>A standard-cell library distribution can contain gigabytes of data in
+thousands of files. For example, here is the distribution for the Nangate
+standard-cell library.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>% cd ${ECE6745_INSTALL}/adks/freepdk-45nm/pkgs/NangateOpenCellLibrary_PDKv1_3_v2010_12
+</span></code></pre></div>
+<p>To simplify using the Nangate standard-cell library in this course, we
+have created a much smaller set of well-defined symlinks which point to
+just the key files we want to use in this course. We call this collection
+of symlinks an "ASIC design kit" (ADK). Here is the directory which
+contains these symlinks.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>% cd ${ECE6745_STDCELLS}
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>% ls
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>pdk-models.sp          # spice models for transistors
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>rtk-stream-out.map     # gds layer map
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>rtk-tech.lef           # interconnect technology information
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>rtk-tech.tf            # interconnect technology information
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>rtk-typical.captable   # interconnect technology information
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>stdcells.spi           # circuit schematics for each cell
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>stdcells.gds           # layout for each cell
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>stdcells.v             # behavioral specification for each cell
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>stdcells-lpe.spi       # circuit schematics with parasitics for each cell
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>stdcells.lib           # abstract logical, timing, power view for each cell (typical)
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>stdcells-bc.lib        # best case .lib
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>stdcells-wc.lib        # worst case .lib
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>stdcells.lef           # abstract physical view for each cell
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>stdcells.db            # binary compiled version of .lib file
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>stdcells.mwlib         # Milkyway database built from .lef file
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>stdcells-databook.pdf  # standard-cell library databook
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>klayout.lyp            # layer settings for Klayout
+</span></code></pre></div>
+<p>A standard-cell library will always include a databook, which is a
+document that describes the details of every cell in the library. Take a
+few minutes to browse through the Nangate standard-cell library databook
+located on the course webpage here:</p>
+<ul>
+<li><a href="https://web.csl.cornell.edu/courses/ece6745/resources/nangate-freepdk45nm-stdcell-databook.pdf">https://web.csl.cornell.edu/courses/ece6745/resources/nangate-freepdk45nm-stdcell-databook.pdf</a></li>
+</ul>
+<h3 id="21-verilog-behavioral-view">2.1. Verilog Behavioral View</h3>
+<p>Let's begin by looking at the Verilog behavioral view for a 3-input NAND
+standard cell which is named NAND3_X1.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>% less -p NAND3_X1 ${ECE6745_STDCELLS}/stdcells.v
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>module NAND3_X1 (A1, A2, A3, ZN);
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  input A1;
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  input A2;
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  input A3;
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  output ZN;
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>  not(ZN, i_8);
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>  and(i_8, i_9, A3);
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>  and(i_9, A1, A2);
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>  specify
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    (A1 =&gt; ZN) = (0.1, 0.1);
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    (A2 =&gt; ZN) = (0.1, 0.1);
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    (A3 =&gt; ZN) = (0.1, 0.1);
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>  endspecify
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>endmodule
+</span></code></pre></div>
+<p>Note that the Verilog implementation of the 3-input NAND standard cell
+looks nothing like the Verilog we used in ECE 4750. This cell is
+implemented using Verilog primitive gates (e.g., <code>not</code>, <code>and</code>) and it
+includes a <code>specify</code> block which is used for advanced gate-level
+simulation with back-annotated delays.</p>
+<p>Let's use <code>iverilog</code> to simulate the Verilog behavorial view of the
+3-input NAND standard cell. Take a look at the provided Verilog test
+bench.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>%<span class="w"> </span>cat<span class="w"> </span>nand3-test.v
+</span></code></pre></div>
+<p>The test bench looks as follows.</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="no">`include</span><span class="w"> </span><span class="s">&quot;/classes/ece6745/install/adks/freepdk-45nm/stdview/stdcells.v&quot;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">module</span><span class="w"> </span><span class="n">top</span><span class="p">();</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="n">y</span><span class="p">;</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">  </span><span class="n">NAND3_X1</span><span class="w"> </span><span class="n">nand3</span><span class="p">(</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">  </span><span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">    </span><span class="n">$dumpfile</span><span class="p">(</span><span class="s">&quot;nand3-test.vcd&quot;</span><span class="p">);</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">    </span><span class="n">$dumpvars</span><span class="p">;</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">    </span><span class="p">#</span><span class="mh">10</span><span class="p">;</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">    </span><span class="nb">$display</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;a=%b, b=%b, c=%b, y=%b&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">    </span><span class="p">#</span><span class="mh">10</span><span class="p">;</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">    </span><span class="nb">$display</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;a=%b, b=%b, c=%b, y=%b&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w">    </span><span class="p">#</span><span class="mh">10</span><span class="p">;</span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="w">    </span><span class="nb">$display</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;a=%b, b=%b, c=%b, y=%b&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="w">    </span><span class="p">#</span><span class="mh">10</span><span class="p">;</span>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a><span class="w">    </span><span class="nb">$display</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;a=%b, b=%b, c=%b, y=%b&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a>
+</span><span id="__span-6-32"><a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a><span class="w">  </span><span class="k">end</span>
+</span><span id="__span-6-33"><a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a>
+</span><span id="__span-6-34"><a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a><span class="k">endmodule</span>
+</span></code></pre></div>
+<p>The test bench simply tries four different combinations of input values.
+Run the simulation and view the result using Surfer.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-g2012<span class="w"> </span>-s<span class="w"> </span>top<span class="w"> </span>-o<span class="w"> </span>nand3-test<span class="w"> </span>nand3-test.v
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>%<span class="w"> </span>./nand3-test
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>%<span class="w"> </span>code<span class="w"> </span>nand3-test.vcd
+</span></code></pre></div>
+<p>The waveforms should look similar to what is shown below. Because this is
+a Verilog behavioral view all signals change immediately without any kind
+of delay.</p>
+<p><img alt="" src="../img/tut05-nand3-verilog-waveforms.png" /></p>
+<h3 id="22-spice-schematic-view">2.2. SPICE Schematic View</h3>
+<p>Now that we understand the Verilog behavioral view, let's look at how we
+would implement this same standard cells at the transistor level. We can
+look at the SPICE schematic view for a 3-input NAND cell (NAND3_X1).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>% less -p NAND3_X1 ${ECE6745_STDCELLS}/stdcells.spi
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>.SUBCKT NAND3_X1 A1 A2 A3 ZN VDD VSS
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>*.PININFO A1:I A2:I A3:I ZN:O VDD:P VSS:G
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>*.EQN ZN=!((A1 * A2) * A3)
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>M_i_2 net_1 A3 VSS   VSS NMOS_VTL W=0.415000U L=0.050000U
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>M_i_1 net_0 A2 net_1 VSS NMOS_VTL W=0.415000U L=0.050000U
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>M_i_0 ZN    A1 net_0 VSS NMOS_VTL W=0.415000U L=0.050000U
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>M_i_5 ZN    A3 VDD   VDD PMOS_VTL W=0.630000U L=0.050000U
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>M_i_4 VDD   A2 ZN    VDD PMOS_VTL W=0.630000U L=0.050000U
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>M_i_3 ZN    A1 VDD   VDD PMOS_VTL W=0.630000U L=0.050000U
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>.ENDS
+</span></code></pre></div>
+<p>For students with a circuits background, there should be no surprises
+here, and for those students with less circuits background we will cover
+basic static CMOS gate design later in the course. Essentially, this
+schematic includes three NMOS transistors arranged in series in the
+pull-down network, and three PMOS transistors arranged in parallel in the
+pull-up network. The PMOS transistors are larger than the NMOS
+transistors (see <code>W=</code> parameter) because the mobility of holes is less
+than the mobility of electrons.</p>
+<p>Let's use ngspice to simulate the SPICE schematic view of the 3-input
+NAND standard cell. Take a look at the provided SPICE test bench.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>cat<span class="w"> </span>nand3-test.sp
+</span></code></pre></div>
+<p>Although it is not too important for you to understand how to write a
+SPICE test bench, it can still be fun to look at one.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>* Simple NAND3_X1 simulation
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>* ------------------------------------------------------------------------
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>.param VDD=&#39;1.1V&#39;
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>.temp  70
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>.inc   &quot;/classes/ece6745/install/adks/freepdk-45nm/stdview/pdk-models.sp&quot;
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>.inc   &quot;/classes/ece6745/install/adks/freepdk-45nm/stdview/stdcells.spi&quot;
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>* Instantiate a voltage supply, standard cell, and output load
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>* ------------------------------------------------------------------------
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>Vdd vdd gnd VDD
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>X1 a b c y vdd gnd NAND3_X1
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>Cload y gnd 7fF
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>* Instantiate three input sources
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>* ------------------------------------------------------------------------
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>A1 [a_ b_] nand3_source
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>.model nand3_source d_source (input_file=&quot;nand3-source.txt&quot;)
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>Aa [a_] [a] dac_a
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>.model dac_a dac_bridge (out_low=0V out_high=&#39;VDD&#39; t_rise=0.2ns t_fall=0.2ns)
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>Ab [b_] [b] dac_b
+</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>.model dac_b dac_bridge (out_low=0V out_high=&#39;VDD&#39; t_rise=0.2ns t_fall=0.2ns)
+</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a>
+</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>Ac [b_] [b] dac_c
+</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a>.model dac_c dac_bridge (out_low=0V out_high=&#39;VDD&#39; t_rise=0.2ns t_fall=0.2ns)
+</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a>
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a>* Run a simulation
+</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a>* ------------------------------------------------------------------------
+</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a>
+</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a>.ic   V(y)=VDD
+</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a>.tran 0.01ns 4ns
+</span><span id="__span-10-38"><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a>
+</span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a>.control
+</span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a>run
+</span><span id="__span-10-41"><a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a>set color0=white
+</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a>set color1=black
+</span><span id="__span-10-43"><a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a>set color2=red
+</span><span id="__span-10-44"><a id="__codelineno-10-44" name="__codelineno-10-44" href="#__codelineno-10-44"></a>set xbrushwidth=2
+</span><span id="__span-10-45"><a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a>plot V(a) V(b) V(c) V(y)
+</span><span id="__span-10-46"><a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a>.endc
+</span><span id="__span-10-47"><a id="__codelineno-10-47" name="__codelineno-10-47" href="#__codelineno-10-47"></a>
+</span><span id="__span-10-48"><a id="__codelineno-10-48" name="__codelineno-10-48" href="#__codelineno-10-48"></a>.end
+</span></code></pre></div>
+<p>See Tutorial 8 for much more detail on SPICE simulation. You can run the
+simulation using ngspice like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span>nsgpice<span class="w"> </span>nand3-test.sp
+</span></code></pre></div>
+<p>Note that if we use ngspice to display plots, then it is a Linux GUI
+application so you will need to use Microsoft Remote Desktop. The
+waveforms should look similar to what is shown below. The input signals
+ramp up and down based on the <code>t_rise</code> and <code>t_fall</code> parameters above.
+Because this is a SPICE schematic view you can see the output does not
+change instantly but instead takes some amount of time due to the
+parasitic resistance and capacitances associated with the transistors in
+the schematic.</p>
+<p><img alt="" src="../img/tut05-nand3-spice-waveforms.png" /></p>
+<h3 id="23-gds-layout-view">2.3. GDS Layout View</h3>
+<p>Now that we understand the SPICE schematic view, let's look at the actual
+layout for the 3-input NAND cell using the open-source Klayout GDS
+viewer. Note that since Klayout is a Linux GUI application you will need
+to use Microsoft Remote Desktop.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>% klayout -l ${ECE6745_STDCELLS}/klayout.lyp ${ECE6745_STDCELLS}/stdcells.gds
+</span></code></pre></div>
+<p>Note that we are using the <code>.lyp</code> file which is a predefined layer color
+scheme that makes it easier to view GDS files. To view the 3-input NAND
+cell, find the NAND3_X1 cell in the left-hand cell list, and then choose
+<em>Display &gt; Show as New Top</em> from the menu. Here is a picture of the
+layout for this cell.</p>
+<p><img alt="" src="../img/tut05-nangate45nm-nand3x1-gds.png" /></p>
+<p>Diffusion is green, polysilicon is red, contacts are solid dark blue,
+metal 1 (M1) is blue, and the nwell is the large gray rectangle over the
+top half of the cell. All standard cells will be the same height and have
+the nwell in the same place. Notice the three NMOS transistors arranged
+in series in the pull-down network, and three PMOS transistors arranged
+in parallel in the pull-up network. The power rail is the horizontal
+strip of M1 at the top, and the ground rail is the horizontal strip of M1
+at the bottom. All standard cells will have the power and ground rails in
+the same place so they will connect via abutment if these cells are
+arranged in a row. Although it is difficult to see, the three input pins
+and one output pin are labeled squares of M1, and these pins are arranged
+to be on a predetermined grid.</p>
+<h3 id="24-spice-extracted-schematic-view">2.4. SPICE Extracted Schematic View</h3>
+<p>The SPICE schematic view was saw earlier includes just the transistors.
+We can use sophisticated tools to extract detailed parasitic resistance
+and capacitance values from the layout, and then we can add these
+parasitics to the circuit schematic to create a much more accurate model
+for experimenting with the circuit timing and power. Let's look at a
+snippet of the extracted circuit for the 3-input NAND cell:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>% less -p NAND3_X1 ${ECE6745_STDCELLS}/stdcells-lpe.spi
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>.SUBCKT NAND3_X1 VDD VSS A3 ZN A2 A1
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>*.PININFO VDD:P VSS:G A3:I ZN:O A2:I A1:I
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>*.EQN ZN=!((A1 * A2) * A3)
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>M_M3 N_ZN_M0_d  N_A3_M0_g N_VDD_M0_s VDD PMOS_VTL W=0.630000U L=0.050000U
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>M_M4 N_VDD_M1_d N_A2_M1_g N_ZN_M0_d  VDD PMOS_VTL W=0.630000U L=0.050000U
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>M_M5 N_ZN_M2_d  N_A1_M2_g N_VDD_M1_d VDD PMOS_VTL W=0.630000U L=0.050000U
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>M_M0 net_1      N_A3_M3_g N_VSS_M3_s VSS NMOS_VTL W=0.415000U L=0.050000U
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>M_M1 net_0      N_A2_M4_g net_1      VSS NMOS_VTL W=0.415000U L=0.050000U
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>M_M2 N_ZN_M5_d  N_A1_M5_g net_0      VSS NMOS_VTL W=0.415000U L=0.050000U
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>C_x_PM_NAND3_X1%VDD_c0 x_PM_NAND3_X1%VDD_39 VSS 3.704e-17
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>C_x_PM_NAND3_X1%VDD_c1 x_PM_NAND3_X1%VDD_36 VSS 2.74884e-18
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>C_x_PM_NAND3_X1%VDD_c2 x_PM_NAND3_X1%VDD_26 VSS 2.61603e-16
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>C_x_PM_NAND3_X1%VDD_c3 N_VDD_M1_d           VSS 6.57971e-17
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>C_x_PM_NAND3_X1%VDD_c4 x_PM_NAND3_X1%VDD_19 VSS 1.89932e-17
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>C_x_PM_NAND3_X1%VDD_c5 x_PM_NAND3_X1%VDD_18 VSS 3.74888e-17
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>C_x_PM_NAND3_X1%VDD_c6 N_VDD_M0_s           VSS 3.64134e-17
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>...
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>.ENDS
+</span></code></pre></div>
+<p>The full model is a couple of hundred lines long, so you can see how
+detailed this model is!</p>
+<h3 id="25-lib-logical-view">2.5. LIB Logical View</h3>
+<p>The ASIC tools do not actually interact with the low-level SPICE
+schematic views and GDS layour views. We can use a special set of tools
+to create a much higher level abstract view of the timing and power of
+this circuit suitable for use by the ASIC tools. Essentially, these tools
+run many, many circuit-level simulations to create characterization data
+stored in a <code>.lib</code> (Liberty) file. Let's look at snippet of the <code>.lib</code>
+file for the 3-input NAND cell.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>% less -p NAND3_X1 ${ECE6745_STDCELLS}/stdcells.lib
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>cell (NAND3_X1) {
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a> drive_strength          : 1;
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a> area                    : 1.064000;
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a> cell_leakage_power      : 18.104768;
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a> leakage_power () {
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>   when                  : &quot;!A1 &amp; !A2 &amp; !A3&quot;;
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>   value                 : 3.318854;
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a> }
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a> ...
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a> pin (A1) {
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>   direction             : input;
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>   related_power_pin     : &quot;VDD&quot;;
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>   related_ground_pin    : &quot;VSS&quot;;
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>   capacitance           : 1.590286;
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>   fall_capacitance      : 1.562033;
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>   rise_capacitance      : 1.590286;
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a> }
+</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a> ...
+</span><span id="__span-14-20"><a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a> pin (ZN) {
+</span><span id="__span-14-21"><a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a>   direction             : output;
+</span><span id="__span-14-22"><a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a>   related_power_pin     : &quot;VDD&quot;;
+</span><span id="__span-14-23"><a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a>   related_ground_pin    : &quot;VSS&quot;;
+</span><span id="__span-14-24"><a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a>   max_capacitance       : 58.364900;
+</span><span id="__span-14-25"><a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a>   function              : &quot;!((A1 &amp; A2) &amp; A3)&quot;;
+</span><span id="__span-14-26"><a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a>
+</span><span id="__span-14-27"><a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a>   timing () {
+</span><span id="__span-14-28"><a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a>
+</span><span id="__span-14-29"><a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a>     related_pin         : &quot;A1&quot;;
+</span><span id="__span-14-30"><a id="__codelineno-14-30" name="__codelineno-14-30" href="#__codelineno-14-30"></a>     timing_sense        : negative_unate;
+</span><span id="__span-14-31"><a id="__codelineno-14-31" name="__codelineno-14-31" href="#__codelineno-14-31"></a>
+</span><span id="__span-14-32"><a id="__codelineno-14-32" name="__codelineno-14-32" href="#__codelineno-14-32"></a>     cell_fall(Timing_7_7) {
+</span><span id="__span-14-33"><a id="__codelineno-14-33" name="__codelineno-14-33" href="#__codelineno-14-33"></a>       index_1 (&quot;0.00117378,0.00472397,0.0171859,0.0409838,0.0780596,0.130081,0.198535&quot;);
+</span><span id="__span-14-34"><a id="__codelineno-14-34" name="__codelineno-14-34" href="#__codelineno-14-34"></a>       index_2 (&quot;0.365616,1.823900,3.647810,7.295610,14.591200,29.182500,58.364900&quot;);
+</span><span id="__span-14-35"><a id="__codelineno-14-35" name="__codelineno-14-35" href="#__codelineno-14-35"></a>       values (&quot;0.0106270,0.0150189,0.0204521,0.0312612,0.0528211,0.0959019,0.182032&quot;, \
+</span><span id="__span-14-36"><a id="__codelineno-14-36" name="__codelineno-14-36" href="#__codelineno-14-36"></a>               &quot;0.0116171,0.0160692,0.0215549,0.0324213,0.0540285,0.0971429,0.183289&quot;, \
+</span><span id="__span-14-37"><a id="__codelineno-14-37" name="__codelineno-14-37" href="#__codelineno-14-37"></a>               &quot;0.0157475,0.0207077,0.0261030,0.0369216,0.0585239,0.101654,0.187820&quot;, \
+</span><span id="__span-14-38"><a id="__codelineno-14-38" name="__codelineno-14-38" href="#__codelineno-14-38"></a>               &quot;0.0193780,0.0263217,0.0337702,0.0462819,0.0677259,0.110616,0.196655&quot;, \
+</span><span id="__span-14-39"><a id="__codelineno-14-39" name="__codelineno-14-39" href="#__codelineno-14-39"></a>               &quot;0.0218025,0.0305247,0.0399593,0.0560603,0.0822203,0.125293,0.210827&quot;, \
+</span><span id="__span-14-40"><a id="__codelineno-14-40" name="__codelineno-14-40" href="#__codelineno-14-40"></a>               &quot;0.0229784,0.0334449,0.0447189,0.0640615,0.0959700,0.146382,0.231434&quot;, \
+</span><span id="__span-14-41"><a id="__codelineno-14-41" name="__codelineno-14-41" href="#__codelineno-14-41"></a>               &quot;0.0227986,0.0349768,0.0480836,0.0705081,0.107693,0.167283,0.259623&quot;);
+</span><span id="__span-14-42"><a id="__codelineno-14-42" name="__codelineno-14-42" href="#__codelineno-14-42"></a>     }
+</span><span id="__span-14-43"><a id="__codelineno-14-43" name="__codelineno-14-43" href="#__codelineno-14-43"></a>     ...
+</span><span id="__span-14-44"><a id="__codelineno-14-44" name="__codelineno-14-44" href="#__codelineno-14-44"></a>
+</span><span id="__span-14-45"><a id="__codelineno-14-45" name="__codelineno-14-45" href="#__codelineno-14-45"></a>     internal_power () {
+</span><span id="__span-14-46"><a id="__codelineno-14-46" name="__codelineno-14-46" href="#__codelineno-14-46"></a>       related_pin       : &quot;A1&quot;;
+</span><span id="__span-14-47"><a id="__codelineno-14-47" name="__codelineno-14-47" href="#__codelineno-14-47"></a>       fall_power(Power_7_7) {
+</span><span id="__span-14-48"><a id="__codelineno-14-48" name="__codelineno-14-48" href="#__codelineno-14-48"></a>         index_1 (&quot;0.00117378,0.00472397,0.0171859,0.0409838,0.0780596,0.130081,0.198535&quot;);
+</span><span id="__span-14-49"><a id="__codelineno-14-49" name="__codelineno-14-49" href="#__codelineno-14-49"></a>         index_2 (&quot;0.365616,1.823900,3.647810,7.295610,14.591200,29.182500,58.364900&quot;);
+</span><span id="__span-14-50"><a id="__codelineno-14-50" name="__codelineno-14-50" href="#__codelineno-14-50"></a>         values (&quot;0.523620,0.538965,0.551079,0.556548,0.561151,0.564018,0.564418&quot;, \
+</span><span id="__span-14-51"><a id="__codelineno-14-51" name="__codelineno-14-51" href="#__codelineno-14-51"></a>                 &quot;0.459570,0.484698,0.509668,0.529672,0.543887,0.554682,0.559331&quot;, \
+</span><span id="__span-14-52"><a id="__codelineno-14-52" name="__codelineno-14-52" href="#__codelineno-14-52"></a>                 &quot;0.434385,0.457202,0.470452,0.498312,0.517651,0.538469,0.550091&quot;, \
+</span><span id="__span-14-53"><a id="__codelineno-14-53" name="__codelineno-14-53" href="#__codelineno-14-53"></a>                 &quot;0.728991,0.630651,0.581024,0.559124,0.551408,0.553714,0.557387&quot;, \
+</span><span id="__span-14-54"><a id="__codelineno-14-54" name="__codelineno-14-54" href="#__codelineno-14-54"></a>                 &quot;1.306597,1.153240,1.010684,0.831268,0.727155,0.657699,0.616287&quot;, \
+</span><span id="__span-14-55"><a id="__codelineno-14-55" name="__codelineno-14-55" href="#__codelineno-14-55"></a>                 &quot;2.170611,1.965158,1.760932,1.459438,1.140559,0.930355,0.781393&quot;, \
+</span><span id="__span-14-56"><a id="__codelineno-14-56" name="__codelineno-14-56" href="#__codelineno-14-56"></a>                 &quot;3.276307,3.084566,2.831754,2.426623,1.913607,1.439055,1.113950&quot;);
+</span><span id="__span-14-57"><a id="__codelineno-14-57" name="__codelineno-14-57" href="#__codelineno-14-57"></a>       }
+</span><span id="__span-14-58"><a id="__codelineno-14-58" name="__codelineno-14-58" href="#__codelineno-14-58"></a>       ...
+</span><span id="__span-14-59"><a id="__codelineno-14-59" name="__codelineno-14-59" href="#__codelineno-14-59"></a>     }
+</span><span id="__span-14-60"><a id="__codelineno-14-60" name="__codelineno-14-60" href="#__codelineno-14-60"></a> ...
+</span><span id="__span-14-61"><a id="__codelineno-14-61" name="__codelineno-14-61" href="#__codelineno-14-61"></a>}
+</span></code></pre></div>
+<p>This is just a small subset of the information included in the <code>.lib</code>
+file for this cell. We will talk more about the details of such <code>.lib</code>
+files later in the course, but you can see that the <code>.lib</code> file contains
+information about area, leakage power, capacitance of each input pin,
+logical functionality, and timing. Units for all data is provided at the
+top of the <code>.lib</code> file. In this snippet you can see that the area of the
+cell is 1.064 square micron and the leakage power is 18.1nW. The
+capacitance for the input pin <code>A1</code> is 1.59fF, although there is
+additional data that captures how the capacitance changes depending on
+whether the input is rising or falling. The output pin <code>ZN</code> implements
+the logic equation <code>!((A1 &amp; A2) &amp; A3)</code> (i.e., a three-input NAND gate).
+Data within the <code>.lib</code> file is often represented using one- or
+two-dimensional lookup tables (i.e., a <code>values</code> table). You can see two
+such tables in the above snippet.</p>
+<p>Let's start by focusing on the first table. This table captures the delay
+from input pin <code>A1</code> to output pin <code>ZN</code> as a function of two parameters:
+the input transition time (horizontal direction in lookup table) and the
+load capacitance (vertical direction in lookup table). Note that this
+delay is when <code>ZN</code> is "falling" (i.e., when it is transitioning from high
+to low). There is another table for the delay when <code>ZN</code> is rising, and
+there are additional tables for every input. Gates are slower when the
+inputs take longer to transition and/or when they are driving large
+output loads. Each entry in the lookup table reflects characterization of
+one or more detailed circuit-level simulations. So in this example the
+delay from input pin <code>A1</code> to output pin <code>ZN</code> is 16ps when the input
+transition rate is 4.7ps and the output load is 1.82fF. This level of
+detail can enable very accurate static timing analysis of our designs.</p>
+<p>Let's now focus on the second table. This table captures the internal
+power, which is the power consumed within the gate itself, again as a
+function of two paramers: the input transition time (horizontal direction
+in lookup table) and the load capacitance (vertical direction in lookup
+table). Each entry in the lookup table is calculated by measuring the
+current drawn from the power supply during a detailed SPICE simulation
+and <em>subtracting</em> any current used to charge the output load. In other
+words all of the energy that is <em>not</em> consumed charging up the output
+load is considered internal energy. Note that sometimes the internal
+power is negative. This is simply due to how we account for energy. We
+can either assume all energy is consumed only when the output node is
+charged and no energy is consumed when the output node is discharged,
+<em>or</em> we can assume half the energy is consumed when the output is node is
+charged and half the energy is consumed when the output node is
+discharged in which case you will sometimes see negative internal power.</p>
+<p>Note that some of the ASIC tools actually do not use the <code>.lib</code> file
+directly, but instead use a pre-compiled binary version of the <code>.lib</code>
+file stored in <code>.db</code> format. The binary <code>.db</code> file is usually much more
+compact that the text <code>.lib</code> file. The <code>.lib</code> file captures the abstract
+logical, timing, and power aspects of the standard-cell library, but it
+does not capture the physical aspects of the standard-cell library.</p>
+<h3 id="26-lef-physical-view">2.6. LEF Physical View</h3>
+<p>While the ASIC tools could potentially use the <code>.gds</code> file directly, the
+ASIC tools do not really need this much detail. We can use a special set
+of tools to create a much higher level abstract view of the physical
+aspects of the cell suitable for use by the ASIC tools. These tools
+create <code>.lef</code> files. Let's look at snippet of the the <code>.lef</code> file for the
+3-input NAND cell.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>% less -p NAND3_X1 ${ECE6745_STDCELLS}/stdcells.lef
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>MACRO NAND3_X1
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>  CLASS core ;
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>  FOREIGN NAND3_X1 0.0 0.0 ;
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>  ORIGIN 0 0 ;
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>  SYMMETRY X Y ;
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>  SITE FreePDK45_38x28_10R_NP_162NW_34O ;
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>  SIZE 0.76 BY 1.4 ;
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>  PIN A1
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>    DIRECTION INPUT ;
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>    ANTENNAPARTIALMETALAREA 0.0175 LAYER metal1 ;
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>    ANTENNAPARTIALMETALSIDEAREA 0.0715 LAYER metal1 ;
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>    ANTENNAGATEAREA 0.05225 ;
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>    PORT
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>      LAYER metal1 ;
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>        POLYGON 0.44 0.525 0.54 0.525 0.54 0.7 0.44 0.7  ;
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a>    END
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a>  END A1
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a>
+</span><span id="__span-15-21"><a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>  PIN ZN
+</span><span id="__span-15-22"><a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a>    DIRECTION OUTPUT ;
+</span><span id="__span-15-23"><a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a>    ANTENNAPARTIALMETALAREA 0.1352 LAYER metal1 ;
+</span><span id="__span-15-24"><a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a>    ANTENNAPARTIALMETALSIDEAREA 0.4992 LAYER metal1 ;
+</span><span id="__span-15-25"><a id="__codelineno-15-25" name="__codelineno-15-25" href="#__codelineno-15-25"></a>    ANTENNADIFFAREA 0.197925 ;
+</span><span id="__span-15-26"><a id="__codelineno-15-26" name="__codelineno-15-26" href="#__codelineno-15-26"></a>    PORT
+</span><span id="__span-15-27"><a id="__codelineno-15-27" name="__codelineno-15-27" href="#__codelineno-15-27"></a>      LAYER metal1 ;
+</span><span id="__span-15-28"><a id="__codelineno-15-28" name="__codelineno-15-28" href="#__codelineno-15-28"></a>        POLYGON 0.235 0.8 0.605 0.8 0.605 0.15 0.675 0.15
+</span><span id="__span-15-29"><a id="__codelineno-15-29" name="__codelineno-15-29" href="#__codelineno-15-29"></a>         0.675 1.25 0.605 1.25 0.605 0.87 0.32 0.87 0.32 1.25 0.235 1.25  ;
+</span><span id="__span-15-30"><a id="__codelineno-15-30" name="__codelineno-15-30" href="#__codelineno-15-30"></a>    END
+</span><span id="__span-15-31"><a id="__codelineno-15-31" name="__codelineno-15-31" href="#__codelineno-15-31"></a>  END ZN
+</span><span id="__span-15-32"><a id="__codelineno-15-32" name="__codelineno-15-32" href="#__codelineno-15-32"></a>
+</span><span id="__span-15-33"><a id="__codelineno-15-33" name="__codelineno-15-33" href="#__codelineno-15-33"></a>  PIN VDD
+</span><span id="__span-15-34"><a id="__codelineno-15-34" name="__codelineno-15-34" href="#__codelineno-15-34"></a>    DIRECTION INOUT ;
+</span><span id="__span-15-35"><a id="__codelineno-15-35" name="__codelineno-15-35" href="#__codelineno-15-35"></a>    USE power ;
+</span><span id="__span-15-36"><a id="__codelineno-15-36" name="__codelineno-15-36" href="#__codelineno-15-36"></a>    SHAPE ABUTMENT ;
+</span><span id="__span-15-37"><a id="__codelineno-15-37" name="__codelineno-15-37" href="#__codelineno-15-37"></a>    PORT
+</span><span id="__span-15-38"><a id="__codelineno-15-38" name="__codelineno-15-38" href="#__codelineno-15-38"></a>      LAYER metal1 ;
+</span><span id="__span-15-39"><a id="__codelineno-15-39" name="__codelineno-15-39" href="#__codelineno-15-39"></a>        POLYGON 0 1.315 0.04 1.315 0.04 0.975 0.11 0.975 0.11 1.315
+</span><span id="__span-15-40"><a id="__codelineno-15-40" name="__codelineno-15-40" href="#__codelineno-15-40"></a>         0.415 1.315 0.415 0.975 0.485 0.975 0.485 1.315 0.76 1.315 0.76 1.485 0 1.485  ;
+</span><span id="__span-15-41"><a id="__codelineno-15-41" name="__codelineno-15-41" href="#__codelineno-15-41"></a>    END
+</span><span id="__span-15-42"><a id="__codelineno-15-42" name="__codelineno-15-42" href="#__codelineno-15-42"></a>  END VDD
+</span><span id="__span-15-43"><a id="__codelineno-15-43" name="__codelineno-15-43" href="#__codelineno-15-43"></a>
+</span><span id="__span-15-44"><a id="__codelineno-15-44" name="__codelineno-15-44" href="#__codelineno-15-44"></a>  ...
+</span><span id="__span-15-45"><a id="__codelineno-15-45" name="__codelineno-15-45" href="#__codelineno-15-45"></a>END NAND3_X1
+</span></code></pre></div>
+<p>This is just a small subset of the information included in the <code>.lef</code>
+file for this cell. You can see the <code>.lef</code> file includes information on
+the dimensions of the cell and the location and dimensions of both
+power/ground and signal pins. The file also includes information on
+"obstructions" (or blockages) indicated with a <code>OBS</code> entry. Take a look
+at the NAND4_X4 gate to see an obstruction. These are regions of the cell
+which should not be used by the ASIC tools. For example, if a cell needs
+to use metal 2 (M2), it would create a blockage on M2 so that the ASIC
+tools know not to route any M2 wires in that area. You can use Klayout to
+view <code>.lef</code> files as well.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>% klayout ${ECE6745_STDCELLS}/stdcells.lef
+</span></code></pre></div>
+<p>Here is a picture of the <code>.lef</code> for the 3-input NAND gate.</p>
+<p><img alt="" src="../img/tut05-nangate45nm-nand3x1-lef.png" /></p>
+<p>If you compare the <code>.lef</code> to the <code>.gds</code> you can see that the <code>.lef</code> is a
+much simpler representation that only captures the boundary, pins, and
+obstructions.</p>
+<h3 id="27-routing-technology-files">2.7. Routing Technology Files</h3>
+<p>The standard-cell library also includes several files (e.g.,
+<code>rtk-tech.tf</code>, <code>rtk-tech.lef</code>, <code>rtk-typical.captable</code>) that capture
+information about the metal interconnect including the wire width, pitch,
+and parasitics. For example, let's take a look at the <code>.captable</code> file:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>% less -p M1 ${ECE6745_STDCELLS}/rtk-typical.captable
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>LAYER M1
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>  MinWidth              0.07000
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>  MinSpace              0.06500
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>  Height                0.37000
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>  Thickness             0.13000
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>  TopWidth              0.07000
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>  BottomWidth           0.07000
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>  WidthDev              0.00000
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>  Resistance            0.38000
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>END
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>...
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>M1
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>width(um)  space(um) Ctot(Ff/um)  Cc(Ff/um)    Carea(Ff/um) Cfrg(Ff/um)
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>0.070       0.052       0.1986       0.0723       0.0311       0.0115
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>0.070       0.065       0.1705       0.0509       0.0311       0.0143
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>0.070       0.200       0.1179       0.0115       0.0311       0.0319
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a>0.070       0.335       0.1150       0.0030       0.0311       0.0388
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a>0.070       0.470       0.1148       0.0009       0.0311       0.0409
+</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a>0.070       0.605       0.1147       0.0002       0.0311       0.0416
+</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a>0.070       0.740       0.1147       0.0001       0.0311       0.0417
+</span></code></pre></div>
+<p>This file contains information about the minimum dimenisions of wires on
+M1 and the resistance of these wires. It also contains a table of wire
+capacitances with different rows for different wire widths and spacings.
+The ASIC tools can use this kind of technology information to optimize
+and analyze the design.</p>
+<h2 id="3-to-do-on-your-own">3. To Do On Your Own</h2>
+<p>Great ASIC designers spend time getting to know their standard cell
+library. Spend some time exploring other important standard cells in the
+NanGate standard cell library. We recommend you look at:</p>
+<ul>
+<li>NAND3_X2: Three-input NAND gate with 2x drive strength</li>
+<li>NAND3_X4: Three-input NAND gate with 4x drive strength</li>
+<li>MUX2_X1: Two-input 1-bit multiplexor</li>
+<li>INV_X1: Inverter</li>
+<li>FA: 1-bit full adder</li>
+<li>DFF_X1: D flip-flop</li>
+</ul>
+<p>Compare the GDS layout views and LIB logic views for the three different
+three-input NAND gates each with a different drive strength. Look at the
+SPICE schematic view to see if you can figure out how the MUX2 gate is
+implemented at the transistor level (i.e., try to draw a transistor-level
+schematic diagram). Compare the complexity of the full adder and D
+flip-flop to a basic inverter by looking at the Verilog behavioral views
+and the GDS layout.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2018 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-tut08-asic-auto/">
+      
+      
+        <link rel="next" href="../ece6745-tut10-sram/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Tutorial 9: TinyRV2 Accelerator RTL Design - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-tutorial-9-tinyrv2-accelerator-rtl-design" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tutorial 9: TinyRV2 Accelerator RTL Design
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-sec01-asic-front-end/" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut05-asic-stdcells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut07-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-baseline-tinyrv2-processor-fl-and-rtl-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Baseline TinyRV2 Processor FL and RTL Models
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-testing-and-evaluating-tinyrv2-microbenchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Testing and Evaluating TinyRV2 Microbenchmarks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Testing and Evaluating TinyRV2 Microbenchmarks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-tinyrv2-vvadd-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. TinyRV2 VVADD Test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-tinyrv2-vvadd-eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. TinyRV2 VVADD Eval
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-testing-and-evaluating-accelerators-in-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Testing and Evaluating Accelerators in Isolation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-testing-and-evaluating-tinyrv2-microbenchmarks-with-accelerators" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Testing and Evaluating TinyRV2 Microbenchmarks with Accelerators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Testing and Evaluating TinyRV2 Microbenchmarks with Accelerators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-integrating-the-tinyrv2-processor-and-a-null-accelerator" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Integrating the TinyRV2 Processor and a Null Accelerator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-tinyrv2-vvadd-xcel-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. TinyRV2 VVADD Xcel Test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-tinyrv2-vvadd-xcel-eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. TinyRV2 VVADD Xcel Eval
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut12-spice-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec01-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec02-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec03-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec04-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-baseline-tinyrv2-processor-fl-and-rtl-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Baseline TinyRV2 Processor FL and RTL Models
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-testing-and-evaluating-tinyrv2-microbenchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Testing and Evaluating TinyRV2 Microbenchmarks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Testing and Evaluating TinyRV2 Microbenchmarks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-tinyrv2-vvadd-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. TinyRV2 VVADD Test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-tinyrv2-vvadd-eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. TinyRV2 VVADD Eval
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-testing-and-evaluating-accelerators-in-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Testing and Evaluating Accelerators in Isolation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-testing-and-evaluating-tinyrv2-microbenchmarks-with-accelerators" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Testing and Evaluating TinyRV2 Microbenchmarks with Accelerators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Testing and Evaluating TinyRV2 Microbenchmarks with Accelerators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-integrating-the-tinyrv2-processor-and-a-null-accelerator" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Integrating the TinyRV2 Processor and a Null Accelerator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-tinyrv2-vvadd-xcel-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. TinyRV2 VVADD Xcel Test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-tinyrv2-vvadd-xcel-eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. TinyRV2 VVADD Xcel Eval
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-tutorial-9-tinyrv2-accelerator-rtl-design">ECE 6745 Tutorial 9: TinyRV2 Accelerator RTL Design</h1>
+<p>The infrastructure for the ECE 6745 lab assignments and projects has
+support for implementing medium-grain accelerators. Fine-grain
+accelerators are tightly integrated within the processor pipeline (e.g.,
+a specialized functional unit for bit-reversed addressing useful in
+implementing an FFT), while coarse-grain accelerators are loosely
+integrated with a processor through the memory hierarchy (e.g., a
+graphics rendering accelerator sharing the last-level cache with a
+general-purpose processor). Medium-grain accelerators are often
+integrated as co-processors: the processor can directly send/receive
+messages to/from the accelerator with special instructions, but the
+co-processor is relatively decoupled from the main processor pipeline and
+can also independently interact with memory.</p>
+<p>This tutorial will use the vector-vector-add (vvadd) microbenchmark as an
+example. We will explore the area and timing of a baseline TinyRV2
+pipelined processor and the energy and performance when this processor is
+used to execute a pure-software version of the vvadd microbenchmark. We
+will then implement a vvadd accelerator, integrate it with the TinyRV2
+pipelined processor, and determine the potential benefit of hardware
+acceleration for this simple microbenchmark. This tutorial assumes you
+have already completed the tutorials on Linux, Git, Verilog, ASIC
+front-end flow, ASIC back-end flow, and ASIC automated ASIC flow.</p>
+<p>The first step is to access <code>ecelinux</code>. Use VS Code to log into the same
+specific <code>ecelinux</code> server. Once you are at the <code>ecelinux</code> prompt, source
+the setup script, source the GUI setup script, clone this repository from
+GitHub, and define an environment variable to keep track of the top
+directory for the project.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/ece6745-tut09-xcel-rtl<span class="w"> </span>tut09
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tut09
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TOPDIR</span><span class="o">=</span><span class="nv">$PWD</span>
+</span></code></pre></div>
+<h2 id="1-baseline-tinyrv2-processor-fl-and-rtl-models">1. Baseline TinyRV2 Processor FL and RTL Models</h2>
+<p>The following figure illustrates the overall system we will be using with
+our TinyRV2 processors. The processor includes eight latency insensitive
+val/rdy interfaces. The mngr2proc/proc2mngr interfaces are used for the
+test harness to send data to the processor and for the processor to send
+data back to the test harness. The imem master/minion interface is used
+for instruction fetch, and the dmem master/minion interface is used for
+implementing load/store instructions. The system includes both
+instruction and data caches. The xcel master/minion interface is used for
+the processor to send messages to the accelerator. The
+mngr2proc/proc2mngr and memreq/memresp interfaces were all introduced in
+ECE 4750. For now we will largely ignore the accelerator, and we will
+defer discussion of the xcel master/minion interfaces to later in this
+tutorial. <strong>The cache is not ported to work with the ASIC flow so it is
+not currently included!</strong></p>
+<p><img alt="" src="../img/tut09-proc-xcel.png" /></p>
+<p>We provide two implementations of the TinyRV2 processor. The FL model in
+<code>sim/proc/ProcFL.py</code> is essentially an instruction-set-architecture (ISA)
+simulator; it simulates only the instruction semantics and makes no
+attempt to model any timing behavior. As a reminder, the TinyRV2
+instruction set is defined here:</p>
+<ul>
+<li><a href="http://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-tinyrv-isa.txt">http://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-tinyrv-isa.txt</a></li>
+</ul>
+<p>The RTL model in <code>sim/proc/ProcPRTL.py</code> is similar to the alternative
+design for lab 2 in ECE 4750. It is a five-stage pipelined processor that
+implements the TinyRV2 instruction set and includes full
+bypassing/forwarding to resolve data hazards. There are two important
+differences from the alternative design for lab 2 of ECE 4750. First, the
+new processor design uses a single-cycle integer multiplier. We can push
+the design through the flow and verify that the single-cycle integer
+multiplier does not adversely impact the overall processor cycle time.
+Second, the new processor design includes the ability to handle new CSRs
+for interacting with medium-grain accelerators. The datapath diagram for
+the processor is shown below.</p>
+<p><img alt="" src="../img/tut09-proc-dpath.png" /></p>
+<p>We should run all of the unit tests on both the FL and RTL processor
+models to verify that we are starting with a working processor.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../proc
+</span></code></pre></div>
+<p>See the handout for lab 2 from ECE 4750 for more information about how we
+use <code>pytest</code> and the mngr2proc/proc2mngr interfaces to test the TinyRV2
+processor.</p>
+<h2 id="2-testing-and-evaluating-tinyrv2-microbenchmarks">2. Testing and Evaluating TinyRV2 Microbenchmarks</h2>
+<p>We will write our microbenchmarks in C. Take a closer look at the vvadd
+microbenchmark which is located in <code>app/ubmark/ubmark-vvadd.c</code>:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">__attribute__</span><span class="w"> </span><span class="p">((</span><span class="n">noinline</span><span class="p">))</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kt">void</span><span class="w"> </span><span class="n">vvadd_scalar</span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">dest</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">src0</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">src1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="p">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="n">dest</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">src0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">src1</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>We will a use microbenchmark test to verify the functionality of our
+microbenchmark and a microbenchmark eval to evaluate the performance of
+our microbenchmark. We will run both the microbenchmark test and eval on
+both FL and RTL TinyRV2 processor models.</p>
+<h3 id="21-tinyrv2-vvadd-test">2.1. TinyRV2 VVADD Test</h3>
+<p>Let's go ahead and take a look at the microbenchmark test provided for
+the vvadd microbenchmark.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/ubmark
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>%<span class="w"> </span>less<span class="w"> </span>ubmark-vvadd-test.c
+</span></code></pre></div>
+<p>Here is a snippet from the microbenchmark test.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;ece6745.h&quot;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;ubmark-vvadd.h&quot;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;ubmark-vvadd.dat&quot;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="kt">void</span><span class="w"> </span><span class="nf">test_case_1_pos</span><span class="p">()</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">{</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span><span class="n">ECE6745_CHECK</span><span class="p">(</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;test_case_1_pos&quot;</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">src0</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="mi">3</span><span class="p">,</span><span class="w">  </span><span class="mi">4</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">src1</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="mi">5</span><span class="p">,</span><span class="w">  </span><span class="mi">6</span><span class="p">,</span><span class="w">  </span><span class="mi">7</span><span class="p">,</span><span class="w">  </span><span class="mi">8</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">dest</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">ref</span><span class="p">[]</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="mi">6</span><span class="p">,</span><span class="w">  </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="n">ubmark_vvadd</span><span class="p">(</span><span class="w"> </span><span class="n">dest</span><span class="p">,</span><span class="w"> </span><span class="n">src0</span><span class="p">,</span><span class="w"> </span><span class="n">src1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="n">ECE6745_CHECK_INT_EQ</span><span class="p">(</span><span class="w"> </span><span class="n">dest</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">ref</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="p">}</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="p">...</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="w"> </span><span class="n">argv</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="p">{</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">  </span><span class="n">__n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">argc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ece6745_atoi</span><span class="p">(</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">__n</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">__n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">test_case_1_pos</span><span class="p">();</span>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">  </span><span class="p">...</span>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">  </span><span class="n">ece6745_wprintf</span><span class="p">(</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">ece6745_check_status</span><span class="p">;</span>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The test harness includes several test case functions and then we call
+these test case functions in <code>main</code>. We wave a build system that can
+compile C code natively for x86 and can also cross-compile these
+microbenchmarks for TinyRV2 so they can be executed on our simulators.
+When developing and testing C code, we should always try to compile the
+code natively to ensure the code is functionally correct before we
+attempt to cross-compile the code for TinyRV2. Debugging code natively is
+much easier compared to debugging code on our simulators. Here is how we
+compile and execute the tests for the vvadd microbenchmark natively:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>build-native
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build-native
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>%<span class="w"> </span>../configure
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-vvadd-test
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>%<span class="w"> </span>./ubmark-vvadd-test
+</span></code></pre></div>
+<p>You can run a single test case like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build-native
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>%<span class="w"> </span>./ubmark-vvadd-test<span class="w"> </span><span class="m">1</span>
+</span></code></pre></div>
+<p>Once we are confident the microbenchmark test passes on natively, we can
+cross-compile the microbenchmark test and run it on both FL and RTL
+TinyRV2 processor models. Let's start by cross-compiling the
+microbenchmark test.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>%<span class="w"> </span>../configure<span class="w"> </span>--host<span class="o">=</span>riscv32-unknown-elf
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-vvadd-test
+</span></code></pre></div>
+<p>This will create a <code>ubmark-vvadd-test</code> binary which contains TinyRV2
+instructions and data. You can disassemble a TinyRV2 binary (i.e., turn a
+compiled binary back into an assembly text representation) with the
+<code>riscv32-objdump</code> command like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>riscv32-objdump<span class="w"> </span>ubmark-vvadd-test<span class="w"> </span><span class="p">|</span><span class="w"> </span>less<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;&lt;ubmark_vvadd&gt;:&quot;</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>00000fac<span class="w"> </span>&lt;ubmark_vvadd&gt;:
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span>fac:<span class="w"> </span>bge<span class="w">    </span>x0,<span class="w">  </span>x13,<span class="w"> </span>fd8
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span>fb0:<span class="w"> </span>slli<span class="w">   </span>x13,<span class="w"> </span>x13,<span class="w"> </span>0x2
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span>fb4:<span class="w"> </span>add<span class="w">    </span>x13,<span class="w"> </span>x11,<span class="w"> </span>x13
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span>fb8:<span class="w"> </span>lw<span class="w">     </span>x15,<span class="w"> </span><span class="m">0</span><span class="o">(</span>x11<span class="o">)</span><span class="w">   </span><span class="c1"># &lt;-.</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span>fbc:<span class="w"> </span>lw<span class="w">     </span>x14,<span class="w"> </span><span class="m">0</span><span class="o">(</span>x12<span class="o">)</span><span class="w">   </span><span class="c1">#   |</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span>fc0:<span class="w"> </span>addi<span class="w">   </span>x11,<span class="w"> </span>x11,<span class="w"> </span><span class="m">4</span><span class="w">   </span><span class="c1">#   |</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span>fc4:<span class="w"> </span>addi<span class="w">   </span>x12,<span class="w"> </span>x12,<span class="w"> </span><span class="m">4</span><span class="w">   </span><span class="c1">#   |</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">    </span>fc8:<span class="w"> </span>add<span class="w">    </span>x15,<span class="w"> </span>x15,<span class="w"> </span>x14<span class="w"> </span><span class="c1">#   |</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">    </span>fcc:<span class="w"> </span>sw<span class="w">     </span>x15,<span class="w"> </span><span class="m">0</span><span class="o">(</span>x10<span class="o">)</span><span class="w">   </span><span class="c1">#   |</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">    </span>fd0:<span class="w"> </span>addi<span class="w">   </span>x10,<span class="w"> </span>x10,<span class="w"> </span><span class="m">4</span><span class="w">   </span><span class="c1">#   |</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">    </span>fd4:<span class="w"> </span>bne<span class="w">    </span>x11,<span class="w"> </span>x13,<span class="w"> </span>fb8<span class="w"> </span><span class="c1"># --&#39;</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">    </span>fd8:<span class="w"> </span>jalr<span class="w">   </span>x0,<span class="w">  </span>x1,<span class="w">  </span><span class="m">0</span>
+</span></code></pre></div>
+<p>You can also redirect the output from <code>riscv32-objdump</code> to a text file
+for viewing with VS Code. The disassembly shows the address and assembly
+text for each instruction in the binary.</p>
+<p>The assembly code for the <code>ubmark_vvadd</code> function is similar to what we
+saw in ECE 4750 although with some additional optimizations. I have added
+some comments to show the backwards branch for the vvadd loop. The loop
+has eight instructions. Four instructions do useful work (i.e., two LW
+instructions, the actual ADDU instruction, one SW instruction) and three
+ADDI instructions generate the array addresses by bumping the array
+pointers. Notice that there is no explicit loop counter. The compiler has
+instead calculated the address of one past the last element in the first
+source array, and placed this value in <code>x13</code>. Each iteration, the BNE
+instruction compares the current pointer to see if we have reached the
+end of the array.</p>
+<p>We have provided you with a simulator that composes a processor, cache,
+memory, and accelerator and is capable of executing TinyRV2 binaries. The
+simulator enables flexibly choosing the processor implementation (FL vs.
+RTL), the cache implementation (no cache vs. RTL), and the type and
+implementation of the accelerator. By default, the simulator uses the
+processor FL model, no cache model, and a null accelerator which we will
+discuss later. So let's execute the vvadd TinyRV2 binary on the
+instruction-set simulator:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>./ubmark-vvadd-test
+</span></code></pre></div>
+<p>The simulator should display the same test output that we saw when
+executing the microbenchmark test natively. You can run a single test
+case like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>./ubmark-vvadd-test<span class="w"> </span><span class="m">1</span>
+</span></code></pre></div>
+<p>The <code>--trace</code> command line option will display each instruction as it is
+executed on the ISA simulator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--trace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span>./ubmark-vvadd-test<span class="w"> </span><span class="m">1</span><span class="w"> </span>&gt;<span class="w"> </span>ubmark-vvadd-test-fl.trace
+</span></code></pre></div>
+<p>When dumping out large line traces, it is usually much faster to save
+them to a file and then open the file in VS Code. Here is what the
+beginning of the line trace looks like.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cycle PC       instruction                                          FL memory
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>----------------------------------------------------------------------------------
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>  1r  #                                |              ()                 |     |
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>  2r  #                                |              ()                 |     |
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>  3:  #                                |              ()            rd&gt;  |     |
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>  4:  #                                |              ()              &gt;rd|     |
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>  5:  00000200 auipc  x03, 0x00003     |              ()                 |     |
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>  6:  #                                |              ()            rd&gt;  |     |
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>  7:  #                                |              ()              &gt;rd|     |
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>  8:  00000204 addi   x03, x03, 0x9f0  |              ()                 |     |
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>  9:  #                                |              ()            rd&gt;  |     |
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a> 10:  #                                |              ()              &gt;rd|     |
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a> 11:  00000208 addi   x01, x00, 0x000  |              ()                 |     |
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a> 12:  #                                |              ()            rd&gt;  |     |
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a> 13:  #                                |              ()              &gt;rd|     |
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a> 14:  0000020c addi   x02, x00, 0x000  |              ()                 |     |
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a> 15:  #                                |              ()            rd&gt;  |     |
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a> 16:  #                                |              ()              &gt;rd|     |
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a> 17:  00000210 addi   x04, x00, 0x000  |              ()                 |     |
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a> 18:  #                                |              ()            rd&gt;  |     |
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a> 19:  #                                |              ()              &gt;rd|     |
+</span></code></pre></div>
+<p>You can see the beginning of the program is initializing the registers to
+zero. Since this is an ISA simulator, instructions can functionally
+execute in a single cycle, although technically they take multiple
+"cycles" to interact with the memory system. These cycles are not really
+modeling any kind of realistic timing, but can instead be thought of as
+the "steps" required for functional simulation.</p>
+<p>Now that we have verified the microbenchmark test works correctly on the
+ISA simulator, we can run the microbenchmark test on the baseline TinyRV2
+pipelined processor RTL model:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>./ubmark-vvadd-test
+</span></code></pre></div>
+<p>Again the simulator should display the same test output that we saw when
+executing the microbenchmark test natively and on the FL simulator. You
+can run a single test case like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>./ubmark-vvadd-test<span class="w"> </span><span class="m">1</span>
+</span></code></pre></div>
+<p>Let's use the <code>--trace</code> command line option to dump out the trace.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--trace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span>./ubmark-vvadd-test<span class="w"> </span><span class="m">1</span><span class="w"> </span>&gt;<span class="w"> </span>ubmark-vvadd-test-rtl.trace
+</span></code></pre></div>
+<p>Here is what the first few cycles of the simulation look like.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cycle F        D                       X    M    W     imem  dmem
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>-------------------------------------------------------------------
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>  1r          |                       |    |    |    |      |     |
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>  2r          |                       |    |    |    |      |     |
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>  3:          |                       |    |    |    | rd&gt;  |     |
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>  4:  00000200|                       |    |    |    | rd&gt;rd|     |
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>  5:  00000204|auipc  x03, 0x00003    |    |    |    | rd&gt;rd|     |
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>  6:  00000208|addi   x03, x03, 0x9f0 |auiP|    |    | rd&gt;rd|     |
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>  7:  0000020c|addi   x01, x00, 0x000 |addi|auiP|    | rd&gt;rd|     |
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>  8:  00000210|addi   x02, x00, 0x000 |addi|addi|auiP| rd&gt;rd|     |
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>  9:  00000214|addi   x04, x00, 0x000 |addi|addi|addi| rd&gt;rd|     |
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a> 10:  00000218|addi   x05, x00, 0x000 |addi|addi|addi| rd&gt;rd|     |
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a> 11:  0000021c|addi   x06, x00, 0x000 |addi|addi|addi| rd&gt;rd|     |
+</span></code></pre></div>
+<p>We can see the five stages of the processor pipeline. The PC is displayed
+in the F stage, the full instruction is displayed in the D stage, and a
+shorter version of the instruction is displayed in the X, M, and W
+stages. We are using a single-cycle magic memory, so we can see
+instruction memory requests being sent and the responses being returned
+the next cycle. Again you can see the beginning of the program is
+initializing the registers to zero.</p>
+<h3 id="22-tinyrv2-vvadd-eval">2.2. TinyRV2 VVADD Eval</h3>
+<p>Once we are sure the microbenchmark test is working natively, on the FL
+simulator, and the RTL simulator, we can then turn our focus to the
+microbenchmark eval.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/ubmark
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>%<span class="w"> </span>less<span class="w"> </span>ubmark-vvadd-eval.c
+</span></code></pre></div>
+<p>Here is the microbenchmark eval.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;ece6745.h&quot;</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;ubmark-vvadd.h&quot;</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;ubmark-vvadd.dat&quot;</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="p">{</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span><span class="c1">// Allocate destination array for results</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">  </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">dest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ece6745_malloc</span><span class="p">(</span><span class="w"> </span><span class="n">eval_size</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">  </span><span class="c1">// Run the evaluation</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">  </span><span class="n">ece6745_stats_on</span><span class="p">();</span>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">  </span><span class="n">ubmark_vvadd</span><span class="p">(</span><span class="w"> </span><span class="n">dest</span><span class="p">,</span><span class="w"> </span><span class="n">eval_src0</span><span class="p">,</span><span class="w"> </span><span class="n">eval_src1</span><span class="p">,</span><span class="w"> </span><span class="n">eval_size</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="w">  </span><span class="n">ece6745_stats_off</span><span class="p">();</span>
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="w">  </span><span class="c1">// Verify the results</span>
+</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>
+</span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">eval_size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-20"><a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">dest</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">eval_ref</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-21"><a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a><span class="w">      </span><span class="n">ece6745_wprintf</span><span class="p">(</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;</span><span class="se">\n</span><span class="s"> FAILED: dest[%d] != eval_ref[%d] (%d != %d)</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">,</span>
+</span><span id="__span-18-22"><a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a><span class="w">                       </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">dest</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">eval_ref</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-18-23"><a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a><span class="w">      </span><span class="n">ece6745_exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-18-24"><a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-18-25"><a id="__codelineno-18-25" name="__codelineno-18-25" href="#__codelineno-18-25"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-18-26"><a id="__codelineno-18-26" name="__codelineno-18-26" href="#__codelineno-18-26"></a>
+</span><span id="__span-18-27"><a id="__codelineno-18-27" name="__codelineno-18-27" href="#__codelineno-18-27"></a><span class="w">  </span><span class="c1">// Free destination array</span>
+</span><span id="__span-18-28"><a id="__codelineno-18-28" name="__codelineno-18-28" href="#__codelineno-18-28"></a>
+</span><span id="__span-18-29"><a id="__codelineno-18-29" name="__codelineno-18-29" href="#__codelineno-18-29"></a><span class="w">  </span><span class="n">ece6745_free</span><span class="p">(</span><span class="n">dest</span><span class="p">);</span>
+</span><span id="__span-18-30"><a id="__codelineno-18-30" name="__codelineno-18-30" href="#__codelineno-18-30"></a>
+</span><span id="__span-18-31"><a id="__codelineno-18-31" name="__codelineno-18-31" href="#__codelineno-18-31"></a><span class="w">  </span><span class="c1">// Check for no memory leaks</span>
+</span><span id="__span-18-32"><a id="__codelineno-18-32" name="__codelineno-18-32" href="#__codelineno-18-32"></a>
+</span><span id="__span-18-33"><a id="__codelineno-18-33" name="__codelineno-18-33" href="#__codelineno-18-33"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ece6745_get_heap_usage</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-34"><a id="__codelineno-18-34" name="__codelineno-18-34" href="#__codelineno-18-34"></a><span class="w">    </span><span class="n">ece6745_wprintf</span><span class="p">(</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;</span><span class="se">\n</span><span class="s"> FAILED: memory leak of %d bytes!</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">,</span>
+</span><span id="__span-18-35"><a id="__codelineno-18-35" name="__codelineno-18-35" href="#__codelineno-18-35"></a><span class="w">                     </span><span class="n">ece6745_get_heap_usage</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-18-36"><a id="__codelineno-18-36" name="__codelineno-18-36" href="#__codelineno-18-36"></a><span class="w">    </span><span class="n">ece6745_exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-18-37"><a id="__codelineno-18-37" name="__codelineno-18-37" href="#__codelineno-18-37"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-18-38"><a id="__codelineno-18-38" name="__codelineno-18-38" href="#__codelineno-18-38"></a>
+</span><span id="__span-18-39"><a id="__codelineno-18-39" name="__codelineno-18-39" href="#__codelineno-18-39"></a><span class="w">  </span><span class="c1">// Otherwise we passed</span>
+</span><span id="__span-18-40"><a id="__codelineno-18-40" name="__codelineno-18-40" href="#__codelineno-18-40"></a>
+</span><span id="__span-18-41"><a id="__codelineno-18-41" name="__codelineno-18-41" href="#__codelineno-18-41"></a><span class="w">  </span><span class="n">ece6745_wprintf</span><span class="p">(</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;</span><span class="se">\n</span><span class="s"> **PASSED** </span><span class="se">\n\n</span><span class="s">&quot;</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-18-42"><a id="__codelineno-18-42" name="__codelineno-18-42" href="#__codelineno-18-42"></a>
+</span><span id="__span-18-43"><a id="__codelineno-18-43" name="__codelineno-18-43" href="#__codelineno-18-43"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-18-44"><a id="__codelineno-18-44" name="__codelineno-18-44" href="#__codelineno-18-44"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The <code>eval_src0</code>, <code>eval_src1</code>, and <code>eval_ref</code> arrays are all defined in
+the <code>app/ubmark/ubmark-vvadd.dat</code> file. The microbenchmark first
+allocates the destination array on the heap, turns stats on, does the
+actual vvadd computation, turns stats off, verifies that the results are
+as expected, and makes sure there are no memory leaks. We need the
+<code>ece6745_stats_on()</code> and <code>ece6745_stats_off()</code> functions to make sure we
+can keep track of various statistics (e.g., the number of cycles) only
+during the important part of the microbenchmark. We do not want to count
+time spent in initialization or verification when comparing the
+performance of our various microbenchmarks. The <code>ece6745_stats_on</code>
+function is defined in <code>app/ece6745/ece6745-misc.h</code> as follows:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="cp">#ifdef _RISCV</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="kr">inline</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="kt">void</span><span class="w"> </span><span class="nf">ece6745_stats_on</span><span class="p">()</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="p">{</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">  </span><span class="n">__asm__</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s">&quot;csrw 0x7c1, %0&quot;</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="s">&quot;r&quot;</span><span class="p">(</span><span class="n">status</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="p">}</span>
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="cp">#else</span>
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="kr">inline</span>
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="kt">void</span><span class="w"> </span><span class="nf">ece6745_stats_on</span><span class="p">()</span>
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>
+</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a><span class="cp">#endif</span>
+</span></code></pre></div>
+<p>Notice that if <code>_RISCV</code> is not defined (i.e., we are compiling the
+microbenchmark eval natively on x86) this function is empty. If <code>_RISCV</code>
+is defined (i.e., we are cross-compilng the microbenchmark eval for
+TinyRV2) then this function uses GCC inline assembly to insert a CSRW
+instruction into the program. You can find out more about inline assembly
+syntax here:</p>
+<ul>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html">https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html</a></li>
+</ul>
+<p>At a high level, <code>%0</code> acts as a place holder for whatever register
+specifier the compiler ends up allocating for the <code>status</code> variable. The
+TinyRV2 instruction set defines CSR number 0x7c1 as the <code>stats_en</code>
+control/status register, which is why we use <code>0x7c1</code> in the inline
+assembly. Refer to the TinyRV2 instruction set for a list of the CSRs.</p>
+<ul>
+<li><a href="http://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-tinyrv-isa.txt">http://www.csl.cornell.edu/courses/ece6745/handouts/ece6745-tinyrv-isa.txt</a></li>
+</ul>
+<p>The idea is that the microarchitecture and/or simulator can monitor for
+writes to the <code>stats_en</code> register to determine when to start and stop
+keeping statistics. For more on writing microbenchmarks, please review
+the handout for lab 5 from ECE 4750.</p>
+<p>Here is how we compile and execute the evaluation for the vvadd
+microbenchmark natively:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build-native
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-vvadd-eval
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>%<span class="w"> </span>./ubmark-vvadd-eval
+</span></code></pre></div>
+<p>The microbenchmark eval should display <code>passed</code>. Once you are sure your
+microbenchmark eval is working correctly natively, you can cross-compile
+the microbenchmark eval for TinyRV2 and look at the main function.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-vvadd-eval
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>%<span class="w"> </span>riscv32-objdump<span class="w"> </span>./ubmark-vvadd-eval<span class="w"> </span><span class="p">|</span><span class="w"> </span>less<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;&lt;main&gt;:&quot;</span>
+</span></code></pre></div>
+<p>If you look in the disassembly for the main function you should be able
+to see the two CSRW instructions used to turn stats on and off.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a> 6f8:   addi    x15,x0,1              # \
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a> 6fc:   csrw    0x7c1,x15             # / turn stats on
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a> 700:   lui     x12,0x1               # \
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a> 704:   lw      x13,-2048(x3)         # | setup arguments
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a> 708:   addi    x9,x12,-1072          # |
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a> 70c:   addi    x11,x9,400            # |
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a> 710:   addi    x12,x12,-1072         # /
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a> 714:   jal     x1,2fc &lt;ubmark_vvadd&gt; # call the ubmark_vvadd function
+</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a> 718:   addi    x15,x0,0              # \
+</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a> 71c:   csrw    0x7c1,x15             # / turn stats off
+</span></code></pre></div>
+<p>Now let's run the microbenchmark eval on the FL simulator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>./ubmark-vvadd-eval
+</span></code></pre></div>
+<p>The microbenchmark eval should display <code>passed</code>. Once you are sure your
+microbenchmark eval is working correctly natively and on the FL simulator
+you are finally ready to run it on the actual RTL simulator to do a real
+performance evaluation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--stats<span class="w"> </span>./ubmark-vvadd-eval
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w"> </span>**PASSED**
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w"> </span><span class="nv">num_cycles</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="m">1013</span>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="w"> </span><span class="nv">num_inst</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="m">812</span>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="w"> </span><span class="nv">CPI</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>.25
+</span></code></pre></div>
+<p>Now let's look in more detail at the trace.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>% cd $TOPDIR/app/build
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>% ../../sim/pmx/pmx-sim --trace ./ubmark-vvadd-eval &gt; ubmark-vvadd-eval-rtl.trace
+</span></code></pre></div>
+<p>Open up the trace in VS code and search for 0fbc which is the address of
+the first instruction in the loop.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>cycle F        D                       X    M    W     imem  dmem
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>-------------------------------------------------------------------
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>841:  00000fbc|lw     x15, 0x000(x11) |add |slli|bge | rd&gt;rd|     |
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>842:  00000fc0|lw     x14, 0x000(x12) |lw  |add |slli| rd&gt;rd|rd&gt;  |
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>843:  00000fc4|addi   x11, x11, 0x004 |lw  |lw  |add | rd&gt;rd|rd&gt;rd|
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>844:  00000fc8|addi   x12, x12, 0x004 |addi|lw  |lw  | rd&gt;rd|  &gt;rd|
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>845:  00000fcc|add    x15, x15, x14   |addi|addi|lw  | rd&gt;rd|     |
+</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a>846:  00000fd0|sw     x15, 0x000(x10) |add |addi|addi| rd&gt;rd|     |
+</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a>847:  00000fd4|addi   x10, x10, 0x004 |sw  |add |addi| rd&gt;rd|wr&gt;  |
+</span><span id="__span-26-10"><a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a>848:  00000fd8|bne    x11, x13, 0x1fe4|addi|sw  |add | rd&gt;rd|  &gt;wr|
+</span><span id="__span-26-11"><a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a>849:  /       |/                      |bne |addi|sw  | rd&gt;rd|     |
+</span><span id="__span-26-12"><a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a>850:  00000fb8|                       |    |bne |addi| rd&gt;rd|     |
+</span><span id="__span-26-13"><a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a>851:  00000fbc|lw     x15, 0x000(x11) |    |    |bne | rd&gt;rd|     |
+</span><span id="__span-26-14"><a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a>852:  00000fc0|lw     x14, 0x000(x12) |lw  |    |    | rd&gt;rd|rd&gt;  |
+</span><span id="__span-26-15"><a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a>853:  00000fc4|addi   x11, x11, 0x004 |lw  |lw  |    | rd&gt;rd|rd&gt;rd|
+</span><span id="__span-26-16"><a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a>854:  00000fc8|addi   x12, x12, 0x004 |addi|lw  |lw  | rd&gt;rd|  &gt;rd|
+</span></code></pre></div>
+<p>We can see the eight instructions in the loop going through the five
+stages of the pipeline. We can see the memory requests for the two loads
+and store going to the data memory and the responses coming back on the
+next cycle. We can also see the branch misprediction squashing two
+instructions. The <code>eval_size</code> is 100 so there are 100 iterations of the
+loop and 800 instructions, which should take a total of 1000 cycles
+resulting in a CPI of 1.25.</p>
+<p>When we used <code>--stats</code> the instruction count and number of cycles was
+slightly higher due to the extra instructions required to setup the
+arguments before calling <code>ubmark_vvadd</code> and the extra instructions within
+<code>ubmark_vvadd</code> before we start the loop.</p>
+<h2 id="3-testing-and-evaluating-accelerators-in-isolation">3. Testing and Evaluating Accelerators in Isolation</h2>
+<p>We will take an incremental approach when designing, implementing,
+testing, and evaluating accelerators. We can use test sources, sinks, and
+memories to create a test harness that will enable us to explore the
+accelerator cycle-level performance and the ASIC area, energy, and timing
+in isolation. Only after we are sure that we have a reasonable
+design-point should we consider integrating the accelerator with the
+processor.</p>
+<p>All accelerators have an xcel minion interface along with a standard mem
+master interface. The messages sent over the xcel minion interface allows
+the test harness or processor to read and write <em>accelerator registers</em>.
+These accelerator registers can be real registers that hold configuration
+information and/or results, or these accelerator registers can just be
+used to trigger certain actions. The messages sent over the xcel.req
+interface from the test harness or processor to the accelerator have the
+following format:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>   1b     5b      32b
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a> +------+-------+-----------+
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a> | type | raddr | data      |
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a> +------+-------+-----------+
+</span></code></pre></div>
+<p>The 1-bit <code>type</code> field indicates if this messages if for reading (0) or
+writing (1) an accelerator register, the 5-bit <code>raddr</code> field specifies
+which accelerator register to read or write, and the 32-bit <code>data</code> field
+is the data to be written. For every accelerator request, the accelerator
+must send back a corresponding accelerator response over the xcel.resp
+interface. These response messages have the following format:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>   1b     32b
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a> +------+-----------+
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a> | type | data      |
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a> +------+-----------+
+</span></code></pre></div>
+<p>The 1-bit <code>type</code> field gain indicates if this response is from if for
+reading (0) or writing (1) an accelerator register, and the 32-bit <code>data</code>
+field is the data read from the corresponding accelerator register. Every
+accelerator is free to design its own <em>accelerator protocol</em> by defining
+the meaning of reading/writing the 32 accelerator registers.</p>
+<p>We have implemented a null accelerator which we can use when we don't
+want to integrate a "real" accelerator, but this null accelerator is also
+useful in illustrating the basic accelerator interface. The null
+accelerator has a single accelerator register (xr0) which can be read and
+written. Take a closer look at this null accelerator in
+<code>sim/proc/NullXcel.v</code>.</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="w">  </span><span class="k">always_comb</span><span class="w"> </span><span class="k">begin</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">    </span><span class="c1">// Mux to force xcelresp data to zero on a write</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="w">    </span><span class="c1">// Enable xr0 only upon write requests and both val/rdy on resp side</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">xcelreq_deq_msg</span><span class="p">.</span><span class="n">type_</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="no">`VC_XCEL_REQ_MSG_TYPE_WRITE</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="w">      </span><span class="n">xr0_en</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xcel_respstream_val</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">xcel_respstream_rdy</span><span class="p">;</span>
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="w">      </span><span class="n">xcel_respstream_msg</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">&#39;0</span><span class="p">;</span>
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="w">    </span><span class="k">end</span>
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="w">      </span><span class="n">xr0_en</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="w">      </span><span class="n">xcel_respstream_msg</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xr0</span><span class="p">;</span>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a><span class="w">    </span><span class="k">end</span>
+</span><span id="__span-29-14"><a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a>
+</span><span id="__span-29-15"><a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a><span class="w">  </span><span class="k">end</span>
+</span></code></pre></div>
+<p>The null accelerator simply waits for a xcel.req message to arrive. If
+that message is a read, then it reads the <code>xr0</code> register into the
+xcelresp message. If that message is a write, then it sets the enable of
+the <code>xr0</code> register so that the new value is flopped in at the end of the
+cycle. Here is a unit test which writes a value to the null accelerator's
+xr0 register and then reads it back:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../proc/test/NullXcel_test.py<span class="w"> </span>-k<span class="w"> </span>basic<span class="w"> </span>-s
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="w">  </span>1r<span class="w">                </span>&gt;<span class="w">               </span><span class="p">|</span>.<span class="w">           </span>&gt;<span class="w"> </span>.
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="w">  </span>2r<span class="w">                </span>&gt;<span class="w">               </span><span class="p">|</span>.<span class="w">           </span>&gt;<span class="w"> </span>.
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="w">  </span><span class="m">3</span>:<span class="w">                </span>&gt;<span class="w">               </span><span class="p">|</span>.<span class="w">           </span>&gt;<span class="w"> </span>.
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="w">  </span><span class="m">4</span>:<span class="w">                </span>&gt;<span class="w">               </span><span class="p">|</span>.<span class="w">           </span>&gt;<span class="w"> </span>.
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="w">  </span><span class="m">5</span>:<span class="w">                </span>&gt;<span class="w">               </span><span class="p">|</span>.<span class="w">           </span>&gt;<span class="w"> </span>.
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="w">  </span><span class="m">6</span>:<span class="w">                </span>&gt;<span class="w">               </span><span class="p">|</span>.<span class="w">           </span>&gt;<span class="w"> </span>.
+</span><span id="__span-30-10"><a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a><span class="w">  </span><span class="m">7</span>:<span class="w"> </span>wr:00:0000000a<span class="w"> </span>&gt;<span class="w"> </span>wr:00:0000000a<span class="p">|</span><span class="w">            </span>&gt;
+</span><span id="__span-30-11"><a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a><span class="w">  </span><span class="m">8</span>:<span class="w"> </span>rd:00:<span class="w">         </span>&gt;<span class="w"> </span>rd:00:<span class="w">        </span><span class="p">|</span>wr:<span class="w">         </span>&gt;<span class="w"> </span>wr:
+</span><span id="__span-30-12"><a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="w">  </span><span class="m">9</span>:<span class="w">                </span>&gt;<span class="w">               </span><span class="p">|</span>rd:0000000a<span class="w"> </span>&gt;<span class="w"> </span>rd:0000000a
+</span><span id="__span-30-13"><a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a><span class="w"> </span><span class="m">10</span>:<span class="w">                </span>&gt;<span class="w">               </span><span class="p">|</span><span class="w">            </span>&gt;
+</span></code></pre></div>
+<p>From the line trace, you can see the write request message (with write
+data 0x0a) going into the accelerator, and then the write response being
+returned on the next cycle. You can also see the read request message
+going into the accelerator, and then the read response being returned
+(with read data 0x0a) again on the next cycle.</p>
+<p>The vvadd accelerator is obviously more sophisticated. Accelerator
+protocols are usually defined as a comment at the top of the FL model, so
+take a closer look at the vvadd accelerator FL model in
+<code>sim/tut9_xcel/VvaddXcelFL.py</code>. The vvadd accelerator protocol defines
+the accelerator registers as follows:</p>
+<ul>
+<li>xr0 : go/done</li>
+<li>xr1 : base address of the array src0</li>
+<li>xr2 : base address of the array src1</li>
+<li>xr3 : base address of the array dest</li>
+<li>xr4 : size of the array</li>
+</ul>
+<p>The actual protocol involves the following steps:</p>
+<ol>
+<li>Write the base address of src0 to xr1</li>
+<li>Write the base address of src1 to xr2</li>
+<li>Write the base address of dest to xr3</li>
+<li>Write the number of elements in the array to xr4</li>
+<li>Tell accelerator to go by writing xr0</li>
+<li>Wait for accelerator to finish by reading xr0, result will be 1</li>
+</ol>
+<p>A close look at the vvadd accelerator FL model shows that most of the
+work is really in managing this accelerator protocol. The accelerator
+waits for accelerator requests, updates its internal state registers, and
+when it receives a write to xr0 it starts doing the actual vvadd
+computation. The FL model makes use of method-based interfaces to
+simplify interacting with the memory system. Let's run the unit tests on
+the FL model first:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut9_xcel/test/VvaddXcelFL_test.py<span class="w"> </span>-v
+</span></code></pre></div>
+<p>The vvadd accelerator CL model is actually very close to the RTL
+implementation largely due to the need to carefully interact with the
+latency insensitive memory interface. CL modeling may or may not be
+useful in this context. The vvadd accelerator RTL model is in
+<code>sim/tut9_xcel/VvaddXcelPRTL.py</code> and (roughly) implements the following
+FSM:</p>
+<p><img alt="" src="../img/tut09-vvadd-xcel-ctrl.png" /></p>
+<p>While the accelerator is in the XCFG state, it will update its internal
+registers when it receives accelerator requests. When the accelerator
+receives a write to xr0 it moves into the M_RD state. While in the M_RD
+state, the accelerator will send out two memory read requests to read the
+current element from each source array. In the ADD state, the accelerator
+will do the actual addition, and in the M_WR state, the accelerator will
+send out the memory write request to write the result to the destination
+array. The accelerator will wait in the final WAIT state until it
+receives the memory write response, and then will either move back into
+the M_RD state if there is another element to be processed, or move into
+the XCFG state if we have processed all elements in the array.</p>
+<p>The accelerator is not implemented with a control/datapath split because
+the accelerator is almost entirely control logic; it was just simpler to
+implement the accelerator as a single model. When a model is almost all
+control logic or almost all datapath logic, then a control/datapath split
+may be more trouble than its worth.</p>
+<p>Let's run the unit tests for all of the vvadd accelerator models:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut9_xcel
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut9_xcel<span class="w"> </span>--test-verilog
+</span></code></pre></div>
+<p>We have also included a simulator for just the vvadd accelerator in
+isolation which can be used to evaluate its performance.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>%<span class="w"> </span>../tut9_xcel/vvadd-xcel-sim<span class="w"> </span>--impl<span class="w"> </span>rtl<span class="w"> </span>--input<span class="w"> </span>multiple<span class="w"> </span>--stats
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">  </span><span class="nv">num_cycles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1058</span>
+</span></code></pre></div>
+<p>We could use the simulator to help evaluate the cycle-level performance
+of the accelerator on various different datasets as we try out various
+optimizations.</p>
+<h2 id="4-testing-and-evaluating-tinyrv2-microbenchmarks-with-accelerators">4. Testing and Evaluating TinyRV2 Microbenchmarks with Accelerators</h2>
+<p>Now that we have unit tested and evaluated both the baseline TinyRV2
+pipelined processor and the vvadd accelerator in isolation, we are
+finally ready to compose them. We will start by looking at a basic null
+accelerator to understand how we will integrate processors and
+accelerators before looking at the vvadd accelerator in the next section.</p>
+<h3 id="41-integrating-the-tinyrv2-processor-and-a-null-accelerator">4.1. Integrating the TinyRV2 Processor and a Null Accelerator</h3>
+<p>The key way the processor interacts with an accelerator is by sending
+messages that read and write 32 special accelerator registers using the
+standard CSRW and CSRR instructions. These 32 special CSRs are as
+follows:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>  0x7e0 : accelerator register  0 (xr0)
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>  0x7e1 : accelerator register  1 (xr1)
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>  0x7e2 : accelerator register  2 (xr2)
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>  ...
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>  0x7ff : accelerator register 31 (xr31)
+</span></code></pre></div>
+<p>When the processor uses a CSRW instruction to write an accelerator
+register, it first reads the general-purpose register file to get the
+source value, creates a new accelerator request message, then sends this
+message to the accelerator through the xcel.req interface in the X stage.
+The processor waits for the response message to be returned through the
+xcel.resp interface in the M stage. The processor uses a CSRR instruction
+to read an accelerator register in a similar way, except that when the
+response message is returned in the M stage, the data from the
+accelerator is sent down the pipeline and written into the
+general-purpose register file in the W stage.</p>
+<p>Here is a simple assembly sequence which will write the value <code>1</code> to the
+null accelerator's only accelerator register, read that value back from
+the accelerator register, and write the value to general-purpose register
+<code>x2</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>  addi x1, x0, 1
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>  csrw 0x7e0, x1
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>  csrr x2, 0x7e0
+</span></code></pre></div>
+<p>You can run a simple test of using the CSRW/CSRR instructions to
+write/read an accelerator register like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../proc/test/ProcFL_xcel_test.py
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../proc/test/Proc_xcel_test.py
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a>%<span class="w"> </span>pytest<span class="w"> </span>../proc/test/Proc_xcel_test.py<span class="w"> </span>-k<span class="w"> </span><span class="o">[</span>bypass<span class="w"> </span>-s
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a>
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a><span class="w">     </span>src<span class="w">        </span>F-stage<span class="w">   </span>D-stage<span class="w">                 </span>X<span class="w">    </span>M<span class="w">    </span>W<span class="w">    </span>xcelreq<span class="w">         </span>xcelresp<span class="w">    </span>sink
+</span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="w"> </span>------------------------------------------------------------------------------------------------------
+</span><span id="__span-36-8"><a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a><span class="w">  </span>1r<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">          </span><span class="p">|</span><span class="w">                       </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">              </span><span class="o">()</span>.<span class="w">           </span>&gt;
+</span><span id="__span-36-9"><a id="__codelineno-36-9" name="__codelineno-36-9" href="#__codelineno-36-9"></a><span class="w">  </span>2r<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">          </span><span class="p">|</span><span class="w">                       </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">              </span><span class="o">()</span>.<span class="w">           </span>&gt;
+</span><span id="__span-36-10"><a id="__codelineno-36-10" name="__codelineno-36-10" href="#__codelineno-36-10"></a><span class="w">  </span><span class="m">3</span>:<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">          </span><span class="p">|</span><span class="w">                       </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">              </span><span class="o">()</span>.<span class="w">           </span>&gt;
+</span><span id="__span-36-11"><a id="__codelineno-36-11" name="__codelineno-36-11" href="#__codelineno-36-11"></a><span class="w">  </span><span class="m">4</span>:<span class="w"> </span><span class="c1">#        &gt;  00000200|                       |    |    |    |              ().           &gt;</span>
+</span><span id="__span-36-12"><a id="__codelineno-36-12" name="__codelineno-36-12" href="#__codelineno-36-12"></a><span class="w">  </span><span class="m">5</span>:<span class="w"> </span>deadbeef<span class="w"> </span>&gt;<span class="w">  </span><span class="m">00000204</span><span class="p">|</span>csrr<span class="w">   </span>x02,<span class="w"> </span>mngr2proc<span class="w">  </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">              </span><span class="o">()</span>.<span class="w">           </span>&gt;
+</span><span id="__span-36-13"><a id="__codelineno-36-13" name="__codelineno-36-13" href="#__codelineno-36-13"></a><span class="w">  </span><span class="m">6</span>:<span class="w"> </span><span class="c1">#        &gt;  00000208|nop                    |csrr|    |    |              ().           &gt;</span>
+</span><span id="__span-36-14"><a id="__codelineno-36-14" name="__codelineno-36-14" href="#__codelineno-36-14"></a><span class="w">  </span><span class="m">7</span>:<span class="w"> </span><span class="c1">#        &gt;  0000020c|nop                    |nop |csrr|    |              ().           &gt;</span>
+</span><span id="__span-36-15"><a id="__codelineno-36-15" name="__codelineno-36-15" href="#__codelineno-36-15"></a><span class="w">  </span><span class="m">8</span>:<span class="w"> </span><span class="c1">#        &gt;  00000210|nop                    |nop |nop |csrr|              ().           &gt;</span>
+</span><span id="__span-36-16"><a id="__codelineno-36-16" name="__codelineno-36-16" href="#__codelineno-36-16"></a><span class="w">  </span><span class="m">9</span>:<span class="w"> </span><span class="c1">#        &gt;  00000214|csrw   0x7e0, x02      |nop |nop |nop |              ().           &gt;</span>
+</span><span id="__span-36-17"><a id="__codelineno-36-17" name="__codelineno-36-17" href="#__codelineno-36-17"></a><span class="w"> </span><span class="m">10</span>:<span class="w"> </span><span class="c1">#        &gt;  00000218|csrr   x03,     0x7e0  |csrw|nop |nop |wr:00:deadbeef().           &gt;</span>
+</span><span id="__span-36-18"><a id="__codelineno-36-18" name="__codelineno-36-18" href="#__codelineno-36-18"></a><span class="w"> </span><span class="m">11</span>:<span class="w"> </span><span class="c1">#        &gt;  0000021c|nop                    |csrr|csrw|nop |rd:00:        ()wr:         &gt;</span>
+</span><span id="__span-36-19"><a id="__codelineno-36-19" name="__codelineno-36-19" href="#__codelineno-36-19"></a><span class="w"> </span><span class="m">12</span>:<span class="w"> </span><span class="c1">#        &gt;  00000220|nop                    |nop |csrr|csrw|              ()rd:deadbeef &gt;</span>
+</span><span id="__span-36-20"><a id="__codelineno-36-20" name="__codelineno-36-20" href="#__codelineno-36-20"></a><span class="w"> </span><span class="m">13</span>:<span class="w"> </span><span class="c1">#        &gt;  00000224|nop                    |nop |nop |csrr|              ().           &gt;</span>
+</span><span id="__span-36-21"><a id="__codelineno-36-21" name="__codelineno-36-21" href="#__codelineno-36-21"></a><span class="w"> </span><span class="m">14</span>:<span class="w"> </span><span class="c1">#        &gt;  00000228|csrw   proc2mngr, x03  |nop |nop |nop |              ().           &gt;</span>
+</span><span id="__span-36-22"><a id="__codelineno-36-22" name="__codelineno-36-22" href="#__codelineno-36-22"></a><span class="w"> </span><span class="m">15</span>:<span class="w"> </span>deadbe00<span class="w"> </span>&gt;<span class="w">  </span>0000022c<span class="p">|</span>csrr<span class="w">   </span>x02,<span class="w"> </span>mngr2proc<span class="w">  </span><span class="p">|</span>csrw<span class="p">|</span>nop<span class="w"> </span><span class="p">|</span>nop<span class="w"> </span><span class="p">|</span><span class="w">              </span><span class="o">()</span>.<span class="w">           </span>&gt;
+</span><span id="__span-36-23"><a id="__codelineno-36-23" name="__codelineno-36-23" href="#__codelineno-36-23"></a><span class="w"> </span><span class="m">16</span>:<span class="w"> </span><span class="c1">#        &gt;  00000230|nop                    |csrr|csrw|nop |              ().           &gt;</span>
+</span><span id="__span-36-24"><a id="__codelineno-36-24" name="__codelineno-36-24" href="#__codelineno-36-24"></a><span class="w"> </span><span class="m">17</span>:<span class="w"> </span><span class="c1">#        &gt;  00000234|nop                    |nop |csrr|csrw|              ().           &gt; deadbeef</span>
+</span><span id="__span-36-25"><a id="__codelineno-36-25" name="__codelineno-36-25" href="#__codelineno-36-25"></a><span class="w"> </span><span class="m">18</span>:<span class="w"> </span><span class="c1">#        &gt;  00000238|csrw   0x7e0, x02      |nop |nop |csrr|              ().           &gt;</span>
+</span><span id="__span-36-26"><a id="__codelineno-36-26" name="__codelineno-36-26" href="#__codelineno-36-26"></a><span class="w"> </span><span class="m">19</span>:<span class="w"> </span><span class="c1">#        &gt;  0000023c|csrr   x03,     0x7e0  |csrw|nop |nop |wr:00:deadbe00().           &gt;</span>
+</span><span id="__span-36-27"><a id="__codelineno-36-27" name="__codelineno-36-27" href="#__codelineno-36-27"></a><span class="w"> </span><span class="m">20</span>:<span class="w"> </span><span class="c1">#        &gt;  00000240|nop                    |csrr|csrw|nop |rd:00:        ()wr:         &gt;</span>
+</span><span id="__span-36-28"><a id="__codelineno-36-28" name="__codelineno-36-28" href="#__codelineno-36-28"></a><span class="w"> </span><span class="m">21</span>:<span class="w"> </span><span class="c1">#        &gt;  00000244|nop                    |nop |csrr|csrw|              ()rd:deadbe00 &gt;</span>
+</span><span id="__span-36-29"><a id="__codelineno-36-29" name="__codelineno-36-29" href="#__codelineno-36-29"></a><span class="w"> </span><span class="m">22</span>:<span class="w"> </span><span class="c1">#        &gt;  00000248|csrw   proc2mngr, x03  |nop |nop |csrr|              ().           &gt;</span>
+</span><span id="__span-36-30"><a id="__codelineno-36-30" name="__codelineno-36-30" href="#__codelineno-36-30"></a><span class="w"> </span><span class="m">23</span>:<span class="w"> </span>00adbe00<span class="w"> </span>&gt;<span class="w">  </span>0000024c<span class="p">|</span>csrr<span class="w">   </span>x02,<span class="w"> </span>mngr2proc<span class="w">  </span><span class="p">|</span>csrw<span class="p">|</span>nop<span class="w"> </span><span class="p">|</span>nop<span class="w"> </span><span class="p">|</span><span class="w">              </span><span class="o">()</span>.<span class="w">           </span>&gt;
+</span><span id="__span-36-31"><a id="__codelineno-36-31" name="__codelineno-36-31" href="#__codelineno-36-31"></a><span class="w"> </span><span class="m">24</span>:<span class="w"> </span><span class="c1">#        &gt;  00000250|nop                    |csrr|csrw|nop |              ().           &gt;</span>
+</span><span id="__span-36-32"><a id="__codelineno-36-32" name="__codelineno-36-32" href="#__codelineno-36-32"></a><span class="w"> </span><span class="m">25</span>:<span class="w"> </span><span class="c1">#        &gt;  00000254|csrw   0x7e0, x02      |nop |csrr|csrw|              ().           &gt; deadbe00</span>
+</span><span id="__span-36-33"><a id="__codelineno-36-33" name="__codelineno-36-33" href="#__codelineno-36-33"></a><span class="w"> </span><span class="m">26</span>:<span class="w"> </span><span class="c1">#        &gt;  00000258|csrr   x03,     0x7e0  |csrw|nop |csrr|wr:00:00adbe00().           &gt;</span>
+</span><span id="__span-36-34"><a id="__codelineno-36-34" name="__codelineno-36-34" href="#__codelineno-36-34"></a><span class="w"> </span><span class="m">27</span>:<span class="w"> </span><span class="c1">#        &gt;  0000025c|nop                    |csrr|csrw|nop |rd:00:        ()wr:         &gt;</span>
+</span><span id="__span-36-35"><a id="__codelineno-36-35" name="__codelineno-36-35" href="#__codelineno-36-35"></a><span class="w"> </span><span class="m">28</span>:<span class="w"> </span><span class="c1">#        &gt;  00000260|csrw   proc2mngr, x03  |nop |csrr|csrw|              ()rd:00adbe00 &gt;</span>
+</span><span id="__span-36-36"><a id="__codelineno-36-36" name="__codelineno-36-36" href="#__codelineno-36-36"></a><span class="w"> </span><span class="m">29</span>:<span class="w"> </span>dea00eef<span class="w"> </span>&gt;<span class="w">  </span><span class="m">00000264</span><span class="p">|</span>csrr<span class="w">   </span>x02,<span class="w"> </span>mngr2proc<span class="w">  </span><span class="p">|</span>csrw<span class="p">|</span>nop<span class="w"> </span><span class="p">|</span>csrr<span class="p">|</span><span class="w">              </span><span class="o">()</span>.<span class="w">           </span>&gt;
+</span><span id="__span-36-37"><a id="__codelineno-36-37" name="__codelineno-36-37" href="#__codelineno-36-37"></a><span class="w"> </span><span class="m">30</span>:<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">  </span><span class="m">00000268</span><span class="p">|</span>csrw<span class="w">   </span>0x7e0,<span class="w"> </span>x02<span class="w">      </span><span class="p">|</span>csrr<span class="p">|</span>csrw<span class="p">|</span>nop<span class="w"> </span><span class="p">|</span><span class="w">              </span><span class="o">()</span>.<span class="w">           </span>&gt;
+</span><span id="__span-36-38"><a id="__codelineno-36-38" name="__codelineno-36-38" href="#__codelineno-36-38"></a><span class="w"> </span><span class="m">31</span>:<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">  </span>0000026c<span class="p">|</span>csrr<span class="w">   </span>x03,<span class="w">     </span>0x7e0<span class="w">  </span><span class="p">|</span>csrw<span class="p">|</span>csrr<span class="p">|</span>csrw<span class="p">|</span>wr:00:dea00eef<span class="o">()</span>.<span class="w">           </span>&gt;<span class="w"> </span>00adbe00
+</span><span id="__span-36-39"><a id="__codelineno-36-39" name="__codelineno-36-39" href="#__codelineno-36-39"></a><span class="w"> </span><span class="m">32</span>:<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">  </span><span class="c1">#       |#                      |csrr|csrw|csrr|rd:00:        ()wr:         &gt;</span>
+</span><span id="__span-36-40"><a id="__codelineno-36-40" name="__codelineno-36-40" href="#__codelineno-36-40"></a><span class="w"> </span><span class="m">33</span>:<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">  </span><span class="m">00000270</span><span class="p">|</span>csrw<span class="w">   </span>proc2mngr,<span class="w"> </span>x03<span class="w">  </span><span class="p">|</span><span class="w">    </span><span class="p">|</span>csrr<span class="p">|</span>csrw<span class="p">|</span><span class="w">              </span><span class="o">()</span>rd:dea00eef<span class="w"> </span>&gt;
+</span><span id="__span-36-41"><a id="__codelineno-36-41" name="__codelineno-36-41" href="#__codelineno-36-41"></a><span class="w"> </span><span class="m">34</span>:<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">  </span><span class="c1">#       |#                      |csrw|    |csrr|              ().           &gt;</span>
+</span><span id="__span-36-42"><a id="__codelineno-36-42" name="__codelineno-36-42" href="#__codelineno-36-42"></a><span class="w"> </span><span class="m">35</span>:<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">  </span><span class="c1">#       |#                      |    |csrw|    |              ().           &gt;</span>
+</span><span id="__span-36-43"><a id="__codelineno-36-43" name="__codelineno-36-43" href="#__codelineno-36-43"></a><span class="w"> </span><span class="m">36</span>:<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">  </span><span class="c1">#       |#                      |    |    |csrw|              ().           &gt; dea00eef</span>
+</span><span id="__span-36-44"><a id="__codelineno-36-44" name="__codelineno-36-44" href="#__codelineno-36-44"></a><span class="w"> </span><span class="m">37</span>:<span class="w"> </span>.<span class="w">        </span>&gt;<span class="w">  </span><span class="c1">#       |#                      |    |    |    |              ().           &gt;</span>
+</span></code></pre></div>
+<p>I have cleaned up the line trace a bit to annotate the columns and make
+it more compact. You can see the processor executing CSRW/CSRR
+instructions to 0x7e0 which is accelerator register 0. This results in
+the processor sending accelerator requests to the null accelerator, and
+then the accelerator sending the corresponding accelerator responses back
+to the processor.</p>
+<p>Also notice the need for the processor to add new RAW dependency stall
+logic. CSRR instructions which read from accelerator registers send out
+the xcel.req in the X stage and receive the xcelresp in the M stage. This
+means we cannot bypass data from a CSRR instruction if it is in the X
+stage since the data has not returned from the accelerator yet. In cycle
+32, the CSRW instruction in the decode stage needs to stall to wait for
+the CSRR instruction in the X stage to move into the M stage.</p>
+<p>To use an accelerator from a C microbenchmark, we can use the same GCC
+inline assembly extensions we used to write the <code>stats_en</code> CSR earlier in
+the tutorial. Take a closer look at the
+<code>app/ubmark/ubmark-null-xcel-test.c</code> example:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="w"> </span><span class="n">__attribute__</span><span class="w"> </span><span class="p">((</span><span class="n">noinline</span><span class="p">))</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ubmark_null_xcel</span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="w">   </span><span class="n">__asm__</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="w">     </span><span class="s">&quot;csrw 0x7E0,     %[in];</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a><span class="w">     </span><span class="s">&quot;csrr %[result], 0x7E0;</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-37-8"><a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a>
+</span><span id="__span-37-9"><a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a><span class="w">     </span><span class="c1">// Outputs from the inline assembly block</span>
+</span><span id="__span-37-10"><a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a>
+</span><span id="__span-37-11"><a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="n">result</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;=r&quot;</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="__span-37-12"><a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a>
+</span><span id="__span-37-13"><a id="__codelineno-37-13" name="__codelineno-37-13" href="#__codelineno-37-13"></a><span class="w">     </span><span class="c1">// Inputs to the inline assembly block</span>
+</span><span id="__span-37-14"><a id="__codelineno-37-14" name="__codelineno-37-14" href="#__codelineno-37-14"></a>
+</span><span id="__span-37-15"><a id="__codelineno-37-15" name="__codelineno-37-15" href="#__codelineno-37-15"></a><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="n">in</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;r&quot;</span><span class="p">(</span><span class="n">in</span><span class="p">)</span>
+</span><span id="__span-37-16"><a id="__codelineno-37-16" name="__codelineno-37-16" href="#__codelineno-37-16"></a>
+</span><span id="__span-37-17"><a id="__codelineno-37-17" name="__codelineno-37-17" href="#__codelineno-37-17"></a><span class="w">   </span><span class="p">);</span>
+</span><span id="__span-37-18"><a id="__codelineno-37-18" name="__codelineno-37-18" href="#__codelineno-37-18"></a><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+</span><span id="__span-37-19"><a id="__codelineno-37-19" name="__codelineno-37-19" href="#__codelineno-37-19"></a><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p>We are inserting a CSRW instruction to copy the value passed to this
+function through the <code>in</code> argument, and then we are using an CSRR
+instruction to retrieve the same value from the null accelerator. Notice
+that unlike the inline assembly we used when setting the <code>stats_en</code> CSR,
+here we also need to handle outputs from the assembly block. Again, you
+can find out more about inline assembly syntax here:</p>
+<ul>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html">https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html</a></li>
+</ul>
+<p>Let's cross-compile this microbenchmark. Note that you cannot natively
+compile a microbenchmark that makes use of an accelerator, since x86 does
+not have any accelerators!</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-null-xcel-test
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>%<span class="w"> </span>riscv32-objdump<span class="w"> </span>ubmark-null-xcel-test<span class="w"> </span><span class="p">|</span><span class="w"> </span>less<span class="w"> </span>-p<span class="s2">&quot;&lt;ubmark_null_xcel&gt;:&quot;</span>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a>000002fc<span class="w"> </span>&lt;ubmark_null_xcel&gt;:
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="w">    </span>2fc:<span class="w">  </span>csrw<span class="w"> </span>0x7e0,x10
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="w">    </span><span class="m">300</span>:<span class="w">  </span>csrr<span class="w"> </span>x10,0x7e0
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="w">    </span><span class="m">304</span>:<span class="w">  </span>jalr<span class="w"> </span>x0,x1,0
+</span></code></pre></div>
+<p>Always a good idea to use <code>riscv32-objdump</code> so you can verify your C code
+is compiling as expected. Here we can see that the <code>null_xcel</code> function
+compiles into a CSRW, CSRR, and JALR instruction as expected. We should
+now run this microbenchmark on our ISA simulator to verify it works, and
+then we can run it on our RTL simulator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>%<span class="w"> </span>../pmx/pmx-sim<span class="w"> </span>../../app/build/ubmark-null-xcel
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>%<span class="w"> </span>../pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--cache-impl<span class="w"> </span>rtl<span class="w"> </span>--xcel-impl<span class="w"> </span>null-rtl<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="w">     </span>--trace<span class="w"> </span>../../app/build/ubmark-null-xcel
+</span></code></pre></div>
+<h3 id="42-tinyrv2-vvadd-xcel-test">4.2. TinyRV2 VVADD Xcel Test</h3>
+<p>Let's turn out attention to our vvadd accelerator. Take a closer look at
+the accelerated version of the vvadd microbenchmark in
+<code>app/ubmark/ubmark-vvadd-xcel.c</code>:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="w"> </span><span class="n">__attribute__</span><span class="w"> </span><span class="p">((</span><span class="n">noinline</span><span class="p">))</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">vvadd_xcel</span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">dest</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">src0</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">src1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a><span class="w">   </span><span class="k">asm</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a><span class="w">     </span><span class="s">&quot;csrw 0x7E1, %[src0];</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a><span class="w">     </span><span class="s">&quot;csrw 0x7E2, %[src1];</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-40-7"><a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a><span class="w">     </span><span class="s">&quot;csrw 0x7E3, %[dest];</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-40-8"><a id="__codelineno-40-8" name="__codelineno-40-8" href="#__codelineno-40-8"></a><span class="w">     </span><span class="s">&quot;csrw 0x7E4, %[size];</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-40-9"><a id="__codelineno-40-9" name="__codelineno-40-9" href="#__codelineno-40-9"></a><span class="w">     </span><span class="s">&quot;csrw 0x7E0, x0     ;</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-40-10"><a id="__codelineno-40-10" name="__codelineno-40-10" href="#__codelineno-40-10"></a><span class="w">     </span><span class="s">&quot;csrr x0,    0x7E0  ;</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-40-11"><a id="__codelineno-40-11" name="__codelineno-40-11" href="#__codelineno-40-11"></a>
+</span><span id="__span-40-12"><a id="__codelineno-40-12" name="__codelineno-40-12" href="#__codelineno-40-12"></a><span class="w">     </span><span class="c1">// Outputs from the inline assembly block</span>
+</span><span id="__span-40-13"><a id="__codelineno-40-13" name="__codelineno-40-13" href="#__codelineno-40-13"></a>
+</span><span id="__span-40-14"><a id="__codelineno-40-14" name="__codelineno-40-14" href="#__codelineno-40-14"></a><span class="w">     </span><span class="o">:</span>
+</span><span id="__span-40-15"><a id="__codelineno-40-15" name="__codelineno-40-15" href="#__codelineno-40-15"></a>
+</span><span id="__span-40-16"><a id="__codelineno-40-16" name="__codelineno-40-16" href="#__codelineno-40-16"></a><span class="w">     </span><span class="c1">// Inputs to the inline assembly block</span>
+</span><span id="__span-40-17"><a id="__codelineno-40-17" name="__codelineno-40-17" href="#__codelineno-40-17"></a>
+</span><span id="__span-40-18"><a id="__codelineno-40-18" name="__codelineno-40-18" href="#__codelineno-40-18"></a><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="n">src0</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;r&quot;</span><span class="p">(</span><span class="n">src0</span><span class="p">),</span>
+</span><span id="__span-40-19"><a id="__codelineno-40-19" name="__codelineno-40-19" href="#__codelineno-40-19"></a><span class="w">       </span><span class="p">[</span><span class="n">src1</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;r&quot;</span><span class="p">(</span><span class="n">src1</span><span class="p">),</span>
+</span><span id="__span-40-20"><a id="__codelineno-40-20" name="__codelineno-40-20" href="#__codelineno-40-20"></a><span class="w">       </span><span class="p">[</span><span class="n">dest</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;r&quot;</span><span class="p">(</span><span class="n">dest</span><span class="p">),</span>
+</span><span id="__span-40-21"><a id="__codelineno-40-21" name="__codelineno-40-21" href="#__codelineno-40-21"></a><span class="w">       </span><span class="p">[</span><span class="n">size</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;r&quot;</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+</span><span id="__span-40-22"><a id="__codelineno-40-22" name="__codelineno-40-22" href="#__codelineno-40-22"></a>
+</span><span id="__span-40-23"><a id="__codelineno-40-23" name="__codelineno-40-23" href="#__codelineno-40-23"></a><span class="w">     </span><span class="c1">// Tell the compiler this accelerator read/writes memory</span>
+</span><span id="__span-40-24"><a id="__codelineno-40-24" name="__codelineno-40-24" href="#__codelineno-40-24"></a>
+</span><span id="__span-40-25"><a id="__codelineno-40-25" name="__codelineno-40-25" href="#__codelineno-40-25"></a><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="s">&quot;memory&quot;</span>
+</span><span id="__span-40-26"><a id="__codelineno-40-26" name="__codelineno-40-26" href="#__codelineno-40-26"></a><span class="w">   </span><span class="p">);</span>
+</span><span id="__span-40-27"><a id="__codelineno-40-27" name="__codelineno-40-27" href="#__codelineno-40-27"></a><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p>Notice that our use of the CSRW/CSRR instructions corresponds exactly to
+the accelerator protocol described above. We first write the source base
+pointers, the destination base pointer, and the size before starting the
+accelerator by writing to <code>xr0</code> and then waiting for the accelerator to
+finish by reading <code>xr0</code>. We need a final <code>"memory"</code> argument in our
+inline assembly block to tell the compiler that this accelerator reads
+and writes memory. Let's cross-compile the test for the vvadd
+microbenchmark:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-vvadd-xcel-test
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>%<span class="w"> </span>riscv32-objdump<span class="w"> </span>ubmark-vvadd-xcel-test<span class="w"> </span><span class="p">|</span><span class="w"> </span>less<span class="w"> </span>-p<span class="s2">&quot;&lt;ubmark_vvadd_xcel&gt;:&quot;</span>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a>00000fac<span class="w"> </span>&lt;ubmark_vvadd_xcel&gt;:
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a><span class="w">    </span>fac:<span class="w">  </span>csrw<span class="w"> </span>0x7e1,<span class="w"> </span>x11
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a><span class="w">    </span>fb0:<span class="w">  </span>csrw<span class="w"> </span>0x7e2,<span class="w"> </span>x12
+</span><span id="__span-41-7"><a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a><span class="w">    </span>fb4:<span class="w">  </span>csrw<span class="w"> </span>0x7e3,<span class="w"> </span>x10
+</span><span id="__span-41-8"><a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a><span class="w">    </span>fb8:<span class="w">  </span>csrw<span class="w"> </span>0x7e4,<span class="w"> </span>x13
+</span><span id="__span-41-9"><a id="__codelineno-41-9" name="__codelineno-41-9" href="#__codelineno-41-9"></a><span class="w">    </span>fbc:<span class="w">  </span>csrw<span class="w"> </span>0x7e0,<span class="w"> </span>x0
+</span><span id="__span-41-10"><a id="__codelineno-41-10" name="__codelineno-41-10" href="#__codelineno-41-10"></a><span class="w">    </span>fc0:<span class="w">  </span>csrr<span class="w"> </span>x0,<span class="w"> </span>0x7e0
+</span><span id="__span-41-11"><a id="__codelineno-41-11" name="__codelineno-41-11" href="#__codelineno-41-11"></a><span class="w">    </span>fc4:<span class="w">  </span>jalr<span class="w"> </span>x0,<span class="w"> </span>x1,<span class="w"> </span><span class="m">0</span>
+</span></code></pre></div>
+<p>Everything looks as expected, so we can now test our accelerated vvadd
+microbenchmark on the ISA simulator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--xcel-impl<span class="w"> </span>vvadd-fl<span class="w"> </span>./ubmark-vvadd-xcel-test
+</span></code></pre></div>
+<p>Notice that we needed to specify the accelerator implementation as a
+command line option. If we forgot to include this option, then the
+simulator would use the null accelerator and clearly the accelerated
+vvadd microbenchmark does not work with the null accelerator!</p>
+<p>Finally, we can run the test on the RTL implementation of the
+processor and accelerator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--xcel-impl<span class="w"> </span>vvadd-rtl<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a><span class="w">    </span>./ubmark-vvadd-xcel-test
+</span></code></pre></div>
+<p>All of the tests should pass.</p>
+<h3 id="43-tinyrv2-vvadd-xcel-eval">4.3. TinyRV2 VVADD Xcel Eval</h3>
+<p>We are now ready to run the microbenchmark eval. We first make sure it
+works on the FL simulator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--xcel-impl<span class="w"> </span>vvadd-fl<span class="w"> </span>./ubmark-vvadd-xcel-eval
+</span></code></pre></div>
+<p>Finally, we can run the accelerated vvadd microbenchmark on the RTL
+implementation of the processor augmented with the RTL implementation of
+the vvadd accelerator:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--xcel-impl<span class="w"> </span>vvadd-rtl<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a><span class="w">     </span>--stats<span class="w"> </span>./ubmark-vvadd-xcel-eval
+</span><span id="__span-45-4"><a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a><span class="w"> </span>**PASSED**
+</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a>
+</span><span id="__span-45-6"><a id="__codelineno-45-6" name="__codelineno-45-6" href="#__codelineno-45-6"></a><span class="w"> </span><span class="nv">num_cycles</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="m">818</span>
+</span><span id="__span-45-7"><a id="__codelineno-45-7" name="__codelineno-45-7" href="#__codelineno-45-7"></a><span class="w"> </span><span class="nv">num_inst</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="m">15</span>
+</span><span id="__span-45-8"><a id="__codelineno-45-8" name="__codelineno-45-8" href="#__codelineno-45-8"></a><span class="w"> </span><span class="nv">CPI</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="m">54</span>.53
+</span></code></pre></div>
+<p>The CPI is so large because there are only a few CSR instructions. All of
+the work is done by the vvadd accelerator. Recall that the pure-software
+vvadd microbenchmark required 1013 cycles. So our accelerator results in
+a cycle-level speedup of 1.23x. We might ask, where did this speedup come
+from? Why isn't the speedup larger? Let's look at the line trace.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--xcel-impl<span class="w"> </span>vvadd-rtl<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-46-3"><a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a><span class="w">     </span>--trace<span class="w"> </span>./ubmark-vvadd-xcel-eval<span class="w"> </span>&gt;<span class="w"> </span>ubmark-vvadd-xcel-eval-rtl.trace
+</span></code></pre></div>
+<p>Here is what the line trace looks like for the initial configuration of
+the accelerator and the first two iterations of the vvadd loop:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>cyc   F-stage  D-stage                 X    M    W    xcelreq        ST xcelresp    imem  dmem  xmem
+</span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>-----------------------------------------------------------------------------------------------------
+</span><span id="__span-47-3"><a id="__codelineno-47-3" name="__codelineno-47-3" href="#__codelineno-47-3"></a>186:  000006ec|csrw   stats_en , x15  |addi|addi|    |              (X ).           rd&gt;rd|     |
+</span><span id="__span-47-4"><a id="__codelineno-47-4" name="__codelineno-47-4" href="#__codelineno-47-4"></a>187:  000006f0|lui    x12, 0x00001    |csrw|addi|addi|              (X ).           rd&gt;rd|     |
+</span><span id="__span-47-5"><a id="__codelineno-47-5" name="__codelineno-47-5" href="#__codelineno-47-5"></a>188:  000006f4|lw     x13, 0x800(x03) |lui |csrw|addi|              (X ).           rd&gt;rd|     |
+</span><span id="__span-47-6"><a id="__codelineno-47-6" name="__codelineno-47-6" href="#__codelineno-47-6"></a>189:  000006f8|addi   x09, x12, 0xbc0 |lw  |lui |csrw|              (X ).           rd&gt;rd|rd&gt;  |
+</span><span id="__span-47-7"><a id="__codelineno-47-7" name="__codelineno-47-7" href="#__codelineno-47-7"></a>190: *000006fc|addi   x11, x09, 0x190 |addi|lw  |lui |              (X ).           rd&gt;rd|  &gt;rd|
+</span><span id="__span-47-8"><a id="__codelineno-47-8" name="__codelineno-47-8" href="#__codelineno-47-8"></a>191: *00000700|addi   x12, x12, 0xbc0 |addi|addi|lw  |              (X ).           rd&gt;rd|     |
+</span><span id="__span-47-9"><a id="__codelineno-47-9" name="__codelineno-47-9" href="#__codelineno-47-9"></a>192: */       |jal    x01, 0x1ffbfc   |addi|addi|addi|              (X ).           rd&gt;rd|     |
+</span><span id="__span-47-10"><a id="__codelineno-47-10" name="__codelineno-47-10" href="#__codelineno-47-10"></a>193: *000002fc|                       |jal |addi|addi|              (X ).           rd&gt;rd|     |
+</span><span id="__span-47-11"><a id="__codelineno-47-11" name="__codelineno-47-11" href="#__codelineno-47-11"></a>194: *00000300|csrw   0x7e1, x11      |    |jal |addi|              (X ).           rd&gt;rd|     |
+</span><span id="__span-47-12"><a id="__codelineno-47-12" name="__codelineno-47-12" href="#__codelineno-47-12"></a>195: *00000304|csrw   0x7e2, x12      |csrw|    |jal |wr:01:00000d50(X ).           rd&gt;rd|     |
+</span><span id="__span-47-13"><a id="__codelineno-47-13" name="__codelineno-47-13" href="#__codelineno-47-13"></a>196: *00000308|csrw   0x7e3, x10      |csrw|csrw|    |wr:02:00000bc0(X )wr:         rd&gt;rd|     |
+</span><span id="__span-47-14"><a id="__codelineno-47-14" name="__codelineno-47-14" href="#__codelineno-47-14"></a>197: *0000030c|csrw   0x7e4, x13      |csrw|csrw|csrw|wr:03:000010c4(X )wr:         rd&gt;rd|     |
+</span><span id="__span-47-15"><a id="__codelineno-47-15" name="__codelineno-47-15" href="#__codelineno-47-15"></a>198: *00000310|csrw   0x7e0, x00      |csrw|csrw|csrw|wr:04:00000064(X )wr:         rd&gt;rd|     |
+</span><span id="__span-47-16"><a id="__codelineno-47-16" name="__codelineno-47-16" href="#__codelineno-47-16"></a>199: *00000314|csrr   x00,     0x7e0  |csrw|csrw|csrw|wr:00:00000000(X )wr:         rd&gt;rd|     |
+</span><span id="__span-47-17"><a id="__codelineno-47-17" name="__codelineno-47-17" href="#__codelineno-47-17"></a>200: *00000318|jalr   x00, x01, 0x000 |csrr|csrw|csrw|rd:00:        (X )wr:         rd&gt;rd|     |
+</span><span id="__span-47-18"><a id="__codelineno-47-18" name="__codelineno-47-18" href="#__codelineno-47-18"></a>201: *#       |#                      |#   |#   |csrw|.             (RD).                |     |rd&gt;
+</span><span id="__span-47-19"><a id="__codelineno-47-19" name="__codelineno-47-19" href="#__codelineno-47-19"></a>202: *#       |#                      |#   |#   |    |.             (RD).                |     |rd&gt;rd
+</span><span id="__span-47-20"><a id="__codelineno-47-20" name="__codelineno-47-20" href="#__codelineno-47-20"></a>203: *#       |#                      |#   |#   |    |.             (RD).                |     |  &gt;rd
+</span><span id="__span-47-21"><a id="__codelineno-47-21" name="__codelineno-47-21" href="#__codelineno-47-21"></a>204: *#       |#                      |#   |#   |    |.             (RD).                |     |
+</span><span id="__span-47-22"><a id="__codelineno-47-22" name="__codelineno-47-22" href="#__codelineno-47-22"></a>205: *#       |#                      |#   |#   |    |.             (+ ).                |     |
+</span><span id="__span-47-23"><a id="__codelineno-47-23" name="__codelineno-47-23" href="#__codelineno-47-23"></a>206: *#       |#                      |#   |#   |    |.             (WR).                |     |wr&gt;
+</span><span id="__span-47-24"><a id="__codelineno-47-24" name="__codelineno-47-24" href="#__codelineno-47-24"></a>207: *#       |#                      |#   |#   |    |.             (W ).                |     |  &gt;wr
+</span><span id="__span-47-25"><a id="__codelineno-47-25" name="__codelineno-47-25" href="#__codelineno-47-25"></a>208: *#       |#                      |#   |#   |    |.             (W ).                |     |
+</span><span id="__span-47-26"><a id="__codelineno-47-26" name="__codelineno-47-26" href="#__codelineno-47-26"></a>209: *#       |#                      |#   |#   |    |.             (RD).                |     |rd&gt;
+</span><span id="__span-47-27"><a id="__codelineno-47-27" name="__codelineno-47-27" href="#__codelineno-47-27"></a>210: *#       |#                      |#   |#   |    |.             (RD).                |     |rd&gt;rd
+</span><span id="__span-47-28"><a id="__codelineno-47-28" name="__codelineno-47-28" href="#__codelineno-47-28"></a>211: *#       |#                      |#   |#   |    |.             (RD).                |     |  &gt;rd
+</span><span id="__span-47-29"><a id="__codelineno-47-29" name="__codelineno-47-29" href="#__codelineno-47-29"></a>212: *#       |#                      |#   |#   |    |.             (RD).                |     |
+</span><span id="__span-47-30"><a id="__codelineno-47-30" name="__codelineno-47-30" href="#__codelineno-47-30"></a>213: *#       |#                      |#   |#   |    |.             (+ ).                |     |
+</span><span id="__span-47-31"><a id="__codelineno-47-31" name="__codelineno-47-31" href="#__codelineno-47-31"></a>214: *#       |#                      |#   |#   |    |.             (WR).                |     |wr&gt;
+</span><span id="__span-47-32"><a id="__codelineno-47-32" name="__codelineno-47-32" href="#__codelineno-47-32"></a>215: *#       |#                      |#   |#   |    |.             (W ).                |     |  &gt;wr
+</span><span id="__span-47-33"><a id="__codelineno-47-33" name="__codelineno-47-33" href="#__codelineno-47-33"></a>216: *#       |#                      |#   |#   |    |.             (W ).                |     |
+</span><span id="__span-47-34"><a id="__codelineno-47-34" name="__codelineno-47-34" href="#__codelineno-47-34"></a>217: *#       |#                      |#   |#   |    |.             (RD).                |     |rd&gt;
+</span><span id="__span-47-35"><a id="__codelineno-47-35" name="__codelineno-47-35" href="#__codelineno-47-35"></a>218: *#       |#                      |#   |#   |    |.             (RD).                |     |rd&gt;rd
+</span><span id="__span-47-36"><a id="__codelineno-47-36" name="__codelineno-47-36" href="#__codelineno-47-36"></a>219: *#       |#                      |#   |#   |    |.             (RD).                |     |  &gt;rd
+</span><span id="__span-47-37"><a id="__codelineno-47-37" name="__codelineno-47-37" href="#__codelineno-47-37"></a>220: *#       |#                      |#   |#   |    |.             (RD).                |     |
+</span></code></pre></div>
+<p>I have cleaned up the line trace a bit to annotate the columns and make
+it more compact. The ST column is the current state of the vvadd
+accelerator FSM. You can see the processor executing the CSRW
+instructions to configure the accelerator, and these instructions then
+turn into messages over the xcel.req interface. The accelerator is in the
+XCFG state receiving these messages until it receives the write to <code>xr0</code>
+which causes the accelerator to move into the RD stage. The accelerator
+sends memory read requests into the memory system, then does the vvadd,
+then writes the result back to the memory system. We know that every
+iteration should look like the first iteration (8 cycles). Since there
+are 100 iterations, this means the total number of cycles should be about
+800 cycles, but our simulator reported 818 cycles. Again, the discrepancy
+is due to the extra cycles required to call and return from the
+<code>ubmark_vvadd_xcel</code> function. So the accelerator is a little faster than
+the processor since it requires fewer cycles per iteration.</p>
+<p>There is certainly room for improvement. We can probably remove some of
+the bubbles and improve the accelerator performance by a couple more
+cycles. The accelerator could also potentially use wide accesses to the
+data cache to retrieve four words at a time and then process all four
+words in parallel. The accelerator could also potentially achieve better
+performance by issuing multiple memory requests to a non-blocking cache.
+Eventually we should be able to optimize such an accelerator so that it
+is memory bandwidth limited (i.e., we are doing a memory request every
+cycle).</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

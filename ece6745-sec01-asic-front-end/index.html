@@ -1,0 +1,1676 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-tut13-dw/">
+      
+      
+        <link rel="next" href="../ece6745-sec02-asic-back-end/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Section 1: ASIC Front-End Flow - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-section-1-asic-front-end-flow" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Section 1: ASIC Front-End Flow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut05-asic-stdcells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut07-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut09-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut12-spice-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-nangate-45nm-standard-cell-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. NanGate 45nm Standard-Cell Libraries
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pymtl-based-testing-simulation-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. PyMTL-Based Testing, Simulation, Translation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. PyMTL-Based Testing, Simulation, Translation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-implement-and-test-a-registered-incrementer" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Implement and Test a Registered Incrementer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-test-the-multi-stage-registered-incrementer" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Test the Multi-Stage Registered Incrementer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-interactive-simulator-for-multi-stage-registered-incrementer" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Interactive Simulator for Multi-Stage Registered Incrementer
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-synopsys-vcs-for-4-state-rtl-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Synopsys VCS for 4-State RTL Simulation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-synopsys-design-compiler-for-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Synopsys Design Compiler for Synthesis
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Synopsys Design Compiler for Synthesis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-initial-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Initial Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-analyze-and-elaborate-the-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Analyze and Elaborate the Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-create-timing-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Create Timing Constraints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-synthesize-the-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Synthesize the Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-write-final-outputs-and-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5. Write Final Outputs and Reports
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-synopsys-design-vision" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6. Synopsys Design Vision
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-synopsys-vcs-for-fast-functional-gate-level-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Synopsys VCS for Fast-Functional Gate-Level Simulation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec02-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec03-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec04-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-nangate-45nm-standard-cell-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. NanGate 45nm Standard-Cell Libraries
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pymtl-based-testing-simulation-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. PyMTL-Based Testing, Simulation, Translation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. PyMTL-Based Testing, Simulation, Translation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-implement-and-test-a-registered-incrementer" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Implement and Test a Registered Incrementer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-test-the-multi-stage-registered-incrementer" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Test the Multi-Stage Registered Incrementer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-interactive-simulator-for-multi-stage-registered-incrementer" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Interactive Simulator for Multi-Stage Registered Incrementer
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-synopsys-vcs-for-4-state-rtl-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Synopsys VCS for 4-State RTL Simulation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-synopsys-design-compiler-for-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Synopsys Design Compiler for Synthesis
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Synopsys Design Compiler for Synthesis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-initial-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Initial Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-analyze-and-elaborate-the-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Analyze and Elaborate the Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-create-timing-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Create Timing Constraints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-synthesize-the-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Synthesize the Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-write-final-outputs-and-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5. Write Final Outputs and Reports
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-synopsys-design-vision" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6. Synopsys Design Vision
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-synopsys-vcs-for-fast-functional-gate-level-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Synopsys VCS for Fast-Functional Gate-Level Simulation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-section-1-asic-front-end-flow">ECE 6745 Section 1: ASIC Front-End Flow</h1>
+<p>In this section, we will be discussing the front-end of the ASIC
+toolflow. More detailed tutorials will be posted on the public course
+website, but this section will at least give you a chance to edit some
+RTL, synthesize that to a gate-level netlist, and then simulate that
+gate-level netlist. The following diagram illustrates the tool flow we
+will be using in ECE 6745. Notice that the Synopsys and Cadence ASIC
+tools all require various views from the standard-cell library which part
+of the ASIC design kit (ADK).</p>
+<p><img alt="" src="../img/tut06-asic-flow-front-end.png" /></p>
+<p>The "front-end" of the flow is highlighted in red and refers to the PyMTL
+simulator, Synopsys DC, and Synopsys VCS:</p>
+<ul>
+<li>We write our RTL models in Verilog, and we use the PyMTL framework to
+   test, verify, and evaluate the execution time (in cycles) of our
+   design. This part of the flow is very similar to the flow used in ECE</li>
+<li>
+<p>Once we are sure our design is working correctly, we can then
+   start to push the design through the flow.</p>
+</li>
+<li>
+<p>We use <strong>Synopsys VCS</strong> for RTL and gate-level simulation. PyMTL uses
+   the Verilator two-state RTL simulator meaning every wire will be
+   either a 0 (logic low) or 1 (logic high). Synopsys VCS uses four-state
+   RTL simulation meaning every wire will be either a 0 (logic low), 1
+   (logic high), X (unknown), or Z (floating). Four-state RTL simulation
+   can identify different kinds of bugs than two-state simulation such as
+   bugs due to uninitialized state. Gate-level simulation involves
+   simulating every standard-cell gate and helps verify that the Verilog
+   gate-level netlist is functionally correct.</p>
+</li>
+<li>
+<p>We use <strong>Synopsys Design Compiler (DC)</strong> to synthesize our design,
+   which means to transform the Verilog RTL model into a Verilog
+   gate-level netlist where all of the gates are selected from the
+   standard-cell library. We need to provide Synopsys DC with abstract
+   logical and timing views of the standard-cell library in <code>.db</code> format.
+   In addition to the Verilog gate-level netlist, Synopsys DC can also
+   generate a <code>.ddc</code> file which contains information about the gate-level
+   netlist and timing, and this <code>.ddc</code> file can be inspected using
+   Synopsys Design Vision (DV).</p>
+</li>
+</ul>
+<p>Extensive documentation is provided by Synopsys and Cadence. We have
+organized this documentation and made it available to you on the Canvas
+course page:</p>
+<ul>
+<li><a href="https://www.csl.cornell.edu/courses/ece6745/asicdocs">https://www.csl.cornell.edu/courses/ece6745/asicdocs</a></li>
+</ul>
+<p>The first step is to access <code>ecelinux</code>. Use Microsoft Remote Desktop to
+log into a specific <code>ecelinux</code> server. Then use VS Code to log into the
+same specific <code>ecelinux</code> server. Once you are at the <code>ecelinux</code> prompt,
+source the setup script, source the GUI setup script, clone this
+repository from GitHub, and define an environment variable to keep track
+of the top directory for the project.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/cornell-ece6745/ece6745-sec01-asic-front-end<span class="w"> </span>sec01
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>sec01
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>%<span class="w"> </span><span class="nv">TOPDIR</span><span class="o">=</span><span class="nv">$PWD</span>
+</span></code></pre></div>
+<h2 id="1-nangate-45nm-standard-cell-libraries">1. NanGate 45nm Standard-Cell Libraries</h2>
+<p>A standard-cell library is a collection of combinational and sequential
+logic gates that adhere to a standardized set of logical, electrical, and
+physical policies. For example, all standard cells are usually the same
+height, include pins that align to a predetermined vertical and
+horizontal grid, include power/ground rails and nwells in predetermined
+locations, and support a predetermined number of drive strengths. In this
+course, we will be using the a NanGate 45nm standard-cell library. It is
+based on a "fake" 45nm technology. This means you cannot actually tapeout
+a design using this standard cell library, but the technology is
+representative enough to provide reasonable area, energy, and timing
+estimates for teaching purposes. All of the files associated with this
+standard cell library are located in the <code>${ECE6745_STDCELLS}</code> directory.</p>
+<p>Let's first look at the data book which is on the Canvas course page:</p>
+<ul>
+<li><a href="https://web.csl.cornell.edu/courses/ece6745/resources/nangate-freepdk45nm-stdcell-databook.pdf">https://web.csl.cornell.edu/courses/ece6745/resources/nangate-freepdk45nm-stdcell-databook.pdf</a></li>
+</ul>
+<p>Scroll through the PDF and find the entry for the NAND3_X1 cell (it is on
+page 104). The data book provides information on the standard cell's
+logic function, delay, area, and power consumption. Let's take a look at
+the layout for the same cell. Note that since Klayout is a Linux GUI
+application you will need to use Microsoft Remote Desktop.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/klayout.lyp<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/stdcells.gds
+</span></code></pre></div>
+<p>Find the NAND3_X1 cell in the left-hand cell list, and then choose
+<em>Display &gt; Show as New Top</em> from the menu. We will learn more about
+layout and how this layout corresponds to a static CMOS circuit later in
+the course. The key point is that the layout for the standard cells are
+the basic building blocks that we will be using to create our ASIC chips.</p>
+<p>The Synopsys and Cadence tools do not actually use this layout directly;
+it is actually <em>too</em> detailed. Instead these tools use abstract views of
+the standard cells, which capture logical functionality, timing,
+geometry, and power usage at a much higher level. Let's look at the
+Verilog behavioral specification for the 3-input NAND cell.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>%<span class="w"> </span>less<span class="w"> </span>-p<span class="w"> </span>NAND3_X1<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/stdcells.v
+</span></code></pre></div>
+<p>Note that the Verilog implementation of the 3-input NAND cell looks
+nothing like the Verilog we used in ECE 4750. This cell is implemented
+using three Verilog primitive gates (i.e., two <code>and</code> gates and one <code>not</code>
+gate), and it includes a <code>specify</code> block which is used for advanced
+gate-level simulation with back-annotated delays.</p>
+<p>Finally, let's look at an abstract view of the timing and power of the
+3-input NAND cell suitable for use by the ASIC flow. This abstract view
+is in the <code>.lib</code> file for the standard cell library.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>% less -p NAND3_X1 ${ECE6745_STDCELLS}/stdcells.lib
+</span></code></pre></div>
+<p>Now that we have looked at some of the views of the standard cell
+library, we can now try using these views and the ASIC flow front-end to
+synthesize RTL into a gate-level netlist.</p>
+<h2 id="2-pymtl-based-testing-simulation-translation">2. PyMTL-Based Testing, Simulation, Translation</h2>
+<p>Our goal in this section is to generate a gate-level netlist for
+the following four-stage registered incrementer:</p>
+<p><img alt="" src="../img/sec01-regincr-nstage.png" /></p>
+<p>We will take an incremental design approach. We will start by
+implementing and testing a single registered incrementer, and then we
+will write a generic multi-stage registered incrementer. For this section
+(and indeed the entire course) you will use Verilog for RTL design and
+Python for test harnesses, simulation drivers, function-level models, and
+cycle-level models.</p>
+<h3 id="21-implement-and-test-a-registered-incrementer">2.1. Implement and Test a Registered Incrementer</h3>
+<p>Now let's run all of the tests for the registered incrementer:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut3_verilog/regincr
+</span></code></pre></div>
+<p>The tests will fail because we need to finish the implementation. Let's
+start by focusing on the basic registered incrementer module.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>% cd $TOPDIR/sim/build
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>% pytest ../tut3_verilog/regincr/test/RegIncr_test.py
+</span></code></pre></div>
+<p>Use VS Code to open the implementation and uncomment the actual
+combinational logic for the increment operation. The Verilog RTL
+implementation should look as follows:</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="no">`ifndef</span><span class="w"> </span><span class="n">TUT3_VERILOG_REGINCR_REG_INCR_V</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="cp">`define TUT3_VERILOG_REGINCR_REG_INCR_V</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">module</span><span class="w"> </span><span class="n">tut3_verilog_regincr_RegIncr</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">(</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w">       </span><span class="n">clk</span><span class="p">,</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w">       </span><span class="n">reset</span><span class="p">,</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">in_</span><span class="p">,</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span><span class="k">output</span><span class="w"> </span><span class="kt">logic</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">out</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="p">);</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">  </span><span class="c1">// Sequential logic</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">reg_out</span><span class="p">;</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">  </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="w"> </span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">reset</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">      </span><span class="n">reg_out</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">    </span><span class="k">else</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">      </span><span class="n">reg_out</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">in_</span><span class="p">;</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">  </span><span class="k">end</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="w">  </span><span class="c1">// Combinational logic</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">temp_wire</span><span class="p">;</span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="w">  </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="w">    </span><span class="n">temp_wire</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reg_out</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="w">  </span><span class="k">end</span>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>
+</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a><span class="w">  </span><span class="c1">// Combinational logic</span>
+</span><span id="__span-6-32"><a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a>
+</span><span id="__span-6-33"><a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a><span class="w">  </span><span class="k">assign</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp_wire</span><span class="p">;</span>
+</span><span id="__span-6-34"><a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a>
+</span><span id="__span-6-35"><a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a><span class="w">  </span><span class="c1">// Line tracing</span>
+</span><span id="__span-6-36"><a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a>
+</span><span id="__span-6-37"><a id="__codelineno-6-37" name="__codelineno-6-37" href="#__codelineno-6-37"></a><span class="w">  </span><span class="no">`ifndef</span><span class="w"> </span><span class="n">SYNTHESIS</span>
+</span><span id="__span-6-38"><a id="__codelineno-6-38" name="__codelineno-6-38" href="#__codelineno-6-38"></a>
+</span><span id="__span-6-39"><a id="__codelineno-6-39" name="__codelineno-6-39" href="#__codelineno-6-39"></a><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="p">[</span><span class="no">`VC_TRACE_NBITS</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">str</span><span class="p">;</span>
+</span><span id="__span-6-40"><a id="__codelineno-6-40" name="__codelineno-6-40" href="#__codelineno-6-40"></a><span class="w">  </span><span class="no">`VC_TRACE_BEGIN</span>
+</span><span id="__span-6-41"><a id="__codelineno-6-41" name="__codelineno-6-41" href="#__codelineno-6-41"></a><span class="w">  </span><span class="k">begin</span>
+</span><span id="__span-6-42"><a id="__codelineno-6-42" name="__codelineno-6-42" href="#__codelineno-6-42"></a><span class="w">    </span><span class="n">$sformat</span><span class="p">(</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;%x (%x) %x&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">in_</span><span class="p">,</span><span class="w"> </span><span class="n">reg_out</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-6-43"><a id="__codelineno-6-43" name="__codelineno-6-43" href="#__codelineno-6-43"></a><span class="w">    </span><span class="n">vc_trace</span><span class="p">.</span><span class="n">append_str</span><span class="p">(</span><span class="w"> </span><span class="n">trace_str</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-6-44"><a id="__codelineno-6-44" name="__codelineno-6-44" href="#__codelineno-6-44"></a><span class="w">  </span><span class="k">end</span>
+</span><span id="__span-6-45"><a id="__codelineno-6-45" name="__codelineno-6-45" href="#__codelineno-6-45"></a><span class="w">  </span><span class="no">`VC_TRACE_END</span>
+</span><span id="__span-6-46"><a id="__codelineno-6-46" name="__codelineno-6-46" href="#__codelineno-6-46"></a>
+</span><span id="__span-6-47"><a id="__codelineno-6-47" name="__codelineno-6-47" href="#__codelineno-6-47"></a><span class="w">  </span><span class="no">`endif</span><span class="w"> </span><span class="cm">/* SYNTHESIS */</span>
+</span><span id="__span-6-48"><a id="__codelineno-6-48" name="__codelineno-6-48" href="#__codelineno-6-48"></a>
+</span><span id="__span-6-49"><a id="__codelineno-6-49" name="__codelineno-6-49" href="#__codelineno-6-49"></a><span class="k">endmodule</span>
+</span><span id="__span-6-50"><a id="__codelineno-6-50" name="__codelineno-6-50" href="#__codelineno-6-50"></a>
+</span><span id="__span-6-51"><a id="__codelineno-6-51" name="__codelineno-6-51" href="#__codelineno-6-51"></a><span class="no">`endif</span><span class="w"> </span><span class="cm">/* TUT3_VERILOG_REGINCR_REG_INCR_V */</span>
+</span></code></pre></div>
+<p>If you have an error you can use a trace-back to get a more detailed
+error message:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut3_verilog/regincr/test/RegIncr_test.py<span class="w"> </span>--tb<span class="o">=</span>long
+</span></code></pre></div>
+<p>Once you have finished the implementation let's rerun the tests:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut3_verilog/regincr/test/RegIncr_test.py<span class="w"> </span>-sv
+</span></code></pre></div>
+<p>The <code>-v</code> command line option tells <code>pytest</code> to be more verbose in its
+output and the <code>-s</code> command line option tells <code>pytest</code> to print out the
+line tracing. Make sure you understand the line tracing output. You can
+also dump VCD files using <code>--dump-vcd</code> for waveform debugging with
+Surfer.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut3_verilog/regincr/test/RegIncr_test.py<span class="w"> </span>-sv<span class="w"> </span>--dump-vcd
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>%<span class="w"> </span>code<span class="w"> </span>regincr.test.RegIncr_test__test_small_top.verilator1.vcd
+</span></code></pre></div>
+<p>You can also use GTKWave if you prefer to view waveforms, but since
+GTKWave is a Linux GUI application you will need to use Microsoft Remote
+Desktop. PyMTL takes care of including all Verilog dependencies into a
+single Verilog file (also called "pickling") suitable for use with the
+ASIC flow. Take a look at the generated pickled Verilog file.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>% cd $TOPDIR/sim/build
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>% less RegIncr_noparam__pickled.v
+</span></code></pre></div>
+<h3 id="22-test-the-multi-stage-registered-incrementer">2.2. Test the Multi-Stage Registered Incrementer</h3>
+<p>Now let's work on composing a single registered incrementer into a
+multi-stage registered incrementer. We will be using <em>static elaboration</em>
+to make the multi-stage registered incrementer <em>generic</em>. In other words,
+our design will be parameterized by the number of stages so we can easily
+generate a pipeline with one stage, two stages, four stages, etc.</p>
+<p>Use VS Code to open the implementation and look at the static elaboration
+logic to instantiate a pipeline of registered incrementers. The Verilog
+RTL implementation looks as follows:</p>
+<div class="language-text highlight"><pre><span></span><code>`ifndef TUT3_VERILOG_REGINCR_REG_INCR_NSTAGE_V
+`define TUT3_VERILOG_REGINCR_REG_INCR_NSTAGE_V
+
+`include &quot;tut3_verilog/regincr/RegIncr.v&quot;
+
+module tut3_verilog_regincr_RegIncrNstage
+#(
+  parameter nstages = 2
+)(
+  input  logic       clk,
+  input  logic       reset,
+  input  logic [7:0] in_,
+  output logic [7:0] out
+);
+
+  // This defines an _array_ of signals. There are p_nstages+1 signals
+  // and each signal is 8 bits wide. We will use this array of
+  // signals to hold the output of each registered incrementer stage.
+
+  logic [7:0] reg_incr_out [nstages+1];
+
+  // Connect the input port of the module to the first signal in the
+  // reg_incr_out signal array.
+
+  assign reg_incr_out[0] = in_;
+
+  // Instantiate the registered incrementers and make the connections
+  // between them using a generate block.
+
+  genvar i;
+  generate
+  for ( i = 0; i &lt; nstages; i = i + 1 ) begin: gen
+
+    tut3_verilog_regincr_RegIncr reg_incr
+    (
+      .clk   (clk),
+      .reset (reset),
+      .in_   (reg_incr_out[i]),
+      .out   (reg_incr_out[i+1])
+    );
+
+  end
+  endgenerate
+
+  // Connect the last signal in the reg_incr_out signal array to the
+  // output port of the module.
+
+  assign out = reg_incr_out[nstages];
+
+endmodule
+
+`endif /* TUT3_VERILOG_REGINCR_REG_INCR_NSTAGE_V */
+</code></pre></div>
+<p>Before running the tests, let's take a look at how we are doing the
+testing in the corresponding test script. Use VS Code to open up
+<code>RegIncrNstage_test.py</code>. Notice how PyMTL enables sophisticated testing
+for highly parameterized components. The test script includes directed
+tests for two and three stage pipelines with various small, large, and
+random values, and also includes random testing with 1, 2, 3, 4, 5, 6
+stages. Writing a similar test harness in Verilog would likely require
+10x more code and be significantly more tedious!</p>
+<p>Let's run all of the tests for the multi-stage registered incrementer.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut3_verilog/regincr/test/RegIncrNstage_test.py<span class="w"> </span>-sv
+</span></code></pre></div>
+<h3 id="23-interactive-simulator-for-multi-stage-registered-incrementer">2.3. Interactive Simulator for Multi-Stage Registered Incrementer</h3>
+<p>Test scripts are great for verification, but when we want to push a
+design through the flow we usually want to use an interactive simulator
+to drive that process. An interactive simulator is meant for evaluting
+the area, energy, and performance of a design as opposed to verification.
+We have included a simple interactive simulator called <code>regincr-sim</code>
+which takes a list of values on the command line and sends these values
+through the pipeline. Let's see the simulator in action:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>%<span class="w"> </span>../tut3_verilog/regincr/regincr-sim<span class="w"> </span>-s<span class="w"> </span>0xff<span class="w"> </span>0x20<span class="w"> </span>0x30<span class="w"> </span>0x40<span class="w"> </span>0x00
+</span></code></pre></div>
+<p>The simulator will generate the pickled Verilog file we want to
+push through the ASIC front-end flow.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>%<span class="w"> </span>less<span class="w"> </span>RegIncr4stage__pickled.v
+</span></code></pre></div>
+<p>Notice how PyMTL3 has generated a wrapper which picks a specific
+parameter value for this instance of the multi-stage registered
+incrementer. The interactive simulator will also generate pure-Verilog
+test bench with associated test cases which we can use to run four-state
+RTL and gate-level simulation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>%<span class="w"> </span>less<span class="w"> </span>RegIncr4stage_basic_tb.v
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>%<span class="w"> </span>less<span class="w"> </span>RegIncr4stage_basic_tb.v.cases
+</span></code></pre></div>
+<h2 id="3-synopsys-vcs-for-4-state-rtl-simulation">3. Synopsys VCS for 4-State RTL Simulation</h2>
+<p>Recall that PyMTL3 simulation of Verilog RTL uses Verilator which is a
+two-state simulator. To help catch bugs due to uninitialized state (and
+also just to help verify the design using another Verilog simulator), we
+can use Synopsys VCS for four-state RTL simulation. This simulator will
+make use of the Verilog test-bench generated by the <code>--test-verilog</code> and
+<code>--dump-vtb</code> options from earlier (although we could also write our own
+Verilog test-bench from scratch). Here is how to run VCS for RTL
+simulation:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/01-synopsys-vcs-rtlsim
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/01-synopsys-vcs-rtlsim
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>%<span class="w"> </span>vcs<span class="w"> </span>-sverilog<span class="w"> </span>-xprop<span class="o">=</span>tmerge<span class="w"> </span>-override_timescale<span class="o">=</span>1ns/1ps<span class="w"> </span>-top<span class="w"> </span>Top<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span>+vcs+dumpvars+waves.vcd<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span>+incdir+<span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build/RegIncr4stage__pickled.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">    </span><span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build/RegIncr4stage_basic_tb.v
+</span></code></pre></div>
+<p>You should see a <code>simv</code> binary which is the compiled RTL simulator which
+you can run like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/01-synopsys-vcs-rtlsim
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>%<span class="w"> </span>./simv
+</span></code></pre></div>
+<p>It should pass the test. Now let's look at the resulting waveforms with
+Surfer.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>%<span class="w"> </span>code<span class="w"> </span>waves.vcd
+</span></code></pre></div>
+<p>You can also use GTKWave if you prefer to view waveforms, but since
+GTKWave is a Linux GUI application you will need to use Microsoft Remote
+Desktop. Browse the signal hierarchy and view the waveforms for one of
+the four registered incrementers. Note how the signals are initialized to
+X and only become 0 or 1 after a few cycles once we come out of reset. If
+we improperly used an initialized value then we would see X-propagation
+which would hopefully cause a failing test case.</p>
+<h2 id="4-synopsys-design-compiler-for-synthesis">4. Synopsys Design Compiler for Synthesis</h2>
+<p>We use Synopsys Design Compiler (DC) to synthesize Verilog RTL models
+into a gate-level netlist where all of the gates are from the standard
+cell library. So Synopsys DC will synthesize the Verilog + operator into
+a specific arithmetic block at the gate-level. Based on various
+constraints it may synthesize a ripple-carry adder, a carry-look-ahead
+adder, or even more advanced parallel-prefix adders.</p>
+<p>We start by creating a subdirectory for our work, and then launching
+Synopsys DC.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/02-synopsys-dc-synth
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/02-synopsys-dc-synth
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>%<span class="w"> </span>dc_shell-xg-t
+</span></code></pre></div>
+<h3 id="41-initial-setup">4.1. Initial Setup</h3>
+<p>We need to set two variables before starting to work in Synopsys DC.
+These variables tell Synopsys DC the location of the standard cell
+library <code>.db</code> file which is just a binary version of the <code>.lib</code> file we
+saw earlier.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>dc_shell&gt; set_app_var target_library &quot;$env(ECE6745_STDCELLS)/stdcells.db&quot;
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>dc_shell&gt; set_app_var link_library   &quot;* $env(ECE6745_STDCELLS)/stdcells.db&quot;
+</span></code></pre></div>
+<h3 id="42-analyze-and-elaborate-the-design">4.2. Analyze and Elaborate the Design</h3>
+<p>We are now ready to read in the Verilog file which contains the top-level
+design and all referenced modules. We do this with two commands. The
+analyze command reads the Verilog RTL into an intermediate internal
+representation. The elaborate command recursively resolves all of the
+module references starting from the top-level module, and also infers
+various registers and/or advanced data-path components.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>dc_shell&gt; analyze -format sverilog ../../../sim/build/RegIncr4stage__pickled.v
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>dc_shell&gt; elaborate RegIncr4stage
+</span></code></pre></div>
+<h3 id="43-create-timing-constraints">4.3. Create Timing Constraints</h3>
+<p>We now need to create a clock constraint to tell Synopsys DC what our
+target cycle time is:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>dc_shell&gt; create_clock clk -name ideal_clock1 -period 1
+</span></code></pre></div>
+<h3 id="44-synthesize-the-design">4.4. Synthesize the Design</h3>
+<p>Finaly, the <code>compile</code> comamnd will do the actual logic synthesis:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>dc_shell&gt; compile
+</span></code></pre></div>
+<h3 id="45-write-final-outputs-and-reports">4.5. Write Final Outputs and Reports</h3>
+<p>We write the output to a <code>.ddc</code> file which we can use with Synopsys DV
+and a Verilog gate-level netlist.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>dc_shell&gt; write -format ddc     -hierarchy -output post-synth.ddc
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>dc_shell&gt; write -format verilog -hierarchy -output post-synth.v
+</span></code></pre></div>
+<p>We can also generate usful reports about area and timing. Prof. Batten
+will spend some time explaining these reports:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>dc_shell&gt; report_area   -hierarchy
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>dc_shell&gt; report_timing -nets
+</span></code></pre></div>
+<p>Make some notes about what you find. Note the total cell area used in
+this design. Finally, we go ahead and exit Synopsys DC.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>dc_shell&gt; exit
+</span></code></pre></div>
+<p>Take a few minutes to examine the resulting Verilog gate-level netlist.
+Notice that the module hierarchy is preserved.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>%<span class="w"> </span>less<span class="w"> </span>post-synth.v
+</span></code></pre></div>
+<p>Take a close look at the implementation of the incrementer. What kind of
+standard cells has the synthesis tool chosen? What kind of adder
+microarchitecture?</p>
+<h3 id="46-synopsys-design-vision">4.6. Synopsys Design Vision</h3>
+<p>We can use the Synopsys Design Vision (DV) tool for browsing the
+resulting gate-level netlist, plotting critical path histograms, and
+generally analyzing our design. Start Synopsys DV and setup the
+<code>target_library</code> and <code>link_library</code> variables as before. Note that since
+Synsopsy DV is a Linux GUI application you will need to use Microsoft
+Remote Desktop.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>% design_vision-xg
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>design_vision&gt; set_app_var target_library &quot;$env(ECE6745_STDCELLS)/stdcells.db&quot;
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>design_vision&gt; set_app_var link_library   &quot;* $env(ECE6745_STDCELLS)/stdcells.db&quot;
+</span></code></pre></div>
+<p>You can use the following steps to open the <code>.ddc</code> file generated during
+synthesis.</p>
+<ul>
+<li>Choose <em>File &gt; Read</em> from the menu</li>
+<li>Open the <code>post-synth.dcc</code> file</li>
+</ul>
+<p>You can use the following steps to view the gate-level schematic for the
+design.:</p>
+<ul>
+<li>Select the <code>RegIncr4stage</code> module in the <em>Logical Hierarchy</em> panel</li>
+<li>Choose <em>Select &gt; Cells &gt; Leaf Cells of Selected Cells</em> from the menu</li>
+<li>Choose <em>Schematic &gt; New Schematic View</em> from the menu</li>
+<li>Choose <em>Select &gt; Clear</em> from the menu</li>
+</ul>
+<p>You can use the <em>Logical Hierarchy</em> browser to highlight modules in the
+schematic view. If you click on the drop down you can choose <em>Cells
+(All)</em> instead of <em>Cells (Hierarchical)</em> to browse the standard cells as
+well. You can determine the type of module or gate by selecting the
+module or gate and choosing <em>Edit &gt; Properties</em> from the menu. Then look
+for <code>ref_name</code>. You should be able to see the schematic for eaech stage
+of the pipline including the flip-flops and and the add module. See if
+you can figure out why the synthesis tool has inserted AND gates in front
+of each flip-flop. If you look inside the <code>add</code> module you should be able
+to see the adder microarchitecture.</p>
+<p>You can use the following steps to view a histogram of path slack, and
+also to open a gave-level schematic of just the critical path.</p>
+<ul>
+<li>Choose <em>Timing &gt; Path Slack</em> from the menu</li>
+<li>Click <em>OK</em> in the pop-up window</li>
+<li>Select the left-most bar in the histogram to see list of most critical paths</li>
+<li>Select one of the paths in the path list to highlight the path in the schematic view</li>
+</ul>
+<h2 id="5-synopsys-vcs-for-fast-functional-gate-level-simulation">5. Synopsys VCS for Fast-Functional Gate-Level Simulation</h2>
+<p>Good ASIC designers are always paranoid and <em>never</em> trust their tools.
+How do we know that the synthesized gate-level netlist is correct? One
+way we can check is to rerun our test suite on the gate-level model. We
+can do this using Synopsys VCS for fast-functional gatel-level
+simulation. <em>Fast-functional</em> refers to the fact that this simulation
+will not take account any of the gate delays. All gates will take zero
+time and all signals will still change on the rising clock edge just like
+in RTL simulation. Here is how to run VCS for RTL simulation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/03-synopsys-vcs-ffglsim
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/03-synopsys-vcs-ffglsim
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>%<span class="w"> </span>vcs<span class="w"> </span>-sverilog<span class="w"> </span>-xprop<span class="o">=</span>tmerge<span class="w"> </span>-override_timescale<span class="o">=</span>1ns/1ps<span class="w"> </span>-top<span class="w"> </span>Top<span class="se">\</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">    </span>+delay_mode_zero<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">    </span>+vcs+dumpvars+waves.vcd<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="w">    </span>+incdir+<span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="w">    </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/stdcells.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="w">    </span>../02-synopsys-dc-synth/post-synth.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="w">    </span><span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build/RegIncr4stage_basic_tb.v
+</span></code></pre></div>
+<p>The key difference from four-state RTL simulation is that this simulation
+takes as input the Verilog for the standard-cell library and the Verilog
+for the post-synthesis gate-level netlist. You should see a <code>simv</code> binary
+which is the compiled RTL simulator which you can run as follows.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>% cd $TOPDIR/asic/build-regincr/03-synopsys-vcs-ffglsim
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>% ./simv
+</span></code></pre></div>
+<p>It should pass the test. Now let's look at the resulting waveforms using
+Surfer.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>% cd $TOPDIR/asic/build-regincr/03-synopsys-vcs-ffglsim
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>% code waves.vcd
+</span></code></pre></div>
+<p>You can also use GTKWave if you prefer to view waveforms, but since
+GTKWave is a Linux GUI application you will need to use Microsoft Remote
+Desktop. Browse the signal hierarchy and display all the waveforms for a
+subset of the gate-level netlist using these steps:</p>
+<ul>
+<li>Expand out the <em>Scopes</em> panel until you find an <em>add</em> module</li>
+<li>Click on the _add_module</li>
+<li>Click the + button in the <em>Variables</em> panel</li>
+</ul>
+<p>Notice how we can see all of the single-bit signals corresponding to each
+gate in the gate-level netlist, and how these signals all change without
+any delays.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

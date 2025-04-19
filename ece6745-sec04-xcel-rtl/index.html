@@ -1,0 +1,1360 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-sec03-asic-auto/">
+      
+      
+        <link rel="next" href="../ece6745-sec05-sram/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Section 4: TinyRV2 Accelerator RTL Design - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-section-4-tinyrv2-accelerator-rtl-design" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Section 4: TinyRV2 Accelerator RTL Design
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-sec01-asic-front-end/" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut05-asic-stdcells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut07-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut09-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut12-spice-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec01-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec02-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec03-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-baseline-tinyrv2-processor-fl-and-rtl-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Baseline TinyRV2 Processor FL and RTL Models
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-cross-compiling-and-executing-tinyrv2-microbenchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Cross-Compiling and Executing TinyRV2 Microbenchmarks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Cross-Compiling and Executing TinyRV2 Microbenchmarks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-tinyrv2-microbenchmark-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. TinyRV2 Microbenchmark Test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-tinyrv2-microbenchmark-eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. TinyRV2 Microbenchmark Eval
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-accumulation-accelerator-fl-and-rtl-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Accumulation Accelerator FL and RTL Models
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-accelerating-a-tinyrv2-microbenchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Accelerating a TinyRV2 Microbenchmark
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-baseline-tinyrv2-processor-fl-and-rtl-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Baseline TinyRV2 Processor FL and RTL Models
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-cross-compiling-and-executing-tinyrv2-microbenchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Cross-Compiling and Executing TinyRV2 Microbenchmarks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Cross-Compiling and Executing TinyRV2 Microbenchmarks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-tinyrv2-microbenchmark-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. TinyRV2 Microbenchmark Test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-tinyrv2-microbenchmark-eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. TinyRV2 Microbenchmark Eval
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-accumulation-accelerator-fl-and-rtl-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Accumulation Accelerator FL and RTL Models
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-accelerating-a-tinyrv2-microbenchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Accelerating a TinyRV2 Microbenchmark
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-section-4-tinyrv2-accelerator-rtl-design">ECE 6745 Section 4: TinyRV2 Accelerator RTL Design</h1>
+<p>In this section, we will be discussing how to implement a simple
+medium-grain accelerator. Fine-grain accelerators are tightly integrated
+within the processor pipeline (e.g., a specialized functional unit for
+bit-reversed addressing useful in implementing an FFT), while
+coarse-grain accelerators are loosely integrated with a processor through
+the memory hierarchy (e.g., a graphics rendering accelerator sharing the
+last-level cache with a general-purpose processor). Medium-grain
+accelerators are often integrated as co-processors: the processor can
+directly send/receive messages to/from the accelerator with special
+instructions, but the co-processor is relatively decoupled from the main
+processor pipeline and can also independently interact with memory. To
+illustrate how to implement a medium-grain accelerator, we will be
+working on a simple "accumulation" accelerator that adds all of the
+values in an array stored in memory. More detailed tutorials for a
+vector-vector-add accelerator including how to push a complete processor,
+memory, and accelerator system will be posted on the public course
+website shortly.</p>
+<p>The first step is to access <code>ecelinux</code>. Use Microsoft Remote Desktop to
+log into a specific <code>ecelinux</code> server. Then use VS Code to log into the
+same specific <code>ecelinux</code> server. Once you are at the <code>ecelinux</code> prompt,
+source the setup script, source the GUI setup script, clone this
+repository from GitHub, and define an environment variable to keep track
+of the top directory for the project.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/ece6745-sec04-xcel-rtl<span class="w"> </span>sec04
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>sec04
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>%<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TOPDIR</span><span class="o">=</span><span class="nv">$PWD</span>
+</span></code></pre></div>
+<h2 id="1-baseline-tinyrv2-processor-fl-and-rtl-models">1. Baseline TinyRV2 Processor FL and RTL Models</h2>
+<p>The following figure illustrates the overall system we will be using with
+our TinyRV2 processors. The processor includes eight latency insensitive
+val/rdy interfaces. The mngr2proc/proc2mngr interfaces are used for the
+test harness to send data to the processor and for the processor to send
+data back to the test harness. The imem master/minion interface is used
+for instruction fetch, and the dmem master/minion interface is used for
+implementing load/store instructions. The system includes both
+instruction and data caches. The xcel master/minion interface is used for
+the processor to send messages to the accelerator. <strong>The cache is not
+ported to work with the ASIC flow so it is not currently included!</strong></p>
+<p><img alt="" src="../img/tut09-proc-xcel.png" /></p>
+<p>We provide two implementations of the TinyRV2 processor. The FL model in
+<code>sim/proc/ProcFL.py</code> is essentially an instruction-set-architecture (ISA)
+simulator; it simulates only the instruction semantics and makes no
+attempt to model any timing behavior. The RTL model in
+<code>sim/proc/ProcVRTL.v</code> is similar to the alternative design for lab 2 in
+ECE 4750. It is a five-stage pipelined processor that implements the
+TinyRV2 instruction set and includes full bypassing/forwarding to resolve
+data hazards. There are two important differences from the alternative
+design for lab 2 of ECE 4750. First, the new processor design uses a
+single-cycle integer multiplier. Second, the new processor design
+includes the ability to handle new CSRs for interacting with medium-grain
+accelerators. The datapath diagram for the processor is shown below.</p>
+<p><img alt="" src="../img/tut09-proc-dpath.png" /></p>
+<p>We should run all of the unit tests on both the FL and RTL processor
+models to verify that we are starting with a working processor.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../proc
+</span></code></pre></div>
+<h2 id="2-cross-compiling-and-executing-tinyrv2-microbenchmarks">2. Cross-Compiling and Executing TinyRV2 Microbenchmarks</h2>
+<p>We will write our microbenchmarks in C. Let's start by writing a simple
+accumulation microbenchmark. Take a look at the code provided in
+<code>app/ubmark/ubmark-accum.c</code>:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">__attribute__</span><span class="w"> </span><span class="p">((</span><span class="n">noinline</span><span class="p">))</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kt">int</span><span class="w"> </span><span class="n">accum_scalar</span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="p">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="c1">// &#39;&#39;&#39; SECTION TASK &#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="c1">// Implement a simple C function to add all of the elements in the</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="c1">// source array and then return this result.</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="c1">// &#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Go ahead and implement the <code>accum_scalar</code> function. We will a use
+microbenchmark test to verify the functionality of our microbenchmark and
+a microbenchmark eval to evaluate the performance of our microbenchmark.
+We will run both the microbenchmark test and eval on both FL and RTL
+TinyRV2 processor models.</p>
+<h3 id="21-tinyrv2-microbenchmark-test">2.1. TinyRV2 Microbenchmark Test</h3>
+<p>Let's go ahead and take a look at the microbenchmark test provided for
+the accumulation microbenchmark.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/ubmark
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>%<span class="w"> </span>less<span class="w"> </span>ubmark-accum-test.c
+</span></code></pre></div>
+<p>Notice how we have various test case functions and then we call these
+test case functions in <code>main</code>. We have a build system that can compile
+microbenchmarks tests and evalutions natively for x86 and can also
+cross-compile these microbenchmarks for TinyRV2 so they can be executed
+on our simulators. Here is how we compile and execute the tests for the
+pure-software accumulation microbenchmark natively:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>build-native
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build-native
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>%<span class="w"> </span>../configure
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-accum-test
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>%<span class="w"> </span>./ubmark-accum-test
+</span></code></pre></div>
+<p>You can run a single test case like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build-native
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>%<span class="w"> </span>./ubmark-accum-test<span class="w"> </span><span class="m">1</span>
+</span></code></pre></div>
+<p>Once we are confident the microbenchmark test passes on natively, we can
+cross-compile the microbenchmark test and run it on both FL and RTL
+TinyRV2 processor models. Let's start by cross-compiling the
+microbenchmark test.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>%<span class="w"> </span>../configure<span class="w"> </span>--host<span class="o">=</span>riscv32-unknown-elf
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-accum-test
+</span></code></pre></div>
+<p>This will create a <code>ubmark-accum-test</code> binaries which contains TinyRV2
+instructions and data. You can disassemble a TinyRV2 binary (i.e., turn a
+compiled binary back into an assembly text representation) with the
+<code>riscv32-objdump</code> command like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span>riscv32-objdump<span class="w"> </span>ubmark-accum-test<span class="w"> </span><span class="p">|</span><span class="w"> </span>less<span class="w"> </span>-p<span class="s2">&quot;&lt;ubmark_accum&gt;:&quot;</span>
+</span></code></pre></div>
+<p>Take a look at the <code>ubmark_accum</code> function in the disassembly and see if
+you can understand how this assembly implements the C function you wrote.</p>
+<p>We have provided you with a simulator that composes a processor, memory,
+and accelerator and is capable of executing TinyRV2 binaries. The
+simulator enables flexibly choosing the processor implementation (FL vs.
+RTL) and the type and implementation of the accelerator. By default, the
+simulator uses the processor FL model and a "null" accelerator. So let’s
+execute both TinyRV2 binaries on the instruction-set
+simulator:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>./ubmark-accum-test
+</span></code></pre></div>
+<p>The <code>--trace</code> command line option will display each instruction as it is
+executed on the ISA simulator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--trace<span class="w"> </span>./ubmark-accum-test<span class="w"> </span>&gt;<span class="w"> </span>ubmark-accum-test-fl.trace
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>%<span class="w"> </span>code<span class="w"> </span>ubmark-accum-test-fl.trace
+</span></code></pre></div>
+<p>Now that we have verified the microbenchmark works correctly on the ISA
+simulator, we can run the test on the baseline TinyRV2 pipelined
+processor RTL model:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>./ubmark-accum-test
+</span></code></pre></div>
+<p>The simulation should show all tests are passing.</p>
+<h3 id="22-tinyrv2-microbenchmark-eval">2.2. TinyRV2 Microbenchmark Eval</h3>
+<p>Once we are sure the microbenchmark test is working natively, on the FL
+simulator, and the RTL simulator, we can then turn our focus to the
+microbenchmark eval.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/ubmark
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span>less<span class="w"> </span>ubmark-accum-eval.c
+</span></code></pre></div>
+<p>The <code>eval_src</code> and <code>eval_ref</code> arrays are all defined in the
+<code>app/ubmark/ubmark-accum.dat</code> file. The microbenchmark turns stats on,
+does the actual computation, turns stats off, and finally verifies that
+the results are as expected. We need the <code>ece6745_stats_on()</code> and
+<code>ece6745_stats_off()</code> functions to make sure we can keep track of various
+statistics (e.g., the number of cycles) only during the important part of
+the microbenchmark. We do not want to count time spent in initialization
+or verification when comparing the performance of our various
+microbenchmarks. These two functions are defined in
+<code>app/ece6745/ece6745-misc.h</code>.</p>
+<p>Here is how we can compile and execute the evaluation for the
+accumulation microbenchmark eval natively:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build-native
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-accum-eval
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>%<span class="w"> </span>./ubmark-accum-eval
+</span></code></pre></div>
+<p>The microbenchmark should display passed. Once you are sure your
+microbenchmark eval is working correctly natively, you can cross-compile
+the microbenchmark eval for TinyRV2 and run it on the FL simulator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-accum-eval
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>./ubmark-accum-eval
+</span></code></pre></div>
+<p>Finally we can run the microbenchmark eval on the baseline TinyRV2
+pipelined processor RTL model:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--stats<span class="w"> </span>./ubmark-accum-eval
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nv">num_cycles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">613</span>
+</span></code></pre></div>
+<p>The number of cycles for your experiment might be difference since you
+have written your own accumulation microbenchmark. Now generate a line
+trace to dig into the performance:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--trace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span>./ubmark-accum-eval<span class="w"> </span>&gt;<span class="w"> </span>ubmark-accum-eval-rtl.trace
+</span></code></pre></div>
+<p>The instructor will walk through and explain the line trace.</p>
+<h2 id="3-accumulation-accelerator-fl-and-rtl-models">3. Accumulation Accelerator FL and RTL Models</h2>
+<p>We will take an incremental approach when designing, implementing,
+testing, and evaluating accelerators. We can use test sources, sinks, and
+memories to create a test harness that will enable us to explore the
+accelerator cycle-level performance and the ASIC area, energy, and timing
+in isolation. Only after we are sure that we have a reasonable
+design-point should we consider integrating the accelerator with the
+processor.</p>
+<p>We have provided you a FL model of the accumulation accelerator. Our
+accelerators will include a set of accelerator registers that can be read
+and written from the processor using special instructions and the
+xcelreq/xcelresp interface. The accumulator accelerator protocol defines
+the accelerator registers as follows:</p>
+<ul>
+<li>xr0 : go/done</li>
+<li>xr1 : base address of the array src</li>
+<li>xr2 : size of the array</li>
+</ul>
+<p>The actual protocol involves the following steps:</p>
+<ol>
+<li>Write the base address of src to xr1</li>
+<li>Write the number of elements in the array to xr2</li>
+<li>Tell accelerator to go by writing xr0</li>
+<li>Wait for accelerator to finish by reading xr0, result will be sum</li>
+</ol>
+<p>You can test this model like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut9_xcel/test/AccumXcelFL_test.py<span class="w"> </span>-v
+</span></code></pre></div>
+<p>We are now going to work on the accumulation accelerator RTL model. Our
+accelerator will use the following FSM:</p>
+<p><img alt="" src="../img/sec04-accum-xcel-ctrl.png" /></p>
+<p>While the accelerator is in the XCFG state, it will update its internal
+registers when it receives accelerator requests from the processor. When
+the accelerator receives a write to xr0 it moves into the M_RD state. In
+the M_RD state, the accelerator will send out one memory read request to
+read the current element from the source array. In the CALC state, the
+accelerator will wait for the response from memory and then do the actual
+accumulation. It then will either move back into the M_RD state if there
+is another element to be processed, or move into the XCFG state if we
+have processed all elements in the array.</p>
+<p>Open the accumulation accelerator RTL which is in
+<code>sim/tut9_xcel/AccumXcel.v</code> and take a look.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/tut9_xcel
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>%<span class="w"> </span>code<span class="w"> </span>AccumXcel.v
+</span></code></pre></div>
+<p>You can test the accelerator like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut9_xcel
+</span></code></pre></div>
+<p>We have also included a simulator for just the accumulation accelerator
+in isolation which can be used to evaluate its performance.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>% cd $TOPDIR/sim/build
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>% ../tut9_xcel/accum-xcel-sim --impl rtl --input multiple --stats
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>num_cycles = 810
+</span></code></pre></div>
+<p>We could use the simulator to help evaluate the cycle-level performance
+of the accelerator on various different datasets as we try out various
+optimizations.</p>
+<h2 id="4-accelerating-a-tinyrv2-microbenchmark">4. Accelerating a TinyRV2 Microbenchmark</h2>
+<p>Now that we have unit tested and evaluated both the baseline TinyRV2
+pipelined processor and the accumulation accelerator in isolation, we are
+finally ready to compose them. The processor will send messages to the
+accelerator by reading and writing 32 special CSRs using the standard
+CSRW and CSRR instructions. These 32 special CSRs are as follows:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>0x7e0 : accelerator register  0 (xr0)
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>0x7e1 : accelerator register  1 (xr1)
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>0x7e2 : accelerator register  2 (xr2)
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>...
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>0x7ff : accelerator register 31 (xr31)
+</span></code></pre></div>
+<p>Here is a simple assembly sequence which will write the value 1 to an
+accelerator register, read that value back from the accelerator register,
+and write the value to general-purpose register x2.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>addi x1, x0, 1
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>csrw 0x7e0, x1
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>csrr x2, 0x7e0
+</span></code></pre></div>
+<p>To use an accelerator from a C microbenchmark, we need to embed assembly
+instructions directly into a C program. We can do this using the GCC
+inline assembly extensions. Take a closer look at the accelerated version
+of the accumulation microbenchmark in <code>app/ubmark/ubmark-accum-xcel.c:</code></p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">__attribute__</span><span class="w"> </span><span class="p">((</span><span class="n">noinline</span><span class="p">))</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="kt">int</span><span class="w"> </span><span class="n">accum_xcel</span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="p">{</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">  </span><span class="k">asm</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">    </span><span class="s">&quot;csrw 0x7e1, %[src]; </span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w">    </span><span class="s">&quot;csrw 0x7e2, %[size];</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">    </span><span class="s">&quot;csrw 0x7e0, x0     ;</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="w">    </span><span class="s">&quot;csrr %[result], 0x7e0;</span><span class="se">\n</span><span class="s">&quot;</span>
+</span><span id="__span-22-11"><a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a>
+</span><span id="__span-22-12"><a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="w">    </span><span class="c1">// Outputs from the inline assembly block</span>
+</span><span id="__span-22-13"><a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a>
+</span><span id="__span-22-14"><a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="n">result</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;=r&quot;</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="__span-22-15"><a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a>
+</span><span id="__span-22-16"><a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a><span class="w">    </span><span class="c1">// Inputs to the inline assembly block</span>
+</span><span id="__span-22-17"><a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a>
+</span><span id="__span-22-18"><a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="n">src</span><span class="p">]</span><span class="w">    </span><span class="s">&quot;r&quot;</span><span class="p">(</span><span class="n">src</span><span class="p">),</span>
+</span><span id="__span-22-19"><a id="__codelineno-22-19" name="__codelineno-22-19" href="#__codelineno-22-19"></a><span class="w">      </span><span class="p">[</span><span class="n">size</span><span class="p">]</span><span class="w">   </span><span class="s">&quot;r&quot;</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+</span><span id="__span-22-20"><a id="__codelineno-22-20" name="__codelineno-22-20" href="#__codelineno-22-20"></a>
+</span><span id="__span-22-21"><a id="__codelineno-22-21" name="__codelineno-22-21" href="#__codelineno-22-21"></a><span class="w">    </span><span class="c1">// Tell the compiler this accelerator read/writes memory</span>
+</span><span id="__span-22-22"><a id="__codelineno-22-22" name="__codelineno-22-22" href="#__codelineno-22-22"></a>
+</span><span id="__span-22-23"><a id="__codelineno-22-23" name="__codelineno-22-23" href="#__codelineno-22-23"></a><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="s">&quot;memory&quot;</span>
+</span><span id="__span-22-24"><a id="__codelineno-22-24" name="__codelineno-22-24" href="#__codelineno-22-24"></a><span class="w">  </span><span class="p">);</span>
+</span><span id="__span-22-25"><a id="__codelineno-22-25" name="__codelineno-22-25" href="#__codelineno-22-25"></a>
+</span><span id="__span-22-26"><a id="__codelineno-22-26" name="__codelineno-22-26" href="#__codelineno-22-26"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+</span><span id="__span-22-27"><a id="__codelineno-22-27" name="__codelineno-22-27" href="#__codelineno-22-27"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The <code>asm</code> keyword enables embedding assembly into a C program. We have a
+sequence of strings, and each string is one assembly instruction.
+<code>%[src]</code> is special syntax that tells GCC to put the register that holds
+the <code>src</code> C variable into that location in the assembly. So if the
+compiler ends up allocating the <code>src</code> C variable to <code>x11</code> then it will
+put <code>x11</code> into the first assembly instruction.</p>
+<p>Let's compile and test our microbenchmark test and evaluation. Note that
+you cannot natively compile a microbenchmark that makes use of an
+accelerator, since x86 does not have any accelerators!</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-accum-xcel-test
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>%<span class="w"> </span>make<span class="w"> </span>ubmark-accum-xcel-eval
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--xcel-impl<span class="w"> </span>accum-fl<span class="w"> </span>./ubmark-accum-xcel-test
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--xcel-impl<span class="w"> </span>accum-fl<span class="w"> </span>./ubmark-accum-xcel-eval
+</span></code></pre></div>
+<p>Everything looks as expected, so we can now run our accelerated
+accumulation microbenchmark on the RTL implementation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--xcel-impl<span class="w"> </span>accum-rtl<span class="w"> </span>./ubmark-accum-xcel-test
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--xcel-impl<span class="w"> </span>accum-rtl<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">    </span>--stats<span class="w"> </span>./ubmark-accum-xcel-eval
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="nv">num_cycles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">314</span>
+</span></code></pre></div>
+<p>Recall that the pure-software accumulation microbenchmark required 613
+cycles. So our accelerator results in a cycle-level speedup of 2x. We
+might ask, where did this speedup come from? Why isn’t the speedup
+larger? Let’s look at the line trace.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/app/build
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>%<span class="w"> </span>../../sim/pmx/pmx-sim<span class="w"> </span>--proc-impl<span class="w"> </span>rtl<span class="w"> </span>--xcel-impl<span class="w"> </span>accum-rtl<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">    </span>--trace<span class="w"> </span>./ubmark-accum-xcel-eval<span class="w"> </span>&gt;<span class="w"> </span>trace-alt.txt
+</span></code></pre></div>
+<p>See if you can figure out exactly what the accelerator is doing. Ideally,
+the accelerator would be able to sustain one accumulation per cycle for
+full throughput. Why is it not able to do this? What could we do to
+further improve the performance of this accelerator?</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

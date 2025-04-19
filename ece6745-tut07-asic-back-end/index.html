@@ -1,0 +1,2510 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-tut06-asic-front-end/">
+      
+      
+        <link rel="next" href="../ece6745-tut08-asic-auto/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Tutorial 7: ASIC Back-End Flow - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-tutorial-6-asic-back-end-flow" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tutorial 7: ASIC Back-End Flow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-sec01-asic-front-end/" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut05-asic-stdcells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-revisiting-the-asic-flow-front-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Revisiting the ASIC Flow Front-End
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Revisiting the ASIC Flow Front-End">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-test-simulate-translate" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1. Test, Simulate, Translate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-simulate-synthesize-simulate" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2. Simulate, Synthesize, Simulate
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-cadence-innovus-for-place-and-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Cadence Innovus for Place-and-Route
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Cadence Innovus for Place-and-Route">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-timing-analysis-setup-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Timing Analysis Setup File
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-initial-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Initial Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-floorplanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Floorplanning
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4. Placement
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-power-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5. Power Routing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-clock-tree-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6. Clock-Tree Synthesis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.7. Routing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-finishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.8. Finishing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#29-outputs-and-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.9. Outputs and Reports
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#210-final-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.10. Final Layout
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#211-automating-place-and-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.11. Automating Place and Route
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-using-synopsys-vcs-for-back-annotated-gate-level-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Using Synopsys VCS for Back-Annotated Gate-Level Simulation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-synopsys-primetime-for-power-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Synopsys PrimeTime for Power Analysis
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Synopsys PrimeTime for Power Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-initial-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Initial Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Inputs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-timing-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Timing Constraints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-power-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Power Analysis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5. Outputs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-automating-power-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6. Automating Power Analysis
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-to-do-on-your-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. To-Do On Your Own
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut09-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut12-spice-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec01-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec02-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec03-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec04-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-revisiting-the-asic-flow-front-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Revisiting the ASIC Flow Front-End
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Revisiting the ASIC Flow Front-End">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-test-simulate-translate" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1. Test, Simulate, Translate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-simulate-synthesize-simulate" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2. Simulate, Synthesize, Simulate
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-cadence-innovus-for-place-and-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Cadence Innovus for Place-and-Route
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Cadence Innovus for Place-and-Route">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-timing-analysis-setup-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Timing Analysis Setup File
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-initial-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Initial Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-floorplanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Floorplanning
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4. Placement
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-power-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5. Power Routing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-clock-tree-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6. Clock-Tree Synthesis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.7. Routing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-finishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.8. Finishing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#29-outputs-and-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.9. Outputs and Reports
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#210-final-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.10. Final Layout
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#211-automating-place-and-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.11. Automating Place and Route
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-using-synopsys-vcs-for-back-annotated-gate-level-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Using Synopsys VCS for Back-Annotated Gate-Level Simulation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-synopsys-primetime-for-power-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Synopsys PrimeTime for Power Analysis
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Synopsys PrimeTime for Power Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-initial-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Initial Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Inputs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-timing-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Timing Constraints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-power-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Power Analysis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5. Outputs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-automating-power-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6. Automating Power Analysis
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-to-do-on-your-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. To-Do On Your Own
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-tutorial-6-asic-back-end-flow">ECE 6745 Tutorial 6: ASIC Back-End Flow</h1>
+<p>The tutorial will discuss the key tools used for ASIC back-end flow which
+includes place-and-route, back-annotated gate-level simulation, and power
+analysis. This tutorial requires entering commands manually for each of
+the tools to enable students to gain a better understanding of the
+detailed steps involved in this process. A later tutorial will illustrate
+how this process can be automated to facilitate rapid design-space
+exploration. This tutorial assumes you have already completed the
+tutorials on Linux, Git, and Verilog.</p>
+<p>The following diagram illustrates the five primary tools we will be using
+in ECE 6745 along with a few smaller secondary tools. The tools that
+make-up the ASIC back-end flow are highlighted in red. Notice that the
+ASIC tools all require various views from the standard-cell library.
+Before starting this tutorial, you must complete the ASIC standard-cell
+tutorial so you can understand all of these views and you must complete
+the ASIC front-end flow tutorial.</p>
+<p><img alt="" src="../img/tut07-asic-flow-back-end.png" /></p>
+<ol>
+<li>
+<p>We write our RTL models in Verilog, and we use the PyMTL framework to
+    test, verify, and evaluate the execution time (in cycles) of our
+    design. This part of the flow is very similar to the flow used in
+    ECE 4750. Once we are sure our design is working correctly, we can
+    then start to push the design through the flow.</p>
+</li>
+<li>
+<p>We use <strong>Synopsys VCS</strong> to compile and run both 4-state RTL and
+    gate-level simulations. These simulations help us to build confidence
+    in our design as we push our designs through different stages of the
+    flow. From these simulations, we also generate waveforms in <code>.vcd</code>
+    (Verilog Change Dump) format, and per-net average activity factors
+    stored in <code>.saif</code> format. These activity factors will be used for
+    power analysis. Gate-level simulation is an valuable tool for
+    ensuring the tools did not optimize something away which impacts the
+    correctness of the design, and also provides an avenue for obtaining
+    a more accurate power analysis than RTL simulation. While static
+    timing analysis (STA) analyzes all paths, GL simulation can also
+    serve as a backup to check for hold and setup time violations (chip
+    designers must be paranoid!)</p>
+</li>
+<li>
+<p>We use <strong>Synopsys Design Compiler (DC)</strong> to synthesize our design,
+    which means to transform the Verilog RTL model into a Verilog
+    gate-level netlist where all of the gates are selected from the
+    standard-cell library. We need to provide Synopsys DC with abstract
+    logical and timing views of the standard-cell library in <code>.db</code>
+    format. In addition to the Verilog gate-level netlist, Synopsys DC
+    can also generate a <code>.ddc</code> file which contains information about the
+    gate-level netlist and timing, and this <code>.ddc</code> file can be inspected
+    using Synopsys Design Vision (DV). We will also use Synopsys DC to
+    generate a <code>.sdc</code> which captures timing constraints which can then be
+    used as input to the place-and-route tool.</p>
+</li>
+<li>
+<p>We use <strong>Cadence Innovus</strong> to place-and-route our design, which means
+    to place all of the gates in the gate-level netlist into rows on the
+    chip and then to generate the metal wires that connect all of the
+    gates together. We need to provide Cadence Innovus with the same
+    abstract logical and timing views used in Synopsys DC, but we also
+    need to provide Cadence Innovus with technology information in
+    <code>.lef</code>, and <code>.captable</code> format and abstract physical views of the
+    standard-cell library also in <code>.lef</code> format. Cadence Innovus will
+    generate an updated Verilog gate-level netlist, a <code>.spef</code> file which
+    contains parasitic resistance/capacitance information about all nets
+    in the design, and a <code>.gds</code> file which contains the final layout. The
+    <code>.gds</code> file can be inspected using the open-source Klayout GDS
+    viewer. Cadence Innovus also generates reports which can be used to
+    accurately characterize area and timing.</p>
+</li>
+<li>
+<p>We use <strong>Synopsys PrimeTime (PT)</strong> to perform power analysis of our
+    design. We need to provide Synopsys PT with the same abstract
+    logical, timing, and power views used in Synopsys DC and Cadence
+    Innovus, but in addition we need to provide switching activity
+    information for every net in the design (which comes from the <code>.saif</code>
+    file), and capacitance information for every net in the design (which
+    comes from the <code>.spef</code> file). Synopsys PT puts the switching
+    activity, capacitance, clock frequency, and voltage together to
+    estimate the power consumption of every net and thus every module in
+    the design, and these estimates are captured in various reports.</p>
+</li>
+</ol>
+<p>Extensive documentation is provided by Synopsys and Cadence for these
+ASIC tools. We have organized this documentation and made it available to
+you on the public course webpage:</p>
+<ul>
+<li><a href="https://www.csl.cornell.edu/courses/ece6745/asicdocs">https://www.csl.cornell.edu/courses/ece6745/asicdocs</a></li>
+</ul>
+<p>The first step is to access <code>ecelinux</code>. Use VS Code to log into a
+specific <code>ecelinux</code> server and then use Microsoft Remote Desktop to log
+into the same server. Once you are at the <code>ecelinux</code> prompt, source the
+setup script, source the GUI setup script, clone this repository from
+GitHub, and define an environment variable to keep track of the top
+directory for the project.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/ece6745-tut07-asic-back-end<span class="w"> </span>tut07
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tut07
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>%<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TOPDIR</span><span class="o">=</span><span class="nv">$PWD</span>
+</span></code></pre></div>
+<h2 id="1-revisiting-the-asic-flow-front-end">1. Revisiting the ASIC Flow Front-End</h2>
+<p>Our goal in this tutorial is to generate layout for the sort unit from
+the Verilog tutorial using the ASIC tools. As a reminder, the sort unit
+takes as input four integers and a valid bit and outputs those same four
+integers in increasing order with the valid bit. The sort unit is
+implemented using a three-stage pipelined, bitonic sorting network and
+the datapath is shown below.</p>
+<p><img alt="" src="../img/tut06-sort-unit-dpath.png" /></p>
+<p>Before we can place and route a gate-level netlist, we need to synthesize
+that netlist. This is what we learned about in the last section. Here are
+the steps to test and then synthesize the design using Synopsys DC.</p>
+<h3 id="11-test-simulate-translate">1.1. Test, Simulate, Translate</h3>
+<p>Always run the tests before pushing anything through the ASIC flow. There
+is no sense in running the flow if the design is incorrect!</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut3_verilog/sort
+</span></code></pre></div>
+<p>The tests are for verification. When we push a design through the flow we
+want to use a simulator which is focused on evaluation. You can run the
+simulator for our sort unit like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>%<span class="w"> </span>../tut3_verilog/sort/sort-sim<span class="w"> </span>--short-mname<span class="w"> </span>--impl<span class="w"> </span>rtl-struct<span class="w"> </span>--stats<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">                                </span>--translate<span class="w"> </span>--dump-vtb
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nv">num_cycles</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="m">106</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nv">num_cycles_per_sort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>.06
+</span></code></pre></div>
+<p>You should now have the Verilog that we want to push through the ASIC
+flow.</p>
+<h3 id="12-simulate-synthesize-simulate">1.2. Simulate, Synthesize, Simulate</h3>
+<p>Let's take a look at each script to confirm it matches the manual
+commands we used in the previous discussion section. Here is the run
+script for four-start RTL simulation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./01-synopsys-vcs-rtlsim/run
+</span></code></pre></div>
+<p>Here is the run script for synthesis.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./02-synopsys-dc-synth/run
+</span></code></pre></div>
+<p>Notice that this script simply executes <code>dc_shell-xg-t</code> with a TCL script
+which contains the commands to: configure the standard cell library,
+analyze and elaborate the design; setup timing constraints; synthesize
+the design; write outputs; and write final outputs (i.e., Verilog and
+DDC) and reports (i.e., timing report and area report).</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./02-synopsys-dc-synth/run.tcl
+</span></code></pre></div>
+<p>Finally, here is the run script for fast-functional gate-level
+simulation. The key difference from four-state RTL simulation is that
+this simulation takes as input the Verilog for the standard-cell library
+and the Verilog for the post-synthesis gate-level netlist.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./03-synopsys-vcs-ffglsim/run
+</span></code></pre></div>
+<p>You can run these steps as follows:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span>./01-synopsys-vcs-rtlsim/run
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>%<span class="w"> </span>./02-synopsys-dc-synth/run
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>%<span class="w"> </span>./03-synopsys-vcs-ffglsim/run
+</span></code></pre></div>
+<p>Verify that your design passes four-state RTL simulation and
+fast-functional gate-level simulation. Then take a look at the synthesis
+reports.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>less<span class="w"> </span>./02-synopsys-dc-synth/timing.rpt
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>%<span class="w"> </span>less<span class="w"> </span>./02-synopsys-dc-synth/area.rpt
+</span></code></pre></div>
+<p>Finally, take a few minutes to examine the resulting Verilog gate-level
+netlist. Notice that the module hierarchy is preserved.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>less<span class="w"> </span>./02-synopsys-dc-synth/post-synth.v
+</span></code></pre></div>
+<p>This is the gate-level netlist that we now want to push through the ASIC
+back-end flow.</p>
+<h2 id="2-cadence-innovus-for-place-and-route">2. Cadence Innovus for Place-and-Route</h2>
+<p>We use Cadence Innovus for placing standard cells in rows and then
+automatically routing all of the nets between these standard cells. We
+also use Cadence Innovus to route the power and ground rails in a grid
+and connect this grid to the power and ground pins of each standard cell,
+and to automatically generate a clock tree to distribute the clock to all
+sequential state elements with hopefully low skew.</p>
+<p>We will be running Cadence Innovus in a separate directory to keep the
+files separate from the other tools.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/04-cadence-innovus-pnr
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/04-cadence-innovus-pnr
+</span></code></pre></div>
+<h3 id="21-timing-analysis-setup-file">2.1. Timing Analysis Setup File</h3>
+<p>Before starting Cadence Innovus, we need to create a file to setup the
+timing analysis. This file specifies what "corner" to use for our timing
+analysis. A corner is a characterization of the standard cell library and
+technology with specific assumptions about the process, temperature, and
+voltage (PVT). So we might have a "fast" corner which assumes best-case
+process variability, low temperature, and high voltage, or we might have
+a "slow" corner which assumes worst-case variability, high temperature,
+and low voltage. To ensure our design will work across a range of
+operating conditions, we need to evaluate our design across a range of
+corners. In this course, we will keep things simple by only considering a
+"typical" corner (i.e., average PVT). Use VS Code to create a file named
+<code>setup-timing.tcl</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/04-cadence-innovus-pnr
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span>code<span class="w"> </span>setup-timing.tcl
+</span></code></pre></div>
+<p>The file should have the following content:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>create_rc_corner -name typical \
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>   -cap_table &quot;$env(ECE6745_STDCELLS)/rtk-typical.captable&quot; \
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>   -T 25
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>create_library_set -name libs_typical \
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>   -timing [list &quot;$env(ECE6745_STDCELLS)/stdcells.lib&quot;]
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>create_delay_corner -name delay_default \
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>   -library_set libs_typical \
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>   -rc_corner typical
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>create_constraint_mode -name constraints_default \
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>   -sdc_files [list ../02-synopsys-dc-synth/post-synth.sdc]
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>create_analysis_view -name analysis_default \
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>   -constraint_mode constraints_default \
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>   -delay_corner delay_default
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>set_analysis_view -setup analysis_default -hold analysis_default
+</span></code></pre></div>
+<p>The <code>create_rc_corner</code> command loads in the <code>.captable</code> file that we
+examined earlier. This file includes information about the resistance and
+capacitance of every metal layer. Notice that we are loading in the
+"typical" captable and we are specifying an "average" operating
+temperature of 25 degC. The <code>create_library_set</code> command loads in the
+<code>.lib</code> file that we examined earlier. This file includes information
+about the input/output capacitance of each pin in each standard cell
+along with the delay from every input to every output in the standard
+cell. The <code>create_delay_corner</code> specifies a specific corner that we would
+like to use for our timing analysis by putting together a <code>.captable</code> and
+a <code>.lib</code> file. In this specific example, we are creating a typical corner
+by putting together the typical <code>.captable</code> and typical <code>.lib</code> we just
+loaded. The <code>create_constraint_mode</code> command loads in the post-synthesis
+<code>.sdc</code> file which captures all of the timing constraints after synthesis.
+The <code>create_analysis_view</code> command puts together constraints with a
+specific corner, and the <code>set_analysis_view</code> command tells Cadence
+Innovus that we would like to use this specific analysis view for both
+setup and hold time analysis.</p>
+<h3 id="22-initial-setup">2.2. Initial Setup</h3>
+<p>Now that we have created our <code>setup-timing.tcl</code> file we can start Cadence
+Innovus:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/04-cadence-innovus-pnr
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>%<span class="w"> </span>innovus
+</span></code></pre></div>
+<p>As we enter commands we will be able use the GUI to see incremental
+progress towards a fully placed-and-routed design. We need to set various
+variables before starting to work in Cadence Innovus. These variables
+tell Cadence Innovus the location of the MMMC file, the location of the
+Verilog gate-level netlist, the name of the top-level module in our
+design, the location of the <code>.lef</code> files, and finally the names of the
+power and ground nets.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>innovus&gt; set init_mmmc_file &quot;setup-timing.tcl&quot;
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>innovus&gt; set init_verilog   &quot;../02-synopsys-dc-synth/post-synth.v&quot;
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>innovus&gt; set init_top_cell  &quot;SortUnitStruct&quot;
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>innovus&gt; set init_lef_file  &quot;$env(ECE6745_STDCELLS)/rtk-tech.lef $env(ECE6745_STDCELLS)/stdcells.lef&quot;
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>innovus&gt; set init_gnd_net   &quot;VSS&quot;
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>innovus&gt; set init_pwr_net   &quot;VDD&quot;
+</span></code></pre></div>
+<p>We are now ready to use the <code>init_design</code> command to read in the verilog,
+set the design name, setup the timing analysis views, read the technology
+<code>.lef</code> for layer information, and read the standard cell <code>.lef</code> for
+physical information about each cell used in the design.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>innovus&gt; init_design
+</span></code></pre></div>
+<p>We also need to tell Cadence Innovus the process node are using so it can
+roughly estimate specific technology parameters.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>innovus&gt; setDesignMode -process 45
+</span></code></pre></div>
+<p>Cadence Innovus includes many advanced timing-driven optimizations by
+default. Two examples include signal integrity analysis (e.g., capacitive
+coupling across signal wires) and useful clock skew (e.g., purposefully
+introducing clock skew to give more time for critical paths at the
+expense of other paths). To simply our timing analysis we will turn these
+optimizations off as follows.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>innovus&gt; setDelayCalMode -SIAware false
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>innovus&gt; setOptMode -usefulSkew false
+</span></code></pre></div>
+<p>Cadence Innovus can fix hold-time violations by inserting extra buffers
+to delay certain paths. We add an extra hold-time target slack so that
+Cadence Innovus will work extra hard to meet the hold-time, and we need
+to tell Cadence Innovus which standard cells to use when fixing hold-time
+violations as follows.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>innovus&gt; setOptMode -holdTargetSlack 0.010
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>innovus&gt; setOptMode -holdFixingCells {
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>  BUF_X1 BUF_X1 BUF_X2 BUF_X4 BUF_X8 BUF_X16 BUF_X32
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>}
+</span></code></pre></div>
+<h3 id="23-floorplanning">2.3. Floorplanning</h3>
+<p>The next substep is floorplaning. This is where we broadly organize the
+chip in terms of its overall dimensions and the placement of any
+previously designed blocks. For now we just do some very simple
+floorplanning using the <code>floorPlan</code> command.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>innovus&gt; floorPlan -r 1.0 0.70 4.0 4.0 4.0 4.0
+</span></code></pre></div>
+<p>In this example, we have chosen the aspect ratio to be 1.0 and a target
+cell utilization to be 70%. The cell utilization is the percentage of the
+final chip that will actually contain useful standard cells as opposed to
+just "filler" cells (i.e., empty cells). Ideally, we would like the cell
+utilization to be 100% but this is simply not reasonable. If the cell
+utilization is too high, Cadence Innovus will spend way too much time
+trying to optimize the design and will eventually simply give up. A
+target cell utilization of 70% makes it more likely that Cadence Innovus
+can successfuly place and route the design. We have also added 4.0um of
+margin around the top, bottom, left, and right of the chip to give us
+room for the power ring which will go around the entire chip.</p>
+<p>The following screen capture illustrates what you should see: a square
+floorplan with rows where the standard cells will eventually be placed.
+You can use the <em>View &gt; Fit</em> menu option to see the entire chip.</p>
+<p><img alt="" src="../img/tut07-cadence-innovus-1.png" /></p>
+<h3 id="24-placement">2.4. Placement</h3>
+<p>The next substep is cell placement. We can do the placement and initial
+routing of the standard cells using the <code>place_opt_design</code> command:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>innovus&gt; place_opt_design
+</span></code></pre></div>
+<p>The following screen capture illustrates what you should see: the gates
+have been placed underneath a sea of wiring on the various metal layers.</p>
+<p><img alt="" src="../img/tut07-cadence-innovus-2.png" /></p>
+<p>Note that Cadence Innovus has only done a very preliminary routing,
+primarily to help improve placement. You can use the Amobea workspace to
+help visualize how modules are mapped across the chip. Choose <em>Windows &gt;
+Workspaces &gt; Amoeba</em> from the menu. However, we recommend using the
+design browser to help visualize how modules are mapped across the chip.
+Here are the steps:</p>
+<ul>
+<li>Choose <em>Windows &gt; Workspaces &gt; Design Browser + Physical</em> from the menu</li>
+<li>Hide all of the metal layers by pressing the number keys</li>
+<li>Browse the design hierarchy using the panel on the left</li>
+<li>Right click on a module, click <em>Highlight</em>, select a color</li>
+</ul>
+<p>In this way you can view where various modules are located on the chip.
+The following screen capture illustrates the location of the five min/max
+units.</p>
+<p><img alt="" src="../img/tut07-cadence-innovus-3.png" /></p>
+<p>Notice how Cadence Innovus has grouped each module together. The
+placement algorithm tries to keep connected standard cells close together
+to minimize wiring.</p>
+<p>If our design has any constant values, then we need to insert special
+standard cells to "tie" those constant values to either VDD or ground
+using the <code>addTieHiLo</code> command.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>innovus&gt; addTieHiLo -cell &quot;LOGIC1_X1 LOGIC0_X1&quot;
+</span></code></pre></div>
+<p>After placement and tie cell insertion, we can assign IO pin locations
+for our block-level design. Since this is not a full chip with IO pads,
+or a hierarchical block, we don't really care exactly where all of the
+pins line up, so we'll let the tool assign the location for all of the
+pins.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>innovus&gt; assignIoPins -pin *
+</span></code></pre></div>
+<h3 id="25-power-routing">2.5. Power Routing</h3>
+<p>The next substep is power routing. Recall that each standard cell has
+internal M1 power and ground rails which will connect via abutment when
+the cells are placed into rows. If we were just to supply power to cells
+using these rails we would likely have large IR drop and the cells in the
+middle of the chip would effectively be operating at a much lower
+voltage. During power routing, we create a grid of power and ground wires
+on the top metal layers and then connect this grid down to the M1 power
+rails in each row. We also create a power ring around the entire
+floorplan. Before doing the power routing, we need to use the
+<code>globalNetCommand</code> command to tell Cadence Innovus which nets are power
+and which nets are ground (there are <em>many</em> possible names for power and
+ground!).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>innovus&gt; globalNetConnect VDD -type pgpin -pin VDD -all -verbose
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>innovus&gt; globalNetConnect VSS -type pgpin -pin VSS -all -verbose
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>innovus&gt; globalNetConnect VDD -type tiehi -pin VDD -all -verbose
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>innovus&gt; globalNetConnect VSS -type tielo -pin VSS -all -verbose
+</span></code></pre></div>
+<p>We can now draw M1 "rails" for the power and ground rails that go along
+each row of standard cells.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>innovus&gt; sroute -nets {VDD VSS}
+</span></code></pre></div>
+<p>We now create a power ring around our chip using the <code>addRing</code> command. A
+power ring ensures we can easily get power and ground to all standard
+cells. The command takes parameters specifying the width of each wire in
+the ring, the spacing between the two rings, and what metal layers to use
+for the ring. We will put the power ring on M7 and M8; we often put the
+power routing on the top metal layers since these are fundamentally
+global routes and these top layers have low resistance which helps us
+minimize static IR drop and di/dt noise. These top layers have high
+capacitance but this is not an issue since the power and ground rails are
+not switching (and indeed this extra capacitance can serve as a very
+modest amount of decoupling capacitance to smooth out time variations in
+the power supply).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>innovus&gt; addRing \
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>  -nets {VDD VSS} -width 0.8 -spacing 0.8 \
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>  -layer [list top 9 bottom 9 left 8 right 8]
+</span></code></pre></div>
+<p>We have power and ground rails along each row of standard cells and a
+power ring, so now we need to hook these up. We can use the <code>addStripe</code>
+command to draw wires and automatically insert vias whenever wires cross.
+First, we draw the horizontal "stripes".</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>innovus&gt; addStripe \
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>  -nets {VSS VDD} -layer 9 -direction horizontal \
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>  -width 0.8 -spacing 4.8 \
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>  -set_to_set_distance 11.2 -start_offset 2.4
+</span></code></pre></div>
+<p>And then we draw the vertical "stripes".</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>innovus&gt; addStripe \
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>  -nets {VSS VDD} -layer 8 -direction vertical \
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>  -width 0.8 -spacing 4.8 \
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>  -set_to_set_distance 11.2 -start_offset 2.4
+</span></code></pre></div>
+<p>The following screen capture illustrates what you should see: a power
+ring and grid on M7 and M8 connected to the horizontal power and ground
+rails on M1.</p>
+<p><img alt="" src="../img/tut07-cadence-innovus-4.png" /></p>
+<p>You can toggle the visibility of metal layers by using the panel on the
+right. Click the checkbox in the V column to toggle the visibility of the
+corresponding layer. You can also simply use the number keys on your
+keyboard. Pressing the 7 key will toggle M7 and pressing the 8 key will
+toggle M8. Zoom in on a via and toggle the visibility of the metal layers
+to see how Cadence Innovus has automatically inserted a via stack that
+goes from M1 all the way up to M7 or M8.</p>
+<h3 id="26-clock-tree-synthesis">2.6. Clock-Tree Synthesis</h3>
+<p>The next substep is clock-tree synthesis. First, let's display the
+preliminary clock tree created in the previous step so we can clearly see
+the impact of optimized clock tree routing. In the right panel click on
+<em>Net</em> and then deselect the checkbox in the V column next to <em>Signal</em>,
+<em>Special Net</em>, <em>Power</em>, and <em>Ground</em> so that only <em>Clock</em> is selected.
+You should be able to see the clock snaking around the chip connecting
+the clock port of all of the registers. Now use the <code>ccopt_design</code>
+command to optimize the clock tree routing.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>innovus&gt; create_ccopt_clock_tree_spec
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>innovus&gt; set_ccopt_property update_io_latency false
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>innovus&gt; clock_opt_design
+</span></code></pre></div>
+<p>By default, Cadence Innovus can optimize the clock tree by adding a
+"clock source insertion latency". Essentially this means that Cadence
+Innovus might decide that the top-level chip should adjust the delay
+between the input pins and the clock. Unfortunately, this makes it more
+difficult for us to perform block-level back-annotated gate-level
+simulation so for now we will disable this optimization.</p>
+<p>If you watch closely you should see a significant difference in the clock
+tree routing before and after optimization. The following screen capture
+illustrates the optimized clock tree routing.</p>
+<p><img alt="" src="../img/tut07-cadence-innovus-5.png" /></p>
+<p>The routes are straighter, shorter, and well balanced. This will result
+in much lower clock skew.</p>
+<p>We should now use the <code>optDesign</code> command to try and fix both setup time
+violations (e.g., by choosing different standard cells to reduce the
+delay of the critical path) and hold time violations (e.g., by inserting
+buffers to increase the delay of certain fast paths).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>innovus&gt; optDesign -postCTS -setup
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>innovus&gt; optDesign -postCTS -hold
+</span></code></pre></div>
+<h3 id="27-routing">2.7. Routing</h3>
+<p>The next substep is routing. Although we already did a preliminary
+routing during the placement substep, we now want to optimize this signal
+routing. Display just the signals but not the power and ground routing by
+clicking on the checkbox in the V column next to <em>Signal</em> in the left
+panel. Then use the <code>routeDesign</code> command to optimize the signal routing.
+We follow this with another iteration of <code>optDesign</code> to fix any violating
+paths that were created during <code>routeDesign</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>innovus&gt; routeDesign
+</span></code></pre></div>
+<p>If you watch closely you should see a significant difference in the
+signal routing before and after optimization. The following screen
+capture illustrates the optimized signal routing.</p>
+<p><img alt="" src="../img/tut07-cadence-innovus-6.png" /></p>
+<p>Again the routes are straighter and shorter. This will reduce the
+interconnect resistance and capacitance and thus improve the delay and
+energy of our design.</p>
+<p>Once again, we can now use the <code>optDesign</code> command to try and fix both
+setup time violations (e.g., by choosing different standard cells to
+reduce the delay of the critical path) and hold time violations (e.g., by
+inserting buffers to increase the delay of certain fast paths).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>innovus&gt; optDesign -postRoute -setup
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>innovus&gt; optDesign -postRoute -hold
+</span></code></pre></div>
+<p>Now that our design is fully placed and routed, we can extract the
+parasitic resistance and capacitances to enable more accurate timing and
+power analysis.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>innovus&gt; extractRC
+</span></code></pre></div>
+<h3 id="28-finishing">2.8. Finishing</h3>
+<p>One final step is to insert "filler" cells. Filler cells are essentially
+empty standard cells whose sole purpose is to connect the wells across
+each standard cell row.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>innovus&gt; setFillerMode -core {FILLCELL_X4 FILLCELL_X2 FILLCELL_X1}
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>innovus&gt; addFiller
+</span></code></pre></div>
+<p>Zoom in to see some of the detailed routing and take a moment to
+appreciate how much effort the tools have done for us automatically to
+synthesize, place, and route this design. The following screen capture
+shows some of this detailed routing.</p>
+<p><img alt="" src="../img/tut07-cadence-innovus-7.png" /></p>
+<p>Notice how each metal layer always goes in the same direction. So M2 is
+always vertical, M3 is always horizontal, M4 is always vertical, etc.
+This helps reduce capacitive coupling across layers and also simplifies
+the routing algorithm. Actually, if you look closely in the above screen
+shot you can see situations on M2 (red) and M3 (green) where the router
+has generated a little "jog" meaning that on a single layer the wire goes
+both vertically and horizontally. This is an example of the sophisticated
+algorithms used in these tools.</p>
+<p>Another final step do is verify that the gate-level netlist matches what
+is really in the final layout. We can do this using the
+<code>verifyConnectivity</code> command. We can also do a preliminary "design rule
+check" to make sure that the generated metal interconnect does not
+violate any design rules with the <code>verify_drc</code> command.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>innovus&gt; verifyConnectivity
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>innovus&gt; verify_drc
+</span></code></pre></div>
+<h3 id="29-outputs-and-reports">2.9. Outputs and Reports</h3>
+<p>Now we can generate various output files and reports. We start by saving
+the design so we can reload the design into Cadence Innovus for later
+analysis using the GUI.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>innovus&gt; saveDesign post-pnr.enc
+</span></code></pre></div>
+<p>We also need to save the final gate-level netlist to enable
+back-annotated gate-level simulation, since Cadence Innovus will often
+insert new cells or change cells during its optimization passes.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>innovus&gt; saveNetlist post-pnr.v
+</span></code></pre></div>
+<p>We can write parasitic information to a special <code>.spef</code> file. This file
+can be used for later power analysis.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>innovus&gt; rcOut -rc_corner typical -spef post-pnr.spef
+</span></code></pre></div>
+<p>You may get an error regarding open nets. This is actually more of a
+warning message, and for the purposes of RC extraction we can ignore
+this.</p>
+<p>We also need to extract delay information and write this to an <code>.sdf</code>
+(Standard Delay Format) file, which we'll use for our back-annotated
+gate-level simulations.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>innovus&gt; write_sdf post-pnr.sdf
+</span></code></pre></div>
+<p>Finally, we of course need to generate the real layout as a <code>.gds</code> file.
+This is what we will send to the foundry when we are ready to tapeout the
+chip.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>innovus&gt; streamOut post-pnr.gds \
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>  -merge &quot;$env(ECE6745_STDCELLS)/stdcells.gds&quot; \
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>  -mapFile &quot;$env(ECE6745_STDCELLS)/rtk-stream-out.map&quot;
+</span></code></pre></div>
+<p>We can also use Cadence Innovus to do timing, area, and power analysis
+similar to what we did with Synopsys DC. These post-pnr results will be
+<em>much</em> more accurate than the preliminary post-synthesis results. Let's
+start with a basic setup timing report.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>innovus&gt; report_timing -late -path_type full_clock -net
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>...
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>Other End Arrival Time          0.000
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>- External Delay                0.050
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>+ Phase Shift                   0.700
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a>= Required Time                 0.650
+</span><span id="__span-40-7"><a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a>- Arrival Time                  0.607
+</span><span id="__span-40-8"><a id="__codelineno-40-8" name="__codelineno-40-8" href="#__codelineno-40-8"></a>= Slack Time                    0.043
+</span><span id="__span-40-9"><a id="__codelineno-40-9" name="__codelineno-40-9" href="#__codelineno-40-9"></a>     Clock Rise Edge                      0.000
+</span><span id="__span-40-10"><a id="__codelineno-40-10" name="__codelineno-40-10" href="#__codelineno-40-10"></a>     + Drive Adjustment                   0.008
+</span><span id="__span-40-11"><a id="__codelineno-40-11" name="__codelineno-40-11" href="#__codelineno-40-11"></a>     = Beginpoint Arrival Time            0.008
+</span><span id="__span-40-12"><a id="__codelineno-40-12" name="__codelineno-40-12" href="#__codelineno-40-12"></a>     +---------------------------------------------------------------------------------------------------------------------+
+</span><span id="__span-40-13"><a id="__codelineno-40-13" name="__codelineno-40-13" href="#__codelineno-40-13"></a>     |               Pin               | Edge |             Net              |      Cell      | Delay | Arrival | Required |
+</span><span id="__span-40-14"><a id="__codelineno-40-14" name="__codelineno-40-14" href="#__codelineno-40-14"></a>     |                                 |      |                              |                |       |  Time   |   Time   |
+</span><span id="__span-40-15"><a id="__codelineno-40-15" name="__codelineno-40-15" href="#__codelineno-40-15"></a>     |---------------------------------+------+------------------------------+----------------+-------+---------+----------|
+</span><span id="__span-40-16"><a id="__codelineno-40-16" name="__codelineno-40-16" href="#__codelineno-40-16"></a>     | clk[0]                          |  ^   | clk[0]                       |                |       |   0.008 |    0.052 |
+</span><span id="__span-40-17"><a id="__codelineno-40-17" name="__codelineno-40-17" href="#__codelineno-40-17"></a>     | v/CTS_ccl_a_buf_00001/A         |  ^   | clk[0]                       | CLKBUF_X3      | 0.000 |   0.008 |    0.052 |
+</span><span id="__span-40-18"><a id="__codelineno-40-18" name="__codelineno-40-18" href="#__codelineno-40-18"></a>     | v/CTS_ccl_a_buf_00001/Z         |  ^   | v/CTS_1                      | CLKBUF_X3      | 0.059 |   0.068 |    0.111 |
+</span><span id="__span-40-19"><a id="__codelineno-40-19" name="__codelineno-40-19" href="#__codelineno-40-19"></a>     | v/elm2_S2S3/q_reg[1]/CK         |  ^   | v/CTS_1                      | DFF_X1         | 0.002 |   0.069 |    0.113 |
+</span><span id="__span-40-20"><a id="__codelineno-40-20" name="__codelineno-40-20" href="#__codelineno-40-20"></a>     | v/elm2_S2S3/q_reg[1]/Q          |  ^   | v/elm2_S3[1]                 | DFF_X1         | 0.101 |   0.170 |    0.213 |
+</span><span id="__span-40-21"><a id="__codelineno-40-21" name="__codelineno-40-21" href="#__codelineno-40-21"></a>     | v/mmuA_S3/FE_DBTC2_elm2_S3_1/A  |  ^   | v/elm2_S3[1]                 | INV_X1         | 0.000 |   0.170 |    0.213 |
+</span><span id="__span-40-22"><a id="__codelineno-40-22" name="__codelineno-40-22" href="#__codelineno-40-22"></a>     | v/mmuA_S3/FE_DBTC2_elm2_S3_1/ZN |  v   | v/mmuA_S3/FE_DBTN2_elm2_S3_1 | INV_X1         | 0.014 |   0.184 |    0.227 |
+</span><span id="__span-40-23"><a id="__codelineno-40-23" name="__codelineno-40-23" href="#__codelineno-40-23"></a>     | v/mmuA_S3/U62/B2                |  v   | v/mmuA_S3/FE_DBTN2_elm2_S3_1 | AOI21_X1       | 0.000 |   0.184 |    0.227 |
+</span><span id="__span-40-24"><a id="__codelineno-40-24" name="__codelineno-40-24" href="#__codelineno-40-24"></a>     | v/mmuA_S3/U62/ZN                |  ^   | v/mmuA_S3/n22                | AOI21_X1       | 0.030 |   0.214 |    0.257 |
+</span><span id="__span-40-25"><a id="__codelineno-40-25" name="__codelineno-40-25" href="#__codelineno-40-25"></a>     | v/mmuA_S3/U17/A1                |  ^   | v/mmuA_S3/n22                | NAND2_X1       | 0.000 |   0.214 |    0.257 |
+</span><span id="__span-40-26"><a id="__codelineno-40-26" name="__codelineno-40-26" href="#__codelineno-40-26"></a>     | v/mmuA_S3/U17/ZN                |  v   | v/mmuA_S3/n13                | NAND2_X1       | 0.017 |   0.231 |    0.274 |
+</span><span id="__span-40-27"><a id="__codelineno-40-27" name="__codelineno-40-27" href="#__codelineno-40-27"></a>     | v/mmuA_S3/U8/A2                 |  v   | v/mmuA_S3/n13                | NAND3_X1       | 0.000 |   0.231 |    0.274 |
+</span><span id="__span-40-28"><a id="__codelineno-40-28" name="__codelineno-40-28" href="#__codelineno-40-28"></a>     | v/mmuA_S3/U8/ZN                 |  ^   | v/mmuA_S3/n5                 | NAND3_X1       | 0.019 |   0.250 |    0.293 |
+</span><span id="__span-40-29"><a id="__codelineno-40-29" name="__codelineno-40-29" href="#__codelineno-40-29"></a>     | v/mmuA_S3/U6/A1                 |  ^   | v/mmuA_S3/n5                 | NAND3_X1       | 0.000 |   0.250 |    0.293 |
+</span><span id="__span-40-30"><a id="__codelineno-40-30" name="__codelineno-40-30" href="#__codelineno-40-30"></a>     | v/mmuA_S3/U6/ZN                 |  v   | v/mmuA_S3/n4                 | NAND3_X1       | 0.017 |   0.267 |    0.310 |
+</span><span id="__span-40-31"><a id="__codelineno-40-31" name="__codelineno-40-31" href="#__codelineno-40-31"></a>     | v/mmuA_S3/U3/A3                 |  v   | v/mmuA_S3/n4                 | AND3_X1        | 0.000 |   0.267 |    0.310 |
+</span><span id="__span-40-32"><a id="__codelineno-40-32" name="__codelineno-40-32" href="#__codelineno-40-32"></a>     | v/mmuA_S3/U3/ZN                 |  v   | v/mmuA_S3/n23                | AND3_X1        | 0.035 |   0.302 |    0.345 |
+</span><span id="__span-40-33"><a id="__codelineno-40-33" name="__codelineno-40-33" href="#__codelineno-40-33"></a>     | v/mmuA_S3/U2/A1                 |  v   | v/mmuA_S3/n23                | NOR2_X1        | 0.000 |   0.302 |    0.345 |
+</span><span id="__span-40-34"><a id="__codelineno-40-34" name="__codelineno-40-34" href="#__codelineno-40-34"></a>     | v/mmuA_S3/U2/ZN                 |  ^   | v/mmuA_S3/n24                | NOR2_X1        | 0.025 |   0.326 |    0.370 |
+</span><span id="__span-40-35"><a id="__codelineno-40-35" name="__codelineno-40-35" href="#__codelineno-40-35"></a>     | v/mmuA_S3/U36/A1                |  ^   | v/mmuA_S3/n24                | NOR3_X1        | 0.000 |   0.326 |    0.370 |
+</span><span id="__span-40-36"><a id="__codelineno-40-36" name="__codelineno-40-36" href="#__codelineno-40-36"></a>     | v/mmuA_S3/U36/ZN                |  v   | v/mmuA_S3/n25                | NOR3_X1        | 0.011 |   0.337 |    0.381 |
+</span><span id="__span-40-37"><a id="__codelineno-40-37" name="__codelineno-40-37" href="#__codelineno-40-37"></a>     | v/mmuA_S3/U32/A1                |  v   | v/mmuA_S3/n25                | OAI22_X1       | 0.000 |   0.337 |    0.381 |
+</span><span id="__span-40-38"><a id="__codelineno-40-38" name="__codelineno-40-38" href="#__codelineno-40-38"></a>     | v/mmuA_S3/U32/ZN                |  ^   | v/mmuA_S3/n27                | OAI22_X1       | 0.037 |   0.374 |    0.418 |
+</span><span id="__span-40-39"><a id="__codelineno-40-39" name="__codelineno-40-39" href="#__codelineno-40-39"></a>     | v/mmuA_S3/U13/A                 |  ^   | v/mmuA_S3/n27                | OAI21_X1       | 0.000 |   0.374 |    0.418 |
+</span><span id="__span-40-40"><a id="__codelineno-40-40" name="__codelineno-40-40" href="#__codelineno-40-40"></a>     | v/mmuA_S3/U13/ZN                |  v   | v/mmuA_S3/n16                | OAI21_X1       | 0.023 |   0.397 |    0.441 |
+</span><span id="__span-40-41"><a id="__codelineno-40-41" name="__codelineno-40-41" href="#__codelineno-40-41"></a>     | v/mmuA_S3/FE_OFC1_n16/A         |  v   | v/mmuA_S3/n16                | CLKBUF_X1      | 0.000 |   0.397 |    0.441 |
+</span><span id="__span-40-42"><a id="__codelineno-40-42" name="__codelineno-40-42" href="#__codelineno-40-42"></a>     | v/mmuA_S3/FE_OFC1_n16/Z         |  v   | v/mmuA_S3/FE_OFN5_n16        | CLKBUF_X1      | 0.095 |   0.492 |    0.535 |
+</span><span id="__span-40-43"><a id="__codelineno-40-43" name="__codelineno-40-43" href="#__codelineno-40-43"></a>     | v/mmuA_S3/U57/B1                |  v   | v/mmuA_S3/FE_OFN5_n16        | OAI22_X1       | 0.001 |   0.493 |    0.537 |
+</span><span id="__span-40-44"><a id="__codelineno-40-44" name="__codelineno-40-44" href="#__codelineno-40-44"></a>     | v/mmuA_S3/U57/ZN                |  ^   | v/mmuA_out_max_S3[2]         | OAI22_X1       | 0.059 |   0.553 |    0.596 |
+</span><span id="__span-40-45"><a id="__codelineno-40-45" name="__codelineno-40-45" href="#__codelineno-40-45"></a>     | v/U11/A1                        |  ^   | v/mmuA_out_max_S3[2]         | AND2_X1        | 0.000 |   0.553 |    0.596 |
+</span><span id="__span-40-46"><a id="__codelineno-40-46" name="__codelineno-40-46" href="#__codelineno-40-46"></a>     | v/U11/ZN                        |  ^   | out2[2]                      | AND2_X1        | 0.054 |   0.606 |    0.650 |
+</span><span id="__span-40-47"><a id="__codelineno-40-47" name="__codelineno-40-47" href="#__codelineno-40-47"></a>     | out2[2]                         |  ^   | out2[2]                      | SortUnitStruct | 0.000 |   0.607 |    0.650 |
+</span><span id="__span-40-48"><a id="__codelineno-40-48" name="__codelineno-40-48" href="#__codelineno-40-48"></a>     +---------------------------------------------------------------------------------------------------------------------+
+</span></code></pre></div>
+<p>Note that for these results we used a target clock period of 700ps. From
+the above report we can see that our design is still meeting timing even
+after place-and-route. This critical path is from the last pipeline
+register to the <code>out2[2]</code> output pin. Recall the setup time for all
+output ports was set to be 50ps in our timing constraints. So this path
+must be less than 700ps - 50ps = 650ps to meet the setup time constraint.
+The actual arrive time is 607ps and includes 69ps from the input clock
+pin to the CK pin of the DFF, 101ps for the clock-to-q delay, 383ps to
+get through the min/max unit, and 54ps to go through a final AND gate
+before reaching the <code>out2[2]</code> output pin for a total delay of 607ps. The
+total delay (607ps) is less than the required time (650ps) by 43ps of
+positive slack.</p>
+<p>Note that it is very likely that the critical path identified by
+Synsopsys DC after synthesis will <em>not</em> be the same critical path
+identified by Cadence Innovus after place-and-route. This is because
+Synopsys DC can only guess the final placement of the cells and
+interconnect during static timing analysis, while Cadence Innovus can use
+the real placement of the cells and interconnect during static timing
+analysis. For the same reason, there is no guarantee that if your design
+meets timing after synthesis that it will still meet timing after
+place-and-route! It is very possible that your design <em>will</em> meet timing
+after synthesis and then <em>will not</em> meet timing after place-and-route.
+<strong>If your design does not meet timing after place-and-route you must go
+back and use a longer target clock period for synthesis!</strong></p>
+<p>You can use the following steps in Cadence Innovus to display where the
+critical path is on the actual chip.</p>
+<ul>
+<li>Choose <em>Timing &gt; Debug Timing</em> from the menu</li>
+<li>Click <em>OK</em> in the pop-up window</li>
+<li>Right click on first path in the <em>Path List</em></li>
+<li>Choose <em>Highlight &gt; Only This Path &gt; Color</em></li>
+</ul>
+<p>You can also use the Design Browser to highlight specific modules to
+visualize how the critical path is routed across the chip between these
+modules. The following screen capture illustrates the critical path in
+our three-stage sort unit. From the above timing report we know the
+critical path basically goes through the <code>mmuA_S3</code> module, so we have
+highlighted that module in red using the Design Browser. Cadence Innovus
+has worked hard in both placement and routing to keep the critical path
+short. If your critical path stretches across the entire chip you may
+need to take extra steps such as explicit floorplanning or hierarchical
+design to help the tools produce a better quality of result.</p>
+<p><img alt="" src="../img/tut07-cadence-innovus-8.png" /></p>
+<p>In addition to checking to see if we met our setup time constraints, we
+also must check to see if we have met our hold time constraints.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>innovus&gt; report_timing -early -path_type full_clock -net
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>Other End Arrival Time          0.070
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>+ Hold                          0.015
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a>+ Phase Shift                   0.000
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a>= Required Time                 0.085
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a>  Arrival Time                  0.085
+</span><span id="__span-41-7"><a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a>  Slack Time                    0.000
+</span><span id="__span-41-8"><a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a>     Clock Rise Edge                      0.000
+</span><span id="__span-41-9"><a id="__codelineno-41-9" name="__codelineno-41-9" href="#__codelineno-41-9"></a>     + Input Delay                        0.000
+</span><span id="__span-41-10"><a id="__codelineno-41-10" name="__codelineno-41-10" href="#__codelineno-41-10"></a>     + Drive Adjustment                   0.004
+</span><span id="__span-41-11"><a id="__codelineno-41-11" name="__codelineno-41-11" href="#__codelineno-41-11"></a>     = Beginpoint Arrival Time            0.004
+</span><span id="__span-41-12"><a id="__codelineno-41-12" name="__codelineno-41-12" href="#__codelineno-41-12"></a>     Timing Path:
+</span><span id="__span-41-13"><a id="__codelineno-41-13" name="__codelineno-41-13" href="#__codelineno-41-13"></a>     +--------------------------------------------------------------------------------------------------------+
+</span><span id="__span-41-14"><a id="__codelineno-41-14" name="__codelineno-41-14" href="#__codelineno-41-14"></a>     |             Pin              | Edge |            Net             |  Cell  | Delay | Arrival | Required |
+</span><span id="__span-41-15"><a id="__codelineno-41-15" name="__codelineno-41-15" href="#__codelineno-41-15"></a>     |                              |      |                            |        |       |  Time   |   Time   |
+</span><span id="__span-41-16"><a id="__codelineno-41-16" name="__codelineno-41-16" href="#__codelineno-41-16"></a>     |------------------------------+------+----------------------------+--------+-------+---------+----------|
+</span><span id="__span-41-17"><a id="__codelineno-41-17" name="__codelineno-41-17" href="#__codelineno-41-17"></a>     | in3[6]                       |  ^   | in3[6]                     |        |       |   0.004 |    0.004 |
+</span><span id="__span-41-18"><a id="__codelineno-41-18" name="__codelineno-41-18" href="#__codelineno-41-18"></a>     | FE_PHC106_in3_6/A            |  ^   | in3[6]                     | BUF_X1 | 0.000 |   0.004 |    0.004 |
+</span><span id="__span-41-19"><a id="__codelineno-41-19" name="__codelineno-41-19" href="#__codelineno-41-19"></a>     | FE_PHC106_in3_6/Z            |  ^   | FE_PHN106_in3_6            | BUF_X1 | 0.020 |   0.024 |    0.024 |
+</span><span id="__span-41-20"><a id="__codelineno-41-20" name="__codelineno-41-20" href="#__codelineno-41-20"></a>     | FE_PHC81_in3_6/A             |  ^   | FE_PHN106_in3_6            | BUF_X1 | 0.000 |   0.024 |    0.024 |
+</span><span id="__span-41-21"><a id="__codelineno-41-21" name="__codelineno-41-21" href="#__codelineno-41-21"></a>     | FE_PHC81_in3_6/Z             |  ^   | FE_PHN81_in3_6             | BUF_X1 | 0.021 |   0.045 |    0.045 |
+</span><span id="__span-41-22"><a id="__codelineno-41-22" name="__codelineno-41-22" href="#__codelineno-41-22"></a>     | FE_PHC46_in3_6/A             |  ^   | FE_PHN81_in3_6             | BUF_X1 | 0.000 |   0.045 |    0.045 |
+</span><span id="__span-41-23"><a id="__codelineno-41-23" name="__codelineno-41-23" href="#__codelineno-41-23"></a>     | FE_PHC46_in3_6/Z             |  ^   | FE_PHN46_in3_6             | BUF_X1 | 0.020 |   0.065 |    0.065 |
+</span><span id="__span-41-24"><a id="__codelineno-41-24" name="__codelineno-41-24" href="#__codelineno-41-24"></a>     | v/elm3_S0S1/FE_PHC28_in3_6/A |  ^   | FE_PHN46_in3_6             | BUF_X1 | 0.000 |   0.065 |    0.065 |
+</span><span id="__span-41-25"><a id="__codelineno-41-25" name="__codelineno-41-25" href="#__codelineno-41-25"></a>     | v/elm3_S0S1/FE_PHC28_in3_6/Z |  ^   | v/elm3_S0S1/FE_PHN28_in3_6 | BUF_X1 | 0.020 |   0.085 |    0.085 |
+</span><span id="__span-41-26"><a id="__codelineno-41-26" name="__codelineno-41-26" href="#__codelineno-41-26"></a>     | v/elm3_S0S1/q_reg[6]/D       |  ^   | v/elm3_S0S1/FE_PHN28_in3_6 | DFF_X1 | 0.000 |   0.085 |    0.085 |
+</span><span id="__span-41-27"><a id="__codelineno-41-27" name="__codelineno-41-27" href="#__codelineno-41-27"></a>     +--------------------------------------------------------------------------------------------------------+
+</span><span id="__span-41-28"><a id="__codelineno-41-28" name="__codelineno-41-28" href="#__codelineno-41-28"></a>     Clock Rise Edge                      0.000
+</span><span id="__span-41-29"><a id="__codelineno-41-29" name="__codelineno-41-29" href="#__codelineno-41-29"></a>     + Drive Adjustment                   0.008
+</span><span id="__span-41-30"><a id="__codelineno-41-30" name="__codelineno-41-30" href="#__codelineno-41-30"></a>     = Beginpoint Arrival Time            0.008
+</span><span id="__span-41-31"><a id="__codelineno-41-31" name="__codelineno-41-31" href="#__codelineno-41-31"></a>     Other End Path:
+</span><span id="__span-41-32"><a id="__codelineno-41-32" name="__codelineno-41-32" href="#__codelineno-41-32"></a>     +-----------------------------------------------------------------------------------+
+</span><span id="__span-41-33"><a id="__codelineno-41-33" name="__codelineno-41-33" href="#__codelineno-41-33"></a>     |           Pin           | Edge |   Net   |   Cell    | Delay | Arrival | Required |
+</span><span id="__span-41-34"><a id="__codelineno-41-34" name="__codelineno-41-34" href="#__codelineno-41-34"></a>     |                         |      |         |           |       |  Time   |   Time   |
+</span><span id="__span-41-35"><a id="__codelineno-41-35" name="__codelineno-41-35" href="#__codelineno-41-35"></a>     |-------------------------+------+---------+-----------+-------+---------+----------|
+</span><span id="__span-41-36"><a id="__codelineno-41-36" name="__codelineno-41-36" href="#__codelineno-41-36"></a>     | clk[0]                  |  ^   | clk[0]  |           |       |   0.008 |    0.009 |
+</span><span id="__span-41-37"><a id="__codelineno-41-37" name="__codelineno-41-37" href="#__codelineno-41-37"></a>     | v/CTS_ccl_a_buf_00002/A |  ^   | clk[0]  | CLKBUF_X3 | 0.000 |   0.008 |    0.009 |
+</span><span id="__span-41-38"><a id="__codelineno-41-38" name="__codelineno-41-38" href="#__codelineno-41-38"></a>     | v/CTS_ccl_a_buf_00002/Z |  ^   | v/CTS_2 | CLKBUF_X3 | 0.061 |   0.069 |    0.069 |
+</span><span id="__span-41-39"><a id="__codelineno-41-39" name="__codelineno-41-39" href="#__codelineno-41-39"></a>     | v/elm3_S0S1/q_reg[6]/CK |  ^   | v/CTS_2 | DFF_X1    | 0.001 |   0.070 |    0.070 |
+</span><span id="__span-41-40"><a id="__codelineno-41-40" name="__codelineno-41-40" href="#__codelineno-41-40"></a>     +-----------------------------------------------------------------------------------+
+</span></code></pre></div>
+<p>In our original design, there was basically no logic on the path from the
+input pin <code>in2[3]</code> and the <code>D</code> input of the DFF in the <code>elm2_S0S1</code>
+pipeline register. This makes this path a "fast path" which might cause a
+hold time violation. Indeed, in the above timing report, we can see that
+Cadence Innovus has inserted buffers (i.e., with the <code>FE_PHC</code> prefix) to
+delay the data to meet the hold time constraint. The timing report shows
+that the delay from the block's clock pin to the CK pin of the DFF (i.e.,
+clock tree insertion delay) is 70ps and the contamination delay from the
+block's <code>in2[3]</code> pin to the D pin of the DFF is 85ps. Since 85ps - 75ps
+is 15ps which is greater than or equal to the hold time of 15ps this path
+now meets the hold time constraint.</p>
+<p>As in Synopsys DC, the <code>report_area</code> command can show the area each
+module uses and can enable detailed area breakdown analysis. These area
+results will be far more accurate than the post-synthesis results.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>innovus&gt; report_area
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>    Hinst Name   Module Name                         Inst Count Tot Area
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>------------------------------------------------------------------------
+</span><span id="__span-42-4"><a id="__codelineno-42-4" name="__codelineno-42-4" href="#__codelineno-42-4"></a>SortUnitStruct                                              520  841.890
+</span><span id="__span-42-5"><a id="__codelineno-42-5" name="__codelineno-42-5" href="#__codelineno-42-5"></a>  v              tut3_verilog_sort_SortUnitStruct_p_nbits8  424  765.282
+</span><span id="__span-42-6"><a id="__codelineno-42-6" name="__codelineno-42-6" href="#__codelineno-42-6"></a>    v/elm0_S0S1  vc_Reg_p_nbits8_0                           16   42.560
+</span><span id="__span-42-7"><a id="__codelineno-42-7" name="__codelineno-42-7" href="#__codelineno-42-7"></a>    v/elm0_S1S2  vc_Reg_p_nbits8_8                            8   36.176
+</span><span id="__span-42-8"><a id="__codelineno-42-8" name="__codelineno-42-8" href="#__codelineno-42-8"></a>    v/elm0_S2S3  vc_Reg_p_nbits8_4                            8   36.176
+</span><span id="__span-42-9"><a id="__codelineno-42-9" name="__codelineno-42-9" href="#__codelineno-42-9"></a>    v/elm1_S0S1  vc_Reg_p_nbits8_11                          16   42.560
+</span><span id="__span-42-10"><a id="__codelineno-42-10" name="__codelineno-42-10" href="#__codelineno-42-10"></a>    v/elm1_S1S2  vc_Reg_p_nbits8_7                            8   36.176
+</span><span id="__span-42-11"><a id="__codelineno-42-11" name="__codelineno-42-11" href="#__codelineno-42-11"></a>    v/elm1_S2S3  vc_Reg_p_nbits8_3                            8   36.176
+</span><span id="__span-42-12"><a id="__codelineno-42-12" name="__codelineno-42-12" href="#__codelineno-42-12"></a>    v/elm2_S0S1  vc_Reg_p_nbits8_10                          16   42.560
+</span><span id="__span-42-13"><a id="__codelineno-42-13" name="__codelineno-42-13" href="#__codelineno-42-13"></a>    v/elm2_S1S2  vc_Reg_p_nbits8_6                            8   36.176
+</span><span id="__span-42-14"><a id="__codelineno-42-14" name="__codelineno-42-14" href="#__codelineno-42-14"></a>    v/elm2_S2S3  vc_Reg_p_nbits8_2                            8   36.176
+</span><span id="__span-42-15"><a id="__codelineno-42-15" name="__codelineno-42-15" href="#__codelineno-42-15"></a>    v/elm3_S0S1  vc_Reg_p_nbits8_9                           16   42.560
+</span><span id="__span-42-16"><a id="__codelineno-42-16" name="__codelineno-42-16" href="#__codelineno-42-16"></a>    v/elm3_S1S2  vc_Reg_p_nbits8_5                            8   36.176
+</span><span id="__span-42-17"><a id="__codelineno-42-17" name="__codelineno-42-17" href="#__codelineno-42-17"></a>    v/elm3_S2S3  vc_Reg_p_nbits8_1                            8   36.176
+</span><span id="__span-42-18"><a id="__codelineno-42-18" name="__codelineno-42-18" href="#__codelineno-42-18"></a>    v/mmuA_S1    tut3_verilog_sort_MinMaxUnit_p_nbits8_0     48   48.678
+</span><span id="__span-42-19"><a id="__codelineno-42-19" name="__codelineno-42-19" href="#__codelineno-42-19"></a>    v/mmuA_S2    tut3_verilog_sort_MinMaxUnit_p_nbits8_3     48   48.678
+</span><span id="__span-42-20"><a id="__codelineno-42-20" name="__codelineno-42-20" href="#__codelineno-42-20"></a>    v/mmuA_S3    tut3_verilog_sort_MinMaxUnit_p_nbits8_1     57   53.466
+</span><span id="__span-42-21"><a id="__codelineno-42-21" name="__codelineno-42-21" href="#__codelineno-42-21"></a>    v/mmuB_S1    tut3_verilog_sort_MinMaxUnit_p_nbits8_4     47   47.082
+</span><span id="__span-42-22"><a id="__codelineno-42-22" name="__codelineno-42-22" href="#__codelineno-42-22"></a>    v/mmuB_S2    tut3_verilog_sort_MinMaxUnit_p_nbits8_2     49   49.742
+</span><span id="__span-42-23"><a id="__codelineno-42-23" name="__codelineno-42-23" href="#__codelineno-42-23"></a>    v/val_S0S1   vc_ResetReg_p_nbits1_0                       6    8.246
+</span><span id="__span-42-24"><a id="__codelineno-42-24" name="__codelineno-42-24" href="#__codelineno-42-24"></a>    v/val_S1S2   vc_ResetReg_p_nbits1_2                       3    5.852
+</span><span id="__span-42-25"><a id="__codelineno-42-25" name="__codelineno-42-25" href="#__codelineno-42-25"></a>    v/val_S2S3   vc_ResetReg_p_nbits1_1                       3    5.852
+</span></code></pre></div>
+<p>The <code>Inst Count</code> column indicates the number of non-filler cells in that
+module. There are a total of 520 standard cells in the design. Each
+register should have eight standard cells; eight flip-flops since it is
+an eight-bit register. However, notice that some of the pipeline
+registers have 16 standard cells. You can look in the post-pnr gate-level
+netlist to see why. This is because these pipeline registers have
+inserted extra buffers to fix hold-time violations. The min/max units
+have a different number of cells since they have been optimized
+differently. The min/max units consume about ~47% of the area.</p>
+<p>Finally, we go ahead and exit Cadence Innovus.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>innovus&gt; exit
+</span></code></pre></div>
+<h3 id="210-final-layout">2.10. Final Layout</h3>
+<p>We can now look at the actual <code>.gds</code> file for our design to see the final
+layout including all of the cells and the interconnect using the
+open-source Klayout GDS viewer. Choose <em>Display &gt; Full Hierarchy</em> from
+the menu to display the entire design. Zoom in and out to see the
+individual transistors as well as the entire chip.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/04-cadence-innovus-pnr
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/klayout.lyp<span class="w"> </span>post-pnr.gds
+</span></code></pre></div>
+<p>The following screen capture illutrates using Klayout to view the layout
+for the entire sort unit.</p>
+<p><img alt="" src="../img/tut07-klayout.png" /></p>
+<p>The following figure shows a zoomed portion of the layout. You can
+clearly see the active layer inside the standard cells along with the
+signal routing on the lower metal layers. The power routing on the upper
+metal layers has been hiddent for clarity.</p>
+<p><img alt="" src="../img/tut07-sort-unit-gds-2.png" /></p>
+<h3 id="211-automating-place-and-route">2.11. Automating Place and Route</h3>
+<p>You can automate the above steps by putting a sequence of commands in a
+<code>.tcl</code> file and run Cadence Innovus using those commands in one step like
+this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/04-cadence-innovus-pnr
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>%<span class="w"> </span>innovus<span class="w"> </span>-no_gui<span class="w"> </span>-files<span class="w"> </span>run.tcl
+</span></code></pre></div>
+<p>To further simplify rerunning this step, we can put the above command
+line in its own a shell script. We have created such run scripts for you.
+Let's take a look to confirm these scripts match the manual commands we
+used above.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./04-cadence-innovus-pnr/run
+</span><span id="__span-46-3"><a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a>%<span class="w"> </span>cat<span class="w"> </span>./04-cadence-innovus-pnr/run.tcl
+</span></code></pre></div>
+<p>You can rerun synthesis as follows.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>%<span class="w"> </span>./04-cadence-innovus-pnr/run
+</span></code></pre></div>
+<p>And you can then open up the Cadence Innovus design in the GUI as
+follows.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/04-cadence-innovus-pnr
+</span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a>%<span class="w"> </span>innovus
+</span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a>innovus&gt;<span class="w"> </span><span class="nb">source</span><span class="w"> </span>post-pnr.enc
+</span></code></pre></div>
+<h2 id="3-using-synopsys-vcs-for-back-annotated-gate-level-simulation">3. Using Synopsys VCS for Back-Annotated Gate-Level Simulation</h2>
+<p>In the previous tutorial, we used Synopsys VCS to do 4-state simulation
+and gate-level simulation. This time, we'll be using VCS to perform
+back-annotated gate-level simulation. The key difference between
+fast-functional and back-annotated gate-level simulation, is that we can
+now use an <code>.sdf</code> file to annotate delays in the gate-level simulation.
+In previous simulations, we only see signals change on the clock edge;
+however, with a back-annotated simulation, we'll know more precisely when
+signals are arriving by using the delay information provided by the
+<code>.sdf</code>. This means that running a back-annotated simulation with a cycle
+time that is too fast can potentially cause setup time violations or fast
+paths can potentially cause hold time violations. Back-annotated
+gate-level simulation is the primary way we will verify that our final
+design is functionally correct.</p>
+<p>We will be running Synopsys VCS in a separate directory to keep the files
+separate from the other tools.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/05-synopsys-vcs-baglsim
+</span><span id="__span-49-2"><a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/05-synopsys-vcs-baglsim
+</span></code></pre></div>
+<p>Given the more realistic timing implications of a back-annotated
+simulation, we need to be more careful about the cycle time, input
+delays, and output delays that we provide to Synopsys VCS. Notice the
+differences between the following command and the fast-functional
+gate-level simulation command from the previous tutorial.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/05-synopsys-vcs-baglsim
+</span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a>%<span class="w"> </span>vcs<span class="w"> </span>-sverilog<span class="w"> </span>-xprop<span class="o">=</span>tmerge<span class="w"> </span>-override_timescale<span class="o">=</span>1ns/1ps<span class="w"> </span>-top<span class="w"> </span>Top<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-50-3"><a id="__codelineno-50-3" name="__codelineno-50-3" href="#__codelineno-50-3"></a><span class="w">    </span>+neg_tchk<span class="w"> </span>+sdfverbose<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-50-4"><a id="__codelineno-50-4" name="__codelineno-50-4" href="#__codelineno-50-4"></a><span class="w">    </span>-sdf<span class="w"> </span>max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-50-5"><a id="__codelineno-50-5" name="__codelineno-50-5" href="#__codelineno-50-5"></a><span class="w">    </span>+define+CYCLE_TIME<span class="o">=</span><span class="m">0</span>.400<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-50-6"><a id="__codelineno-50-6" name="__codelineno-50-6" href="#__codelineno-50-6"></a><span class="w">    </span>+define+VTB_INPUT_DELAY<span class="o">=</span><span class="m">0</span>.025<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-50-7"><a id="__codelineno-50-7" name="__codelineno-50-7" href="#__codelineno-50-7"></a><span class="w">    </span>+define+VTB_OUTPUT_DELAY<span class="o">=</span><span class="m">0</span>.025<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-50-8"><a id="__codelineno-50-8" name="__codelineno-50-8" href="#__codelineno-50-8"></a><span class="w">    </span>+vcs+dumpvars+waves.vcd<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-50-9"><a id="__codelineno-50-9" name="__codelineno-50-9" href="#__codelineno-50-9"></a><span class="w">    </span>+incdir+<span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-50-10"><a id="__codelineno-50-10" name="__codelineno-50-10" href="#__codelineno-50-10"></a><span class="w">    </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/stdcells.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-50-11"><a id="__codelineno-50-11" name="__codelineno-50-11" href="#__codelineno-50-11"></a><span class="w">    </span>../04-cadence-innovus-pnr/post-pnr.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-50-12"><a id="__codelineno-50-12" name="__codelineno-50-12" href="#__codelineno-50-12"></a><span class="w">    </span><span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build/SortUnitStruct_random_tb.v
+</span><span id="__span-50-13"><a id="__codelineno-50-13" name="__codelineno-50-13" href="#__codelineno-50-13"></a>%<span class="w"> </span>./simv
+</span></code></pre></div>
+<p>This time, we add the flag <code>+neg_tchk</code>, which enables negative values in
+timing checks. Negative values in timing checks are important for cells
+which have negative hold times, for example. We also include the
+<code>+sdfverbose</code> flag which reads in the <code>post-pnr.sdf</code>. Note that we also
+assign non-zero values for <code>+define+VTB_INPUT_DELAY</code> and
+<code>+define+VTB_OUTPUT_DELAY</code>. These values are based on the input and
+output delay timing constraints during the Synopsys DC synthesis step.
+All inputs from the test bench will be set 25ps after the rising edge;
+recall that we used an input min delay of 0ps and max delay of 50ps so
+changing the inputs 25ps after the rising edge should meet hold and setup
+time constraints. All outputs will be checked 25ps before the next rising
+edge; recall that we used an output max delay of 50ps which corresponds
+to the setup time of the output pin so the output data should be stable
+by 25ps before the rising edge.</p>
+<p>The above command uses a cycle time of 400ps but recall that we used a
+cycle time constraint of 700ps. You should see a failing timing check and
+testbench failure similar to below.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>&quot;/classes/ece6745/install/adks/freepdk-45nm/stdview/stdcells.v&quot;, 2122:
+</span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a>  Timing violation in Top.DUT.v.elm0_S1S2.\q_reg[4]
+</span><span id="__span-51-3"><a id="__codelineno-51-3" name="__codelineno-51-3" href="#__codelineno-51-3"></a>  $setuphold( posedge CK:2265, posedge D:2271, limits: (32,23) );
+</span><span id="__span-51-4"><a id="__codelineno-51-4" name="__codelineno-51-4" href="#__codelineno-51-4"></a>
+</span><span id="__span-51-5"><a id="__codelineno-51-5" name="__codelineno-51-5" href="#__codelineno-51-5"></a>...
+</span><span id="__span-51-6"><a id="__codelineno-51-6" name="__codelineno-51-6" href="#__codelineno-51-6"></a>
+</span><span id="__span-51-7"><a id="__codelineno-51-7" name="__codelineno-51-7" href="#__codelineno-51-7"></a>The test bench received a value containing X/Z&#39;s! Please note
+</span><span id="__span-51-8"><a id="__codelineno-51-8" name="__codelineno-51-8" href="#__codelineno-51-8"></a>that the VTB is pessmistic about X&#39;s and you should make sure
+</span><span id="__span-51-9"><a id="__codelineno-51-9" name="__codelineno-51-9" href="#__codelineno-51-9"></a>all output ports of your DUT does not produce X&#39;s after reset.
+</span><span id="__span-51-10"><a id="__codelineno-51-10" name="__codelineno-51-10" href="#__codelineno-51-10"></a>- Timestamp      : 3 (default unit: ns)
+</span><span id="__span-51-11"><a id="__codelineno-51-11" name="__codelineno-51-11" href="#__codelineno-51-11"></a>- Cycle number   : 5 (variable: cycle_count)
+</span><span id="__span-51-12"><a id="__codelineno-51-12" name="__codelineno-51-12" href="#__codelineno-51-12"></a>- line number    : line 4 in SortUnitStruct_random_tb.v.cases
+</span><span id="__span-51-13"><a id="__codelineno-51-13" name="__codelineno-51-13" href="#__codelineno-51-13"></a>- port name      : out[1] (out1 in Verilog)
+</span><span id="__span-51-14"><a id="__codelineno-51-14" name="__codelineno-51-14" href="#__codelineno-51-14"></a>- expected value : 0x77
+</span><span id="__span-51-15"><a id="__codelineno-51-15" name="__codelineno-51-15" href="#__codelineno-51-15"></a>- actual value   : 0xxX
+</span></code></pre></div>
+<p>The timing check is failing because the clock is rising at 2265ps and the
+data input is changing at 2271ps for the <code>elm0_S1S2.q_reg[4]</code> DFF; this
+means the data is changing 6ps after the rising edge but the hold time
+for this specific flip-flop is 23ps. If you open up the resulting
+waveforms and look at these signals at 2265ps you should be able to see
+this exact scenario.</p>
+<p>Let's rerun the simulation with our actual target cycle time of 700ps and
+verify back-annotated gate-level simulation passes the simulation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/05-synopsys-vcs-baglsim
+</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>%<span class="w"> </span>vcs<span class="w"> </span>-sverilog<span class="w"> </span>-xprop<span class="o">=</span>tmerge<span class="w"> </span>-override_timescale<span class="o">=</span>1ns/1ps<span class="w"> </span>-top<span class="w"> </span>Top<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a><span class="w">    </span>+neg_tchk<span class="w"> </span>+sdfverbose<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a><span class="w">    </span>-sdf<span class="w"> </span>max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-5"><a id="__codelineno-52-5" name="__codelineno-52-5" href="#__codelineno-52-5"></a><span class="w">    </span>+define+CYCLE_TIME<span class="o">=</span><span class="m">0</span>.700<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-6"><a id="__codelineno-52-6" name="__codelineno-52-6" href="#__codelineno-52-6"></a><span class="w">    </span>+define+VTB_INPUT_DELAY<span class="o">=</span><span class="m">0</span>.025<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-7"><a id="__codelineno-52-7" name="__codelineno-52-7" href="#__codelineno-52-7"></a><span class="w">    </span>+define+VTB_OUTPUT_DELAY<span class="o">=</span><span class="m">0</span>.025<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-8"><a id="__codelineno-52-8" name="__codelineno-52-8" href="#__codelineno-52-8"></a><span class="w">    </span>+define+VTB_DUMP_SAIF<span class="o">=</span>waves.saif<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-9"><a id="__codelineno-52-9" name="__codelineno-52-9" href="#__codelineno-52-9"></a><span class="w">    </span>+vcs+dumpvars+waves.vcd<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-10"><a id="__codelineno-52-10" name="__codelineno-52-10" href="#__codelineno-52-10"></a><span class="w">    </span>+incdir+<span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-11"><a id="__codelineno-52-11" name="__codelineno-52-11" href="#__codelineno-52-11"></a><span class="w">    </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/stdcells.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-12"><a id="__codelineno-52-12" name="__codelineno-52-12" href="#__codelineno-52-12"></a><span class="w">    </span>../04-cadence-innovus-pnr/post-pnr.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-52-13"><a id="__codelineno-52-13" name="__codelineno-52-13" href="#__codelineno-52-13"></a><span class="w">    </span><span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build/SortUnitStruct_random_tb.v
+</span><span id="__span-52-14"><a id="__codelineno-52-14" name="__codelineno-52-14" href="#__codelineno-52-14"></a>%<span class="w"> </span>./simv
+</span></code></pre></div>
+<p>The <code>.vcd</code> file contains information about the state of every net in the
+design on every cycle. This can make these <code>.vcd</code> files very large and
+thus slow to analyze. For average power analysis, we only need to know
+the activity factor on each net, so we also dump out an <code>.saif</code> file that
+only contains a single average activity factor for every net.</p>
+<p>Take a look at the vcd file from this simulation. Here we can see some
+subcycle delays that shows us how long it takes for data to stabilize
+before the following cycle. This is showing the first stage of the sort
+unit pipeline. It shows the input and output of one of the stage 0
+min/max units.</p>
+<p><img alt="" src="../img/tut07-waves.png" /></p>
+<p>To simplify rerunning a simulation, we can put the above command lines in
+a shell script. We have created such a run script for you. Let's take a
+look to confirm these scripts match the manual commands we used above.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./05-synopsys-vcs-baglsim/run
+</span></code></pre></div>
+<p>You can rerun back-annotated gate-level simulation as follows.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a>%<span class="w"> </span>./05-synopsys-vcs-baglsim/run
+</span></code></pre></div>
+<h2 id="4-synopsys-primetime-for-power-analysis">4. Synopsys PrimeTime for Power Analysis</h2>
+<p>Synopsys PrimeTime (PT) is primarily used for very accurate "sign-off"
+static timing analysis (more accurate than the analysis performed by
+Synopsys DC and Cadence Innovus), but in this course, we will only use
+Synopsys PT for power analysis. There are many ways to perform power
+analysis. We can use Synopsys DC and Cadence Innovus for statistical
+power analysis where we simply assume some toggle probability on each
+net. For more accurate power analysis we need to find out the actual
+activity for every net for a given experiment, which is exactly what the
+<code>.saif</code> file from the previous section provides.</p>
+<p>We will be running Synopsys PT in a separate directory to keep the files
+separate from the other tools.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/06-synopsys-pt-pwr
+</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/06-synopsys-pt-pwr
+</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>%<span class="w"> </span>pt_shell
+</span></code></pre></div>
+<p>To make it easier to copy-and-paste commands from this document, we tell
+Synopsys PT to ignore the prefix <code>pt_shell&gt;</code> using the following:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a>pt_shell&gt; alias &quot;pt_shell&gt;&quot; &quot;&quot;
+</span></code></pre></div>
+<h3 id="41-initial-setup">4.1. Initial Setup</h3>
+<p>We begin by setting the <code>target_library</code> and <code>link_library</code> variables as
+before.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>pt_shell&gt; set_app_var target_library &quot;$env(ECE6745_STDCELLS)/stdcells.db&quot;
+</span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a>pt_shell&gt; set_app_var link_library   &quot;* $env(ECE6745_STDCELLS)/stdcells.db&quot;
+</span></code></pre></div>
+<p>Since Synopsys PT is primarily used for static timing analysis, we need
+to explicitly tell Synopsys PT that we want to use it for power analysis.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a>pt_shell&gt; set_app_var power_enable_analysis true
+</span></code></pre></div>
+<h3 id="42-inputs">4.2. Inputs</h3>
+<p>We need to read in the gate-level netlist, tell Synopsys PT we want to do
+power analysis for the top-level module, and link the design (i.e.,
+recursively resolve all of the module references starting from the
+top-level module).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>pt_shell&gt; read_verilog ../04-cadence-innovus-pnr/post-pnr.v
+</span><span id="__span-59-2"><a id="__codelineno-59-2" name="__codelineno-59-2" href="#__codelineno-59-2"></a>pt_shell&gt; current_design SortUnitStruct
+</span><span id="__span-59-3"><a id="__codelineno-59-3" name="__codelineno-59-3" href="#__codelineno-59-3"></a>pt_shell&gt; link_design
+</span></code></pre></div>
+<p>We need to read in the actual activity factors which will be used for
+power analysis. The <code>.saif</code> file comes from a <code>.vcd</code> file which in turn
+came from running a simulation with a test harness. We need to strip off
+part of the instance names in the <code>.saif</code> file since the gate-level
+netlist does not have this test harness.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-60-1"><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a>pt_shell&gt; read_saif ../05-synopsys-vcs-baglsim/waves.saif -strip_path Top/DUT
+</span></code></pre></div>
+<p>The <code>.db</code> file includes parasitic capacitance estimates for every pin of
+every standard cell, but to improve the accuracy of power analysis, we
+also need to include parasitic capacitances from the interconnect. Recall
+that we used Cadence Innovus to generate exactly this information in a
+<code>.spef</code> file. So we now read in these additional parasitic capacitance
+values for every net in the gate-level netlist.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a>pt_shell&gt; read_parasitics -format spef ../04-cadence-innovus-pnr/post-pnr.spef
+</span></code></pre></div>
+<h3 id="43-timing-constraints">4.3. Timing Constraints</h3>
+<p>In order to do power analysis, Synopsys PT needs to know the clock
+period. Here we will set the clock frequency to be the same as the
+initial clock constraint, but note that this is only valid if our design
+actually met timing. If our design has negative slack, then this means we
+cannot actually run the design at the target clock frequency and we will
+need to iterate to meet timing.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-62-1"><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a>pt_shell&gt; create_clock clk -name ideal_clock1 -period 0.7
+</span></code></pre></div>
+<h3 id="44-power-analysis">4.4. Power Analysis</h3>
+<p>We now have everything we need to perform the power analysis: (1) the
+activity factor of a subset set of the nets, (2) the capacitance of every
+net/port, (3) the supply voltage, and (4) the clock frequency. We use the
+<code>update_power</code> command to propagate activity factors to unannotated nest
+and to estimate the power of our design.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a>pt_shell&gt; update_power
+</span></code></pre></div>
+<h3 id="45-outputs">4.5. Outputs</h3>
+<p>We can use the <code>report_power</code> command to show a high-level overview of
+how much power the sort unit consumes.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-64-1"><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a>pt_shell&gt; report_power
+</span><span id="__span-64-2"><a id="__codelineno-64-2" name="__codelineno-64-2" href="#__codelineno-64-2"></a> ...
+</span><span id="__span-64-3"><a id="__codelineno-64-3" name="__codelineno-64-3" href="#__codelineno-64-3"></a>                Internal  Switching  Leakage    Total
+</span><span id="__span-64-4"><a id="__codelineno-64-4" name="__codelineno-64-4" href="#__codelineno-64-4"></a> Power Group    Power     Power      Power      Power   (     %)  Attrs
+</span><span id="__span-64-5"><a id="__codelineno-64-5" name="__codelineno-64-5" href="#__codelineno-64-5"></a> -----------------------------------------------------------------------
+</span><span id="__span-64-6"><a id="__codelineno-64-6" name="__codelineno-64-6" href="#__codelineno-64-6"></a> clock_network  5.871e-04 2.163e-04 9.175e-08 8.035e-04 (29.22%)  i
+</span><span id="__span-64-7"><a id="__codelineno-64-7" name="__codelineno-64-7" href="#__codelineno-64-7"></a> register       6.058e-04 1.292e-04 7.822e-06 7.428e-04 (27.01%)
+</span><span id="__span-64-8"><a id="__codelineno-64-8" name="__codelineno-64-8" href="#__codelineno-64-8"></a> combinational  6.564e-04 5.365e-04 1.092e-05 1.204e-03 (43.77%)
+</span><span id="__span-64-9"><a id="__codelineno-64-9" name="__codelineno-64-9" href="#__codelineno-64-9"></a> sequential        0.0000    0.0000    0.0000    0.0000 ( 0.00%)
+</span><span id="__span-64-10"><a id="__codelineno-64-10" name="__codelineno-64-10" href="#__codelineno-64-10"></a> memory            0.0000    0.0000    0.0000    0.0000 ( 0.00%)
+</span><span id="__span-64-11"><a id="__codelineno-64-11" name="__codelineno-64-11" href="#__codelineno-64-11"></a> io_pad            0.0000    0.0000    0.0000    0.0000 ( 0.00%)
+</span><span id="__span-64-12"><a id="__codelineno-64-12" name="__codelineno-64-12" href="#__codelineno-64-12"></a> black_box         0.0000    0.0000    0.0000    0.0000 ( 0.00%)
+</span><span id="__span-64-13"><a id="__codelineno-64-13" name="__codelineno-64-13" href="#__codelineno-64-13"></a>
+</span><span id="__span-64-14"><a id="__codelineno-64-14" name="__codelineno-64-14" href="#__codelineno-64-14"></a>  Net Switching Power  = 8.819e-04   (32.07%)
+</span><span id="__span-64-15"><a id="__codelineno-64-15" name="__codelineno-64-15" href="#__codelineno-64-15"></a>  Cell Internal Power  = 1.849e-03   (67.25%)
+</span><span id="__span-64-16"><a id="__codelineno-64-16" name="__codelineno-64-16" href="#__codelineno-64-16"></a>  Cell Leakage Power   = 1.884e-05   ( 0.68%)
+</span><span id="__span-64-17"><a id="__codelineno-64-17" name="__codelineno-64-17" href="#__codelineno-64-17"></a>                         ---------
+</span><span id="__span-64-18"><a id="__codelineno-64-18" name="__codelineno-64-18" href="#__codelineno-64-18"></a>Total Power            = 2.750e-03  (100.00%)
+</span></code></pre></div>
+<p>These numbers are in Watts. We can see that the sort unit consumes
+~2.75mW of power when processing random input data. Power is the rate
+change of energy (i.e., energy divided by execution time), so the total
+energy is just the product of the total power, the number of cycles, and
+the cycle time. When we ran the sort unit simulator at the beginning of
+the tutorial, we saw that the simulation required 106 cycles. Assuming
+our sort unit runs as 0.7ns, this means the total energy is 2.5mW * 106 *
+0.7ns = 185pJ. Since we are doing 100 sorts, this corresponds to about
+1.8pJ per sort.</p>
+<p>The power is broken down into internal, switching, and leakage power.
+Internal and switching power are both forms of dynamic power, while
+leakage power is a form of static power. Notice that in this case, the
+dynamic power is much more significant than the static power. Internal
+power was described earlier in this tutorial, so you may want to revisit
+that section. Note that internal power includes short circuit power, but
+it can also include the local clock power internal to the cell. In this
+overview, the power is also broken down by the power consumed in the
+global clock network, registers, and combinational logic. Switching power
+is the power dissipated by the charging and discharging of the load
+capacitance at the output of each cell. Leakage power is the constant
+power due to subthreshold leakage. Sometimes we might want to factor out
+the static leakage power and focus more on the dynamic energy since
+including leakage power would mix energy and performance (i.e., using
+more cycles requires more leakage power even if we are not doing any more
+work during those cycles).</p>
+<p>Although the above breakdown is somewhat useful, it is even more useful
+to use the <code>report_power</code> command to show how much power each module
+consumes in the design.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-65-1"><a id="__codelineno-65-1" name="__codelineno-65-1" href="#__codelineno-65-1"></a>pt_shell&gt; report_power -hierarchy
+</span><span id="__span-65-2"><a id="__codelineno-65-2" name="__codelineno-65-2" href="#__codelineno-65-2"></a> ...
+</span><span id="__span-65-3"><a id="__codelineno-65-3" name="__codelineno-65-3" href="#__codelineno-65-3"></a>                                      Int      Switch   Leak     Total
+</span><span id="__span-65-4"><a id="__codelineno-65-4" name="__codelineno-65-4" href="#__codelineno-65-4"></a>Hierarchy                             Power    Power    Power    Power    %
+</span><span id="__span-65-5"><a id="__codelineno-65-5" name="__codelineno-65-5" href="#__codelineno-65-5"></a>----------------------------------------------------------------------------------
+</span><span id="__span-65-6"><a id="__codelineno-65-6" name="__codelineno-65-6" href="#__codelineno-65-6"></a>SortUnitStruct                        1.85e-03 8.82e-04 1.88e-05 2.75e-03 100.0
+</span><span id="__span-65-7"><a id="__codelineno-65-7" name="__codelineno-65-7" href="#__codelineno-65-7"></a>  v (SortUnitStruct_p_nbits8)         1.68e-03 8.12e-04 1.62e-05 2.51e-03  91.2
+</span><span id="__span-65-8"><a id="__codelineno-65-8" name="__codelineno-65-8" href="#__codelineno-65-8"></a>    mmuA_S1 (MinMaxUnit_p_nbits8_0)   7.75e-05 8.51e-05 1.21e-06 1.64e-04   6.0
+</span><span id="__span-65-9"><a id="__codelineno-65-9" name="__codelineno-65-9" href="#__codelineno-65-9"></a>    mmuA_S2 (MinMaxUnit_p_nbits8_3)   7.83e-05 9.41e-05 1.26e-06 1.74e-04   6.3
+</span><span id="__span-65-10"><a id="__codelineno-65-10" name="__codelineno-65-10" href="#__codelineno-65-10"></a>    elm3_S2S3 (vc_Reg_p_nbits8_1)     9.39e-05 3.49e-06 6.31e-07 9.80e-05   3.6
+</span><span id="__span-65-11"><a id="__codelineno-65-11" name="__codelineno-65-11" href="#__codelineno-65-11"></a>    elm2_S2S3 (vc_Reg_p_nbits8_2)     9.37e-05 1.25e-05 6.33e-07 1.07e-04   3.9
+</span><span id="__span-65-12"><a id="__codelineno-65-12" name="__codelineno-65-12" href="#__codelineno-65-12"></a>    mmuA_S3 (MinMaxUnit_p_nbits8_1)   7.77e-05 8.44e-05 1.31e-06 1.63e-04   5.9
+</span><span id="__span-65-13"><a id="__codelineno-65-13" name="__codelineno-65-13" href="#__codelineno-65-13"></a>    elm1_S2S3 (vc_Reg_p_nbits8_3)     9.71e-05 1.17e-05 6.31e-07 1.09e-04   4.0
+</span><span id="__span-65-14"><a id="__codelineno-65-14" name="__codelineno-65-14" href="#__codelineno-65-14"></a>    elm3_S0S1 (vc_Reg_p_nbits8_9)     1.01e-04 1.63e-05 8.07e-07 1.18e-04   4.3
+</span><span id="__span-65-15"><a id="__codelineno-65-15" name="__codelineno-65-15" href="#__codelineno-65-15"></a>    elm0_S2S3 (vc_Reg_p_nbits8_4)     9.42e-05 3.24e-06 6.30e-07 9.81e-05   3.6
+</span><span id="__span-65-16"><a id="__codelineno-65-16" name="__codelineno-65-16" href="#__codelineno-65-16"></a>    elm2_S0S1 (vc_Reg_p_nbits8_10)    1.04e-04 1.57e-05 8.04e-07 1.20e-04   4.4
+</span><span id="__span-65-17"><a id="__codelineno-65-17" name="__codelineno-65-17" href="#__codelineno-65-17"></a>    elm1_S0S1 (vc_Reg_p_nbits8_11)    1.01e-04 1.64e-05 8.04e-07 1.18e-04   4.3
+</span><span id="__span-65-18"><a id="__codelineno-65-18" name="__codelineno-65-18" href="#__codelineno-65-18"></a>    val_S2S3 (vc_ResetReg_p_nbits1_1) 9.19e-06 7.25e-07 1.17e-07 1.00e-05   0.4
+</span><span id="__span-65-19"><a id="__codelineno-65-19" name="__codelineno-65-19" href="#__codelineno-65-19"></a>    elm0_S0S1 (vc_Reg_p_nbits8_0)     1.01e-04 1.34e-05 8.04e-07 1.15e-04   4.2
+</span><span id="__span-65-20"><a id="__codelineno-65-20" name="__codelineno-65-20" href="#__codelineno-65-20"></a>    val_S0S1 (vc_ResetReg_p_nbits1_0) 1.02e-05 3.57e-07 4.51e-07 1.10e-05   0.4
+</span><span id="__span-65-21"><a id="__codelineno-65-21" name="__codelineno-65-21" href="#__codelineno-65-21"></a>    elm3_S1S2 (vc_Reg_p_nbits8_5)     9.34e-05 1.62e-05 6.32e-07 1.10e-04   4.0
+</span><span id="__span-65-22"><a id="__codelineno-65-22" name="__codelineno-65-22" href="#__codelineno-65-22"></a>    elm2_S1S2 (vc_Reg_p_nbits8_6)     9.46e-05 1.25e-05 6.32e-07 1.08e-04   3.9
+</span><span id="__span-65-23"><a id="__codelineno-65-23" name="__codelineno-65-23" href="#__codelineno-65-23"></a>    elm1_S1S2 (vc_Reg_p_nbits8_7)     9.67e-05 1.24e-05 6.31e-07 1.10e-04   4.0
+</span><span id="__span-65-24"><a id="__codelineno-65-24" name="__codelineno-65-24" href="#__codelineno-65-24"></a>    mmuB_S1 (MinMaxUnit_p_nbits8_4)   7.48e-05 8.74e-05 1.19e-06 1.63e-04   5.9
+</span><span id="__span-65-25"><a id="__codelineno-65-25" name="__codelineno-65-25" href="#__codelineno-65-25"></a>    mmuB_S2 (MinMaxUnit_p_nbits8_2)   7.12e-05 8.76e-05 1.27e-06 1.60e-04   5.8
+</span><span id="__span-65-26"><a id="__codelineno-65-26" name="__codelineno-65-26" href="#__codelineno-65-26"></a>    elm0_S1S2 (vc_Reg_p_nbits8_8)     9.50e-05 1.19e-05 6.32e-07 1.08e-04   3.9
+</span><span id="__span-65-27"><a id="__codelineno-65-27" name="__codelineno-65-27" href="#__codelineno-65-27"></a>    val_S1S2 (vc_ResetReg_p_nbits1_2) 9.18e-06 7.81e-08 1.17e-07 9.38e-06   0.3
+</span></code></pre></div>
+<p>From this breakdown, you can see that each min/max unit consumes about 6%
+of the total power and each register consumes about 4% of the total
+power. There are five min/max units so overall they consume about 30% of
+the total power and there are 12 registers so overall they consume 48% of
+the total power. So while each min/max unit consumes more energy than
+each register, there are more registers than min/max units such that
+overall more energy is consumed in the registers than the min/max units.</p>
+<p>Finally, we go ahead and exit Synopsys PT.</p>
+<h3 id="46-automating-power-analysis">4.6. Automating Power Analysis</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-66-1"><a id="__codelineno-66-1" name="__codelineno-66-1" href="#__codelineno-66-1"></a>pt_shell&gt; exit
+</span></code></pre></div>
+<p>You can automate the above steps by putting a sequence of commands in a
+<code>.tcl</code> file and run Synopsys PT using those commands in one step like
+this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-67-1"><a id="__codelineno-67-1" name="__codelineno-67-1" href="#__codelineno-67-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort/06-synopsys-pt-pwr
+</span><span id="__span-67-2"><a id="__codelineno-67-2" name="__codelineno-67-2" href="#__codelineno-67-2"></a>%<span class="w"> </span>pt_shell<span class="w"> </span>-f<span class="w"> </span>run.tcl
+</span></code></pre></div>
+<p>To further simplify rerunning this step, we can put the above command
+line in its own shell script. We have created such run scripts for you.
+Let's take a look to confirm these scripts match the manual commands we
+used above.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-68-1"><a id="__codelineno-68-1" name="__codelineno-68-1" href="#__codelineno-68-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-68-2"><a id="__codelineno-68-2" name="__codelineno-68-2" href="#__codelineno-68-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./06-synopsys-pt-pwr/run
+</span><span id="__span-68-3"><a id="__codelineno-68-3" name="__codelineno-68-3" href="#__codelineno-68-3"></a>%<span class="w"> </span>cat<span class="w"> </span>./06-synopsys-pt-pwr/run.tcl
+</span></code></pre></div>
+<p>You can rerun power analysis as follows.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-69-1"><a id="__codelineno-69-1" name="__codelineno-69-1" href="#__codelineno-69-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sort
+</span><span id="__span-69-2"><a id="__codelineno-69-2" name="__codelineno-69-2" href="#__codelineno-69-2"></a>%<span class="w"> </span>./06-synopsys-pt-pwr/run
+</span></code></pre></div>
+<h2 id="5-to-do-on-your-own">5. To-Do On Your Own</h2>
+<p>Now we can use what you have learned so far to push the GCD unit through
+the ASIC front-end and back-end flow. First, run a simulation of the GCD
+unit.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-70-1"><a id="__codelineno-70-1" name="__codelineno-70-1" href="#__codelineno-70-1"></a>% cd $TOPDIR/sim/build
+</span><span id="__span-70-2"><a id="__codelineno-70-2" name="__codelineno-70-2" href="#__codelineno-70-2"></a>% ../tut3_verilog/gcd/gcd-sim --short-mname --impl rtl --input random --stats \
+</span><span id="__span-70-3"><a id="__codelineno-70-3" name="__codelineno-70-3" href="#__codelineno-70-3"></a>                              --translate --dump-vtb
+</span><span id="__span-70-4"><a id="__codelineno-70-4" name="__codelineno-70-4" href="#__codelineno-70-4"></a>% less GcdUnit__pickled.v
+</span></code></pre></div>
+<p>Now create a new ASIC build directory and copy the scripts we used to
+push the sort unit through the ASIC front-end flow.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-71-1"><a id="__codelineno-71-1" name="__codelineno-71-1" href="#__codelineno-71-1"></a>% mkdir -p $TOPDIR/asic/build-gcd/01-synopsys-vcs-rtlsim
+</span><span id="__span-71-2"><a id="__codelineno-71-2" name="__codelineno-71-2" href="#__codelineno-71-2"></a>% mkdir -p $TOPDIR/asic/build-gcd/02-synopsys-dc-synth
+</span><span id="__span-71-3"><a id="__codelineno-71-3" name="__codelineno-71-3" href="#__codelineno-71-3"></a>% mkdir -p $TOPDIR/asic/build-gcd/03-synopsys-vcs-ffglsim
+</span><span id="__span-71-4"><a id="__codelineno-71-4" name="__codelineno-71-4" href="#__codelineno-71-4"></a>% mkdir -p $TOPDIR/asic/build-gcd/04-cadence-innovus-pnr
+</span><span id="__span-71-5"><a id="__codelineno-71-5" name="__codelineno-71-5" href="#__codelineno-71-5"></a>% mkdir -p $TOPDIR/asic/build-gcd/05-synopsys-vcs-baglsim
+</span><span id="__span-71-6"><a id="__codelineno-71-6" name="__codelineno-71-6" href="#__codelineno-71-6"></a>% mkdir -p $TOPDIR/asic/build-gcd/06-synopsys-pt-pwr
+</span><span id="__span-71-7"><a id="__codelineno-71-7" name="__codelineno-71-7" href="#__codelineno-71-7"></a>
+</span><span id="__span-71-8"><a id="__codelineno-71-8" name="__codelineno-71-8" href="#__codelineno-71-8"></a>% cp $TOPDIR/asic/build-sort/01-synopsys-vcs-rtlsim/run              $TOPDIR/asic/build-gcd/01-synopsys-vcs-rtlsim
+</span><span id="__span-71-9"><a id="__codelineno-71-9" name="__codelineno-71-9" href="#__codelineno-71-9"></a>% cp $TOPDIR/asic/build-sort/02-synopsys-dc-synth/run.tcl            $TOPDIR/asic/build-gcd/02-synopsys-dc-synth
+</span><span id="__span-71-10"><a id="__codelineno-71-10" name="__codelineno-71-10" href="#__codelineno-71-10"></a>% cp $TOPDIR/asic/build-sort/02-synopsys-dc-synth/run                $TOPDIR/asic/build-gcd/02-synopsys-dc-synth
+</span><span id="__span-71-11"><a id="__codelineno-71-11" name="__codelineno-71-11" href="#__codelineno-71-11"></a>% cp $TOPDIR/asic/build-sort/03-synopsys-vcs-ffglsim/run             $TOPDIR/asic/build-gcd/03-synopsys-vcs-ffglsim
+</span><span id="__span-71-12"><a id="__codelineno-71-12" name="__codelineno-71-12" href="#__codelineno-71-12"></a>% cp $TOPDIR/asic/build-sort/04-cadence-innovus-pnr/setup-timing.tcl $TOPDIR/asic/build-gcd/04-cadence-innovus-pnr/setup-timing.tcl
+</span><span id="__span-71-13"><a id="__codelineno-71-13" name="__codelineno-71-13" href="#__codelineno-71-13"></a>% cp $TOPDIR/asic/build-sort/04-cadence-innovus-pnr/run              $TOPDIR/asic/build-gcd/04-cadence-innovus-pnr/run
+</span><span id="__span-71-14"><a id="__codelineno-71-14" name="__codelineno-71-14" href="#__codelineno-71-14"></a>% cp $TOPDIR/asic/build-sort/04-cadence-innovus-pnr/run.tcl          $TOPDIR/asic/build-gcd/04-cadence-innovus-pnr/run.tcl
+</span><span id="__span-71-15"><a id="__codelineno-71-15" name="__codelineno-71-15" href="#__codelineno-71-15"></a>% cp $TOPDIR/asic/build-sort/05-synopsys-vcs-baglsim/run             $TOPDIR/asic/build-gcd/05-synopsys-vcs-baglsim/run
+</span><span id="__span-71-16"><a id="__codelineno-71-16" name="__codelineno-71-16" href="#__codelineno-71-16"></a>% cp $TOPDIR/asic/build-sort/06-synopsys-pt-pwr/run                  $TOPDIR/asic/build-gcd/06-synopsys-pt-pwr/run
+</span><span id="__span-71-17"><a id="__codelineno-71-17" name="__codelineno-71-17" href="#__codelineno-71-17"></a>% cp $TOPDIR/asic/build-sort/06-synopsys-pt-pwr/run.tcl              $TOPDIR/asic/build-gcd/06-synopsys-pt-pwr/run.tcl
+</span></code></pre></div>
+<p>Now open up each of these files and modify so they push the GCD unit
+instead of the sort unit through the flow. You will need to update the
+name of the Verilog source files and the top module name as follows:</p>
+<ul>
+<li>Verilog source file name: <code>GcdUnit__pickled.v</code></li>
+<li>Verilog test source file name: <code>GcdUnit_random_tb.v</code></li>
+<li>Top module name for synthesis: <code>GcdUnit</code></li>
+</ul>
+<p>Basically, you just need to change <code>SortUnitStruct</code> to <code>GcdUnit</code> in all
+of the run scripts. You can use <code>sed</code> to do this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-72-1"><a id="__codelineno-72-1" name="__codelineno-72-1" href="#__codelineno-72-1"></a>% cd $TOPDIR/asic/build-gcd
+</span><span id="__span-72-2"><a id="__codelineno-72-2" name="__codelineno-72-2" href="#__codelineno-72-2"></a>% find . -type f -exec sed -i.bak &#39;s/SortUnitStruct/GcdUnit/&#39; {} \;
+</span></code></pre></div>
+<p>Keep the cycle time constraint as 700ps and the other constraints as
+before. Once you have updated the scripts you can then push the GCD unit
+through the flow like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-73-1"><a id="__codelineno-73-1" name="__codelineno-73-1" href="#__codelineno-73-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-gcd
+</span><span id="__span-73-2"><a id="__codelineno-73-2" name="__codelineno-73-2" href="#__codelineno-73-2"></a>%<span class="w"> </span>./01-synopsys-vcs-rtlsim/run
+</span><span id="__span-73-3"><a id="__codelineno-73-3" name="__codelineno-73-3" href="#__codelineno-73-3"></a>%<span class="w"> </span>./02-synopsys-dc-synth/run
+</span><span id="__span-73-4"><a id="__codelineno-73-4" name="__codelineno-73-4" href="#__codelineno-73-4"></a>%<span class="w"> </span>./03-synopsys-vcs-ffglsim/run
+</span><span id="__span-73-5"><a id="__codelineno-73-5" name="__codelineno-73-5" href="#__codelineno-73-5"></a>%<span class="w"> </span>./04-cadence-innovus-pnr/run
+</span><span id="__span-73-6"><a id="__codelineno-73-6" name="__codelineno-73-6" href="#__codelineno-73-6"></a>%<span class="w"> </span>./05-synopsys-vcs-baglsim/run
+</span><span id="__span-73-7"><a id="__codelineno-73-7" name="__codelineno-73-7" href="#__codelineno-73-7"></a>%<span class="w"> </span>./06-synopsys-pt-pwr/run
+</span></code></pre></div>
+<p>Carefully look at the post-synthesis and post-pnr timing reports to ensure
+your design meetings timing.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-74-1"><a id="__codelineno-74-1" name="__codelineno-74-1" href="#__codelineno-74-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-gcd
+</span><span id="__span-74-2"><a id="__codelineno-74-2" name="__codelineno-74-2" href="#__codelineno-74-2"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">02</span>-synopsys-dc-synth/timing.rpt
+</span><span id="__span-74-3"><a id="__codelineno-74-3" name="__codelineno-74-3" href="#__codelineno-74-3"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">04</span>-cadence-innovus-pnr/timing-setup.rpt
+</span><span id="__span-74-4"><a id="__codelineno-74-4" name="__codelineno-74-4" href="#__codelineno-74-4"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">04</span>-cadence-innovus-pnr/timing-hold.rpt
+</span></code></pre></div>
+<p>If your design does not meet timing post-pnr, increase the cycle time
+constraint and try again until it does meet timing. If your design does
+not meet timing post-synthesis but <em>does</em> meet timing post-pnr this is
+means your overall design <em>does</em> meet timing. It just means the timing
+analysis used by Synopsys DC was overly conservative and/or Cadence
+Innovus was able to further optimize your design to meet timing.
+Carefully look and the results from running the four-state RTL
+simulation, fast-functional gate-level simulation, and back-annotated
+gate-level simulation to verify that the design is passing the
+simulations. Spend time looking at the post-synthesis gate-level netlist
+in <code>post-pnr.v</code> and load the design into Cadence Innovus to examine the
+placement. Convince yourself that the GCD unit was successfully pushed
+through the entire ASIC flow.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2093 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-tut00-remote-access/">
+      
+      
+        <link rel="next" href="../ece6745-tut02-git/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Tutorial 1: Linux Development Environment - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tutorial-1-linux-development-environment" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tutorial 1: Linux Development Environment
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-sec01-asic-front-end/" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-linux-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. The Linux Command Line
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. The Linux Command Line">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-hello-world" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1. Hello World
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-manual-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2. Manual Pages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-create-view-and-list-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3. Create, View, and List Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-create-change-and-list-directories" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.4. Create, Change, and List Directories
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-copy-move-and-remove-files-and-directories" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.5. Copy, Move, and Remove Files and Directories}
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-using-wget-to-download-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.6. Using wget to Download Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-using-grep-to-search-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.7. Using grep to Search Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#18-using-find-to-find-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.8. Using find to Find Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#19-using-tar-to-archive-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.9. Using tar to Archive Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#110-using-top-to-view-running-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.10. Using top to View Running Processes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#111-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.11. Environment Variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-command-output-redirection" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.12. Command Output Redirection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-command-chaining" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.13. Command Chaining
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#114-command-pipelining" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.14. Command Pipelining
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#114-bash-shell-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.14. Bash Shell Scripts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#115-aliases-wildcards-command-history-and-tab-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.15. Aliases, Wildcards, Command History, and Tab Completion
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-course-specific-linux-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Course-Specific Linux Commands
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Course-Specific Linux Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-course-setup-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Course Setup Script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-using-quota-to-check-your-space-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Using quota to Check Your Space Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-using-trash-to-safely-remove-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Using trash to Safely Remove Files
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut05-asic-stdcells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut07-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut09-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut12-spice-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec01-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec02-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec03-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec04-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-linux-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. The Linux Command Line
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. The Linux Command Line">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-hello-world" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1. Hello World
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-manual-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2. Manual Pages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-create-view-and-list-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3. Create, View, and List Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-create-change-and-list-directories" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.4. Create, Change, and List Directories
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-copy-move-and-remove-files-and-directories" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.5. Copy, Move, and Remove Files and Directories}
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-using-wget-to-download-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.6. Using wget to Download Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-using-grep-to-search-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.7. Using grep to Search Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#18-using-find-to-find-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.8. Using find to Find Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#19-using-tar-to-archive-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.9. Using tar to Archive Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#110-using-top-to-view-running-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.10. Using top to View Running Processes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#111-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.11. Environment Variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-command-output-redirection" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.12. Command Output Redirection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-command-chaining" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.13. Command Chaining
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#114-command-pipelining" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.14. Command Pipelining
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#114-bash-shell-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.14. Bash Shell Scripts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#115-aliases-wildcards-command-history-and-tab-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.15. Aliases, Wildcards, Command History, and Tab Completion
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-course-specific-linux-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Course-Specific Linux Commands
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Course-Specific Linux Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-course-setup-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Course Setup Script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-using-quota-to-check-your-space-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Using quota to Check Your Space Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-using-trash-to-safely-remove-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Using trash to Safely Remove Files
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="tutorial-1-linux-development-environment">Tutorial 1: Linux Development Environment</h1>
+<p>The laboratory assignments for this course are designed assuming you will
+be using a Linux (or UNIX-like) operating system for development. Basic
+Linux knowledge is essential to successfully complete this work and a
+more in-depth understanding enhances productivity. This tutorial covers
+the computing resources to be used in the course and offers a brisk
+introduction to the Linux operating system for first time users including
+some details specific to this course.</p>
+<p>Before you begin, make sure that you have <strong>logged into the <code>ecelinux</code>
+servers</strong> as described in the remote access tutorial. You will need to
+open a terminal and be ready to work at the Linux command line using VS
+Code. To follow along with the tutorial, type the commands without the
+<code>%</code> character. In addition to working through the commands in the
+tutorial, you should also try the more open-ended activities.</p>
+<p>Before you begin, make sure that you have <strong>sourced the
+<code>setup-ece6745.sh</code> script</strong> as described in the remote access tutorial.
+Sourcing the setup script sets up the environment required for this
+tutorial.</p>
+<h2 id="1-the-linux-command-line">1. The Linux Command Line</h2>
+<p>In this section, we introduce the basics of working at the Linux command
+line. Our goal is to get you comfortable with commands required to
+complete the laboratory assignments. The shell is the original Linux user
+interface which is a text-based command-line interpreter. The default
+shell on the <code>ecelinux</code> machines is Bash. While there are other shells
+such as <code>sh</code>, <code>csh</code>, and <code>tcsh</code>, for this course we will always assume
+you are using Bash. As mentioned above, we use the <code>%</code> character to
+indicate commands that should be entered at the Linux command line, but
+you should not include the actual <code>%</code> character when typing in the
+commands on your own. To make it easier to cut-and-paste commands from
+this tutorial document onto the command line, you can tell Bash to ignore
+the <code>%</code> character using the following command:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">alias</span><span class="w"> </span>%<span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span></code></pre></div>
+<p>Now you can cut-and-paste a sequence of commands from this tutorial
+document and Bash will not get confused by the <code>%</code> character which begins
+each line.</p>
+<h3 id="11-hello-world">1.1. Hello World</h3>
+<p>We begin with the ubiquitous "Hello, World" example. To display the
+message "Hello, World" we will use the <code>echo</code> command. The <code>echo</code> command
+simply "echoes'' its input to the console.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Hello, World&quot;</span>
+</span></code></pre></div>
+<p>The string we provide to the <code>echo</code> command is called a \IT{command
+  line argument}. We use command line arguments to tell commands what
+they should operate on. Although simple, the <code>echo</code> command can very
+useful for creating simple text files, displaying environment variables,
+and general debugging.</p>
+<div class="admonition question">
+<p class="admonition-title">Activity 1: Experiment with <code>echo</code></p>
+<p>Experiment with using the <code>echo</code> command to display different
+messages.</p>
+</div>
+<h3 id="12-manual-pages">1.2. Manual Pages</h3>
+<p>You can learn more about any Linux command by using the <code>man</code> command.
+Try using this to learn more about the <code>echo</code> command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>%<span class="w"> </span>man<span class="w"> </span><span class="nb">echo</span>
+</span></code></pre></div>
+<p>You can use the up/down keys to scroll the manual one line at a time, the
+space bar to scroll down one page at a time, and the <code>q</code> key to quit
+viewing the manual. You can even learn about the <code>man</code> command itself by
+using <code>man man</code>. As you follow the tutorial, feel free to use the <code>man</code>
+command to learn more about the commands we cover.</p>
+<div class="admonition question">
+<p class="admonition-title">Activity 2: Experiment with <code>man</code></p>
+<p>Use the <code>man</code> command to learn more about the <code>cat</code> command.</p>
+</div>
+<h3 id="13-create-view-and-list-files">1.3. Create, View, and List Files</h3>
+<p>We can use the <code>echo</code> command and a feature called <em>ecommand output
+redirection</em> to create simple text files. We will discuss command output
+redirection in more detail later in the tutorial. Command output
+redirection uses the <code>&gt;</code> operator to take the output from one command and
+"redirect" it to a file. The following commands will create a new file
+named <code>ece6745-tut01.txt</code> that simply contains the text "Complex Digital
+ASIC Design"</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Complex Digital ASIC Design&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>ece6745-tut01.txt
+</span></code></pre></div>
+<p>We can use the <code>cat</code> command to quickly display the contents of a
+file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>%<span class="w"> </span>cat<span class="w"> </span>ece6745-tut01.txt
+</span></code></pre></div>
+<p>For larger files, <code>cat</code> will output the entire file to the console so it
+may be hard to read the file as it streams past. We can use the <code>less</code>
+command to show one screen-full of text at a time. You can use the
+up/down keys to scroll the file one line at a time, the space bar to
+scroll down one page at a time, and the <code>q</code> key to quit viewing the file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%<span class="w"> </span>less<span class="w"> </span>ece6745-tut01.txt
+</span></code></pre></div>
+<p>You can use the <code>ls</code> command to list the filenames of the files you
+have created.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span>ls
+</span></code></pre></div>
+<p>We can provide <em>command line options</em> to the <code>ls</code> command to modify the
+command's behavior. For example, we can use the <code>-1</code> (i.e., a dash
+followed by the number one) command line option to list one file per
+line, and we can we can use the <code>-l</code> (i.e., a dash followed by the letter
+l) command line option to provide a longer listing with more information
+about each file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span>ls<span class="w"> </span>-1
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span>ls<span class="w"> </span>-l
+</span></code></pre></div>
+<p>You should see the newly created <code>ece6745-tut01.txt</code> file along with some
+additional directories or folders. We will discuss directories in the
+next section. Use the following commands to create a few more files using
+the <code>echo</code> command and command output redirection, and then list the
+files again.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Application&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>ece6745-tut01-layer1.txt
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Algorithm&quot;</span><span class="w">   </span>&gt;<span class="w"> </span>ece6745-tut01-layer2.txt
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>%<span class="w"> </span>ls<span class="w"> </span>-1
+</span></code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">Activity 3: Create New File</p>
+<p>Create a new file named <code>ece6745-tut01-layer3.txt</code> which contains the
+third layer in the computing systems stack (i.e., programming
+language). Use <code>cat</code> and <code>less</code> to verify the file contents.</p>
+</div>
+<h3 id="14-create-change-and-list-directories">1.4. Create, Change, and List Directories</h3>
+<p>Obviously, having all files in a single location would be hard to manage
+effectively. We can use <em>directories</em> (also called folders) to logically
+organize our files, just like one can use physical folders to organize
+physical pieces of paper. The mechanism for organizing files and
+directories is called the <em>file system</em>. When you first login to an
+<code>ecelinux</code> machine, you will be in your <em>home directory</em>. This is your
+own private space on the server that you can use to work on the
+laboratory assignments and store your files. You can use the <code>pwd</code>
+command to print the directory in which you are currently working, which
+is known as the <em>current working directory</em>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>/home/netid
+</span></code></pre></div>
+<p>You should see output similar to what is shown above, but instead of
+<code>netid</code> it should show your actual NetID. The <code>pwd</code> command shows a
+<em>directory path</em>. A directory path is a list of nested directory names;
+it describes a "path" to get to a specific file or directory. So the
+above path indicates that there is a toplevel directory named <code>home</code> that
+contains a directory named <code>netid</code>. This is the directory path to your
+home directory. As an aside, notice that Linux uses a forward slash (<code>/</code>)
+to separate directories, while Windows uses a back slash (<code>\</code>) for the
+same purpose.</p>
+<p>We can use the <code>mkdir</code> command to make new directories. The following
+command will make a new directory named <code>ece6745</code> within your home
+directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>ece6745
+</span></code></pre></div>
+<p>We can use the <code>cd</code> command to change our current working directory. The
+following command will change the current working directory to be the
+newly created <code>ece6745</code> directory, before displaying the current working
+directory with the <code>pwd</code> command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>ece6745
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>/home/netid/ece6745
+</span></code></pre></div>
+<p>Use the <code>mkdir</code>, <code>cd</code>, and <code>pwd</code> commands to make another directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>tut01
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tut01
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>/home/netid/ece6745/tut01
+</span></code></pre></div>
+<p>We sometimes say that <code>tut01</code> is a subdirectory or a child directory of
+the <code>ece6745</code> directory. We might also say that the <code>ece6745</code> directory
+is the parent directory of the <code>tut01</code> directory.</p>
+<p>There are some important shortcuts that we can use with the <code>cd</code> command
+to simplify navigating the file system. The special directory named <code>.</code>
+(i.e., one dot) always refers to the current working directory. The
+special directory named <code>..</code> (i.e., two dots) always refers to the parent
+of the current working directory. The special directory named <code>~</code> (i.e.,
+a tilde character) always refers to your home directory. The special
+directory named <code>/</code> (e.g., single forward slash) always refers to the
+highest-level root directory. The following commands illustrate how to
+navigate up and down the directory hierarchy we have just created.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>/home/netid/ece6745/tut01
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>.
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>/home/netid/ece6745/tut01
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>..
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>/home/netid/ece6745
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>..
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>/home/netid
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>ece6745/tut01
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>/home/netid/ece6745/tut01
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>%<span class="w"> </span><span class="nb">cd</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>/home/netid
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>/
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745
+</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-13-23"><a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>/home/netid/ece6745
+</span></code></pre></div>
+<p>Notice how we can use the <code>cd</code> command to change the working directory to
+another arbitrary directory by simply using a directory path (e.g.,
+<code>ece6745/tut01</code>). These are called <em>relative paths</em> because the path is
+relative to your current working directory. You can also use an <em>absolute
+path</em> which always starts with the <em>root directory</em> to concretely specify
+a directory irrespective of the current working directory. A relative
+path is analogous to directions to reach a destination from your current
+location (e.g., How do I get to the coffee shop from my current
+location?), while an absolute path is analogous to directions to reach a
+destination from a centralized location (e.g., How do I get to the coffee
+shop from the center of town?).</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>/home/netid/ece6745
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/home/netid/ece6745/tut01
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>/home/netid/ece6745/tut01
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>%<span class="w"> </span><span class="nb">cd</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>/home/netid
+</span></code></pre></div>
+<p>This example illustrates one more useful shortcut. The <code>cd</code> command with
+no command line arguments always changes the current working directory to
+your home directory. We can use the <code>ls</code> command to list files as well as
+directories. Use the following commands to create a new file and
+directory in the <code>ece6745/tut01</code> subdirectory, and then list the file and
+directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Computer Systems Programming&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>ece6745-tut01.txt
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>dirA
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>%<span class="w"> </span>ls<span class="w"> </span>-1
+</span></code></pre></div>
+<p>You should see both the <code>dirA</code> subdirectory and the newly created
+<code>ece6745-tut01.txt</code> file listed. Feel free to use the <code>cat</code> command to
+verify the file contents of the newly created file. We can use the <code>tree</code>
+command to recursively list the contents of a directory. The following
+commands create a few more directories before displaying the directory
+hierarchy.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>dirB/dirB_1
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>dirB/dirB_2
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>dirC/dirC_1
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>%<span class="w"> </span>tree
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>.
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>+--<span class="w"> </span>dirA
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>+--<span class="w"> </span>dirB
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="p">|</span><span class="w">   </span><span class="p">|</span>--<span class="w"> </span>dirB_1
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="p">|</span><span class="w">   </span><span class="sb">`</span>--<span class="w"> </span>dirB_2
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="p">|</span>--<span class="w"> </span>dirC
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="p">|</span><span class="w">   </span><span class="sb">`</span>--<span class="w"> </span>dirC_1
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="sb">`</span>--<span class="w"> </span>ece6745-tut01.txt
+</span></code></pre></div>
+<p>Note that we are using the <code>-p</code> command line option with the <code>mkdir</code>
+command to make multiple nested directories in a single step.</p>
+<div class="admonition question">
+<p class="admonition-title">Activity 4: Creatring Directories and Files</p>
+<p>Experiment with creating additional directories and files within the
+<code>ece6745/tut01</code> subdirectory. Try creating deeper hierarchies with
+three or even four levels of nesting using the <code>-p</code> option to the
+<code>mkdir</code> command. Experiment with using the <code>.</code> and <code>..</code> special
+directories. Use the <code>tree</code> command to display your newly created
+directory hierarchy.</p>
+</div>
+<h3 id="15-copy-move-and-remove-files-and-directories">1.5. Copy, Move, and Remove Files and Directories}</h3>
+<p>We can use the <code>cp</code> command to copy files. The first argument is the
+name of the file you want to copy, and the second argument is the new
+name to give to the copy. The following commands will make two copies of
+the files we created in the previous section.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>%<span class="w"> </span>cp<span class="w"> </span>ece6745-tut01.txt<span class="w"> </span>ece6745-tut01-a.txt
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>%<span class="w"> </span>cp<span class="w"> </span>ece6745-tut01.txt<span class="w"> </span>ece6745-tut01-b.txt
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>%<span class="w"> </span>ls<span class="w"> </span>-1
+</span></code></pre></div>
+<p>We can also copy one or more files into a subdirectory by using multiple
+source files and a final destination directory as the arguments to the
+<code>cp</code> command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>%<span class="w"> </span>cp<span class="w"> </span>ece6745-tut01.txt<span class="w"> </span>dirA
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>%<span class="w"> </span>cp<span class="w"> </span>ece6745-tut01-a.txt<span class="w"> </span>ece6745-tut01-b.txt<span class="w"> </span>dirA
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>We can use the <code>-r</code> command line option to enable the <code>cp</code> command
+to recursively copy an entire directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>%<span class="w"> </span>tree
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>%<span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span>dirA<span class="w"> </span>dirD
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>If we want to move a file or directory, we can use the <code>mv</code> command.
+As with the <code>cp</code> command, the first argument is the name of the file
+you want to move and the second argument is the new name of the file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>%<span class="w"> </span>mv<span class="w"> </span>ece6745-tut01.txt<span class="w"> </span>ece6745-tut01-c.txt
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>%<span class="w"> </span>ls<span class="w"> </span>-1
+</span></code></pre></div>
+<p>Again, similar to the <code>cp</code> command, we can also move one or more files
+into a subdirectory by using multiple source files and a final
+destination directory as the arguments to the <code>mv</code> command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>%<span class="w"> </span>tree
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>%<span class="w"> </span>mv<span class="w"> </span>ece6745-tut01-a.txt<span class="w"> </span>dirB
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>%<span class="w"> </span>mv<span class="w"> </span>ece6745-tut01-b.txt<span class="w"> </span>ece6745-tut01-c.txt<span class="w"> </span>dirB
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>We do not need to use the <code>-r</code> command line option to move an entire
+directory at once.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>%<span class="w"> </span>tree
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>%<span class="w"> </span>mv<span class="w"> </span>dirD<span class="w"> </span>dirE
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>The following example illustrates how we can use the special <code>.</code>
+directory to move files from a subdirectory into the current working
+directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>%<span class="w"> </span>tree
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>%<span class="w"> </span>mv<span class="w"> </span>dirE/ece6745-tut01.txt<span class="w"> </span>.
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>We can use the <code>rm</code> command to remove files. The following command
+removes a file from within the <code>ece6745/tut01</code> subdirectory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>%<span class="w"> </span>ls<span class="w"> </span>-1
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>%<span class="w"> </span>rm<span class="w"> </span>ece6745-tut01.txt
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>%<span class="w"> </span>ls<span class="w"> </span>-1
+</span></code></pre></div>
+<p>To clean up, we might want to remove the files we created in your home
+directory earlier in this tutorial.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>%<span class="w"> </span><span class="nb">cd</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>%<span class="w"> </span>rm<span class="w"> </span>ece6745-tut01.txt
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>%<span class="w"> </span>rm<span class="w"> </span>ece6745-tut01-layer1.txt
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>%<span class="w"> </span>rm<span class="w"> </span>ece6745-tut01-layer2.txt
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>%<span class="w"> </span>rm<span class="w"> </span>ece6745-tut01-layer3.txt
+</span></code></pre></div>
+<p>We can use the <code>-r</code> command line option with the <code>rm</code> command to remove
+entire directories, but please be careful because it is relatively easy
+to permanently delete many files at once. See Section 2.3 for a useful
+command that you might want to use instead of the <code>rm</code> command to avoid
+accidentally deleting important work.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>%<span class="w"> </span>ls<span class="w"> </span>-1
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>%<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>dirA<span class="w"> </span>dirB<span class="w"> </span>dirC<span class="w"> </span>dirE
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>%<span class="w"> </span>ls<span class="w"> </span>-1
+</span></code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">Activity 5: Copy, Move, and Remove Directories and Files</p>
+<p>Creating additional directories and files within the <code>ece6745/tut01</code>
+subdirectory, and then use the <code>cp</code>, <code>mv</code>, and <code>rm</code> commands to copy,
+move, and remove the newly created directories and files. Use the
+<code>ls</code> and <code>tree</code> commands to display your file and directory
+organization.</p>
+</div>
+<h3 id="16-using-wget-to-download-files">1.6. Using <code>wget</code> to Download Files</h3>
+<p>We can use the <code>wget</code> command to download files from the internet. For
+now, this is a useful way to retrieve a text file that we can use in the
+following examples.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>%<span class="w"> </span>wget<span class="w"> </span>http://www.csl.cornell.edu/courses/ece6745/overview.txt
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>%<span class="w"> </span>cat<span class="w"> </span>overview.txt
+</span></code></pre></div>
+<h3 id="17-using-grep-to-search-files">1.7. Using <code>grep</code> to Search Files</h3>
+<p>We can use the <code>grep</code> command to search and display lines of a file that
+contain a particular pattern. The <code>grep</code> command can be useful for
+quickly searching the contents of the source files in your laboratory
+assignments. The command takes the pattern and the files to search as
+command line arguments. The following command searches "chip" in the
+<code>overview.txt</code> file downloaded in the previous section.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>%<span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;chip&quot;</span><span class="w"> </span>overview.txt
+</span></code></pre></div>
+<p>You should see just the lines within the <code>overview.txt</code> file that contain
+the words "digital logic". We can use the <code>--line-number</code> command line
+option with the <code>grep</code> command to display the line number of each match.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>%<span class="w"> </span>grep<span class="w"> </span>--line-number<span class="w"> </span><span class="s2">&quot;chip&quot;</span><span class="w"> </span>overview.txt
+</span></code></pre></div>
+<p>We can use the <code>-r</code> command line option to recursively search all files
+within a given directory hierarchy. In the following example, we create a
+subdirectory, copy the <code>overview.txt</code> file, and illustrate how we can use
+the <code>grep</code> command to recursively search for the word "digital logic".</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>dirA
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>%<span class="w"> </span>cp<span class="w"> </span>overview.txt<span class="w"> </span>dirA
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>%<span class="w"> </span>grep<span class="w"> </span>-r<span class="w"> </span>--line-number<span class="w"> </span><span class="s2">&quot;chip&quot;</span><span class="w"> </span>.
+</span></code></pre></div>
+<p>Notice how we specify a directory as a command line argument (in this
+case the special <code>.</code> directory) to search the current working directory.
+You should see the three lines from both copies of the <code>overview.txt</code>
+file. The <code>grep</code> command also shows which file contains the match.</p>
+<p>As another example, we will search two special files named
+<code>/proc/cpuinfo</code> and <code>proc/meminfo</code>. These files are present on every
+modern Linux system, and they contain information about the processor and
+memory hardware in that system. The following command first uses the
+<code>less</code> command so you can browse the file, and then uses the <code>grep</code>
+command to search for <code>processor</code> in the <code>/proc/cpuinfo</code> file. Recall
+that with the <code>less</code> command, we use the up/down keys to scroll the file
+one line at a time, the space bar to scroll down one page at a time, and
+the <code>q</code> key to quit viewing the file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>%<span class="w"> </span>less<span class="w"> </span>/proc/cpuinfo
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>%<span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;processor&quot;</span><span class="w"> </span>/proc/cpuinfo
+</span></code></pre></div>
+<p>It should be pretty clear that you are using a system with multiple
+processors. You can also search to find out which company makes the
+processors and what clock frequency they are running at:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>%<span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;vendor_id&quot;</span><span class="w"> </span>/proc/cpuinfo
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>%<span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;cpu MHz&quot;</span><span class="w"> </span>/proc/cpuinfo
+</span></code></pre></div>
+<p>We can find out how much memory is in the system by searching for
+<code>MemTotal</code> in the <code>/proc/meminfo</code> file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>%<span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;MemTotal&quot;</span><span class="w"> </span>/proc/meminfo
+</span></code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">Activity 6: Experimenting with <code>grep</code></p>
+<p>Try using <code>grep</code> to search for the words "computer" in the
+<code>overview.txt</code> file.</p>
+</div>
+<h3 id="18-using-find-to-find-files">1.8. Using <code>find</code> to Find Files</h3>
+<p>We can use the <code>find</code> command to recursively search a directory hierarchy
+for files or directories that match a specified criteria. While the
+<code>grep</code> command is useful for searching file contents, the <code>find</code> command
+is useful for quickly searching the file and directory names in your
+laboratory assignments. The <code>find</code> command is very powerful, so we will
+just show a very simple example. First, we create a few new files and
+directories.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>dirB/dirB_1
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>dirB/dirB_2
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>dirC/dirC_1
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;test&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>dirA/file0.txt
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;test&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>dirA/file1.txt
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;test&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>dirB/dirB_1/file0.txt
+</span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;test&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>dirB/dirB_1/file1.txt
+</span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;test&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>dirB/dirB_2/file0.txt
+</span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>We will now use the <code>find</code> command to find all files named <code>file0.txt</code>.
+The <code>find</code> command takes one command line argument to specify where we
+should search and a series of command line options to describe what files
+and directories we are trying to find. We can also use command line
+options to describe what action we would like to take when we find the
+desired files and directories. In this example, we use the <code>--name</code>
+command line option to specify that we are searching for files with a
+specific name. We can also use more complicated patterns to search for
+all files with a specific filename prefix or extension.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745/tut01
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>%<span class="w"> </span>find<span class="w"> </span>.<span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;file0.txt&quot;</span>
+</span></code></pre></div>
+<p>Notice that we are using the special <code>.</code> directory to tell the <code>find</code>
+command to search the current working directory and all subdirectories.
+The <code>find</code> command always searches recursively.</p>
+<div class="admonition question">
+<p class="admonition-title">Activity 7: Experimenting with <code>find</code></p>
+<p>Create additional files named <code>file2.txt</code> in some of the
+subdirectories we have already created. Use the <code>find</code> command to
+search for files named <code>file2.txt</code>.</p>
+</div>
+<h3 id="19-using-tar-to-archive-files">1.9. Using <code>tar</code> to Archive Files</h3>
+<p>We can use the <code>tar</code> command to "pack" files and directories into a
+simple compressed <em>archive</em>, and also to "unpack" these files and
+directories from the archive. This kind of archive is sometimes called a
+<em>tarball</em>. Most open-source software is distributed in this compressed
+form. It makes it easy to distribute code among collaborators and it is
+also useful to create backups of files. We can use the following command
+to create an archive of our tutorial directory and then remove the
+tutorial directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>%<span class="w"> </span>tar<span class="w"> </span>-czvf<span class="w"> </span>tut01.tgz<span class="w"> </span>tut01
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>%<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>tut01
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a>%<span class="w"> </span>ls<span class="w"> </span>-l
+</span></code></pre></div>
+<p>Several command line options listed together as a single option
+(<code>-czvf</code>), where <code>c</code> specifies we want to create an archive, <code>z</code>
+specifies we should use "gzip" compression, <code>v</code> specifies verbose mode,
+and <code>f</code> specifies we will provide filenames to archive. The first command
+line argument is the name of the archive to create, and the second
+command line argument is the directory to archive. We can now extract the
+contents of the archive to recreate the tutorial directory. We also
+remove the archive.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ece6745
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>%<span class="w"> </span>tar<span class="w"> </span>-xzvf<span class="w"> </span>tut01.tgz
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>%<span class="w"> </span>rm<span class="w"> </span>tut01.tgz
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a>%<span class="w"> </span>tree<span class="w"> </span>tut01
+</span></code></pre></div>
+<p>Note that we use the <code>x</code> command line option with the <code>tar</code> command to
+specify that we intend to extract the archive.</p>
+<div class="admonition question">
+<p class="admonition-title">Activity 8: Experimenting with <code>tar</code></p>
+<p>Create an example directory within the <code>ece6745/tut01</code> subdirectory.
+Copy the <code>overview.txt</code> file and rename it to add example files to
+your new directory. Use the <code>tar</code> command to create and extract an
+archive of just this one new directory.</p>
+</div>
+<h3 id="110-using-top-to-view-running-processes">1.10. Using <code>top</code> to View Running Processes</h3>
+<p>You can use the <code>top</code> command to view what commands are currently running
+on the Linux system in realtime. This can be useful to see if there are
+many commands running which are causing the system to be sluggish. When
+finished you can use the <code>q</code> character to quit.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>%<span class="w"> </span>top
+</span></code></pre></div>
+<p>The first line of the <code>top</code> display shows the number of users currently
+logged into the system, and the <em>load average</em>. The load average
+indicates how "overloaded" the system was over the last one, five, and 15
+minutes. If the load average is greater than the number of processors in
+the system, it means your system will probably be sluggish. You can
+always try logging out and then back into the <code>ecelinux</code> servers to see
+if you get assigned to a different server in the cluster.</p>
+<h3 id="111-environment-variables">1.11. Environment Variables</h3>
+<p>In the previous sections, we have been using the Bash shell to run
+various commands, but the Bash shell is actually a full-featured
+programming language. One aspect of the shell that is similar in spirit
+to popular programming languages, is the ability to write and read
+<em>environment variables</em>. The following commands illustrate how to write
+an environment variable named <code>ece6745_tut01_layer1</code>, and how to read this
+environment variable using the <code>echo</code> command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>%<span class="w"> </span><span class="nv">ece6745_tut01_layer1</span><span class="o">=</span><span class="s2">&quot;application&quot;</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="si">${</span><span class="nv">ece6745_tut01_layer1</span><span class="si">}</span>
+</span></code></pre></div>
+<p>Keep in mind that the names of environment variables can only contain
+letters, numbers, and underscores. Notice how we use the <code>${}</code> syntax to
+read an environment variable. There are a few built-in environment
+variables that might be useful:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="si">${</span><span class="nv">HOSTNAME</span><span class="si">}</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>
+</span></code></pre></div>
+<p>We often use the <code>HOME</code> environment variable in directory paths like
+this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span></code></pre></div>
+<p>The <code>PWD</code> environment variable always holds the current working
+directory. We can use environment variables as options to commands other
+than <code>echo</code>. A common example is to use an environment variable to
+"remember" a specific directory location, which we can quickly return to
+with the <code>cd</code> command like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/tut01
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>%<span class="w"> </span><span class="nv">TUT01</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>%<span class="w"> </span><span class="nb">cd</span>
+</span><span id="__span-42-4"><a id="__codelineno-42-4" name="__codelineno-42-4" href="#__codelineno-42-4"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-42-5"><a id="__codelineno-42-5" name="__codelineno-42-5" href="#__codelineno-42-5"></a>/home/netid
+</span><span id="__span-42-6"><a id="__codelineno-42-6" name="__codelineno-42-6" href="#__codelineno-42-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUT01</span><span class="si">}</span>
+</span><span id="__span-42-7"><a id="__codelineno-42-7" name="__codelineno-42-7" href="#__codelineno-42-7"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-42-8"><a id="__codelineno-42-8" name="__codelineno-42-8" href="#__codelineno-42-8"></a>/home/netid/ece6745/tut01
+</span></code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">Activity 9: Experimenting with Environment Variables</p>
+<p>Create a new environment variable named <code>ece6745_tut01_layer2</code> and
+write it with the second layer in the computer systems stack (i.e.,
+algorithm). Use the <code>echo</code> command to display this environment
+variable. Experiment with creating a new subdirectory within
+<code>ece6745/tut01</code> and then using an environment variable to "remember"
+that location.</p>
+</div>
+<h3 id="112-command-output-redirection">1.12. Command Output Redirection</h3>
+<p>We have already seen using the <code>echo</code> command and command output
+redirection to create simple text files. Here is another example:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/tut01
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Application&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>computing-stack.txt
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a>%<span class="w"> </span>cat<span class="w"> </span>computing-stack.txt
+</span></code></pre></div>
+<p>The <code>&gt;</code> operator tells the Bash shell to take the output from the command
+on the left and overwrite the file named on the right. We can use any
+command on the left. For example, we can save the output from the <code>pwd</code>
+command or the <code>man</code> command to a file for future reference.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/tut01
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>%<span class="w"> </span><span class="nb">pwd</span><span class="w"> </span>&gt;<span class="w"> </span>cmd-output.txt
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>%<span class="w"> </span>cat<span class="w"> </span>cmd-output.txt
+</span><span id="__span-44-4"><a id="__codelineno-44-4" name="__codelineno-44-4" href="#__codelineno-44-4"></a>%<span class="w"> </span>man<span class="w"> </span><span class="nb">pwd</span><span class="w"> </span>&gt;<span class="w"> </span>cmd-output.txt
+</span><span id="__span-44-5"><a id="__codelineno-44-5" name="__codelineno-44-5" href="#__codelineno-44-5"></a>%<span class="w"> </span>cat<span class="w"> </span>cmd-output.txt
+</span></code></pre></div>
+<p>We can also use the <code>&gt;&gt;</code> operator which tells the Bash shell to take the
+output from the command on the left and append the file named on the
+right. We can use this to create multiline text files:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/tut01
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Application&quot;</span><span class="w">           </span>&gt;<span class="w"> </span>computing-stack.txt
+</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Algorithm&quot;</span><span class="w">            </span>&gt;&gt;<span class="w"> </span>computing-stack.txt
+</span><span id="__span-45-4"><a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Programming Language&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>computing-stack.txt
+</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Operating System&quot;</span><span class="w">     </span>&gt;&gt;<span class="w"> </span>computing-stack.txt
+</span><span id="__span-45-6"><a id="__codelineno-45-6" name="__codelineno-45-6" href="#__codelineno-45-6"></a>%<span class="w"> </span>cat<span class="w"> </span>computing-stack.txt
+</span></code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">Activity 10: Experimenting with Output Redirection</p>
+<p>Add the remaining levels of the computing stack (i.e., compiler,
+instruction-set architecture, microarchitecture,
+register-transfer-level, gate-level, circuits, devices, technology)
+to the <code>computing-stack.txt</code> text file. Use the <code>cat</code> command to
+verify the file contents.</p>
+</div>
+<h3 id="113-command-chaining">1.13. Command Chaining</h3>
+<p>We can use the <code>&amp;&amp;</code> operator to specify two commands that we want to
+chaining together. The second command will only execute if the first
+command succeeds. Below is an example.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/tut01<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cat<span class="w"> </span>computing-stack.txt
+</span></code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">Activity 11: Experimenting with Command Chaining</p>
+<p>Create a single-line command that combines creating a new directory
+with the <code>mkdir</code> command and then immediately changes into the
+directory using the <code>cd</code> command.</p>
+</div>
+<h3 id="114-command-pipelining">1.14. Command Pipelining</h3>
+<p>The Bash shell allows you to run multiple commands simultaneously, with
+the output of one command becoming the input to the next command. We can
+use this to assemble "pipelines"; we "pipe" the output of one command to
+another command for further actions using the <code>|</code> operator.</p>
+<p>The following example uses the <code>grep</code> command to search the special
+<code>proc/cpuinfo</code> file for lines containing the word "processor" and then
+pipes the result to the <code>wc</code> command. The <code>wc</code> command counts the number
+of characters, words, or lines of its input. We use the <code>-l</code> command line
+option with the <code>wc</code> command to count the number of lines.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>%<span class="w"> </span>grep<span class="w"> </span>processor<span class="w"> </span>/proc/cpuinfo<span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+</span></code></pre></div>
+<p>This is a great example of the Linux philosophy of providing many simple
+commands that can be combined to create more powerful functionality.
+Essentially the pipeline we have created is a command that tells us the
+number of processors in our system.</p>
+<p>As another example, we will pipe the output of the <code>last</code> command to the
+<code>grep</code> command. The <code>last</code> command lists the names of all of the users
+that have logged into the system since the system was rebooted. We can
+use <code>grep</code> to search for your NetID and thus quickly see how when you
+previously have logged into this system.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>%<span class="w"> </span>last<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>netid
+</span></code></pre></div>
+<p>We can create even longer pipelines. The following pipeline will report
+the number of times you have logged into the system since it was
+rebooted.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>%<span class="w"> </span>last<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>netid<span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+</span></code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">Activity 12: Experimenting with Command Pipelines</p>
+<p>Use the <code>cat</code> command with the <code>overview.txt</code> file and pipe the
+output to the <code>grep</code> command to search for the word ""memories".
+While this is not as fast as using <code>grep</code> directly on the file, it
+does illustrate how many commands (e.g., <code>grep</code>) can take their input
+specified as a command line argument or through a pipe.</p>
+</div>
+<h3 id="114-bash-shell-scripts">1.14. Bash Shell Scripts</h3>
+<p>If you find yourself continually having to use the same complex commands
+over and over, consider creating a Bash shell script to automatically
+execute those commands. A Bash shell script is just a text file with a
+list of commands that you can run using the <code>source</code> command.</p>
+<p>For example, let's create a Bash shell script to automatically grep for
+information about the processor and memory in a single step. Use VS Code
+to open a new file called <code>get-processor-memory-info.sh</code> (note that by
+convention we usually use the <code>.sh</code> extension for Bash shell scripts).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a>% cd ${HOME}/ece6745/tut01
+</span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a>% code get-processor-memory-info.sh
+</span></code></pre></div>
+<p>Then enter the following commands into this new Bash shell script.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>grep &quot;processor&quot; /proc/cpuinfo
+</span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a>grep &quot;vendor_id&quot; /proc/cpuinfo
+</span><span id="__span-51-3"><a id="__codelineno-51-3" name="__codelineno-51-3" href="#__codelineno-51-3"></a>grep &quot;cpu MHz&quot;   /proc/cpuinfo
+</span><span id="__span-51-4"><a id="__codelineno-51-4" name="__codelineno-51-4" href="#__codelineno-51-4"></a>grep &quot;MemTotal&quot;  /proc/meminfo
+</span></code></pre></div>
+<p>Then save the Bash shell script and execute it using the <code>source</code>
+command.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>% cd ${HOME}/ece6745/tut01
+</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>% source get-processor-memory-info.sh
+</span></code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">Activity 13: Experimenting with Bash Shell Scripts</p>
+<p>Create a new Bash shell script named <code>wget-and-grep.sh</code>. The Bash
+shell script should use <code>wget</code> to get the <code>overview.txt</code> file for the
+course and then uses grep to find instances of the word "chip" in
+this file. See earlier examples in this tutorial for the commands
+required for both steps. Then use <code>source</code> to execute the new Bash
+shell script.</p>
+</div>
+<h3 id="115-aliases-wildcards-command-history-and-tab-completion">1.15. Aliases, Wildcards, Command History, and Tab Completion</h3>
+<p>In this section, we describe some miscellaneous features of the Bash
+shell which can potentially be quite useful in increasing your
+productivity.</p>
+<p>Aliases are a way to create short names for command sequences to make it
+easier to quickly execute those command sequences in the future. For
+example, assume that you frequently want to change to a specific
+directory. We can create an alias to make this process take just two
+keystrokes.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>%<span class="w"> </span><span class="nb">alias</span><span class="w"> </span><span class="nv">ct</span><span class="o">=</span><span class="s2">&quot;cd </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/ece6745/tut01&quot;</span>
+</span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a>%<span class="w"> </span>ct
+</span><span id="__span-53-3"><a id="__codelineno-53-3" name="__codelineno-53-3" href="#__codelineno-53-3"></a>%<span class="w"> </span><span class="nb">pwd</span>
+</span><span id="__span-53-4"><a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a>/home/academic/netid/ece6745/tut01
+</span></code></pre></div>
+<p>If you always want this alias to be available whenever you login to the
+system, you can save it in your <code>.bashrc</code> file. The <code>.bashrc</code> is a
+special Bash script that is run on every invocation of a Bash shell.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;alias ct=\&quot;cd </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/ece6745/tut01\&quot;&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/.bashrc
+</span></code></pre></div>
+<p>The reason we have to use a back slash (<code>\</code>) in front of the double
+quotes is to make sure the <code>echo</code> command sees this command line argument
+as one complete string.</p>
+<p>Wildcards make it easy to manipulate many files and directories at once.
+Whenever we specify a file or directory on the command line, we can often
+use a wildcard instead. In a wildcard, the asterisk (<code>*</code>) will match any
+sequence of characters. The following example illustrates how to list all
+files that end in the suffix <code>.txt</code> and then copies all files that match
+the wildcard from one directory to another.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/tut01
+</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a>%<span class="w"> </span>ls<span class="w"> </span>*.txt
+</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>%<span class="w"> </span>cp<span class="w"> </span>dirA/file*.txt<span class="w"> </span>dirB
+</span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>The Bash shell keeps a history of everything you do at the command line.
+You can display the history with the <code>history</code> command. To rerun a
+previous command, you can use the <code>!</code> operator and the corresponding
+command number shown with the <code>history</code> command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a>%<span class="w"> </span><span class="nb">history</span>
+</span></code></pre></div>
+<p>You can pipe the output of the <code>history</code> command to the <code>grep</code> command to
+see how you might have done something in the past.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>%<span class="w"> </span><span class="nb">history</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>wc
+</span></code></pre></div>
+<p>If you press the up arrow key at the command line, the Bash shell will
+show you the previous command you used. Continuing to press the up/down
+keys will enable you to step through your history. It is very useful to
+press the up arrow key once to rerun your last command.</p>
+<p>The Bash shell supports tab completion. When you press the tab key twice
+after entering the beginning of a filename or directory name, Bash will
+try to automatically complete the filename or directory name. If there is
+more than one match, Bash will show you all of these matches so you can
+continue narrowing your search.</p>
+<h2 id="2-course-specific-linux-commands">2. Course-Specific Linux Commands</h2>
+<p>In this section, we describe various aspects of the development
+environment that are specific to the severs used in the course.</p>
+<h3 id="21-course-setup-script">2.1. Course Setup Script</h3>
+<p>As discussed in the remote access tutorial, the very first thing you need
+to do after logging into the <code>ecelinux</code> servers is source the course
+setup script. This will ensure your environment is setup with everything
+you need for working on the laboratory assignments. Enter the following
+command on the command line:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span></code></pre></div>
+<p>You should now see <code>ECE 6745</code> in your prompt which means your environment
+is setup for the course.</p>
+<p>It can be tedious to always remember to source the course setup script.
+You can also use auto setup which will automatically source the course
+setup for you when you open a terminal. Note that if the environment for
+ECE 6745 conflicts with the environment required by a different course
+then you will need to manually source the setup script when you are
+working on this course. Enter the following command on the command line
+to use auto setup:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh<span class="w"> </span>--enable-auto-setup
+</span></code></pre></div>
+<p>Now close the terminal and log out completely from the <code>ecelinux</code>
+servers. Log back in and you should see <code>ECE 6745</code> in the prompt meaning
+your environment is automatically setup for the course. If at anytime you
+need to disable auto setup you can use the following command:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-60-1"><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh<span class="w"> </span>--disable-auto-setup
+</span></code></pre></div>
+<p>Again, if for any reason running the setup script prevents you from using
+tools for another course, you cannot use the auto setup. You will need to
+run the setup script manually every time you want to work on this course.</p>
+<h3 id="22-using-quota-to-check-your-space-usage">2.2. Using <code>quota</code> to Check Your Space Usage</h3>
+<p>Students are allocated 10GB of storage on the servers. You can use the
+following command to show much space you are using:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a>%<span class="w"> </span>quota<span class="w"> </span>-s
+</span></code></pre></div>
+<p>The <code>blocks</code> column is how much data you are using, and the <code>quota</code>
+column is your quota. If you have exceed the 10GB quota, you can browse
+your home directory and list the size of files and the contents of
+directories with the <code>du</code> command:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-62-1"><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>
+</span><span id="__span-62-2"><a id="__codelineno-62-2" name="__codelineno-62-2" href="#__codelineno-62-2"></a>%<span class="w"> </span>du<span class="w"> </span>-sh<span class="w"> </span>*
+</span></code></pre></div>
+<p>By recursively changing directories and examining the sizes of files and
+directories you can figure out what you need to delete. We can pipe the
+output of <code>du</code> to the <code>sort</code> and <code>head</code> commands to find the top 20
+largest files and directories like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>
+</span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a>%<span class="w"> </span>du<span class="w"> </span>-xak<span class="w"> </span>.<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-nr<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>--lines<span class="o">=</span><span class="m">20</span>
+</span></code></pre></div>
+<p>Or just use the following to generate a human readable summary of the
+size of files/directories in the current working directory. Note that it
+can take 20--30 seconds for this command to finish, so please be patient.</p>
+<h3 id="23-using-trash-to-safely-remove-files">2.3. Using <code>trash</code> to Safely Remove Files</h3>
+<p>We have installed a simple program called <code>trash</code> which moves files you
+wish to delete into a special subdirectory of your home directory located
+at <code>${HOME}/tmp/trash</code>. The following commands create a file and then
+deletes it using <code>trash</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-64-1"><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>
+</span><span id="__span-64-2"><a id="__codelineno-64-2" name="__codelineno-64-2" href="#__codelineno-64-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;This file will be deleted.&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>testing.txt
+</span><span id="__span-64-3"><a id="__codelineno-64-3" name="__codelineno-64-3" href="#__codelineno-64-3"></a>%<span class="w"> </span>trash<span class="w"> </span>testing.txt
+</span><span id="__span-64-4"><a id="__codelineno-64-4" name="__codelineno-64-4" href="#__codelineno-64-4"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;This file will also be deleted.&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>testing.txt
+</span><span id="__span-64-5"><a id="__codelineno-64-5" name="__codelineno-64-5" href="#__codelineno-64-5"></a>%<span class="w"> </span>trash<span class="w"> </span>testing.txt
+</span><span id="__span-64-6"><a id="__codelineno-64-6" name="__codelineno-64-6" href="#__codelineno-64-6"></a>%<span class="w"> </span>ls<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/tmp/trash
+</span></code></pre></div>
+<p>If you look in <code>${HOME}/tmp/trash</code> you will see subdirectories organized
+by date. Look in the subdirectory with today's date and you should two
+files corresponding to the two files you deleted. We highly recommend
+always using the <code>trash</code> command instead of <code>rm</code> since this avoids
+accidentally deleting your work.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

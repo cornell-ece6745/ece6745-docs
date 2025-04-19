@@ -1,0 +1,1466 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-sec02-asic-back-end/">
+      
+      
+        <link rel="next" href="../ece6745-sec04-xcel-rtl/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Section 3: ASIC Automated Flow - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-section-3-asic-automated-flow" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Section 3: ASIC Automated Flow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-sec01-asic-front-end/" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut05-asic-stdcells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut07-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut09-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut12-spice-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec01-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec02-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-testing-simulation-and-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Testing, Simulation, and Translation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pyhflow-for-generating-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. pyhflow For Generating Flows
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. pyhflow For Generating Flows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-running-asic-flow-with-one-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1. Running ASIC Flow with One Test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-interactive-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3. Interactive Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-key-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.5. Key Reports
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-case-studies" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Case Studies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Case Studies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-decreasing-the-clock-period-constraint" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Decreasing the Clock Period Constraint
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#31-flattening-the-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Flattening the Design
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec04-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-testing-simulation-and-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Testing, Simulation, and Translation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pyhflow-for-generating-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. pyhflow For Generating Flows
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. pyhflow For Generating Flows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-running-asic-flow-with-one-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1. Running ASIC Flow with One Test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-interactive-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3. Interactive Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-key-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.5. Key Reports
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-case-studies" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Case Studies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Case Studies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-decreasing-the-clock-period-constraint" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Decreasing the Clock Period Constraint
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#31-flattening-the-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Flattening the Design
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-section-3-asic-automated-flow">ECE 6745 Section 3: ASIC Automated Flow</h1>
+<p>In the previous sections, we manually commands entering commands for each
+tool to take a design from RTL to layout. Flow scripts can help automate
+the process but copying and modifying these flow scripts for every design
+is tedious and error prone. An agile hardware design flow demands
+automation to simplify rapidly exploring the area, energy, timing design
+space of one or more designs. In this section, we will introduce a simple
+tool called pyhflow which takes as input a <em>step templates</em> and a <em>design
+YAML</em> and generates appropriate flow scripts.</p>
+<p>The following diagram illustrates the five primary tools we have already
+seen in the previous discussion sections. Notice that the ASIC tools all
+require various views from the standard-cell library.</p>
+<p><img alt="" src="../img/tut08-asic-flow.png" /></p>
+<p>Extensive documentation is provided by Synopsys and Cadence for these
+ASIC tools. We have organized this documentation and made it available to
+you on the public course webpage:</p>
+<ul>
+<li><a href="https://www.csl.cornell.edu/courses/ece6745/asicdocs">https://www.csl.cornell.edu/courses/ece6745/asicdocs</a></li>
+</ul>
+<p>The first step is to access <code>ecelinux</code>. Use Microsoft Remote Desktop to
+log into a specific <code>ecelinux</code> server. Then use VS Code to log into the
+same specific <code>ecelinux</code> server. Once you are at the <code>ecelinux</code> prompt,
+source the setup script, source the GUI setup script, clone this
+repository from GitHub, and define an environment variable to keep track
+of the top directory for the project.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/ece6745-sec03-asic-auto<span class="w"> </span>sec03
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>sec03
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>%<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TOPDIR</span><span class="o">=</span><span class="nv">$PWD</span>
+</span></code></pre></div>
+<h2 id="1-testing-simulation-and-translation">1. Testing, Simulation, and Translation</h2>
+<p>As in the last section, we will be using the following four-stage
+registered incrementer as our example design:</p>
+<p><img alt="" src="../img/sec01-regincr-nstage.png" /></p>
+<p>Before we can use the ASIC flow, we need to verify the design and
+generate the corresponding Verilog files for each test which can be used
+for RTL simulation, fast-functional gate-level simulation, and
+back-annotated gate-level simulation. Always run the tests before pushing
+anything through the ASIC flow. There is no sense in running the flow if
+the design is incorrect!</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut3_verilog/regincr<span class="w">  </span>--test-verilog<span class="w"> </span>--dump-vtb
+</span></code></pre></div>
+<p>You can run the interactive simulator for our four-stage registered
+incrementer like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>%<span class="w"> </span>../tut3_verilog/regincr/regincr-sim<span class="w"> </span>0xff<span class="w"> </span>0x20<span class="w"> </span>0x30<span class="w"> </span>0x04<span class="w"> </span>0x00
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>%<span class="w"> </span>less<span class="w"> </span>RegIncrNstage__p_nstages_4__pickled.v
+</span></code></pre></div>
+<p>You should now have the Verilog that we want to push through the ASIC
+flow.</p>
+<h2 id="2-pyhflow-for-generating-flows">2. pyhflow For Generating Flows</h2>
+<p>pyflow is based on the idea of <em>step templates</em> which are located in the
+<code>asic/steps</code> directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/steps
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>%<span class="w"> </span>tree
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>.
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>├──<span class="w"> </span><span class="m">01</span>-synopsys-vcs-rtlsim
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│<span class="w">   </span>└──<span class="w"> </span>run
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>├──<span class="w"> </span><span class="m">02</span>-synopsys-dc-synth
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>│<span class="w">   </span>├──<span class="w"> </span>run
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│<span class="w">   </span>└──<span class="w"> </span>run.tcl
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>├──<span class="w"> </span><span class="m">03</span>-synopsys-vcs-ffglsim
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>│<span class="w">   </span>└──<span class="w"> </span>run
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>├──<span class="w"> </span><span class="m">04</span>-cadence-innovus-pnr
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>│<span class="w">   </span>├──<span class="w"> </span>run
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>│<span class="w">   </span>├──<span class="w"> </span>run.tcl
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>│<span class="w">   </span>└──<span class="w"> </span>setup-timing.tcl
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>├──<span class="w"> </span><span class="m">05</span>-synopsys-vcs-baglsim
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>│<span class="w">   </span>└──<span class="w"> </span>run
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>├──<span class="w"> </span><span class="m">06</span>-synopsys-pt-pwr
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>│<span class="w">   </span>├──<span class="w"> </span>run
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>│<span class="w">   </span>└──<span class="w"> </span>run.tcl
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>└──<span class="w"> </span><span class="m">07</span>-summarize-results
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">    </span>├──<span class="w"> </span>run
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">    </span>└──<span class="w"> </span>summarize-results
+</span></code></pre></div>
+<p>Each step is a directory with a run script and possibly other scripts.
+The key difference from the scripts we used in the previous tutorials, is
+that these scripts are templated using the Jinja2 templating system:</p>
+<ul>
+<li><a href="https://jinja.palletsprojects.com">https://jinja.palletsprojects.com</a></li>
+</ul>
+<p>Open the <code>run.tcl</code> script in the <code>02-synopsys-dc-synth</code> step template
+which uses Synopsys DC for synthesis.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>% cd $TOPDIR/asic/steps/02-synopsys-dc-synth
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>% code run.tcl
+</span></code></pre></div>
+<p>Notice how the <code>run.tcl</code> script is templated based on the design name and
+the target clock period.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>analyze -format sverilog $env(TOPDIR)/sim/build/{{design_name}}__pickled.v
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>elaborate {{design_name}}
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>create_clock clk -name ideal_clock1 -period {{clock_period}}
+</span></code></pre></div>
+<p>The <code>{{ }}</code> directive is the standard syntax for template variable
+substitution using Jinja2.</p>
+<p>The pyhflow program takes as input a design YAML file which specifies:</p>
+<ul>
+<li>what steps make up the flow</li>
+<li>key/value pairs for variables to substitute into scripts</li>
+<li>list of tests</li>
+<li>list of evals</li>
+</ul>
+<p>Take a look at the provided design YAML file for the registered
+incrementer.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/designs
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>%<span class="w"> </span>cat<span class="w"> </span>sec03-regincr.yml
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>steps:
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w"> </span>-<span class="w"> </span><span class="m">01</span>-synopsys-vcs-rtlsim
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w"> </span>-<span class="w"> </span><span class="m">02</span>-synopsys-dc-synth
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w"> </span>-<span class="w"> </span><span class="m">03</span>-synopsys-vcs-ffglsim
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w"> </span>-<span class="w"> </span><span class="m">04</span>-cadence-innovus-pnr
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w"> </span>-<span class="w"> </span><span class="m">05</span>-synopsys-vcs-baglsim
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w"> </span>-<span class="w"> </span><span class="m">06</span>-synopsys-pt-pwr
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w"> </span>-<span class="w"> </span><span class="m">07</span>-summarize-results
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>src_dir<span class="w">      </span>:<span class="w"> </span>../../../sim/build
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>design_name<span class="w">  </span>:<span class="w"> </span>RegIncrNstage__p_nstages_4
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>clock_period<span class="w"> </span>:<span class="w"> </span><span class="m">1</span>.0
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>dump_vcd<span class="w">     </span>:<span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>tests:
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w"> </span>-<span class="w"> </span>RegIncrNstage__p_nstages_4_test_4stage_large
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w"> </span>-<span class="w"> </span>RegIncrNstage__p_nstages_4_test_4stage_overflow
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w"> </span>-<span class="w"> </span>RegIncrNstage__p_nstages_4_test_4stage_random
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w"> </span>-<span class="w"> </span>RegIncrNstage__p_nstages_4_test_4stage_small
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>evals:
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w"> </span>-<span class="w"> </span>RegIncrNstage__p_nstages_4_regincr-sim-basic
+</span></code></pre></div>
+<p>This design YAML file specifies the generated flow should use all seven
+steps. We run RTL sim, FFGL sim, and BAGL sim on all tests and evals, but
+we only do energy analysis on the evals. The evals usually come from
+running an interactive simulator like <code>regincr-sim</code>. All pyhflow does is
+use the YAML file to figure out what to substitute into the templated
+steps and then copy the run scripts into the current working directory.
+You can also override parameters on pyhflow command line.</p>
+<h3 id="11-running-asic-flow-with-one-test">1.1. Running ASIC Flow with One Test</h3>
+<p>Let's go ahead and use pyhflow to generate the flow scripts for the
+registered incrementer.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>--one-test<span class="w"> </span>../designs/sec03-regincr.yml
+</span></code></pre></div>
+<p>The <code>--one-test</code> command line option tells pyhflow to only include the
+first test and no evals in the flow scripts. This is a useful way to get
+started with a single test and reduces the overall runtime of the flow.
+Once we know that everything works with one test we can circle back and
+regenerate the flow scripts with all of the tests and evals.</p>
+<p>Let's see how the step template has been filled in for the Synopsys DC
+synthesis step.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">02</span>-synopsys-dc-synth/run.tcl
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>...
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>analyze<span class="w"> </span>-format<span class="w"> </span>sverilog<span class="w"> </span><span class="nv">$env</span><span class="o">(</span>TOPDIR<span class="o">)</span>/sim/build/RegIncrNstage__p_nstages_4__pickled.v
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>elaborate<span class="w"> </span>RegIncrNstage__p_nstages_4
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>create_clock<span class="w"> </span>clk<span class="w"> </span>-name<span class="w"> </span>ideal_clock1<span class="w"> </span>-period<span class="w"> </span><span class="m">1</span>.0
+</span></code></pre></div>
+<p>Notice how the name of the source Verilog RTL File, the top-level
+modulename, and the clock period have all been filled in.</p>
+<p>After generating a flow, we always recommend explicitly running at least
+the first two steps to ensure there are no errors. You can run the
+four-state RTL simulation as follows.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>./01-synopsys-vcs-rtlsim/run
+</span></code></pre></div>
+<p>Make sure the step can find the source files and passes the test. Then
+run synthesis as follows.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>%<span class="w"> </span>./02-synopsys-dc-synth/run
+</span></code></pre></div>
+<p>Carefully look at the output from the synthesis step (also stored in the
+<code>run.log</code> file). Look for the output after <code>Running PRESTO HDLC</code> for any
+warnings to ensure that all of your Verilog RTL is indeed synthesizable.
+Scan through the rest of the logs to ensure there are no worrying
+warnings or errors.</p>
+<p>Once you have explicitly run the first two steps to ensure there are no
+errors, you can run the remaning steps.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span><span class="m">03</span>-synopsys-vcs-ffglsim
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>%<span class="w"> </span><span class="m">04</span>-cadence-innovus-pnr
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>%<span class="w"> </span><span class="m">05</span>-synopsys-vcs-baglsim
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>%<span class="w"> </span><span class="m">06</span>-synopsys-pt-pwr
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>%<span class="w"> </span><span class="m">07</span>-summarize-results
+</span></code></pre></div>
+<p>If all looks good, then you would regenerate the with all of the tests
+and evals; however, we will stick to just running one test though to save
+time in this discussion section. <strong>pyhflow will also create a <code>run-flow</code>
+script which will run all of the steps in sequence for you, but only use
+this if you are confident there are no errors!</strong></p>
+<p>For the results to be valid, the following must be true:</p>
+<ul>
+<li>all four-state RTL simulations pass</li>
+<li>all fast-functional gate-level simulations pass</li>
+<li>all back-annotated gate-level simulations pass</li>
+<li>place-and-route setup slack is positive</li>
+<li>place-and-route hold slack is positive</li>
+</ul>
+<p>If your design does not meet timing after synthesis but <em>does</em> meet
+timing after place-and-route then these are still valid results. It just
+means Synopsys DC was conservative and/or Cadence Innovus did a good job
+further optimizing the design.</p>
+<h3 id="13-interactive-debugging">1.3. Interactive Debugging</h3>
+<p>Let's start Cadence Innovus in interactive mode and then load the design.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>%<span class="w"> </span>innovus
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>innovus&gt;<span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="m">04</span>-cadence-innovus-pnr/post-pnr.enc
+</span></code></pre></div>
+<p>You can use Cadence Innovus to analyze the static timing of any path in
+the design. For example, let's look at the static timing for a path in
+the first stage:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>innovus&gt;<span class="w"> </span>report_timing<span class="w"> </span>-path_type<span class="w"> </span>full_clock<span class="w"> </span>-net<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span>-from<span class="w"> </span>v/gen<span class="o">[</span><span class="m">0</span><span class="o">]</span>.reg_incr/reg_out_reg<span class="o">[</span><span class="m">0</span><span class="o">]</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>-to<span class="w"> </span>v/gen<span class="o">[</span><span class="m">1</span><span class="o">]</span>.reg_incr/reg_out_reg<span class="o">[</span><span class="m">0</span><span class="o">]</span>
+</span></code></pre></div>
+<p>You can use the Amobea workspace to help visualize how modules are mapped
+across the chip. Choose <em>Windows &gt; Workspaces &gt; Amoeba</em> from the menu.
+However, we recommend using the design browser to help visualize how
+modules are mapped across the chip. Here are the steps:</p>
+<ul>
+<li>Choose <em>Windows &gt; Workspaces &gt; Design Browser + Physical</em> from the menu</li>
+<li>Hide all of the metal layers by pressing the number keys</li>
+<li>Browse the design hierarchy using the panel on the left</li>
+<li>Right click on a module, click <em>Highlight</em>, select a color</li>
+</ul>
+<p>Go ahead and highlight each stage in a different color.</p>
+<p>You can use the following steps in Cadence Innovus to display where the
+critical path is on the actual chip.</p>
+<ul>
+<li>Choose <em>Timing &gt; Debug Timing</em> from the menu</li>
+<li>Click <em>OK</em> in the pop-up window</li>
+<li>Right click on first path in the <em>Path List</em></li>
+<li>Choose <em>Highlight &gt; Only This Path &gt; Color</em></li>
+</ul>
+<p>Finally, you can use Klayout to capture a screen shot demonstrating that
+you have successfully taken a design from RTL to layout.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="nv">$ECE6745_STDCELLS</span>/klayout.lyp<span class="w"> </span><span class="m">04</span>-cadence-innovus-pnr/post-pnr.gds
+</span></code></pre></div>
+<p>You can use <em>Display &gt; Full Hierarchy</em> to show all of the layout
+including the layout inside the standard cells. You can use <em>Display &gt;
+Decrement Hierarchy</em> and <em>Display &gt; Decrement Hierarchy</em> to show/hide the
+layout inside the standard cells to focus on the routing. Consider hiding
+M7, VIA7, M8, VIA8, and M9 to just show the clock and signal routing. Try
+toggling <em>View &gt; Show Cell Frames</em> to show/hide the standard cell
+bounding boxes.</p>
+<h3 id="15-key-reports">1.5. Key Reports</h3>
+<p>Let's look at some reports. Let's start by looking at the synthesis
+resources report.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">02</span>-synopsys-dc-synth/resources.rpt
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>...
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="o">===============================================================================</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">|</span><span class="w">                    </span><span class="p">|</span><span class="w">                  </span><span class="p">|</span><span class="w"> </span>Current<span class="w">            </span><span class="p">|</span><span class="w"> </span>Set<span class="w">            </span><span class="p">|</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="p">|</span><span class="w"> </span>Cell<span class="w">               </span><span class="p">|</span><span class="w"> </span>Module<span class="w">           </span><span class="p">|</span><span class="w"> </span>Implementation<span class="w">     </span><span class="p">|</span><span class="w"> </span>Implementation<span class="w"> </span><span class="p">|</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="o">===============================================================================</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="p">|</span><span class="w"> </span>add_x_1<span class="w">            </span><span class="p">|</span><span class="w"> </span>DW01_inc<span class="w">         </span><span class="p">|</span><span class="w"> </span>apparch<span class="w"> </span><span class="o">(</span>area<span class="o">)</span><span class="w">     </span><span class="p">|</span><span class="w">                </span><span class="p">|</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="o">===============================================================================</span>
+</span></code></pre></div>
+<p>This means that Synopsys DC is using a DesignWare module named
+<code>DW01_inc</code>. You can read the datasheet here:</p>
+<ul>
+<li><a href="https://web.csl.cornell.edu/courses/ece6745/asicdocs/dwbb_datasheets">https://web.csl.cornell.edu/courses/ece6745/asicdocs/dwbb_datasheets</a></li>
+</ul>
+<p>Notice that DesignWare provides four different microarchitectures: a
+ripple-carry adder, a carry-look-ahead adder, a delay optimized
+parallel-prefix adder, and an area-optimized parallel-prefix adder.
+Synopsys DC has chosen to use the area-optimized parallel-prefix adder in
+this case.</p>
+<p>Now let's look at the place-and-route setup and hold time reports.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">04</span>-cadence-innovus-pnr/timing-setup.rpt
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">04</span>-cadence-innovus-pnr/timing-hold.rpt
+</span></code></pre></div>
+<p>We can also look at the detailed area report.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-sec03-regincr
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">04</span>-cadence-innovus-pnr/area.rpt
+</span></code></pre></div>
+<h2 id="3-case-studies">3. Case Studies</h2>
+<p>Now that we know how to push a design through the automated flow, let's
+consider two different case studies: (1) decreasing the clock period
+constraint; and (2) flattening the design.</p>
+<h3 id="31-decreasing-the-clock-period-constraint">3.1. Decreasing the Clock Period Constraint</h3>
+<p>We can use pyhflow to regenerate the flow with a different clock period
+by either: (1) changing the design YAML file (i.e., <code>sec03-regincr.yml</code>);
+or (2) specifying the clock period on the pyflow command line. Let's use
+the second approach. If you look at the setup timing report you will see
+with a 1ns clock period you have maybe 550ps of positive slack. So a good
+starting point would be to maybe try a clock period of 1ns - 550ps =
+450ps. Let's try 400ps.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>% mkdir -p $TOPDIR/asic/build-sec03-regincr-decrease-clk
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>% cd $TOPDIR/asic/build-sec03-regincr-decrease-clk
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>% pyhflow --one-test --clock_period=0.400 ../designs/sec03-regincr.yml
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>% ./run-flow
+</span></code></pre></div>
+<p>Notice how we are working in a new build directory. You can use multiple
+build directories to build different blocks through the flow and/or for
+design-space exploration. Also notice how we are using <code>--one-test</code> so we
+can quickly experiment with pushing the design through the flow with a
+single test and no evals. You could continue to decrease the clock period
+in 100ps increments until the design no longer meets timing, but for now
+we will just stick with the shorter 400ps clock period. <strong>Do not be too
+zealous and push the tools to try and meet a clock period constraint that
+is way too small! This can cause the tools to freak out and run
+forever.</strong></p>
+<p>Now compare the results from the longer and shorter clock periods. Start
+by looking at the summary statistics. How does the number of standard
+cells and area compare? We can also look at what kind of adder
+implementation Synopsys DC chose to meet the shorter clock period
+constraint.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>%<span class="w"> </span>cat<span class="w"> </span>build-sec03-regincr/02-synopsys-dc-synth/resources.rpt
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>%<span class="w"> </span>cat<span class="w"> </span>build-sec03-regincr-decrease-clk/02-synopsys-dc-synth/resources.rpt
+</span></code></pre></div>
+<p>Here we can see Synopsys DC has chosen to use a different version of the
+parallel-prefix adder which is now optimized for both area <em>and</em> speed.</p>
+<p>We can also look compare the critical path; you should be able to see
+that the design with the shorter clock period has many fewer levels of
+logic on the critical path.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>%<span class="w"> </span>cat<span class="w"> </span>build-sec03-regincr/04-cadence-innovus-pnr/timing-setup.rpt
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>%<span class="w"> </span>cat<span class="w"> </span>build-sec03-regincr-decrease-clk/04-cadence-innovus-pnr/timing-setup.rpt
+</span></code></pre></div>
+<h3 id="31-flattening-the-design">3.1. Flattening the Design</h3>
+<p>Let's modify our scripts to flatten our design and see how this impacts
+various metrics. We can run pyhflow to instantiate the flow scripts and
+then modify these flow scripts in the build directory. Use the shortest
+clock period that still meets timing from the previous case study.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>% mkdir -p $TOPDIR/asic/build-sec03-regincr-flatten
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>% cd $TOPDIR/asic/build-sec03-regincr-flatten
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>% pyhflow --one-test --clock_period=0.400 ../designs/sec03-regincr.yml
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>% code 02-synopsys-dc-synth/run.tcl
+</span></code></pre></div>
+<p>Where <code>XX</code> is the shortest clock period which meets timing. We are
+currently using the following command in <code>02-synopsys-dc-synth/run.tcl</code>
+to synthesize our design.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>compile_ultra -no_autoungroup -gate_clock
+</span></code></pre></div>
+<p>Change this by removing <code>-no_autoungroup</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>compile_ultra -gate_clock
+</span></code></pre></div>
+<p>Now run the flow.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>% cd $TOPDIR/asic/build-sec03-regincr-flatten
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>% ./run-flow
+</span></code></pre></div>
+<p>Revisit the post-synthesis gate-level netlist without flattening.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>%<span class="w"> </span>less<span class="w"> </span>build-sec03-regincr-decrease-clk/02-synopsys-dc-synth/post-synth.v
+</span></code></pre></div>
+<p>Notice how the original gate-level netlist preserves the logical
+hierarchy. Now look at the post-synthesis gate-level netlist with
+flattening.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>%<span class="w"> </span>less<span class="w"> </span>build-sec03-regincr-flatten/02-synopsys-dc-synth/post-synth.v
+</span></code></pre></div>
+<p>Now notice who all of the logical hierarchy is gone and all of the gates
+are in a single "flat" module. Compare the area without and with
+flattening.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>%<span class="w"> </span>cat<span class="w"> </span>build-sec03-regincr-decrease-clk/04-cadence-innovus-pnr/area.rpt
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>%<span class="w"> </span>cat<span class="w"> </span>build-sec03-regincr-flatten/04-cadence-innovus-pnr/area.rpt
+</span></code></pre></div>
+<p>Because the flattened module lacks logical hierarchy we cannot see the
+hierarchical breakdown. The advantage of flattening is that it can
+improve the area and also potentially enable a shorter clock period, but
+the disadvantage is that it significantly complicates our ability to
+deeply understand the area, energy, and timing of our designs and thus
+effectively explore an entire design space. So we will primarily turn off
+flattening in this course.</p>
+<p>Note that if we wanted to make it easier to experiment with flattening,
+we could modify the synthesis step template like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>{% if flatten is defined and flatten %}
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>compile_ultra -gate_clock
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>{% else %}
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>compile_ultra -no_autoungroup -gate_clock
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>{% endif %}
+</span></code></pre></div>
+<p>Then in your design YAML file you can add this to control whether
+flattening is turned on or off; or we can specify the value of the
+flatten parameter as a pyhflow command line option (i.e., with
+<code>--flatten=true</code>).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>flatten : true
+</span></code></pre></div>
+<p>Students should feel free to modify the step templates and/or the design
+YAML files for their labs and/or projects to experiment with the ASIC
+flow.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

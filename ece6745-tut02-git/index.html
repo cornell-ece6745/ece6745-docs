@@ -1,0 +1,2010 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-tut01-linux/">
+      
+      
+        <link rel="next" href="../ece6745-tut05-asic-stdcells/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Tutorial 2: Git Distributed Version Control System - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tutorial-2-git-distributed-version-control-system" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tutorial 2: Git Distributed Version Control System
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-sec01-asic-front-end/" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-setting-up-your-github-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Setting up Your GitHub Account
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-git-and-github" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Git and GitHub
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Git and GitHub">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-single-user-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Single-User Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-multi-user-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Multi-User Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-resolving-conflicts" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Resolving Conflicts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-branches-and-pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4. Branches and Pull Requests
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-github-actions-for-continuous-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. GitHub Actions for Continuous Integration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-course-specific-git-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Course-Specific Git Scripts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Course-Specific Git Scripts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-using-git-xstatus-to-compactly-see-status-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Using git xstatus to Compactly See Status Information
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-using-git-xadd-to-add-all-changed-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Using git xadd to Add All Changed Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-using-git-xlog-to-compactly-see-log-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Using git xlog to Compactly See Log Information
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut05-asic-stdcells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut07-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut09-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut12-spice-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec01-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec02-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec03-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec04-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-setting-up-your-github-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Setting up Your GitHub Account
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-git-and-github" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Git and GitHub
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Git and GitHub">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-single-user-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Single-User Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-multi-user-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Multi-User Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-resolving-conflicts" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Resolving Conflicts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-branches-and-pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4. Branches and Pull Requests
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-github-actions-for-continuous-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. GitHub Actions for Continuous Integration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-course-specific-git-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Course-Specific Git Scripts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Course-Specific Git Scripts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-using-git-xstatus-to-compactly-see-status-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Using git xstatus to Compactly See Status Information
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-using-git-xadd-to-add-all-changed-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Using git xadd to Add All Changed Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-using-git-xlog-to-compactly-see-log-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Using git xlog to Compactly See Log Information
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="tutorial-2-git-distributed-version-control-system">Tutorial 2: Git Distributed Version Control System</h1>
+<p>In this course, we will be using Git as our revision control and source
+code management system. We will be using GitHub for centralized online
+repository hosting, and GitHub Actions for online continuous integration
+testing. These tools will enable us to adopt an agile hardware
+development methodology so your group can rapidly collaborate and iterate
+on the design, verification, and evaluation of the lab assignments. This
+tutorial covers how to: setup your GitHub account, use Git for basic
+incremental development, use GitHub to collaborate with your group,
+manage Git branches and GitHub pull requests, and use GitHub actions.
+This tutorial assumes that you have completed the remote access and Linux
+tutorials.</p>
+<p>Before you begin, make sure that you have <strong>logged into the <code>ecelinux</code>
+servers</strong> as described in the remote access tutorial. You will need to
+open a terminal and be ready to work at the Linux command line using VS
+Code. To follow along with the tutorial, type the commands without the
+<code>%</code> character. In addition to working through the commands in the
+tutorial, you should also try the more open-ended activities.</p>
+<p>Before you begin, make sure that you have <strong>sourced the setup-ece6745.sh
+script</strong> or that you have enabled auto setup. Sourcing the setup script
+sets up the environment required for this tutorial.</p>
+<h2 id="1-setting-up-your-github-account">1. Setting up Your GitHub Account</h2>
+<p>GitHub is an online service that hosts centralized Git repositories for a
+growing number of open-source projects. It has many useful features
+including a web-based source browser, history browser, branch management,
+merge requests, code review, issue tracking, and even a built-in wiki
+attached to every repository. We have created a dedicated GitHub
+organization for the course located here:</p>
+<ul>
+<li><a href="https://github.com/cornell-ece6745">https://github.com/cornell-ece6745</a></li>
+</ul>
+<p>The course staff will add all officially registered students to the
+course organization. For most of this tutorial you will be using a public
+repository in your own personal GitHub account, but you will be using a
+private repository in our course GithHub organization for all of your lab
+assignments. Note that we will <em>not</em> be using the version of GitHub
+hosted at Cornell We will instead be using the public version of GitHub
+at <code>github.com</code>. You can check to see if you have a GitHub account on the
+public version of GitHub here:</p>
+<ul>
+<li><a href="https://github.com/githubid">https://github.com/githubid</a></li>
+</ul>
+<p>where <code>githubid</code> is your GitHub username on the public version of GitHub.
+<strong>You must replace <code>githubid</code> with your real GitHub username for this
+link to work!</strong> If the above link still does not work, then you do not
+have an account on the public version of GitHub. You will need to create
+one here:</p>
+<ul>
+<li><a href="https://github.com/join">https://github.com/join</a></li>
+</ul>
+<p>Your NetID makes a great GitHub username. If you are creating a new
+GitHub account, then be sure to use your Cornell email address. If you
+have an existing account it is fine for it to use a non-Cornell email
+address. Once your account is setup, please make sure you set your full
+name so we can know who you are on GitHub. Please also consider uploading
+a profile photo to GitHub; it makes it more fun to interact on GitHub if
+we all know what each other look like. Go to the following page and enter
+your first and last name in the <em>Name</em> field, and then consider uploading
+a profile photo.</p>
+<ul>
+<li><a href="https://github.com/settings/profile">https://github.com/settings/profile</a></li>
+</ul>
+<p>Once you have a GitHub username, please fill out the following form on
+Canvas so the instructors know the mapping from your NetID to your GitHub
+username.</p>
+<ul>
+<li><a href="http://www.csl.cornell.edu/courses/ece6745/githubid">http://www.csl.cornell.edu/courses/ece6745/githubid</a></li>
+</ul>
+<p>Before you can begin using GitHub, you need to create an SSH key pair on
+an <code>ecelinux</code> machine and upload the corresponding SSH public key to
+GitHub. GitHub uses these keys for authentication. The course setup
+script takes care of creating an SSH key pair which you can use. Login to
+an <code>ecelinux</code> machine, source the course setup script, and then view the
+contents of your public key using the following commands:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span>cat<span class="w"> </span>~/.ssh/ece6745-github.pub
+</span></code></pre></div>
+<p>Use the following page to upload the public key to GitHub:</p>
+<ul>
+<li><a href="https://github.com/settings/ssh">https://github.com/settings/ssh</a></li>
+</ul>
+<p>Click on <em>New SSH Key</em>, and then cut-and-paste the public key you
+displayed using <code>cat</code> into the <em>key</em> textbox. Give the key the title
+"ece6745-github". Then click <em>Add SSH key</em>. To test things out try the
+following on an <code>ecelinux</code> machine.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span>ssh<span class="w"> </span>-T<span class="w"> </span>git@github.com
+</span></code></pre></div>
+<p>You may see a warning about the authenticity of the host. Don't worry,
+this is supposed to happen the first time you access GitHub using your
+new key. Just enter "yes". The GitHub server should output some text
+including your GitHub username. Verify that the GitHub username is
+correct, and then you should be all set. There are two good GitHub Guides
+you might want to take a look at:</p>
+<ul>
+<li><a href="https://guides.github.com/activities/hello-world">https://guides.github.com/activities/hello-world</a></li>
+<li><a href="https://guides.github.com/introduction/flow">https://guides.github.com/introduction/flow</a></li>
+</ul>
+<p>GitHub has two integrated tools that students might find useful: an issue
+tracker and a wiki. Consider using the GitHub issue tracker to track bugs
+you find in your code or to manage tasks required to complete the
+lab assignment. You can label issues, comment on issues, and
+attach them to commits. See the following links for more information
+about GitHub issues:</p>
+<ul>
+<li><a href="https://help.github.com/articles/about-issues">https://help.github.com/articles/about-issues</a></li>
+</ul>
+<p>Consider using the GitHub per-repository wiki to create task lists,
+brainstorm design ideas, rapidly collaborate on text for the lab
+assignment report, or keep useful command/code snippets. See the
+following links for more information about GitHub wikis:</p>
+<ul>
+<li><a href="https://help.github.com/articles/about-github-wikis">https://help.github.com/articles/about-github-wikis</a></li>
+</ul>
+<h2 id="2-git-and-github">2. Git and GitHub</h2>
+<p>In this section, we begin with a basic single-user workflow before
+demonstrating how Git and Github can be used for effective collaboration
+among multiple users. We discuss how to resolve conflicts and how to
+manage branches and pull requests.</p>
+<h3 id="21-single-user-workflow">2.1. Single-User Workflow</h3>
+<p>In this section, we cover some basic Git commands and illustrate a simple
+Git workflow. We have created a Git repository that we will be using as
+an initial template, so the first step is to <em>fork</em> this tutorial
+repository. Forking is the process of making a personal copy of someone
+else's repository on GitHub. Start by going to the GitHub page for the
+tutorial repository located here:</p>
+<ul>
+<li><a href="https://github.com/cornell-ece6745/ece6745-tut02-git">https://github.com/cornell-ece6745/ece6745-tut02-git</a></li>
+</ul>
+<p><img alt="" src="../img/tut02-git-fork.png#border" /></p>
+<p>Click on <em>Fork</em> in the upper right-hand corner. If asked where to fork
+this repository, choose your personal GitHub account. After a few
+seconds, you should have a brand new repository in your account:</p>
+<ul>
+<li><a href="https://github.com/githubid/ece6745-tut02-git">https://github.com/githubid/ece6745-tut02-git</a></li>
+</ul>
+<p>Where <code>githubid</code> is your GitHub username on the public version of GitHub.
+Now that you have your own copy of the tutorial repository, the next step
+is to <em>clone</em> this repository to an <code>ecelinux</code> machine so you can
+manipulate the content within the repository. We call the repository on
+GitHub the <em>remote repository</em> and we call the repository on the
+<code>ecelinux</code> machine the <em>local repository</em>. A local repository is a
+first-class mirror of the remote repository with the entire history of
+the repository, and thus almost all operations are essentially local
+requiring no communication with GitHub. The following commands write an
+environment variable with your GitHub username, create a subdirectory for
+this tutorial in your home directory before using the <code>git clone</code> command
+to clone the remote repository and thus create a local repository.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>%<span class="w"> </span><span class="nv">GITHUBID</span><span class="o">=</span><span class="s2">&quot;githubid&quot;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:<span class="si">${</span><span class="nv">GITHUBID</span><span class="si">}</span>/ece6745-tut02-git<span class="w"> </span>tut02
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tut02
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>%<span class="w"> </span><span class="nv">TUTROOT</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>
+</span></code></pre></div>
+<p>Where again <code>githubid</code> is your GitHub username on the public version of
+GitHub. The <code>git clone</code> command takes two command line arguments. The
+first argument specifies the remote repository on GitHub you would like
+to clone, and the second argument specifies the name to give to the new
+local repository. Note that we created an environment variable with the
+directory path to the local repository to simplify navigating the file
+system in the rest of this tutorial.</p>
+<p>The repository currently contains two files: a <code>README</code> file, and
+<code>overview.txt</code> which contains an overview of the course. These files are
+contained within what we call the <em>working directory</em>. The repository
+also includes a special directory named <code>.git</code> which contains all of the
+extra repository metadata. You should never directly manipulate anything
+within the <code>.git</code> directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>%<span class="w"> </span>ls<span class="w"> </span>-la
+</span></code></pre></div>
+<p>Let's assume we want to create a new file that contains a list of fruits,
+and that we want to manage this file using Git version control. First, we
+create the new file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;apple&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>fruit.txt
+</span></code></pre></div>
+<p>To manage a file using Git, we need to first use the <code>git add</code> command to
+tell Git that it should track this file from now on. We can then use <code>git
+commit</code> to commit our changes to this file into the repository, and <code>git
+log</code> to confirm the result.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>%<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>fruit.txt
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;initial fruit list&quot;</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>%<span class="w"> </span>git<span class="w"> </span>log
+</span></code></pre></div>
+<p>The <code>-m</code> command line option with the <code>git commit</code> command enables you to
+specify a <em>commit message</em> that describes this commit. All commit
+messages should include a "subject line" which is a single <em>short</em> line
+briefly describing the commit. Many commits will just include a subject
+line (e.g., the above commit). If you want to include more information in
+your commit message then skip the <code>-m</code> command line option and Git will
+launch Nano. You still want to include a subject line at the top of your
+commit message, but now you can include more information separated from
+the subject line by a blank line.</p>
+<p>Note, you can learn about any Git command and its usage by typing <code>git
+help command</code>, where <code>command</code> should be substituted by the actual name
+of the command. This would display the output similar to the manual pages
+for a Linux command, as seen in Tutorial 1. Students are encouraged to
+learn more about each Git command beyond the details covered in this
+tutorial.</p>
+<p>The <code>git log</code> command displays information about the commit history. The
+beginning of the output from <code>git log</code> should look something like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>commit<span class="w"> </span>a8ac41ea8dba1371888ec7a2341f79de20521a4d<span class="w"> </span><span class="o">(</span>HEAD<span class="w"> </span>-&gt;<span class="w"> </span>main<span class="o">)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Author:<span class="w"> </span>cb<span class="w"> </span>&lt;cb535@cornell.edu&gt;
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Date:<span class="w">   </span>Mon<span class="w"> </span>Sep<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">13</span>:17:32<span class="w"> </span><span class="m">2024</span><span class="w"> </span>-0400
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span>initial<span class="w"> </span>fruit<span class="w"> </span>list
+</span></code></pre></div>
+<p>Conceptually, we should think of each commit as a copy of all of the
+tracked files in the project at the time of the commit. This commit just
+included changes to one file, but as we add more files each commit will
+include more and more information. The history of a git repository is
+just a long sequence of commits that track how the files in the
+repository have evolved over time. Notice that Git has recorded the name
+of who made the commit, the date and time of the commit, and the log
+message. The first line is the commit id which uniquely identifies this
+commit. Git does not use monotonically increasing revision numbers like
+other version control systems, but instead uses a 40-digit SHA1 hash as
+the commit id. This is a hash of <em>all</em> the files included as part of
+this commit (not just the changes). We can refer to a commit by the full
+hash or by just the first few digits as long as we provide enough digits
+to unambiguously reference the commit. Now let's add a fruit to our list
+and commit the change.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;mango&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;added mango to fruit list&quot;</span>
+</span></code></pre></div>
+<p>Unfortunately, this doesn't work. The output from <code>git commit</code>
+indicates that there have been no changes since the last commit so there
+is no need to create a new commit. Git has a concept of an <em>index</em>
+which is different compared to other version control systems. We must
+"stage" files (really we stage content not files) into the index, and
+then <code>git commit</code> will commit that content into the repository. We can
+see this with the <code>git status</code> command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>git<span class="w"> </span>status
+</span></code></pre></div>
+<p>which should show that <code>fruit.txt</code> is modified but not added to the
+index. We stage files in the index with <code>git add</code> like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>fruit.txt
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>%<span class="w"> </span>git<span class="w"> </span>status
+</span></code></pre></div>
+<p>Now <code>git status</code> should show that the file is modified and also added
+to the index. Our commit should now complete correctly.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;added mango to fruit list&quot;</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>%<span class="w"> </span>git<span class="w"> </span>status
+</span></code></pre></div>
+<p>So even though Git is tracking <code>fruit.txt</code> and knows it has changed,
+we still must explicitly add the files we want to commit. You definitely
+want to avoid using something like <code>git add .</code> to add all files, since
+this will inevitably end up adding files that you don't really want to
+commit. There is a short cut which uses the <code>-a</code> command line option
+with the <code>git commit</code> command. This command line option tells Git to
+add any file which has changed and was previously added to the repository
+before doing the commit.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;orange&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;added orange to fruit list&quot;</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>%<span class="w"> </span>git<span class="w"> </span>status
+</span></code></pre></div>
+<p>Staging files is a useful way to preview what we will commit before we
+actually do the commit. This helps when we have many changes in our
+working directory but we don't want to commit them all at once. Instead
+we might want to break them into smaller, more meaningful commits or we
+might want to keep working on some of the modified files while committing
+others.</p>
+<p>The following figure illustrates how the commands we have used so far
+create a single-user development workflow. The <code>git clone</code> command copies
+the remote repository to create a local repository which includes both
+the working directory and the special <code>.git</code> directory. The <code>git add</code>
+command adds files to the index from the working directory. The <code>git
+commit</code> command moves files from the index into the special <code>.git</code>
+directory. The <code>-a</code> command line option with the <code>git commit</code> command can
+commit files directly from the working directory to the special <code>.git</code>
+directory.</p>
+<p><img alt="" src="../img/tut02-git-1user-flow.png" /></p>
+<p>Now that we have made some changes, we can use <code>git log</code> to view the
+history of last few commits and then add another line to the
+<code>fruit.txt</code> file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>%<span class="w"> </span>git<span class="w"> </span>log
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;plum&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>%<span class="w"> </span>cat<span class="w"> </span>fruit.txt
+</span></code></pre></div>
+<p>Imagine you didn't like your changes and want to revert the changes, you
+would use the <code>git checkout</code> command as below.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>%<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>fruit.txt
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>%<span class="w"> </span>cat<span class="w"> </span>fruit.txt
+</span></code></pre></div>
+<p>As illustrated in the above single-user development workflow figure, the
+<code>git checkout</code> command resets any a file or directory to the state it was
+in at the time of the last commit. The output from the <code>git status</code>
+command should look something like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>%<span class="w"> </span>git<span class="w"> </span>status
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w"> </span>On<span class="w"> </span>branch<span class="w"> </span>main
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w"> </span>Your<span class="w"> </span>branch<span class="w"> </span>is<span class="w"> </span>ahead<span class="w"> </span>of<span class="w"> </span><span class="s1">&#39;origin/main&#39;</span><span class="w"> </span>by<span class="w"> </span><span class="m">3</span><span class="w"> </span>commits.
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">   </span><span class="o">(</span>use<span class="w"> </span><span class="s2">&quot;git push&quot;</span><span class="w"> </span>to<span class="w"> </span>publish<span class="w"> </span>your<span class="w"> </span><span class="nb">local</span><span class="w"> </span>commits<span class="o">)</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w"> </span>nothing<span class="w"> </span>to<span class="w"> </span>commit,<span class="w"> </span>working<span class="w"> </span>directory<span class="w"> </span>clean
+</span></code></pre></div>
+<p>The <code>git status</code> command is telling us that the local clone of the
+repository now has more commits than the remote repository on GitHub. If
+you visit the GitHub page for this repository you will not see any
+changes. This is a critical difference from other centralized version
+control systems. In Git, when we use the <code>git commit</code> command it only
+commits these changes to your <em>local repository</em>.</p>
+<p>If we have done some local work that we are happy with, we can push these
+changes to the <em>remote repository</em> on GitHub using the <code>git push</code>
+command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>%<span class="w"> </span>git<span class="w"> </span>status
+</span></code></pre></div>
+<p>Notice that the output of the <code>git status</code> command indicates that our
+local repository is up-to-date with the remote repository on GitHub. The
+above single-user development workflow figure shows visually the idea
+that the <code>git push</code> command moves commits from your local repository to
+the remote repository on GitHub. Visit the GitHub page to verify that our
+new commits have been pushed to the remote repository:</p>
+<ul>
+<li><a href="https://github.com/githubid/ece6745-tut02-git">https://github.com/githubid/ece6745-tut02-git</a></li>
+</ul>
+<p>Click on <em>commits</em> at the top of the GitHub page to view the log of
+commits. You can browse who made each commit, what changed in each
+commit, and the state of the repository at each commit. Return to the
+main GitHub page for the repository and click on the <code>fruit.txt</code> file
+to view it.</p>
+<div class="admonition question">
+<p class="admonition-title">Activity 1: Experiment with Commiting Files</p>
+<p>Create a new file called <code>shapes.txt</code> that includes a list of
+different shapes. Commit the new file, make some edits, and commit
+these edits. Use <code>git status</code> and <code>git log</code> to keep track of your
+changes. Push your changes to GitHub and browse the updated files on
+GitHub.</p>
+</div>
+<h3 id="22-multi-user-workflow">2.2. Multi-User Workflow</h3>
+<p>Since your tutorial repository is public on GitHub, any other user can
+also clone this repository. If you would like to collaborate with another
+GitHub user, you would need to give that user read/write permission. The
+instructors will take care of setting up the appropriate teams for the
+lab assignments when you work with a partner. To emulate how
+collaboration with GitHub works, we will "pretend" to be different users
+by cloning extra copies of the tutorial repository.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:<span class="si">${</span><span class="nv">GITHUBID</span><span class="si">}</span>/ece6745-tut02-git<span class="w"> </span>tut02-alice
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tut02-alice
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>%<span class="w"> </span><span class="nv">ALICE</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:<span class="si">${</span><span class="nv">GITHUBID</span><span class="si">}</span>/ece6745-tut02-git<span class="w"> </span>tut02-bob
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tut02-bob
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>%<span class="w"> </span><span class="nv">BOB</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>
+</span></code></pre></div>
+<p>We can now emulate different users by simply working in these different
+local repositories: when we work in <code>ALICE</code> we will be acting as the user
+Alice, and when we work in <code>BOB</code> we will be acting as the user Bob. The
+following figure illustrates a multi-user development environment: both
+Alice and Bob have their own separate local repositories (including their
+own working directories, index, and special <code>.git</code> directories), yet they
+will both communicate with the same centralized remote repository on
+GitHub.</p>
+<p><img alt="" src="../img/tut02-git-2user-flow.png" /></p>
+<p>Let's have Alice add another entry to the <code>fruit.txt</code> file, commit her
+changes to her local repository, and then push those commits to the
+remote repository on GitHub:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">ALICE</span><span class="si">}</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;banana&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;ALICE: added banana to fruit list&quot;</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>%<span class="w"> </span>git<span class="w"> </span>log<span class="w"> </span>--oneline
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>%<span class="w"> </span>cat<span class="w"> </span>fruit.txt
+</span></code></pre></div>
+<p>If you view the GitHub page for this repository it will appear that you
+are the one making the commit (remember we are just pretending to be
+Alice), which is why we used <code>ALICE:</code> as a prefix in the commit message.</p>
+<p>Now let's assume Bob wants to retrieve the changes that Alice just made
+to the repository. Bob can use the <code>git pull</code> command to pull all new
+commits from the remote repository into his local repository. The <code>git
+pull</code> command performs two actions, it first fetches all the updates and
+then merges or applies them to the local project. If there are no
+conflicts in the file contents, the command executes successfully. If
+there are conflicts, the command does not merge all the changes and
+reports the conflicting content. We will learn how to resolve conflicts
+in a later section.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>%<span class="w"> </span>git<span class="w"> </span>log<span class="w"> </span>--oneline
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>%<span class="w"> </span>cat<span class="w"> </span>fruit.txt
+</span></code></pre></div>
+<p>The multi-user development workflow figure shows visually the idea that
+the <code>git pull</code> command moves commits from the remote repository on GitHub
+to your local repository. Bob's copy of tutorial repository should
+contain Alice's most recent commit and his copy of the <code>fruits.txt</code> file
+should include <code>banana</code>. Now let's assume Bob also wants to make some
+changes and push those changes to the remote repository on GitHub:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;peach&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;BOB: added peach to fruit list&quot;</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>%<span class="w"> </span>git<span class="w"> </span>log<span class="w"> </span>--oneline
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>%<span class="w"> </span>cat<span class="w"> </span>fruit.txt
+</span></code></pre></div>
+<p>Similar to before, Alice can now retrieve the changes that Bob just made
+to the repository using the <code>git pull</code> command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">ALICE</span><span class="si">}</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>%<span class="w"> </span>git<span class="w"> </span>log<span class="w"> </span>--oneline
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>%<span class="w"> </span>cat<span class="w"> </span>fruit.txt
+</span></code></pre></div>
+<p>This process is at the key to collaborating via GitHub. Each student
+works locally on his or her part of the lab assignment and
+periodically pushes/pulls commits to synchronize with the remote
+repository on GitHub.</p>
+<div class="admonition question">
+<p class="admonition-title">Activity 2: Experimenting with a Multi-User Workflow</p>
+<p>Create a new file called <code>letters.txt</code> in Bob's local repository that
+includes a list of letters from A to M, one per line. Commit the new
+file, make some edits to add say more letters from say M to Z, and
+commit these edits. Use <code>git push</code> to push these commits to the
+centralized repository. Switch to Alice's local repository and use
+<code>git pull</code> to pull in the new commits. Verify that all of your files
+and commits are in both Bob's and Alice's local repositories.</p>
+</div>
+<h3 id="23-resolving-conflicts">2.3. Resolving Conflicts</h3>
+<p>Of course the real challenge occurs when both Alice and Bob modify
+content at the same time. There are two possible scenarios: Alice and Bob
+modify different content such that it is possible to combine their
+commits without issue, or Alice and Bob have modified the exact same
+content resulting in a conflict. We will address how to resolve both
+scenarios.</p>
+<p>Let us assume that Alice wants to add <code>lemon</code> to the list and Bob would
+like to create a new file named <code>vegetables.txt</code>. Alice would go ahead
+and first pull from the central repository to grab any new commits from
+the remote repository on GitHub. On seeing that there are no new commits,
+she edits the file, commits, and pushes this new commit.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">ALICE</span><span class="si">}</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;lemon&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;ALICE: added lemon to fruit list&quot;</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span></code></pre></div>
+<p>Since Bob recently pulled from the remote repository on GitHub, let's say
+he assumes that there have been no new commits. He would then go ahead
+and create his new file, commit, and attempt to push this new commit.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;spinach&quot;</span><span class="w">  </span>&gt;<span class="w">  </span>vegetables.txt
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;broccoli&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>vegetables.txt
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;turnip&quot;</span><span class="w">   </span>&gt;&gt;<span class="w"> </span>vegetables.txt
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>%<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>vegetables.txt
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;BOB: initial vegetable list&quot;</span>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w"> </span>To<span class="w"> </span>git@github.com:githubid/ece6745-tut02-git
+</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">  </span>!<span class="w"> </span><span class="o">[</span>rejected<span class="o">]</span><span class="w">        </span>main<span class="w"> </span>-&gt;<span class="w"> </span>main<span class="w"> </span><span class="o">(</span>fetch<span class="w"> </span>first<span class="o">)</span>
+</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="w"> </span>error:<span class="w"> </span>failed<span class="w"> </span>to<span class="w"> </span>push<span class="w"> </span>some<span class="w"> </span>refs<span class="w"> </span>to<span class="w"> </span><span class="s1">&#39;git@github.com:githubid/ece6745-tut02-git&#39;</span>
+</span><span id="__span-22-11"><a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="w"> </span>hint:<span class="w"> </span>Updates<span class="w"> </span>were<span class="w"> </span>rejected<span class="w"> </span>because<span class="w"> </span>the<span class="w"> </span>remote<span class="w"> </span>contains<span class="w"> </span>work<span class="w"> </span>that<span class="w"> </span>you<span class="w"> </span><span class="k">do</span>
+</span><span id="__span-22-12"><a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="w"> </span>hint:<span class="w"> </span>not<span class="w"> </span>have<span class="w"> </span>locally.<span class="w"> </span>This<span class="w"> </span>is<span class="w"> </span>usually<span class="w"> </span>caused<span class="w"> </span>by<span class="w"> </span>another<span class="w"> </span>repository<span class="w"> </span>pushing
+</span><span id="__span-22-13"><a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="w"> </span>hint:<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>ref.<span class="w"> </span>You<span class="w"> </span>may<span class="w"> </span>want<span class="w"> </span>to<span class="w"> </span>first<span class="w"> </span>integrate<span class="w"> </span>the<span class="w"> </span>remote<span class="w"> </span>changes
+</span><span id="__span-22-14"><a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="w"> </span>hint:<span class="w"> </span><span class="o">(</span>e.g.,<span class="w"> </span><span class="s1">&#39;git pull ...&#39;</span><span class="o">)</span><span class="w"> </span>before<span class="w"> </span>pushing<span class="w"> </span>again.
+</span><span id="__span-22-15"><a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a><span class="w"> </span>hint:<span class="w"> </span>See<span class="w"> </span>the<span class="w"> </span><span class="s1">&#39;Note about fast-forwards&#39;</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s1">&#39;git push --help&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>details.
+</span></code></pre></div>
+<p>On executing the sequence of commands above, you should notice that Git
+does not allow Bob to push his changes to the central repository as the
+version of the central repository has been updated by Alice. You should
+see a message similar to the one above. Git suggests us to merge the
+remote commits before pushing the local commits. We can do so by first
+using the <code>git pull</code> command to merge the local commits.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span></code></pre></div>
+<p>Git will launch Nano because we need to <em>merge</em> your local commits and
+the remote commits. You will need to enter a commit message, although
+usually the default message provided by Git is fine. We can take a look
+at the Git history using <code>git log</code> to see what happened.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>%<span class="w"> </span>git<span class="w"> </span>log<span class="w"> </span>--oneline<span class="w"> </span>--graph
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w"> </span>*<span class="w">   </span>f5c1361<span class="w"> </span><span class="o">(</span>HEAD<span class="w"> </span>-&gt;<span class="w"> </span>main<span class="o">)</span><span class="w"> </span>Merge<span class="w"> </span>branch<span class="w"> </span><span class="s1">&#39;main&#39;</span><span class="w"> </span>of<span class="w"> </span>github.com:githubid/ece6745-tut02-git
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w"> </span><span class="p">|</span><span class="se">\</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>*<span class="w"> </span>c13f30e<span class="w"> </span><span class="o">(</span>origin/main,<span class="w"> </span>origin/HEAD<span class="o">)</span><span class="w"> </span>ALICE:<span class="w"> </span>added<span class="w"> </span>lemon<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="w"> </span>*<span class="w"> </span><span class="p">|</span><span class="w"> </span>3ef8c85<span class="w"> </span>BOB:<span class="w"> </span>initial<span class="w"> </span>vegetable<span class="w"> </span>list
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="w"> </span><span class="p">|</span>/
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="w"> </span>*<span class="w"> </span><span class="m">5877142</span><span class="w"> </span>BOB:<span class="w"> </span>added<span class="w"> </span>peach<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="w"> </span>*<span class="w"> </span>7896fff<span class="w"> </span>ALICE:<span class="w"> </span>added<span class="w"> </span>banana<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span></code></pre></div>
+<p>The <code>--graph</code> command line option with the <code>git log</code> command will display
+a visual graph of the commit history. You can see that Bob and Alice
+worked on two different commits at the same time. Alice worked on commit
+<code>c13f30e</code> while Bob was working on commit <code>3ef8c85</code>. Bob then merged
+these two sets of commits using a new commit <code>f5c1361</code>. Your exact commit
+hashes might be different. Bob can now push his changes to the remote
+repository in GitHub.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span></code></pre></div>
+<p>GitHub has a nice commit history viewer which shows a similar commit
+graph as we saw above:</p>
+<ul>
+<li><a href="https://github.com/githubid/ece6745-tut02-git/network">https://github.com/githubid/ece6745-tut02-git/network</a></li>
+</ul>
+<p>Sometimes Alice and Bob are editing the exact same lines in the exact
+same file. In this case, Git does not really know how to resolve this
+<em>conflict</em>. It does not know how to merge the two sets of commits to
+create a consistent view of the repository. The user will have to
+manually resolve the conflict. Let's explore what happens when Alice and
+Bob want to add a new fruit to the <code>fruits.txt</code> file at the exact same
+time. First, Alice adds <code>kiwi</code> and pushes her updates to the remote
+repository on GitHub.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">ALICE</span><span class="si">}</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;kiwi&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;ALICE: added kiwi to fruit list&quot;</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span></code></pre></div>
+<p>Now Bob adds <code>date</code> and tries to push his update to the remote
+repository on GitHub.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;BOB: added date to fruit list&quot;</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w"> </span>To<span class="w"> </span>git@github.com:githubid/ece6745-tut02-git
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">  </span>!<span class="w"> </span><span class="o">[</span>rejected<span class="o">]</span><span class="w">        </span>main<span class="w"> </span>-&gt;<span class="w"> </span>main<span class="w"> </span><span class="o">(</span>fetch<span class="w"> </span>first<span class="o">)</span>
+</span></code></pre></div>
+<p>Let's see what happens if Bob uses the <code>git pull</code> command to pull and
+merge the commits from the remote repository on GitHub.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w"> </span>Unpacking<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">3</span>/3<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w"> </span>From<span class="w"> </span>github.com:cbatten/ece6745-tut02-git
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">    </span>f5c1361..3d43934<span class="w">  </span>main<span class="w">     </span>-&gt;<span class="w"> </span>origin/main
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="w"> </span>Auto-merging<span class="w"> </span>fruit.txt
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="w"> </span>CONFLICT<span class="w"> </span><span class="o">(</span>content<span class="o">)</span>:<span class="w"> </span>Merge<span class="w"> </span>conflict<span class="w"> </span><span class="k">in</span><span class="w"> </span>fruit.txt
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="w"> </span>Automatic<span class="w"> </span>merge<span class="w"> </span>failed<span class="p">;</span><span class="w"> </span>fix<span class="w"> </span>conflicts<span class="w"> </span>and<span class="w"> </span><span class="k">then</span><span class="w"> </span>commit<span class="w"> </span>the<span class="w"> </span>result.
+</span></code></pre></div>
+<p>Git indicates that it was not able to complete the merge. There is a
+conflict in the <code>fruit.txt</code> file. We can also use the <code>git status</code>
+command to see which files have conflicts. They will be marked as <code>both
+modified</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>%<span class="w"> </span>git<span class="w"> </span>status
+</span></code></pre></div>
+<p>Git instructs Bob to first resolve the conflict and then use the <code>git
+commit</code> command to finish the merge. If you take a look at the
+<code>fruit.txt</code> file you will see that it now includes conflict markers
+showing exactly where the conflict occurred.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>%<span class="w"> </span>cat<span class="w"> </span>fruit.txt
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w"> </span>apple
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="w"> </span>mango
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="w"> </span>orange
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="w"> </span>banana
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="w"> </span>peach
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="w"> </span>lemon
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="w"> </span><span class="o">&lt;&lt;&lt;&lt;&lt;&lt;</span>&lt;<span class="w"> </span>HEAD
+</span><span id="__span-30-10"><a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a><span class="w"> </span><span class="nv">date</span>
+</span><span id="__span-30-11"><a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a><span class="w"> </span><span class="o">=======</span>
+</span><span id="__span-30-12"><a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="w"> </span>kiwi
+</span><span id="__span-30-13"><a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a><span class="w"> </span>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<span class="w"> </span>3d43934f045d6ab3c354893a97fd4967997bcb35
+</span></code></pre></div>
+<p>This shows that the commit from the local repository has <code>date</code> on the
+last line in the file, while the remote repository on GitHub has <code>kiwi</code>
+as the last line in the file. To resolve the conflict we can directly
+edit this file so that it reflects how we want to merge. We can choose
+one fruit over the other, choose to include neither fruit, or choose to
+include both fruit. Edit the file using VS Code to remove the lines with
+markers <code>&lt;&lt;&lt;&lt;</code>, <code>===</code>, and <code>&gt;&gt;&gt;&gt;</code> so that the file includes both fruit.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>%<span class="w"> </span>code<span class="w"> </span>fruit.txt
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>%<span class="w"> </span>cat<span class="w"> </span>fruit.txt
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="w"> </span>apple
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="w"> </span>mango
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="w"> </span>orange
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="w"> </span>banana
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="w"> </span>peach
+</span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="w"> </span>lemon
+</span><span id="__span-31-10"><a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="w"> </span>date
+</span><span id="__span-31-11"><a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a><span class="w"> </span>kiwi
+</span></code></pre></div>
+<p>Now that we have resolved the conflict we just need to commit these new
+changes.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>%<span class="w"> </span>git<span class="w"> </span>status
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;fixed conflict&quot;</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>%<span class="w"> </span>git<span class="w"> </span>status
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>%<span class="w"> </span>git<span class="w"> </span>log<span class="w"> </span>--oneline<span class="w"> </span>--graph
+</span></code></pre></div>
+<p>Resolving conflicts is tedious, so to avoid conflicts you should
+communicate with your group members which student is going to be
+executing which files. Try to avoid having multiple students working on
+the same file at the same time, or at least avoid having multiple
+students working on the same lines of the same file at the same time.</p>
+<div class="admonition question">
+<p class="admonition-title">Activity 3: Experimenting with Resolving Conflicts</p>
+<p>Experiment with both Alice and Bob editing the same lines in the
+<code>overview.txt</code> file at the same time. Try to force a conflict, and
+then carefully resolve the conflict.</p>
+</div>
+<h3 id="24-branches-and-pull-requests">2.4. Branches and Pull Requests</h3>
+<p>In this section, we describe branches and pull requests which are
+slightly more advanced topics but tremendously useful. Students could
+probably skim this section initially, and then revisit this information
+later in the semester. Branches and pull requests enable different
+students to work on different aspects at the project at the same time
+while keeping their commits separated in the remote repository on GitHub.
+So far, all of our work has been on the <em>main</em> branch. The main branch is
+the primary default branch. Creating additional branches can enable one
+student to work on a new feature while also fixing bugs on the main
+branch, or branches can enable students to experiment with some more
+advanced ideas but easily revert back to the "stable" main branch.</p>
+<p>Let's say that Alice wants to work on a new list of animals in Alice and
+Bob's shared repository, but she wants to keep her work separate from the
+primary work they are focusing on. Alice can create a branch called
+<code>alice-animals</code> and commit her new ideas on that branch. It is usually
+good practice to prefix branch names with your NetID to ensure that
+branch names are unique. The following commands will first display the
+branches in the local repository using the <code>git branch</code> command before
+creating a new branch called <code>alice-animals</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">ALICE</span><span class="si">}</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>%<span class="w"> </span>git<span class="w"> </span>branch
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>%<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>alice-animals
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>%<span class="w"> </span>git<span class="w"> </span>branch
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>%<span class="w"> </span>git<span class="w"> </span>status
+</span></code></pre></div>
+<p>The <code>git branch</code> command uses an asterisk (<code>*</code>) to indicate the
+current branch. The <code>git status</code> command also indicates the current
+branch. Alice can now create a new file and commit her changes to this
+new branch.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">ALICE</span><span class="si">}</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>%<span class="w"> </span>git<span class="w"> </span>branch
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;cow&quot;</span><span class="w">  </span>&gt;<span class="w"> </span>animals.txt
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;pig&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>animals.txt
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;dog&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>animals.txt
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>%<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>animals.txt
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;ALICE: initial animal list&quot;</span>
+</span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a>%<span class="w"> </span>git<span class="w"> </span>log<span class="w"> </span>--oneline<span class="w"> </span>--graph
+</span></code></pre></div>
+<p>It should be clear that the <code>alice-animals</code> branch is one commit ahead of
+the <code>main</code> branch. Pushing this branch to the remote repository on GitHub
+requires a slightly more complicated syntax. We need to specify which
+branch to push to which remote repository:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">ALICE</span><span class="si">}</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>%<span class="w"> </span>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>alice-animals
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>%<span class="w"> </span>cat<span class="w"> </span>animals.txt
+</span></code></pre></div>
+<p>The name <code>origin</code> refers to the remote repository that the local
+repository was originally cloned from (i.e., the remote repository on
+GitHub). You can now see this new branch on GitHub here:</p>
+<ul>
+<li><a href="https://github.com/githubid/ece6745-tut02-git/branches">https://github.com/githubid/ece6745-tut02-git/branches</a></li>
+</ul>
+<p>You can browse the commits and source code in the <code>alice-animals</code> just
+like the <code>main</code> branch. If Bob wants to checkout Alice's new branch, he
+needs to use a slightly different syntax.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>%<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>--track<span class="w"> </span>origin/alice-animals
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a>%<span class="w"> </span>git<span class="w"> </span>branch
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a>%<span class="w"> </span>cat<span class="w"> </span>animals.txt
+</span></code></pre></div>
+<p>Alice and Bob can switch back to the <code>main</code> branch using the <code>git
+checkout</code> command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">ALICE</span><span class="si">}</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>%<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>main
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>%<span class="w"> </span>git<span class="w"> </span>branch
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a>%<span class="w"> </span>ls
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">BOB</span><span class="si">}</span>
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a>%<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>main
+</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a>%<span class="w"> </span>git<span class="w"> </span>branch
+</span><span id="__span-37-8"><a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a>%<span class="w"> </span>ls
+</span></code></pre></div>
+<p>The <code>git branch</code> command should indicate that both Alice and Bob are now
+on the <code>main</code> branch, and there should no longer be an <code>animals.txt</code> file
+in the working directory. One strength of Git is that it makes it very
+easy to switch back and forth between branches.</p>
+<p>Once Alice has worked on her new branch, she might be ready to merge that
+branch back into the <code>main</code> branch so it becomes part of the primary
+project. GitHub has a nice feature called <em>pull requests</em> that simply
+this process. To create a pull request, Alice would first go to the
+branch page on GitHub for this repository.</p>
+<ul>
+<li><a href="https://github.com/githubid/ece6745-tut02-git/branches">https://github.com/githubid/ece6745-tut02-git/branches</a></li>
+</ul>
+<p>She then just needs to click on the three dots next to her branch and
+choose <em>New pull request</em>. <em>You must carefully select the base fork!</em> If
+you simply choose the default you will try to merge your branch into the
+repository that is part of the <code>cornell-ece6745</code> GitHub organization.
+Click on <em>base fork</em> and select <em>githubid/ece6745-tut02-git</em>. Alice can
+leave a comment about what this new branch does. Other students can use
+the pull request page on GitHub to comment on and monitor the new branch.</p>
+<ul>
+<li><a href="https://github.com/githubid/ece6745-tut02-git/pull/1">https://github.com/githubid/ece6745-tut02-git/pull/1</a></li>
+</ul>
+<p>Users can continue to develop and work on the branch until it is ready to
+be merged into <code>main</code>. When the pull request is ready to be accepted,
+a user simply clicks on <em>Merge pull request</em> on the GitHub pull
+request page. When this is finished the Git history for this example
+would look like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">ALICE</span><span class="si">}</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>%<span class="w"> </span>git<span class="w"> </span>log<span class="w"> </span>--oneline<span class="w"> </span>--graph
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a>*<span class="w">   </span>3e523c8<span class="w"> </span><span class="o">(</span>HEAD<span class="w"> </span>-&gt;<span class="w"> </span>main,<span class="w"> </span>origin/main,<span class="w"> </span>origin/HEAD<span class="o">)</span><span class="w"> </span>Merge<span class="w"> </span>pull<span class="w"> </span>request<span class="w"> </span><span class="c1">#1 fr&gt;</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="p">|</span><span class="se">\</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="p">|</span><span class="w"> </span>*<span class="w"> </span>651eb8c<span class="w"> </span><span class="o">(</span>origin/alice-animals,<span class="w"> </span>alice-animals<span class="o">)</span><span class="w"> </span>ALICE:<span class="w"> </span>initial<span class="w"> </span>animal<span class="w"> </span>list
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="p">|</span>/
+</span><span id="__span-38-8"><a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a>*<span class="w">   </span>e6c85c3<span class="w"> </span>fixed<span class="w"> </span>conflict
+</span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a><span class="p">|</span><span class="se">\</span>
+</span><span id="__span-38-10"><a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a><span class="p">|</span><span class="w"> </span>*<span class="w"> </span>3d43934<span class="w"> </span>ALICE:<span class="w"> </span>added<span class="w"> </span>kiwi<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-38-11"><a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a>*<span class="w"> </span><span class="p">|</span><span class="w"> </span>9d12ba9<span class="w"> </span>BOB:<span class="w"> </span>added<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a><span class="p">|</span>/
+</span><span id="__span-38-13"><a id="__codelineno-38-13" name="__codelineno-38-13" href="#__codelineno-38-13"></a>*<span class="w">   </span>f5c1361<span class="w"> </span>Merge<span class="w"> </span>branch<span class="w"> </span><span class="s1">&#39;main&#39;</span><span class="w"> </span>of<span class="w"> </span>github.com:cbatten/ece6745-tut02-git
+</span><span id="__span-38-14"><a id="__codelineno-38-14" name="__codelineno-38-14" href="#__codelineno-38-14"></a><span class="p">|</span><span class="se">\</span>
+</span><span id="__span-38-15"><a id="__codelineno-38-15" name="__codelineno-38-15" href="#__codelineno-38-15"></a><span class="p">|</span><span class="w"> </span>*<span class="w"> </span>c13f30e<span class="w"> </span>ALICE:<span class="w"> </span>added<span class="w"> </span>lemon<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-38-16"><a id="__codelineno-38-16" name="__codelineno-38-16" href="#__codelineno-38-16"></a>*<span class="w"> </span><span class="p">|</span><span class="w"> </span>3ef8c85<span class="w"> </span>BOB:<span class="w"> </span>initial<span class="w"> </span>vegetable<span class="w"> </span>list
+</span><span id="__span-38-17"><a id="__codelineno-38-17" name="__codelineno-38-17" href="#__codelineno-38-17"></a><span class="p">|</span>/
+</span><span id="__span-38-18"><a id="__codelineno-38-18" name="__codelineno-38-18" href="#__codelineno-38-18"></a>*<span class="w"> </span><span class="m">5877142</span><span class="w"> </span>BOB:<span class="w"> </span>added<span class="w"> </span>peach<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-38-19"><a id="__codelineno-38-19" name="__codelineno-38-19" href="#__codelineno-38-19"></a>*<span class="w"> </span>7896fff<span class="w"> </span>ALICE:<span class="w"> </span>added<span class="w"> </span>banana<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-38-20"><a id="__codelineno-38-20" name="__codelineno-38-20" href="#__codelineno-38-20"></a>*<span class="w"> </span>bf6a25f<span class="w"> </span>added<span class="w"> </span>orange<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-38-21"><a id="__codelineno-38-21" name="__codelineno-38-21" href="#__codelineno-38-21"></a>*<span class="w"> </span>bc0e024<span class="w"> </span>added<span class="w"> </span>mango<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-38-22"><a id="__codelineno-38-22" name="__codelineno-38-22" href="#__codelineno-38-22"></a>*<span class="w"> </span>a8ac41e<span class="w"> </span>initial<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-38-23"><a id="__codelineno-38-23" name="__codelineno-38-23" href="#__codelineno-38-23"></a>*<span class="w"> </span>bb9506b<span class="w"> </span>initial<span class="w"> </span>import
+</span></code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">Activity 4: Experimenting with Branches</p>
+<p>Have Bob create his own branch for development, and then create a new
+file named <code>states.txt</code> with the names of states. Have Bob commit his
+changes to a new branch and push this branch to the remote repository
+on GitHub. Finally, have Alice pull this new branch into her local
+repository.</p>
+</div>
+<h2 id="3-github-actions-for-continuous-integration">3. GitHub Actions for Continuous Integration</h2>
+<p>GitHub Actions is an online continuous integration service that is
+integrated within GitHub. GitHub Actions will automatically run all tests
+for a student's lab assignment every time the students push their code to
+GitHub. We will be using the results reported by GitHub Actions to
+evaluate the code functionality of the lab assignments. In this section,
+we do a small experiment to illustrate how GitHub Actions work.</p>
+<p>GitHub Actions looks for specials file in the <code>.github/workflows</code>
+subdirectory in the top of your repository to determine how to build and
+test your project. We have already created one of those files for you,
+and you can see it here:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>%<span class="w"> </span>cat<span class="w"> </span>.github/workflows/git-tutorial.yml
+</span></code></pre></div>
+<p>The <code>git-tutorial.yml</code> file for this tutorial is very simple. It just
+uses the <code>grep</code> command to check if the fruit <code>blueberry</code> is in the
+<code>fruit.txt</code> file. If the <code>blueberry</code> is present then the test passes,
+otherwise the test fails. Click on the <em>Actions</em> tab in your repository
+on GitHub and click <em>I understand my workflows, go ahead and enable them</em>
+as shown in the following figure.</p>
+<p><img alt="" src="../img/tut02-github-actions-1.png#border" /></p>
+<p>Let's add <code>melon</code> to the list of fruits in our local repository and
+then push the corresponding commit to the remote repository on GitHub.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;melon&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;added melon to fruit list&quot;</span>
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span></code></pre></div>
+<p>Notice how we first use the <code>git pull</code> command to ensure our local
+repository has all of the commits from the remote repository on GitHub.
+To see the results of the workflow run go to the <em>Actions</em> tab for the
+corresponding repository on GitHub. You can also use a link like this:</p>
+<ul>
+<li><a href="https://github.com/githubid/ece6745-tut02-git/actions">https://github.com/githubid/ece6745-tut02-git/actions</a></li>
+</ul>
+<p>where <code>githubid</code> is your GitHub username on the public version of GitHub.
+You should be able to see a list of workflow runs as illustrated below.</p>
+<p><img alt="" src="../img/tut02-github-actions-2.png#border" /></p>
+<p>Each run corresponds to a push to GitHub. A green checkmark means that
+run passed, while a red X means that run failed. If you click on the name
+of a run, and then click on <em>check</em> you can see a list of steps that
+GitHub actions ran. Click on the little <code>&gt;</code> next to <em>Run grep blueberry
+fruit.txt</em> to see the output from running <code>grep</code>.</p>
+<p><img alt="" src="../img/tut02-github-actions-3.png#border" /></p>
+<p>The test should fail because <code>blueberry</code> is not currently in the
+<code>fruit.txt</code> file. Now let's add <code>blueberry</code> and then push the
+corresponding to commit to trigger another build on GitHub Actions.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;blueberry&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;added blueberry to fruit list&quot;</span>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span></code></pre></div>
+<p>If you revisit the GitHub Actions page for this repository, you should
+now see that the check has passed!</p>
+<p>Using GitHub Actions to perform continuous integration testing is a key
+component of an agile development methodology. It means the entire group
+can quickly spot commits which break certain tests, and always be certain
+that their <code>main</code> branch is passing all tests before submitting the lab
+assignment. The course staff will actually be using GitHub Actions to
+grade your lab assignments. The staff will be able to look at the build
+log in GitHub Actions to see if your assignment is passing your own test
+suite, and then the staff can add more tests to see if your assignment
+passes a more exhaustive test suite.</p>
+<div class="admonition question">
+<p class="admonition-title">Activity 5: Experimenting with GitHub Actions</p>
+<p>Edit the <code>git-tutorial.yml</code> file to search for <code>apple</code> instead.
+Experiment with removing and adding <code>apple</code> from the <code>fruits.txt</code>
+file to see the tests on GitHub Actions pass and fail.</p>
+</div>
+<h2 id="4-course-specific-git-scripts">4. Course-Specific Git Scripts</h2>
+<p>This section describes some useful scripts we have installed that make it
+easier to use Git. Each script is invoked by typing the name along with
+the standard <code>git</code> command.</p>
+<h3 id="41-using-git-xstatus-to-compactly-see-status-information">4.1. Using <code>git xstatus</code> to Compactly See Status Information</h3>
+<p>The <code>git xstatus</code> command produces a status output somewhat similar to
+subversion's status command. It first shows the status of all tracked
+files which are modified, deleted, or added, then shows the status of all
+files in the index (marked with an asterisk), and finally shows which
+files and directories are untracked. Here is an example output:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;cyan&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>colors.txt
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;rabbit&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>animals.txt
+</span><span id="__span-42-4"><a id="__codelineno-42-4" name="__codelineno-42-4" href="#__codelineno-42-4"></a>%<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>colors.txt<span class="w"> </span>animals.txt
+</span><span id="__span-42-5"><a id="__codelineno-42-5" name="__codelineno-42-5" href="#__codelineno-42-5"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;added some colors and animals&quot;</span>
+</span><span id="__span-42-6"><a id="__codelineno-42-6" name="__codelineno-42-6" href="#__codelineno-42-6"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;grape&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-42-7"><a id="__codelineno-42-7" name="__codelineno-42-7" href="#__codelineno-42-7"></a>%<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>fruit.txt
+</span><span id="__span-42-8"><a id="__codelineno-42-8" name="__codelineno-42-8" href="#__codelineno-42-8"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;strawberry&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>fruit.txt
+</span><span id="__span-42-9"><a id="__codelineno-42-9" name="__codelineno-42-9" href="#__codelineno-42-9"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;bird&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>animals.txt
+</span><span id="__span-42-10"><a id="__codelineno-42-10" name="__codelineno-42-10" href="#__codelineno-42-10"></a>%<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;tulip&quot;</span><span class="w">  </span>&gt;&gt;<span class="w"> </span>flowers.txt
+</span><span id="__span-42-11"><a id="__codelineno-42-11" name="__codelineno-42-11" href="#__codelineno-42-11"></a>%<span class="w"> </span>rm<span class="w"> </span>colors.txt
+</span><span id="__span-42-12"><a id="__codelineno-42-12" name="__codelineno-42-12" href="#__codelineno-42-12"></a>%<span class="w"> </span>git<span class="w"> </span>xstatus
+</span><span id="__span-42-13"><a id="__codelineno-42-13" name="__codelineno-42-13" href="#__codelineno-42-13"></a><span class="w">  </span>M<span class="w"> </span>animals.txt
+</span><span id="__span-42-14"><a id="__codelineno-42-14" name="__codelineno-42-14" href="#__codelineno-42-14"></a><span class="w">  </span>D<span class="w"> </span>colors.txt
+</span><span id="__span-42-15"><a id="__codelineno-42-15" name="__codelineno-42-15" href="#__codelineno-42-15"></a><span class="w">  </span>M<span class="w"> </span>fruit.txt
+</span><span id="__span-42-16"><a id="__codelineno-42-16" name="__codelineno-42-16" href="#__codelineno-42-16"></a><span class="w"> </span>*M<span class="w"> </span>fruit.txt
+</span><span id="__span-42-17"><a id="__codelineno-42-17" name="__codelineno-42-17" href="#__codelineno-42-17"></a><span class="w">  </span>?<span class="w"> </span>flowers.txt
+</span></code></pre></div>
+<p>This shows that the file <code>colors.txt</code> has been deleted from the working
+directory, but this deletion has not been added to the index yet
+(<code>colors.txt</code> is not listed with an asterisk). The file <code>animals.txt</code> has
+been modified buy not added to the index yet. Note that the file named
+<code>fruit.txt</code> has been modified and added to the index, but it has been
+modified <em>since</em> it was added to the index as indicated by its double
+listing. The file named <code>flowers.txt</code> is currently untracked.</p>
+<p>The possible status codes are as follows:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="w"> </span>-<span class="w"> </span>A<span class="w"> </span>:<span class="w"> </span>addition<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>file
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a><span class="w"> </span>-<span class="w"> </span>C<span class="w"> </span>:<span class="w"> </span>copy<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>file<span class="w"> </span>into<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>one
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a><span class="w"> </span>-<span class="w"> </span>D<span class="w"> </span>:<span class="w"> </span>deletion<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>file
+</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a><span class="w"> </span>-<span class="w"> </span>M<span class="w"> </span>:<span class="w"> </span>modification<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>contents<span class="w"> </span>or<span class="w"> </span>mode<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>file
+</span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5" href="#__codelineno-43-5"></a><span class="w"> </span>-<span class="w"> </span>R<span class="w"> </span>:<span class="w"> </span>renaming<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>file
+</span><span id="__span-43-6"><a id="__codelineno-43-6" name="__codelineno-43-6" href="#__codelineno-43-6"></a><span class="w"> </span>-<span class="w"> </span>T<span class="w"> </span>:<span class="w"> </span>change<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span><span class="nb">type</span><span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>file
+</span><span id="__span-43-7"><a id="__codelineno-43-7" name="__codelineno-43-7" href="#__codelineno-43-7"></a><span class="w"> </span>-<span class="w"> </span>U<span class="w"> </span>:<span class="w"> </span>file<span class="w"> </span>is<span class="w"> </span>unmerged<span class="w"> </span><span class="o">(</span>you<span class="w"> </span>must<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>the<span class="w"> </span>merge<span class="w"> </span>before<span class="w"> </span>commit<span class="o">)</span>
+</span><span id="__span-43-8"><a id="__codelineno-43-8" name="__codelineno-43-8" href="#__codelineno-43-8"></a><span class="w"> </span>-<span class="w"> </span>?<span class="w"> </span>:<span class="w"> </span>file<span class="w"> </span>is<span class="w"> </span>untracked<span class="w"> </span><span class="o">(</span>you<span class="w"> </span>need<span class="w"> </span>to<span class="w"> </span>add<span class="w"> </span>it<span class="w"> </span><span class="k">if</span><span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>to<span class="w"> </span>track<span class="w"> </span>it<span class="o">)</span>
+</span></code></pre></div>
+<h3 id="42-using-git-xadd-to-add-all-changed-files">4.2. Using <code>git xadd</code> to Add All Changed Files</h3>
+<p>The <code>git xadd</code> command adds all files which are currently tracked and
+display the new status in a format similar to the <code>git xstatus</code> command.
+You can use this to quickly stage files for commit and see what would be
+committed before actually executing the commit.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>%<span class="w"> </span>git<span class="w"> </span>xstatus
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>%<span class="w"> </span>git<span class="w"> </span>xadd
+</span></code></pre></div>
+<h3 id="43-using-git-xlog-to-compactly-see-log-information">4.3. Using <code>git xlog</code> to Compactly See Log Information</h3>
+<p>The <code>git xlog</code> command displays a compact log format with one commit per
+line and a graph representing the commit history. This script passes
+along whatever the additional options are included straight onto <code>git
+log</code>. Here is a simple example of the log output.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">TUTROOT</span><span class="si">}</span>
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>%<span class="w"> </span>git<span class="w"> </span>xlog
+</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a>*<span class="w"> </span>be57e36<span class="w"> </span>cb<span class="w"> </span>added<span class="w"> </span>some<span class="w"> </span>colors<span class="w"> </span>and<span class="w"> </span>animals
+</span><span id="__span-45-4"><a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a>*<span class="w"> </span>d2c0ecd<span class="w"> </span>cb<span class="w"> </span>added<span class="w"> </span>blueberry<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a>*<span class="w"> </span>1e4792f<span class="w"> </span>cb<span class="w"> </span>added<span class="w"> </span>melon<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-45-6"><a id="__codelineno-45-6" name="__codelineno-45-6" href="#__codelineno-45-6"></a>*<span class="w">   </span>3e523c8<span class="w"> </span>cb<span class="w"> </span>Merge<span class="w"> </span>pull<span class="w"> </span>request<span class="w"> </span><span class="c1">#1 from cbatten/alice-animals</span>
+</span><span id="__span-45-7"><a id="__codelineno-45-7" name="__codelineno-45-7" href="#__codelineno-45-7"></a><span class="p">|</span><span class="se">\</span>
+</span><span id="__span-45-8"><a id="__codelineno-45-8" name="__codelineno-45-8" href="#__codelineno-45-8"></a><span class="p">|</span><span class="w"> </span>*<span class="w"> </span>651eb8c<span class="w"> </span>cb<span class="w"> </span>ALICE:<span class="w"> </span>initial<span class="w"> </span>animal<span class="w"> </span>list
+</span><span id="__span-45-9"><a id="__codelineno-45-9" name="__codelineno-45-9" href="#__codelineno-45-9"></a><span class="p">|</span>/
+</span><span id="__span-45-10"><a id="__codelineno-45-10" name="__codelineno-45-10" href="#__codelineno-45-10"></a>*<span class="w">   </span>e6c85c3<span class="w"> </span>cb<span class="w"> </span>fixed<span class="w"> </span>conflict
+</span><span id="__span-45-11"><a id="__codelineno-45-11" name="__codelineno-45-11" href="#__codelineno-45-11"></a><span class="p">|</span><span class="se">\</span>
+</span><span id="__span-45-12"><a id="__codelineno-45-12" name="__codelineno-45-12" href="#__codelineno-45-12"></a><span class="p">|</span><span class="w"> </span>*<span class="w"> </span>3d43934<span class="w"> </span>cb<span class="w"> </span>ALICE:<span class="w"> </span>added<span class="w"> </span>kiwi<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-45-13"><a id="__codelineno-45-13" name="__codelineno-45-13" href="#__codelineno-45-13"></a>*<span class="w"> </span><span class="p">|</span><span class="w"> </span>9d12ba9<span class="w"> </span>cb<span class="w"> </span>BOB:<span class="w"> </span>added<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span><span id="__span-45-14"><a id="__codelineno-45-14" name="__codelineno-45-14" href="#__codelineno-45-14"></a><span class="p">|</span>/
+</span><span id="__span-45-15"><a id="__codelineno-45-15" name="__codelineno-45-15" href="#__codelineno-45-15"></a>*<span class="w">   </span>f5c1361<span class="w"> </span>cb<span class="w"> </span>Merge<span class="w"> </span>branch<span class="w"> </span><span class="s1">&#39;main&#39;</span><span class="w"> </span>of<span class="w"> </span>github.com:cbatten/ece6745-tut02-git
+</span><span id="__span-45-16"><a id="__codelineno-45-16" name="__codelineno-45-16" href="#__codelineno-45-16"></a><span class="p">|</span><span class="se">\</span>
+</span><span id="__span-45-17"><a id="__codelineno-45-17" name="__codelineno-45-17" href="#__codelineno-45-17"></a><span class="p">|</span><span class="w"> </span>*<span class="w"> </span>c13f30e<span class="w"> </span>cb<span class="w"> </span>ALICE:<span class="w"> </span>added<span class="w"> </span>lemon<span class="w"> </span>to<span class="w"> </span>fruit<span class="w"> </span>list
+</span></code></pre></div>
+<p>You can see one line per commit along with the commit hash, the
+committer's name, and the short commit message. The graph shows a merge
+between commits <code>3d43934</code> and <code>6ee31c69d12ba9</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

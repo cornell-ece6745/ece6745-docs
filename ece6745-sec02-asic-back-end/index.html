@@ -1,0 +1,1696 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-sec01-asic-front-end/">
+      
+      
+        <link rel="next" href="../ece6745-sec03-asic-auto/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Section 2: ASIC Back-End Flow - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-section-2-asic-back-end-flow" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Section 2: ASIC Back-End Flow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-sec01-asic-front-end/" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut05-asic-stdcells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut07-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut09-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut12-spice-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec01-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-nangate-45nm-standard-cell-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. NanGate 45nm Standard-Cell Libraries
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-revisiting-the-asic-flow-front-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Revisiting the ASIC Flow Front-End
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Revisiting the ASIC Flow Front-End">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-test-simulate-translate" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Test, Simulate, Translate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-simulate-synthesize-simulate" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Simulate, Synthesize, Simulate
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-cadence-innovus-for-place-and-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Cadence Innovus for Place-and-Route
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Cadence Innovus for Place-and-Route">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-constraint-and-timing-input-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Constraint and Timing Input Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-initial-setup-and-floorplanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2. Initial Setup and Floorplanning
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3. Placement
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-power-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4. Power Routing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-signal-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.5. Signal Routing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-final-output-and-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.6. Final Output and Reports
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-synopsys-vcs-for-back-annotated-gate-level-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Synopsys VCS for Back-Annotated Gate-Level Simulation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-synopsys-primetime-for-power-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Synopsys PrimeTime for Power Analysis
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec03-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec04-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-nangate-45nm-standard-cell-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. NanGate 45nm Standard-Cell Libraries
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-revisiting-the-asic-flow-front-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Revisiting the ASIC Flow Front-End
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Revisiting the ASIC Flow Front-End">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-test-simulate-translate" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Test, Simulate, Translate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-simulate-synthesize-simulate" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Simulate, Synthesize, Simulate
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-cadence-innovus-for-place-and-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Cadence Innovus for Place-and-Route
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Cadence Innovus for Place-and-Route">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-constraint-and-timing-input-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Constraint and Timing Input Files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-initial-setup-and-floorplanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2. Initial Setup and Floorplanning
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3. Placement
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-power-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4. Power Routing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-signal-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.5. Signal Routing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-final-output-and-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.6. Final Output and Reports
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-synopsys-vcs-for-back-annotated-gate-level-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Synopsys VCS for Back-Annotated Gate-Level Simulation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-synopsys-primetime-for-power-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Synopsys PrimeTime for Power Analysis
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-section-2-asic-back-end-flow">ECE 6745 Section 2: ASIC Back-End Flow</h1>
+<p>In this section, we will be discussing the back-end of the ASIC toolflow.
+More detailed tutorials will be posted on the public course website, but
+this section will at least give you a chance to take a gate-level netlist
+through place-and-route, simulate the final gate-level netlist, and
+energy analysis. The following diagram illustrates the tool flow we will
+be using in ECE 6745. Notice that the Synopsys and Cadence ASIC tools all
+require various views from the standard-cell library which part of the
+ASIC design kit (ADK).</p>
+<p><img alt="" src="../img/tut07-asic-flow-back-end.png" /></p>
+<p>The "back-end" of the flow is highlighted in red and refers to the PyMTL
+simulator, Synopsys DC, and Synopsys VCS:</p>
+<ul>
+<li>
+<p>We use <strong>Cadence Innovus</strong> to place-and-route our design, which means
+   to place all of the gates in the gate-level netlist into rows on the
+   chip and then to generate the metal wires that connect all of the
+   gates together. We need to provide Cadence Innovus with similar
+   abstract logical and timing views used in Synopsys DC. Cadence Innovus
+   takes as input the <code>.lib</code> file which is the ASCII text version of a
+   <code>.db</code> file. In addition, we need to provide Cadence Innovus with
+   technology information in <code>.lef</code> and <code>.captable</code> format and abstract
+   physical views of the standard-cell library in <code>.lef</code> format. Cadence
+   Innovus will generate an updated Verilog gate-level netlist, a <code>.spef</code>
+   file which contains parasitic resistance/capacitance information about
+   all nets in the design, and a <code>.gds</code> file which contains the final
+   layout. The <code>.gds</code> file can be inspected using the open-source Klayout
+   GDS viewer. Cadence Innovus also generates reports which can be used
+   to accurately characterize area and timing.</p>
+</li>
+<li>
+<p>We use <strong>Synopsys VCS</strong> for back-annotated gate-level simulation.
+   Gate-level simulation involves simulating every standard-cell gate and
+   helps verify that the Verilog gate-level netlist is functionally
+   correct. Fast-functional gate-level simulation does not include any
+   timing information, while back-annotated gate-levle simulation does
+   include the estimated delay of every gate and every wire.</p>
+</li>
+<li>
+<p>We use <strong>Synopsys PrimeTime (PT)</strong> to perform power-analysis of our
+   design. This requires switching activity information for every net in
+   the design (which comes from the back-annotated gate-level simulation)
+   and parasitic capacitance information for every net in the design
+   (which comes from Cadence Innovus). Synopsys PT puts the switching
+   activity, capacitance, clock frequency, and voltage together to
+   estimate the power consumption of every net and thus every module in
+   the design.</p>
+</li>
+</ul>
+<p>Extensive documentation is provided by Synopsys and Cadence. We have
+organized this documentation and made it available to you on the Canvas
+course page:</p>
+<ul>
+<li><a href="https://www.csl.cornell.edu/courses/ece6745/asicdocs">https://www.csl.cornell.edu/courses/ece6745/asicdocs</a></li>
+</ul>
+<p>The first step is to access <code>ecelinux</code>. Use Microsoft Remote Desktop to
+log into a specific <code>ecelinux</code> server. Then use VS Code to log into the
+same specific <code>ecelinux</code> server. Once you are at the <code>ecelinux</code> prompt,
+source the setup script, source the GUI setup script, clone this
+repository from GitHub, and define an environment variable to keep track
+of the top directory for the project.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/cornell-ece6745/ece6745-sec02-asic-back-end<span class="w"> </span>sec02
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>sec02
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>%<span class="w"> </span><span class="nv">TOPDIR</span><span class="o">=</span><span class="nv">$PWD</span>
+</span></code></pre></div>
+<h2 id="1-nangate-45nm-standard-cell-libraries">1. NanGate 45nm Standard-Cell Libraries</h2>
+<p>Recall that a standard-cell library is a collection of combinational and
+sequential logic gates that adhere to a standardized set of logical,
+electrical, and physical policies. For example, all standard cells are
+usually the same height, include pins that align to a predetermined
+vertical and horizontal grid, include power/ground rails and nwells in
+predetermined locations, and support a predetermined number of drive
+strengths. In this course, we will be using the a NanGate 45nm
+standard-cell library. It is based on a "fake" 45nm technology. This
+means you cannot actually tapeout a design using this standard cell
+library, but the technology is representative enough to provide
+reasonable area, energy, and timing estimates for teaching purposes. All
+of the files associated with this standard cell library are located in
+the <code>$ECE6745_STDCELLS</code> directory.</p>
+<p>Let's look at some layout for the standard cell library just like we did
+in the last section.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/klayout.lyp<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/stdcells.gds
+</span></code></pre></div>
+<p>Let's look at a 3-input NAND cell, find the NAND3_X1 cell in the
+left-hand cell list, and then choose <em>Display &gt; Show as New Top</em> from the
+menu. We will learn more about layout and how this layout corresponds to
+a static CMOS circuit later in the course. The key point is that the
+layout for the standard cells are the basic building blocks that we will
+be using to create our ASIC chips.</p>
+<p>The Synopsys and Cadence tools do not actually use this layout directly;
+it is actually <em>too</em> detailed. Instead these tools use abstract views of
+the standard cells, which capture logical functionality, timing,
+geometry, and power usage at a much higher level. In the last section, we
+looked at Verilog and <code>.lib</code> views. The back-end flow takes as input the
+<code>.lib</code> view for logical timing information, but it also takes as input a
+<code>.lef</code> view which contains <em>physical</em> information about the standard
+cell. Let's look at the LEF for the 3-input NAND cell.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>%<span class="w"> </span>less<span class="w"> </span>-p<span class="w"> </span>NAND3_X1<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/stdcells.lef
+</span></code></pre></div>
+<p>The <code>.lef</code> view includes information about the size of the standard cell,
+but also includes information about where every pin is physically
+located. You can use Klayout to view <code>.lef</code> files as well. Start Klayout
+like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span>klayout<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/stdcells.lef
+</span></code></pre></div>
+<p>Let's look at a 3-input NAND cell, find the NAND3_X1 cell in the
+left-hand cell list, and then choose <em>Display &gt; Show as New Top</em> from the
+menu. The <code>.lef</code> file does not contain any transistor-level information.
+It only contains information relevant to placement and routing.</p>
+<p>In addition to physical information about each standard cell, the
+back-end flow also needs to take as input general information about the
+technology. This information is contained in two files:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>%<span class="w"> </span>less<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/rtk-tech.lef
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>%<span class="w"> </span>less<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/rtk-typical.captable
+</span></code></pre></div>
+<p>The first provides information about the geometry and orientation of
+wires for each metal layer. The second provides information about the
+resistance and capacitance of each metal layer.</p>
+<p>Now that we have looked at the physical views of the standard cell
+library, we can now try using these views and the ASIC flow back-end to
+place and route a gate-level netlist.</p>
+<h2 id="2-revisiting-the-asic-flow-front-end">2. Revisiting the ASIC Flow Front-End</h2>
+<p>As in the last section, we will be using the following four-stage
+registered incrementer as our example design:</p>
+<p><img alt="" src="../img/sec01-regincr-nstage.png" /></p>
+<p>Before we can place and route a gate-level netlist, we need to synthesize
+that netlist. This is what we learned about in the last section. Here are
+the steps to test and then synthesize the design using Synopsys DC.</p>
+<h3 id="21-test-simulate-translate">2.1. Test, Simulate, Translate</h3>
+<p>Always run the tests before pushing anything through the ASIC flow. There
+is no sense in running the flow if the design is incorrect!</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../tut3_verilog/regincr
+</span></code></pre></div>
+<p>You can run the simulator for our four-stage registered incrementer like
+this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim/build
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>%<span class="w"> </span>../tut3_verilog/regincr/regincr-sim<span class="w"> </span>-s<span class="w"> </span>0xff<span class="w"> </span>0x20<span class="w"> </span>0x30<span class="w"> </span>0x04<span class="w"> </span>0x00
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>%<span class="w"> </span>less<span class="w"> </span>RegIncr4stage__pickled.v
+</span></code></pre></div>
+<p>You should now have the Verilog that we want to push through the ASIC
+flow.</p>
+<h3 id="22-simulate-synthesize-simulate">2.2. Simulate, Synthesize, Simulate</h3>
+<p>We have provided you run scripts that will reproduce the three key steps
+we learned about in the previous discussion section:</p>
+<ul>
+<li>Use Synopsys VCS for four-state RTL simulation</li>
+<li>Use Synopsys DC to synthesize RTL to gate-level netlist</li>
+<li>Use Synopsys VCS for fast-functional gate-level simulation</li>
+</ul>
+<p>Let's take a look at each script to confirm it matches the manual
+commands we used in the previous discussion section. Here is the run
+script for four-start RTL simulation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./01-synopsys-vcs-rtlsim/run
+</span></code></pre></div>
+<p>Here is the run script for synthesis.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./02-synopsys-dc-synth/run
+</span></code></pre></div>
+<p>Notice that this script simply executes <code>dc_shell-xg-t</code> with a TCL script
+which contains the commands to: configure the standard cell library,
+analyze and elaborate the design; setup timing constraints; synthesize
+the design; write outputs; and write final outputs (i.e., Verilog and
+DDC) and reports (i.e., timing report and area report).</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./02-synopsys-dc-synth/run.tcl
+</span></code></pre></div>
+<p>Finally, here is the run script for fast-functional gate-level
+simulation. The key difference from four-state RTL simulation is that
+this simulation takes as input the Verilog for the standard-cell library
+and the Verilog for the post-synthesis gate-level netlist.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>%<span class="w"> </span>cat<span class="w"> </span>./03-synopsys-vcs-ffglsim/run
+</span></code></pre></div>
+<p>You can run these steps as follows:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span>./01-synopsys-vcs-rtlsim/run
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>%<span class="w"> </span>./02-synopsys-dc-synth/run
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>%<span class="w"> </span>./03-synopsys-vcs-ffglsim/run
+</span></code></pre></div>
+<p>Verify that your design passes four-state RTL simulation and
+fast-functional gate-level simulation. Then take a look at the synthesis
+reports.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>%<span class="w"> </span>less<span class="w"> </span>./02-synopsys-dc-synth/area.rpt
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>%<span class="w"> </span>less<span class="w"> </span>./02-synopsys-dc-synth/timing.rpt
+</span></code></pre></div>
+<p>Finally, take a few minutes to examine the resulting Verilog gate-level
+netlist. Notice that the module hierarchy is preserved.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>%<span class="w"> </span>less<span class="w"> </span>./02-synopsys-dc-synth/post-synth.v
+</span></code></pre></div>
+<p>This is the gate-level netlist that we now want to push through the ASIC
+back-end flow.</p>
+<h2 id="3-cadence-innovus-for-place-and-route">3. Cadence Innovus for Place-and-Route</h2>
+<p>We will be running Cadence Innovus in a separate directory to keep the
+input and output files separate.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/04-cadence-innovus-pnr
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/04-cadence-innovus-pnr
+</span></code></pre></div>
+<h3 id="31-constraint-and-timing-input-files">3.1. Constraint and Timing Input Files</h3>
+<p>Before starting Cadence Innovus, we need to create two files which will
+be loaded into the tool. The first file is a <code>.sdc</code> file which contains
+timing constraint information about our design. This file is where we
+specify our target clock period, but it is also where we could specify
+input or output delay constraints (e.g., the output signals must be
+stable 200ps before the rising edge). Use VS Code to create a file named
+<code>constraints.sdc</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/04-cadence-innovus-pnr
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span>code<span class="w"> </span>constraints.sdc
+</span></code></pre></div>
+<p>The file should have the following constraint:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>create_clock clk -name ideal_clock -period 1
+</span></code></pre></div>
+<p>The <code>create_clock</code> command is similar to the command we used in
+synthesis, and usually, we use the same target clock period that we used
+for synthesis. In this case, we are targeting a 1GHz clock frequency
+(i.e., a 1ns clock period).</p>
+<p>The second file is a "multi-mode multi-corner" (MMMC) analysis file. This
+file specifies what "corner" to use for our timing analysis. A corner is
+a characterization of the standard cell library and technology with
+specific assumptions about the process temperature, and voltage (PVT). So
+we might have a "fast" corner which assumes best-case process
+variability, low temperature, and high voltage, or we might have a "slow"
+corner which assumes worst-case variability, high temperature, and low
+voltage. To ensure our design worked across a range of operating
+conditions, we need to evaluate our design across a range of corners. In
+this course, we will keep things simple by only considering a "typical"
+corner (i.e., average PVT). Use VS Code to create a file named
+<code>setup-timing.tcl</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/04-cadence-innovus-pnr
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>%<span class="w"> </span>code<span class="w"> </span>setup-timing.tcl
+</span></code></pre></div>
+<p>The file should have the following content:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>create_rc_corner -name typical \
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>   -cap_table &quot;$env(ECE6745_STDCELLS)/rtk-typical.captable&quot; \
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>   -T 25
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>create_library_set -name libs_typical \
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>   -timing [list &quot;$env(ECE6745_STDCELLS)/stdcells.lib&quot;]
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>create_delay_corner -name delay_default \
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>   -library_set libs_typical \
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>   -rc_corner typical
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>create_constraint_mode -name constraints_default \
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>   -sdc_files [list constraints.sdc]
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>create_analysis_view -name analysis_default \
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>   -constraint_mode constraints_default \
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>   -delay_corner delay_default
+</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>
+</span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>set_analysis_view -setup analysis_default -hold  analysis_default
+</span></code></pre></div>
+<p>The <code>create_rc_corner</code> command loads in the <code>.captable</code> file that we
+examined earlier. This file includes information about the resistance and
+capacitance of every metal layer. Notice that we are loading in the
+"typical" captable and we are specifying an "average" operating
+temperature of 25 degC. The <code>create_library_set</code> command loads in the
+<code>.lib</code> file that we examined in the last section. This file includes
+information about the input/output capacitance of each pin in each
+standard cell along with the delay from every input to every output in
+the standard cell. The <code>create_delay_corner</code> specifies a specific corner
+that we would like to use for our timing analysis by putting together a
+<code>.captable</code> and a <code>.lib</code> file. In this specific example, we are creating
+a typical corner by putting together the typical <code>.captable</code> and typical
+<code>.lib</code> we just loaded. The <code>create_constraint_mode</code> command loads in the
+<code>.sdc</code> file we mentioned earlier in this section. The
+<code>create_analysis_view</code> command puts together constraints with a specific
+corner, and the <code>set_analysis_view</code> command tells Cadence Innovus that we
+would like to use this specific analysis view for both setup and hold
+time analysis.</p>
+<h3 id="32-initial-setup-and-floorplanning">3.2. Initial Setup and Floorplanning</h3>
+<p>Now that we have created our <code>constraints.sdc</code> and <code>setup-timing.tcl</code>
+files we can start Cadence Innovus. Note that we are using the Cadence
+Innovus GUI so you will need to use Microsoft Remote Desktop.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/04-cadence-innovus-pnr
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>%<span class="w"> </span>innovus
+</span></code></pre></div>
+<p>We can enter commands in the terminal and watch the effect of these
+commands on our design in the GUI. We need to set various variables
+before starting to work in Cadence Innovus. These variables tell Cadence
+Innovus the location of the MMMC file, the location of the Verilog
+gate-level netlist, the name of the top-level module in our design, the
+location of the <code>.lef</code> files, and finally the names of the power and
+ground nets.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>innovus&gt; set init_mmmc_file &quot;setup-timing.tcl&quot;
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>innovus&gt; set init_verilog   &quot;../02-synopsys-dc-synth/post-synth.v&quot;
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>innovus&gt; set init_top_cell  &quot;RegIncr4stage&quot;
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>innovus&gt; set init_lef_file  &quot;$env(ECE6745_STDCELLS)/rtk-tech.lef $env(ECE6745_STDCELLS)/stdcells.lef&quot;
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>innovus&gt; set init_gnd_net   &quot;VSS&quot;
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>innovus&gt; set init_pwr_net   &quot;VDD&quot;
+</span></code></pre></div>
+<p>We can now use the <code>init_design</code> command to read in the verilog, set the
+design name, setup the timing analysis views, read the technology <code>.lef</code>
+for layer information, and read the standard cell <code>.lef</code> for physical
+information about each cell used in the design.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>innovus&gt; init_design
+</span></code></pre></div>
+<p>We start by working on power planning which is the process of routing the
+power and ground signals across the chip. First, we use the <code>floorPlan</code>
+command to set the dimensions for our chip.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>innovus&gt; floorPlan -su 1.0 0.70 4.0 4.0 4.0 4.0
+</span></code></pre></div>
+<p>In this example, we have chosen the aspect ration to be 1.0, the target
+cell utilization to be 0.7, and we have added 4.0um of margin around the
+top, bottom, left, and right of the chip. This margin gives us room for
+the power ring which will go around the entire chip.</p>
+<h3 id="33-placement">3.3. Placement</h3>
+<p>The first step is to place all of the standard cells and perform a very
+preliminary routing using the <code>place_design</code> command:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>innovus&gt; place_design
+</span></code></pre></div>
+<p>You should be able to see the standard cells placed in the rows along
+with preliminary routing to connect all of the standard cells together.
+You can toggle the visibility of metal layers by pressing the number keys
+on the keyboard. So try toggling the visibility of M1, M2, M3, etc. You
+can visualize how the modules in the original Verilog mapped to the
+place-and-routed design by using the Design Browser. Choose the
+<em>Windows &gt; Workspaces &gt; Design Browser + Physical</em> menu option.
+Then use the <em>Design Browser</em> to click on specific modules or nets to
+highlight them in the physical view.</p>
+<h3 id="34-power-routing">3.4. Power Routing</h3>
+<p>Now we need to tell Cadence Innovus that <code>VDD</code> and <code>VSS</code> in the
+gate-level netlist correspond to the physical pins labeled <code>VDD</code> and
+<code>VSS</code> in the <code>.lef</code> files.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>innovus&gt; globalNetConnect VDD -type pgpin -pin VDD -inst * -verbose
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>innovus&gt; globalNetConnect VSS -type pgpin -pin VSS -inst * -verbose
+</span></code></pre></div>
+<p>For this discussion section we will just draw M1 wires for the power and
+ground rails that go along each row of standard cells.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>innovus&gt; sroute -nets {VDD VSS}
+</span></code></pre></div>
+<p>In a more realistic flow we would also create a power ring and connect
+the rows of standard cells to this power ring.</p>
+<h3 id="35-signal-routing">3.5. Signal Routing</h3>
+<p>The <code>place_design</code> command will perform a very preliminary route to help
+ensure a good placement, but we will now use the <code>routeDesign</code> command to
+do a more detailed routing pass.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>innovus&gt; routeDesign
+</span></code></pre></div>
+<p>Watch the physical view to see the result before and after running this
+command. You should be able to appreciate that the final result requires
+fewer and shorter wires.</p>
+<p>Now that our design is fully placed and routed, we can extract the
+parasitic resistance and capacitances to enable more accurate timing and
+power analysis.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>innovus&gt; extractRC
+</span></code></pre></div>
+<h3 id="36-final-output-and-reports">3.6. Final Output and Reports</h3>
+<p>The final step is to insert "filler" cells. Filler cells are essentially
+empty standard cells whose sole purpose is to connect the wells across
+each standard cell row.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>innovus&gt; setFillerMode -core {FILLCELL_X4 FILLCELL_X2 FILLCELL_X1}
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>innovus&gt; addFiller
+</span></code></pre></div>
+<p>Now we are basically done! Obviously there are many more steps required
+before you can really tape out a chip. We would need to add a real power
+grid and an I/O ring to connect the chip to the package. We would need to
+do further verification and additional optimization.</p>
+<p>We can generate various artifacts. We might want to save the final
+gate-level netlist for the chip since Cadence Innovus will often insert
+new cells or change cells during its optimization passes.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>innovus&gt; saveNetlist post-pnr.v
+</span></code></pre></div>
+<p>We can write parasitic information to a special <code>.spef</code> file and all of
+the delay information (including interconnect delays) to a <code>.sdf</code> file.
+These files can be used for later back-annotated gate-level simulation
+and/or power analysis.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>innovus&gt; rcOut -rc_corner typical -spef post-pnr.spef
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>innovus&gt; write_sdf post-pnr.sdf
+</span></code></pre></div>
+<p>And of course the step is to generate the real layout as a <code>.gds</code> file.
+This is what we will send to the foundry when we are ready to tapeout the
+chip.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>innovus&gt; streamOut post-pnr.gds \
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>  -merge &quot;$env(ECE6745_STDCELLS)/stdcells.gds&quot; \
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>  -mapFile &quot;$env(ECE6745_STDCELLS)/rtk-stream-out.map&quot;
+</span></code></pre></div>
+<p>We can also use Cadence Innovus to do timing and area analysis similar to
+what we did with Synopsys DC. These post-place-and-route results will be
+<em>much</em> more accurate than the preliminary post-synthesis results.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>innovus&gt; report_timing -late  -path_type full_clock -net
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>innovus&gt; report_timing -early -path_type full_clock -net
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>innovus&gt; report_area
+</span></code></pre></div>
+<p>Finally, we go ahead and exit Cadence Innovus.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>innovus&gt; exit
+</span></code></pre></div>
+<p>Open the final layout using Klayout.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/04-cadence-innovus-pnr
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/klayout.lyp<span class="w"> </span>post-pnr.gds
+</span></code></pre></div>
+<p>Choose <em>Display &gt; Full Hierarchy</em> from the menu to display the entire
+design. Zoom in and out to see the individual transistors as well as the
+entire block.</p>
+<h2 id="4-synopsys-vcs-for-back-annotated-gate-level-simulation">4. Synopsys VCS for Back-Annotated Gate-Level Simulation</h2>
+<p>As we learned in the last discussion section, good ASIC designers are
+always paranoid and <em>never</em> trust their tools. How do we know that the
+final post-place-and-route gate-level netlist is correct? Once again, we
+can rerun our test suite on the gate-level model. We can do this using
+Synopsys VCS for back-annotated gatel-level simulation. <em>Back-annotated</em>
+refers to the fact that this simulation will take into account all of the
+gate and interconnect delays. So this also helps build our confidence not
+just that the final gate-level netlist is functionally correct, but also
+that it meets all setup and hold time constraints. Here is how to run VCS
+for RTL simulation:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/05-synopsys-vcs-baglsim
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/05-synopsys-vcs-baglsim
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>%<span class="w"> </span>vcs<span class="w"> </span>-sverilog<span class="w"> </span>-xprop<span class="o">=</span>tmerge<span class="w"> </span>-override_timescale<span class="o">=</span>1ns/1ps<span class="w"> </span>-top<span class="w"> </span>Top<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="w">    </span>+neg_tchk<span class="w"> </span>+sdfverbose<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="w">    </span>-sdf<span class="w"> </span>max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a><span class="w">    </span>+define+CYCLE_TIME<span class="o">=</span><span class="m">1</span>.000<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a><span class="w">    </span>+define+VTB_INPUT_DELAY<span class="o">=</span><span class="m">0</span>.025<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a><span class="w">    </span>+define+VTB_OUTPUT_DELAY<span class="o">=</span><span class="m">0</span>.025<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a><span class="w">    </span>+define+VTB_DUMP_SAIF<span class="o">=</span>waves.saif<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-10"><a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a><span class="w">    </span>+vcs+dumpvars+waves.vcd<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-11"><a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a><span class="w">    </span>+incdir+<span class="nv">$TOPDIR</span>/sim/build<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-12"><a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a><span class="w">    </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/stdcells.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-13"><a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a><span class="w">    </span>../04-cadence-innovus-pnr/post-pnr.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-14"><a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a><span class="w">    </span><span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build/RegIncr4stage_basic_tb.v
+</span></code></pre></div>
+<p>You should see a <code>simv</code> binary which is the compiled RTL simulator which
+you can run like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/05-synopsys-vcs-baglsim
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>%<span class="w"> </span>./simv
+</span></code></pre></div>
+<p>It should pass the test and also dump out an SAIF file which has the
+activity factors for every net in the design. We will use the SAIF file
+in power analysis. Now let's look at the resulting waveforms using
+Surfer.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/05-synopsys-vcs-baglsim
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>%<span class="w"> </span>code<span class="w"> </span>waves.vcd
+</span></code></pre></div>
+<p>Browse the signal hierarchy and display all the waveforms for the DUT
+using these steps:</p>
+<ul>
+<li>Expand out the Scopes until you find the <em>DUT</em> module</li>
+<li>Select the <em>clk, in, out</em> signals</li>
+<li>Expand out the Scopes until you find the <code>gen[0].reg_incr.add</code> module</li>
+<li>Select all of the signals in this adder</li>
+</ul>
+<p>Zoom in and notice how the signals now change throughout the cycle. This
+is because the delay of every gate and wire is now modeled. Let's rerun
+the simulation, but this time let's use a very fast clock frequency (much
+faster than the 1ns clock constraint we used during synthesis and
+place-and-route).</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/05-synopsys-vcs-baglsim
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>%<span class="w"> </span>vcs<span class="w"> </span>-sverilog<span class="w"> </span>-xprop<span class="o">=</span>tmerge<span class="w"> </span>-override_timescale<span class="o">=</span>1ns/1ps<span class="w"> </span>-top<span class="w"> </span>Top<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="w">    </span>+neg_tchk<span class="w"> </span>+sdfverbose<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="w">    </span>-sdf<span class="w"> </span>max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="w">    </span>+define+CYCLE_TIME<span class="o">=</span><span class="m">0</span>.300<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="w">    </span>+define+VTB_INPUT_DELAY<span class="o">=</span><span class="m">0</span>.025<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="w">    </span>+define+VTB_OUTPUT_DELAY<span class="o">=</span><span class="m">0</span>.025<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-8"><a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a><span class="w">    </span>+vcs+dumpvars+waves-300ps.vcd<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a><span class="w">    </span>+incdir+<span class="nv">$TOPDIR</span>/sim/build<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-10"><a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a><span class="w">    </span><span class="si">${</span><span class="nv">ECE6745_STDCELLS</span><span class="si">}</span>/stdcells.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-11"><a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a><span class="w">    </span>../04-cadence-innovus-pnr/post-pnr.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a><span class="w">    </span><span class="si">${</span><span class="nv">TOPDIR</span><span class="si">}</span>/sim/build/RegIncr4stage_basic_tb.v
+</span><span id="__span-38-13"><a id="__codelineno-38-13" name="__codelineno-38-13" href="#__codelineno-38-13"></a>%<span class="w"> </span>./simv
+</span></code></pre></div>
+<p>You should see timing violations and the test will fail. If you look at
+the resulting waveforms you can see that the adder does not have time to
+finish its calculation and cannot meet the setup time contraint.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/05-synopsys-vcs-baglsim
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>%<span class="w"> </span>code<span class="w"> </span>waves-300ps.vcd
+</span></code></pre></div>
+<h2 id="5-synopsys-primetime-for-power-analysis">5. Synopsys PrimeTime for Power Analysis</h2>
+<p>Synopsys PrimeTime (PT) is primarily used for very accurate "sign-off"
+static timing analysis (more accurate than the analysis performed by
+Synopsys DC and Cadence Innovus), but in this course, we will only use
+Synopsys PT for power analysis. There are many ways to perform power
+analysis. Synthesis and place-and-route power reports use statistical
+power analysis where we simply assume some toggle probability on each
+net. For more accurate power analysis, we need to find out the actual
+activity for every net for a given experiment; this is exactly what we
+figured out during back-annotated gate-level simulation.</p>
+<p>We start by creating a subdirectory for our work and then launching
+Synopsys PT.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/06-synopsys-pt-pwr
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/asic/build-regincr/06-synopsys-pt-pwr
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>%<span class="w"> </span>pt_shell
+</span></code></pre></div>
+<p>We begin by setting the <code>target_library</code> and <code>link_library</code> variables as
+before.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>pt_shell&gt; set_app_var target_library &quot;$env(ECE6745_STDCELLS)/stdcells.db&quot;
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>pt_shell&gt; set_app_var link_library   &quot;* $env(ECE6745_STDCELLS)/stdcells.db&quot;
+</span></code></pre></div>
+<p>Since Synopsys PT is primarily used for static timing analysis, we need
+to explicitly tell Synopsys PT that we want to use it for power analysis.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>pt_shell&gt; set_app_var power_enable_analysis true
+</span></code></pre></div>
+<p>We now read in the gate-level netlist, tell Synopsys PT we want to do
+power analysis for the top-level module, and link the design (i.e.,
+recursively resolve all of the module references starting from the
+top-level module).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>pt_shell&gt; read_verilog   &quot;../04-cadence-innovus-pnr/post-pnr.v&quot;
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>pt_shell&gt; current_design RegIncr4stage
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a>pt_shell&gt; link_design
+</span></code></pre></div>
+<p>In order to do power analysis, Synopsys PT needs to know the clock
+period. Here we will set the clock frequency to be the same as the
+initial clock constraint.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>pt_shell&gt; create_clock clk -name ideal_clock1 -period 1
+</span></code></pre></div>
+<p>We now read in the SAIF file with the activity factors and the SPEF file
+with the parasitic cpacitances for every net in our design.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>pt_shell&gt; read_saif &quot;../05-synopsys-vcs-baglsim/waves.saif&quot; -strip_path &quot;Top/DUT&quot;
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>pt_shell&gt; read_parasitics -format spef &quot;../04-cadence-innovus-pnr/post-pnr.spef&quot;
+</span></code></pre></div>
+<p>We now have everything we need to perform the power analysis: (1) the
+activity factor of a subset set of the nets, (2) the capacitance of every
+net/port, (3) the supply voltage, and (4) the clock frequency. We use the
+<code>update_power</code> command to propagate activity factors to unannotated nest
+and to estimate the power of our design.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>pt_shell&gt; update_power
+</span></code></pre></div>
+<p>We can use the <code>report_power</code> command to show a high-level overview of
+how much power the sort unit consumes as well as how much each module in
+our design consumes.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>pt_shell&gt; report_power
+</span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>pt_shell&gt; report_power -hierarchy
+</span></code></pre></div>
+<p>Finally, we go ahead and exit Synopsys PT.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>pt_shell&gt; exit
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

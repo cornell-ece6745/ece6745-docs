@@ -1,0 +1,1729 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+      
+        <link rel="next" href="../ece6745-tut01-linux/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Tutorial 0: ECE Linux Server Remote Access - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tutorial-0-ece-linux-server-remote-access" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tutorial 0: ECE Linux Server Remote Access
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-sec01-asic-front-end/" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-select-an-ecelinux-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Select an ecelinux Server
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-connecting-to-the-cornell-vpn" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Connecting to the Cornell VPN
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-remote-access-via-powershell-or-mac-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Remote Access via PowerShell or Mac Terminal
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Remote Access via PowerShell or Mac Terminal">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-starting-powershell-or-mac-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Starting PowerShell or Mac Terminal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-logging-into-ecelinux-servers-with-powershell-or-mac-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2. Logging into ecelinux Servers with PowerShell or Mac Terminal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-troubleshooting-remote-access-via-powershell-or-mac-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3. Troubleshooting Remote Access via PowerShell or Mac Terminal
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-remote-access-via-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Remote Access via VS Code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Remote Access via VS Code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-installing-vs-code-on-your-laptopworkstation" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Installing VS Code on Your Laptop/Workstation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-starting-and-configuring-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Starting and Configuring VS Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-logging-into-ecelinux-servers-with-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Logging into ecelinux Servers with VS Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-using-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Using VS Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-troubleshooting-remote-access-via-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5. Troubleshooting Remote Access via VS Code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-remote-access-via-microsoft-remote-desktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Remote Access via Microsoft Remote Desktop
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Remote Access via Microsoft Remote Desktop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-installing-microsoft-remote-desktop-on-your-laptopworkstation" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1. Installing Microsoft Remote Desktop on Your Laptop/Workstation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-starting-and-configuring-microsoft-remote-desktop-from-windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2. Starting and Configuring Microsoft Remote Desktop from Windows
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-starting-and-configuring-microsoft-remote-desktop-from-mac-os-x" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2. Starting and Configuring Microsoft Remote Desktop from Mac OS X
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-using-microsoft-remote-desktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3. Using Microsoft Remote Desktop
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-sourcing-course-setup-script-with-auto-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Sourcing Course Setup Script with Auto Setup
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut05-asic-stdcells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut07-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut09-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut12-spice-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec01-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec02-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec03-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec04-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-select-an-ecelinux-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Select an ecelinux Server
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-connecting-to-the-cornell-vpn" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Connecting to the Cornell VPN
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-remote-access-via-powershell-or-mac-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Remote Access via PowerShell or Mac Terminal
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Remote Access via PowerShell or Mac Terminal">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-starting-powershell-or-mac-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Starting PowerShell or Mac Terminal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-logging-into-ecelinux-servers-with-powershell-or-mac-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2. Logging into ecelinux Servers with PowerShell or Mac Terminal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-troubleshooting-remote-access-via-powershell-or-mac-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3. Troubleshooting Remote Access via PowerShell or Mac Terminal
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-remote-access-via-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Remote Access via VS Code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Remote Access via VS Code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-installing-vs-code-on-your-laptopworkstation" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Installing VS Code on Your Laptop/Workstation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-starting-and-configuring-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Starting and Configuring VS Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-logging-into-ecelinux-servers-with-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Logging into ecelinux Servers with VS Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-using-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Using VS Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-troubleshooting-remote-access-via-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5. Troubleshooting Remote Access via VS Code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-remote-access-via-microsoft-remote-desktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Remote Access via Microsoft Remote Desktop
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Remote Access via Microsoft Remote Desktop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-installing-microsoft-remote-desktop-on-your-laptopworkstation" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1. Installing Microsoft Remote Desktop on Your Laptop/Workstation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-starting-and-configuring-microsoft-remote-desktop-from-windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2. Starting and Configuring Microsoft Remote Desktop from Windows
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-starting-and-configuring-microsoft-remote-desktop-from-mac-os-x" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2. Starting and Configuring Microsoft Remote Desktop from Mac OS X
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-using-microsoft-remote-desktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3. Using Microsoft Remote Desktop
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-sourcing-course-setup-script-with-auto-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Sourcing Course Setup Script with Auto Setup
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="tutorial-0-ece-linux-server-remote-access">Tutorial 0: ECE Linux Server Remote Access</h1>
+<p>All of the laboratory assignments for this course will be completed by
+remotely logging into a cluster of <code>ecelinux</code> servers. The <code>ecelinux</code>
+servers all run the Red Hat Enterprise Linux 8 operating system, and they
+all use an identical setup. You do not need to do anything special to
+create an <code>ecelinux</code> account. You will be using your NetID and Cornell
+password to login, and an <code>ecelinux</code> account will be automatically
+created for you when you first login. Any student enrolled in any ECE
+class should automatically be granted access to the <code>ecelinux</code> servers.
+Having said this, if you cannot log into the <code>ecelinux</code> servers please
+reach out to the course staff for assistance.</p>
+<p>Later tutorials will discuss how to use the Linux development environment
+and the Git distributed version control system. In this tutorial, we
+focus on how to setup remote access to the <code>ecelinux</code> servers by first
+connecting to the Cornell VPN and then using three different options to
+remotely access the <code>ecelinux</code> servers. The first remote access option is
+based on using PowerShell (for Windows OS users) or Mac Terminal (for Mac
+OS X users) and only supports primitive text-based interaction. We
+recommend using PowerShell or Mac Terminal as backup options to debug
+connection issues to the <code>ecelinux</code> servers. The second (and primary)
+remote access option recommended in this course is through Visual Studio
+Code (VS Code) which provides a very nice interface with support for
+working at the command line, graphic text editing, and graphic file
+browsing. The third remote access option is based on using Microsoft
+Remote Desktop and is required when executing a Linux application with a
+graphical user interface.</p>
+<h2 id="1-select-an-ecelinux-server">1. Select an <code>ecelinux</code> Server</h2>
+<p>It is important to keep in mind that we will use <code>ecelinux</code> as shorthand
+for the entire cluster of 25 servers. These servers are named as follows:</p>
+<ul>
+<li><code>ecelinux-01.ece.cornell.edu</code> <em>(avoid using this server!)</em></li>
+<li><code>ecelinux-02.ece.cornell.edu</code></li>
+<li><code>ecelinux-03.ece.cornell.edu</code></li>
+<li>...</li>
+<li><code>ecelinux-18.ece.cornell.edu</code></li>
+<li><code>ecelinux-19.ece.cornell.edu</code></li>
+<li><code>ecelinux-20.ece.cornell.edu</code></li>
+</ul>
+<p>At the beginning of the semester, <strong>select a server and always use that
+same server.</strong> Do not just log into <code>ecelinux.ece.cornell.edu</code>. Avoid
+using <code>ecelinux-01</code> since many students use this server by default and it
+can become overloaded. Continue to always use the same server unless you
+have trouble logging in in which case you can try switching to a
+different server.</p>
+<p>All of the <code>ecelinux</code> servers are identical. Every tool is available on
+every <code>ecelinux</code> server. All of your files are available on every
+<code>ecelinux</code> server.</p>
+<h2 id="2-connecting-to-the-cornell-vpn">2. Connecting to the Cornell VPN</h2>
+<p>If you are logging into the <code>ecelinux</code> servers from on campus (i.e.,
+using the Cornell wired or wireless network), then you do not need to
+enable the Cornell virtual private network (VPN). However, if you are off
+campus, then you will need to enable the Cornell VPN whenever you want to
+log into the <code>ecelinux</code> servers. The VPN provides very secure access to
+all on-campus network resources. More information about the Cornell VPN
+is available here:</p>
+<ul>
+<li><a href="https://it.cornell.edu/cuvpn">https://it.cornell.edu/cuvpn</a></li>
+</ul>
+<p>Simply follow the instructions at the following link to install the Cisco
+VPN software for the appropriate operating system you use on your
+laptop/workstation:</p>
+<ul>
+<li><a href="https://it.cornell.edu/landing-page-kba/2605/5273">https://it.cornell.edu/landing-page-kba/2605/5273</a></li>
+</ul>
+<p>Once the Cornell VPN is installed, then connect to the Cornell VPN by
+following these instructions and using your Cornell NetID and password:</p>
+<ul>
+<li><a href="https://it.cornell.edu/landing-page-kba/2605/823">https://it.cornell.edu/landing-page-kba/2605/823</a></li>
+</ul>
+<p>The Cornell VPN uses the Cisco Secure Client shown below.</p>
+<p><img alt="" src="../img/tut00-cornell-vpn.png" /></p>
+<h2 id="3-remote-access-via-powershell-or-mac-terminal">3. Remote Access via PowerShell or Mac Terminal</h2>
+<p>PowerShell is part of Windows OS and Mac Terminal is part of Mac OS X.
+Both enable interacting with your system from the command line (i.e., a
+powerful text-based environment where users type commands to manipulate
+files and directories and execute applications). Both also enable
+remotely accessing other systems (e.g., the <code>ecelinux</code> servers) via the
+command line using SSH, a highly secure network protocol and associated
+client/server program. Both will enable you to log into the <code>ecelinux</code>
+servers and to then manipulate files and directories and execute
+applications remotely on the <code>ecelinux</code> servers using the Linux command
+line. <strong>You must try logging in using PowerShell or Mac Terminal before
+attempting to use VS Code!</strong></p>
+<h3 id="31-starting-powershell-or-mac-terminal">3.1. Starting PowerShell or Mac Terminal</h3>
+<p>First, if you are off campus, then you must be connected to the Cornell
+VPN before attempting to use X2Go to access the <code>ecelinux</code> servers (see
+Section 1). To start PowerShell click the <em>Start</em> menu then search for
+<em>Windows PowerShell</em>. To start Mac Terminal go to your <em>Applications</em>
+folder and choose <em>Utilities &gt; Terminal</em>, or open Spotlight, type
+<em>Terminal</em>, and press enter.</p>
+<h3 id="32-logging-into-ecelinux-servers-with-powershell-or-mac-terminal">3.2. Logging into <code>ecelinux</code> Servers with PowerShell or Mac Terminal</h3>
+<p>After starting PowerShell or Mac Terminal, type in the following command
+at the prompt to log into the <code>ecelinux</code> servers using SSH.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span>ssh<span class="w"> </span>netid@ecelinux-XX.ece.cornell.edu
+</span></code></pre></div>
+<p>Replace <code>netid</code> with your Cornell NetID in the command above and replace
+<code>XX</code> with the number of <code>ecelinux</code> server you plan to use this semester.
+You should not enter the <code>%</code> character. We use the <code>%</code> character to
+indicate what commands we should enter on the command line. Executing the
+command will prompt you to enter your Cornell NetID password, and then
+you should be connected to the <code>ecelinux</code> servers.</p>
+<p>The very first time you log into the <code>ecelinux</code> servers you may see a
+warning like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>The authenticity of host ’ecelinux-XX.ece.cornell.edu (128.253.51.206)’
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>can’t be established. ECDSA key fingerprint is
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>SHA256:smwMnf9dyhs5zW5I279C5oJBrTFc5FLghIJMfBR1cxI.
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>Are you sure you want to continue connecting (yes/no)?
+</span></code></pre></div>
+<p>The very first time you log into the <code>ecelinux</code> servers it is okay to
+enter <em>yes</em>, but from then on if you continue to receive this warning
+please contact the course staff.</p>
+<p>Once you have opened a terminal, the very first thing you need to do
+after logging into the <code>ecelinux</code> servers is source the course setup
+script. This will ensure your environment is setup with everything you
+need for working on the laboratory/programming assignments. Enter the
+following command on the command line:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span></code></pre></div>
+<p>Again, you should not enter the <code>%</code> character. You should now see a blue
+<code>ECE 6745</code> in your prompt which means your environment is setup for the
+course. See the final section of this tutorial for more on how to
+automatically source the setup script every time you log into the
+<code>ecelinux</code> servers.</p>
+<p>You can log out of the <code>ecelinux</code> server with the <code>exit</code> command.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span><span class="nb">exit</span>
+</span></code></pre></div>
+<p><strong>Try logging in, sourcing the setup script, and loging out multiple
+times using PowerShell or Mac Terminal. You must make sure you can do
+this successfully before attempting to setup VS Code!</strong></p>
+<h3 id="33-troubleshooting-remote-access-via-powershell-or-mac-terminal">3.3. Troubleshooting Remote Access via PowerShell or Mac Terminal</h3>
+<p>If you cannot source the setup script it might be because you either took
+a course in a previous semester which used <code>ecelinux</code> or you are
+currently taking a course which also uses <code>ecelinux</code> <em>and</em> you modified
+your <code>.bashrc</code> to automatically source the other course's setup script.</p>
+<p>You should only source a setup script for a single course at a time. If
+you modified your <code>.bashrc</code> to source a course setup script you need to
+remove those lines from your <code>.bashrc</code>. If you are taking two courses
+which use <code>ecelinux</code> in the same semester then you should make sure <em>not</em>
+to source either setup script in your <code>.bashrc</code>. You should instead
+always source the appropriate setup script each time you log into
+<code>ecelinux</code> for whatever course you are currently working on.</p>
+<p>You can use the simple <code>nano</code> text editor to edit your <code>.bashrc</code> like
+this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>%<span class="w"> </span>nano<span class="w"> </span>.bashrc
+</span></code></pre></div>
+<p>Notice that the editor specifies most of the useful commands at the
+bottom of the terminal screen. The symbol <code>\^</code> indicates the <code>CONTROL</code>
+key. To type any text you want, just move the cursor to the required
+position and use the keyboard. To save your changes press <code>CONTROL+O1
+(i.e., press the</code>CONTROL1 key and the <code>O1 key at the same time) and
+press the</code><ENTER>1 key after specifying the filename you want to save
+to. You can quit by pressing <code>CONTROL+X1. Use</code>CONTROL+G1 for help.</p>
+<p><img alt="" src="../img/tut00-nano.png#border" /></p>
+<p>Delete every line which sets up <code>ecelinux</code> for any course. A pristine
+<code>.bashrc</code> should look like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>if [ -f /etc/bashrc ]; then
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  . /etc/bashrc
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>fi
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>if ! [[ &quot;$PATH&quot; =~ &quot;$HOME/.local/bin:$HOME/bin:&quot; ]]
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>then
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    PATH=&quot;$HOME/.local/bin:$HOME/bin:$PATH&quot;
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>fi
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>export PATH
+</span></code></pre></div>
+<p><strong>Log out, log in, source the setup script, and log out multiple times
+using PowerShell or Mac Terminal. You must make sure you can do this
+successfully before attempting to setup VS Code!</strong></p>
+<h2 id="4-remote-access-via-vs-code">4. Remote Access via VS Code</h2>
+<p>While it is possible to use simple text editors directly within
+PowerShell or Mac Terminal, it is not the most productive development
+setup. We strongly recommend using VS Code as your primary remote access
+option for code development. VS Code offers a nice balance of productive
+features while also working well with moderate internet speeds.</p>
+<p>VS Code uses a unique approach where the GUI interface runs completely on
+your local laptop/workshop and then automatically handles copying files
+back and forth between your local laptop/workshop and the <code>ecelinux</code>
+servers. VS Code is portable across many operating systems and has a
+thriving ecosystem of extensions and plugins enabling it to function as a
+full-featured IDE for languages from C to Javascript. More information
+about VS Code is here:</p>
+<ul>
+<li><a href="https://code.visualstudio.com">https://code.visualstudio.com</a></li>
+<li><a href="https://code.visualstudio.com/docs">https://code.visualstudio.com/docs</a></li>
+</ul>
+<h3 id="41-installing-vs-code-on-your-laptopworkstation">4.1. Installing VS Code on Your Laptop/Workstation</h3>
+<p>You can download VS Code by simply going to the main VS Code webpage:</p>
+<ul>
+<li><a href="https://code.visualstudio.com">https://code.visualstudio.com</a></li>
+</ul>
+<p>There should be an obvious link that says <code>Download for Windows'' or</code>Download for MacOS''. Click on that link. On Mac OS X, you will need to
+drag the corresponding <em>Visual Student Code.app</em> to your <em>Applications</em>
+folder.</p>
+<h3 id="42-starting-and-configuring-vs-code">4.2. Starting and Configuring VS Code</h3>
+<p>First, if you are off campus, then you must be connected to the Cornell
+VPN before attempting to use VS Code to access the <code>ecelinux</code> servers
+(see Section 1). Start by opening VS Code. The exact way you do this will
+depend on whether you are using a Windows OS or Mac OS X
+laptop/workstation.</p>
+<p>The key to VS Code is installing the correct extensions. You will need
+extensions for the Verilog hardware description language (HDL), the
+Python programming language, and the C/C++ programming language. We also
+want to install a special extension which will enable remotely accessing
+the <code>ecelinux</code> servers using SSH. Choose <em>View &gt; Extensions</em> from the
+menubar. Enter the name of the extension in the ``Search Extensions in
+Marketplace'' and then click the blue \IT{Install} button. Here are the
+names of the extensions to install:</p>
+<ul>
+<li>Remote - SSH (use the one from Microsoft)</li>
+<li>Verilog (use the one from Masahiro Hiramori)</li>
+<li>Python (use the one from Microsoft)</li>
+<li>C/C++ (use the one from Microsoft)</li>
+<li>Surfer (use the one from surfer-project)</li>
+</ul>
+<p><img alt="" src="../img/tut00-vscode-remote-ssh.png" /></p>
+<p><img alt="" src="../img/tut00-vscode-verilog.png" /></p>
+<p><img alt="" src="../img/tut00-vscode-python.png" /></p>
+<p><img alt="" src="../img/tut00-vscode-cpp.png" /></p>
+<p><img alt="" src="../img/tut00-vscode-surfer.png" /></p>
+<h3 id="43-logging-into-ecelinux-servers-with-vs-code">4.3. Logging into <code>ecelinux</code> Servers with VS Code</h3>
+<p>After starting VS Code, choose <em>View &gt; Command Palette</em> from the menubar.
+Enter the following command in the command palette:</p>
+<div class="language-text highlight"><pre><span></span><code>Remote-SSH: Connect Current Window to Host...
+</code></pre></div>
+<p>Do not use <em>Remote-SSH: Add new SSH host...</em> and do not use <em>Connect to
+Host</em>. Use <em>Remote-SSH: Connect Current Window to Host...</em></p>
+<p>VS Code will then ask you to <em>Select configured SSH host or enter
+user@host</em>, and you should enter the following:</p>
+<div class="language-text highlight"><pre><span></span><code>netid@ecelinux-XX.ece.cornell.edu
+</code></pre></div>
+<p>Replace <code>netid</code> with your Cornell NetID in the command above and replace
+<code>XX</code> with the number of <code>ecelinux</code> server you plan to use this semester.
+If you are on a Windows OS laptop/workstation, then you may see a pop-up
+which stays that the <em>Windows Defender Firewall as blocked some features
+of this app</em>. This is not a problem. Simply click <em>Cancel</em>.</p>
+<p>You might also see a drop down which asks you to choose the operating
+system of the remote server with options like <em>Linux</em> and <em>Windows</em>.
+Choose <em>Linux</em>.</p>
+<p>Finally, the very first time you log into the <code>ecelinux</code> servers you
+may see a warning like this:</p>
+<div class="language-text highlight"><pre><span></span><code>&quot;ecelinux-XX.ece.cornell.edu&quot; has fingerprint
+&quot;SHA256:YCh2FiadeTXEzuSkC0AOdglBgPciwc8WvcCPncvr2Fs&quot;
+Are you sure you want to continue?
+Continue
+Cancel
+</code></pre></div>
+<p>The very first time you log into the <code>ecelinux</code> servers it is okay to
+enter <em>yes</em>, but from then on if you continue to receive this warning
+please contact the course staff.</p>
+<p>Hopefully, VS Code will now prompt you to enter your Cornell NetID
+password, and then you should be connected to the <code>ecelinux</code> servers.</p>
+<p>Also the very first time you log into the <code>ecelinux</code> servers you will see
+a pop up dialog box in the lower right-hand corner which says <em>Setting up
+SSH host ecelinux-XX.ece.cornell.edu (details) Initializing...</em>. It might
+take up to a minute for everything to be setup; please be patient! Once
+the pop up dialog box goes away and you see <em>SSH:
+ecelinux-XX.ece.cornell.edu</em> in the lower left-hand corner of VS Code
+then you know you are connected to the <code>ecelinux</code> servers.</p>
+<p>The final step is to make sure your extensions for the Verilog HDL are
+also installed on the server. Choose <em>View &gt; Extensions</em> from the
+menubar. Use the "Search Extensions in Marketplace" to search for the
+same extensions that we installed earlier. Instead of saying <em>Install</em> it
+should now say <em>Install in SSH: ecelinux-XX.ece.cornell.edu</em>. Install the
+extensions on the <code>ecelinux</code> servers. You only need to do this once, and
+then next time this extension will already be installed on the <code>ecelinux</code>
+servers.</p>
+<h3 id="44-using-vs-code">4.4. Using VS Code</h3>
+<p>VS Code includes an integrated file explorer which makes it very
+productive to browse and open files. Choose <em>View &gt; Explorer</em> from the
+menubar, and then click on <em>Open Folder</em>. VS Code will then ask you to
+<em>Open File Or Folder</em> with a default of <code>/home/netid</code>. Click <em>OK</em>.</p>
+<p>You might see a pop-up which asks you <em>Do you trust the authors of the
+files in this folder?</em> Since you will only be browsing your own files
+on the <code>ecelinux</code> server, it is fine to choose <em>Yes, I trust the
+authors</em>.</p>
+<p>This will reload VS Code, and you should now you will see a file explore
+in the left sidebar. You can easily browse your directory hierarchy, open
+files by clicking on them, create new files, and delete files.</p>
+<p>VS Code includes an integrated terminal which will give you access to the
+Linux command line on the <code>ecelinux</code> servers. Choose <em>Terminal &gt; New
+Terminal</em> from the menubar. You should see the same kind of Linux command
+line prompt that you saw when using either PowerShell or Mac Terminal.</p>
+<p>If you see a course number for a course other than ECE 6745 in your
+prompt, then stop! This means you likely have sourced the setup script
+for a different course. You must fix this before you can work on this
+course. Exit VS Code, follow the instructions in Section 2.3, and then
+try connecting with VS Code again.</p>
+<p>The very first thing you need to do after logging into the <code>ecelinux</code>
+servers is source the setup script for this course. This will ensure your
+environment is setup with everything you need for working on the
+laboratory/programming assignments. Enter the following command on the
+command line:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span></code></pre></div>
+<p>Again, you should not enter the <code>%</code> character. You should now see a blue
+<code>ECE 6745</code> in your prompt which means your environment is setup for the
+course. See the final section of this tutorial for more on how to
+automatically source the setup script every time you log into the
+<code>ecelinux</code> servers.</p>
+<p>To experiment with VS Code, we will first grab a text file using the
+<code>wget</code> command. The next tutorial discusses this command in more detail.
+Type the following command in the VS Code integrated terminal.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span>wget<span class="w"> </span>http://www.csl.cornell.edu/courses/ece6745/overview.txt
+</span></code></pre></div>
+<p>You can open a file in the integrated text editor using the <code>code</code>
+command like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span>code<span class="w"> </span>overview.txt
+</span></code></pre></div>
+<p>The following figure shows what VS Code should look like if you have
+sourced the course setup script and opened the <code>overview.txt</code> file.
+Notice how the <code>overview.txt</code> file opened in a new tab at the top and the
+terminal remains at the bottom. This enables you to have easy access to
+editing files and the Linux command line at the same time.</p>
+<p><img alt="" src="../img/tut00-vscode-connected.png" /></p>
+<h3 id="45-troubleshooting-remote-access-via-vs-code">4.5. Troubleshooting Remote Access via VS Code</h3>
+<p>There may be issues where sometimes VS Code just keeps asking you for
+your password or VS Code just hangs when you try and connect to the
+<code>ecelinux</code> servers. This might mean VS Code is getting wedged. You can
+definitely ask the course staff to help, but you can also try to fix it
+on your own.</p>
+<p>One thing to try is to kill the VS Code server on the host.
+Choose <em>View &gt; Command Palette</em> from the menubar. Enter the following
+command in the command palette:</p>
+<div class="language-text highlight"><pre><span></span><code>Remote-SSH: Kill VS Code Server on Host...
+</code></pre></div>
+<p>Another thing to try is to delete the <code>.vscode-server</code> directory on the
+sever. Of course, how can you delete this directory if you cannot use VS
+Code to access the <code>ecelinux</code> servers? You can use PowerShell or Mac
+Terminal to log into the <code>ecelinux</code> servers (see Section 2).</p>
+<p>Once you have gained access to the Linux command line on the
+<code>ecelinux</code> servers using either PowerShell or Mac Terminal, then you
+can delete the <code>.vscode-server</code> directory like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>.vscode-server
+</span></code></pre></div>
+<p>Be very careful with the <code>rm</code> command since it can permanently delete
+files!</p>
+<p>VS Code can sometimes "cache" your <code>.bashrc</code>. This means if you modfiy
+your <code>.bashrc</code>, log out, and log back in the changes to your <code>.bashrc</code>
+will not be reflected. If you modify your <code>.bashrc</code> we recommend: (1)
+using <em>Remote-SSH: Kill VS Code Server on Host...</em> as described above;
+(2) close all instances of VS Code; (3) either use PowerShell or Mac
+Terminal to remove the <code>.vscode-server</code> directory as described above; and
+(4) reconnect VS Code to <code>ecelinux</code>.</p>
+<p>Sometimes VS Code can take a very long time to save a file. This is
+usually because VS Code is trying to auto-format the file on the
+<code>ecelinux</code> servers. To turn off auto-formatting, open the VS Code
+settings menu. On Windows OS, choose <em>File &gt; Preferences &gt; Settings</em> from
+the menubar. On Mac OS X, choose <em>Code &gt; Preferences &gt; Settings</em> from the
+menubar. Click on <em>Text Editor</em> and then <em>Formatting</em>. Make sure <em>Format
+On Save</em> is not checked.</p>
+<h2 id="6-remote-access-via-microsoft-remote-desktop">6. Remote Access via Microsoft Remote Desktop</h2>
+<p>We will primarily use VS Code for working at the terminal, developing our
+hardware, and debugging our designs. However, we need to use a different
+remote accesss option if we want to run a Linux application which has a
+graphical user interface (GUI). We will be using the Microsoft Remote
+Desktop application to log into the <code>ecelinux</code> servers to provide us a
+"virtual desktop" which we can then use to interact with Linux GUI
+applications.</p>
+<h3 id="61-installing-microsoft-remote-desktop-on-your-laptopworkstation">6.1. Installing Microsoft Remote Desktop on Your Laptop/Workstation</h3>
+<p>Start by installing the Microsoft Remote Desktop application. On Windows,
+simply use the <em>Start Menu</em> to search for <em>Microsoft Remote Desktop</em>. On
+Mac OS X, download Microsoft Remote Desktop from the App Store:</p>
+<ul>
+<li><a href="https://apps.apple.com/us/app/windows-app/id1295203466">https://apps.apple.com/us/app/windows-app/id1295203466</a></li>
+</ul>
+<h3 id="62-starting-and-configuring-microsoft-remote-desktop-from-windows">6.2. Starting and Configuring Microsoft Remote Desktop from Windows</h3>
+<p>Start Microsoft Remote Desktop. <strong>For the <em>Computer</em> you must choose the
+same <code>ecelinux</code> server you selected in Section 1; do <em>not</em> just use
+<code>ecelinux.ece.cornell.edu</code>.</strong> Then click on <em>Connect</em>. You may see a
+message like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>The remote computer could not be authenticated due to problems with its
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>security certificate. It may be unsafe to proceed.
+</span></code></pre></div>
+<p>If you see this message then take the following steps:</p>
+<ul>
+<li>Click <em>Don't ask me again for connections to this computer</em></li>
+<li>Click <em>Yes</em></li>
+</ul>
+<p>This should launch a "virtual desktop" on <code>ecelinux</code>. You will need to
+enter your NetID and password in the xrdp login.</p>
+<h3 id="62-starting-and-configuring-microsoft-remote-desktop-from-mac-os-x">6.2. Starting and Configuring Microsoft Remote Desktop from Mac OS X</h3>
+<p>Start Microsoft Remote Desktop and <em>Connections &gt; Add PC</em> from the menu.
+<strong>For the hostname you must choose the same <code>ecelinux</code> server you
+selected in Section 1; do <em>not</em> just use <code>ecelinux.ece.cornell.edu</code>.</strong>
+Then user the following setup</p>
+<ul>
+<li>Click the <em>User Account</em> drop down and choose <em>Add User Account</em><ul>
+<li>Username: <code>netid@cornell.edu</code> (must have <code>@cornell.edu</code> at end!)</li>
+<li>Password: NetID password</li>
+</ul>
+</li>
+<li><em>Display</em> tab<ul>
+<li>Uncheck <em>Start session in full screen</em></li>
+</ul>
+</li>
+<li><em>Devices &amp; Audio</em> tab<ul>
+<li>Uncheck <em>Printers</em> and <em>Smart cards</em></li>
+</ul>
+</li>
+<li>Click <em>Save</em></li>
+</ul>
+<p>To log into <code>ecelinux</code> double click on the corresponding entry in
+Microsoft Remote Desktop. You may see a message like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Your are connecting to the RDP host ... The certificate couldn&#39;t be
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>verified back to a root certificate. Your connection may not be
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>secure. Do you want to continue?
+</span></code></pre></div>
+<p>If you see this message then take the following steps:</p>
+<ul>
+<li>Click <em>Show Certificate</em></li>
+<li>Click <em>Always trutst XRDP when connecting ...</em></li>
+<li>Click <em>Continue</em></li>
+</ul>
+<p>This should launch a "virtual desktop" on <code>ecelinux</code>.</p>
+<h3 id="63-using-microsoft-remote-desktop">6.3. Using Microsoft Remote Desktop</h3>
+<p>To use Linux GUI Applications you need to source another setup script in
+your VS Code terminal like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span></code></pre></div>
+<p>If you see an error that the script cannot find a running instance of
+Xvnc this means you have not connected to your selected <code>ecelinux</code> server
+using Microsoft Remote Desktop. You cannot source <code>setup-gui.sh</code> in your
+<code>.bashrc</code>. It will not work.</p>
+<p>Assuming there are no errors, you can now try starting a Linux GUI
+application. Try running the <code>xclock</code> program in your VS Code terminal.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span>xclock
+</span></code></pre></div>
+<p>You should see an analog clock pop up in Microsoft Remote Desktop. Close
+the analog clock window.</p>
+<p><img alt="" src="../img/tut00-xrdp.png" /></p>
+<h2 id="7-sourcing-course-setup-script-with-auto-setup">7. Sourcing Course Setup Script with Auto Setup</h2>
+<p>The previous sections have demonstrated how to remotely access the
+<code>ecelinux</code> servers, get to the Linux command line, and source the course
+setup script. <em>Again, you must source the course setup script before
+doing any work related to this course!</em> The course setup script
+configures everything so you have the right environment to work on the
+laboratory/programming assignments.</p>
+<p>Since it can be tedious to always remember to source the course setup
+script, you can also use auto setup which will automatically source the
+course setup for you when you open a terminal. <strong>Note that you should
+only do this if ECE 6745 is the only course you are taking this semester
+which is using <code>ecelinux</code>!</strong> If you are taking more than one course which
+is using <code>ecelinux</code>, then you will need to manually source the setup
+script when you are working on this course. Enter the following command
+on the command line to use auto setup:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="w"> </span>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh<span class="w"> </span>--enable-auto-setup
+</span></code></pre></div>
+<p>Then you must kill the VS Code server on the host. Choose <em>View &gt; Command
+Palette</em> from the menubar. Enter the following command in the command
+palette:</p>
+<div class="language-text highlight"><pre><span></span><code>Remote-SSH: Kill VS Code Server on Host...
+</code></pre></div>
+<p>Then connect again by choosing <em>View &gt; Command Palette</em> from the menubar.
+Enter the following command in the command palette:</p>
+<div class="language-text highlight"><pre><span></span><code>Remote-SSH: Connect Current Window to Host...
+</code></pre></div>
+<p>You should see <code>ECE 6745</code> in the prompt meaning your environment is
+automatically setup for the course. If at anytime you need to disable
+auto setup you can use the following command:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="w"> </span>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh<span class="w"> </span>--disable-auto-setup
+</span></code></pre></div>
+<p>Again, if for any reason running the setup script prevents you from using
+tools for another course, you cannot use the auto setup. You will need to
+run the setup script manually every time you want to work on a
+laboratory/programming assignment for this course.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

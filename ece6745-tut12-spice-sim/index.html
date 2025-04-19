@@ -1,0 +1,1575 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-tut10-sram/">
+      
+      
+        <link rel="next" href="../ece6745-tut13-dw/">
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Tutorial 12: SPICE Simulation - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-tutorial-9-spice-simulation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tutorial 12: SPICE Simulation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-sec01-asic-front-end/" class="md-tabs__link">
+          
+  
+  
+  Sections
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 0: ECE Linux Server Remote Access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 1: Linux Development Environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 2: Git Distributed Version Control System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut05-asic-stdcells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 5: ASIC Standard Cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut06-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 6: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut07-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 7: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut08-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 8: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut09-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 9: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut10-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 10: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 12: SPICE Simulation
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-simulating-an-nmos-discharging-a-load-capacitance" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Simulating an NMOS Discharging a Load Capacitance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-simulating-an-nmos-charging-a-load-capacitance" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Simulating an NMOS Charging a Load Capacitance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-simulating-simple-logic-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Simulating Simple Logic Gates
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-simulating-standard-cells" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Simulating Standard Cells
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-to-do-on-your-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. To Do On Your Own
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut13-dw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial 13: DesignWare and Retiming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sections
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Sections
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec01-asic-front-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 1: ASIC Front-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec02-asic-back-end/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 2: ASIC Back-End Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec03-asic-auto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 3: ASIC Automated Flow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec04-xcel-rtl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 4: TinyRV2 Accelerator RTL Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-sec05-sram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Section 5: SRAM Generators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-simulating-an-nmos-discharging-a-load-capacitance" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Simulating an NMOS Discharging a Load Capacitance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-simulating-an-nmos-charging-a-load-capacitance" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Simulating an NMOS Charging a Load Capacitance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-simulating-simple-logic-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Simulating Simple Logic Gates
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-simulating-standard-cells" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Simulating Standard Cells
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-to-do-on-your-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. To Do On Your Own
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-tutorial-9-spice-simulation">ECE 6745 Tutorial 9: SPICE Simulation</h1>
+<p>ngspice is an open-source SPICE simulator for electrical circuits. We
+can use it to try out some circuit simulations as we go through the
+semester. In this tutorial, we will start by exploring two simple
+circuits: an NMOS transistor discharging a load capacitance and an NMOS
+transistor charging a load capacitance. We can use ngspice to simulate
+these two scenarios and plot the voltages on various nets. We will then
+simulate simple logic gates constructed explicitly using transistors,
+before simulating a few gates from a standard cell library.</p>
+<p>ngspice takes as input a <em>SPICE deck</em>. This is a text file which
+describes the circuit you want to simulate along with what kind of
+analysis you would like to perform on your circuit. You can learn more
+about SPICE decks in Chapter 8 of Weste &amp; Harris. You can also look at
+the ngspice documentation:</p>
+<ul>
+<li><a href="http://ngspice.sourceforge.net/docs/ngspice-34-manual.pdf">http://ngspice.sourceforge.net/docs/ngspice-34-manual.pdf</a></li>
+</ul>
+<p>The first step is to source the setup script, clone this repository from
+GitHub, and define an environment variable to keep track of the top
+directory for the project.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/ece6745-tut12-spice<span class="w"> </span>tut12
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tut12
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span><span class="nv">TOPDIR</span><span class="o">=</span><span class="nv">$PWD</span>
+</span></code></pre></div>
+<h2 id="1-simulating-an-nmos-discharging-a-load-capacitance">1. Simulating an NMOS Discharging a Load Capacitance</h2>
+<p>Here is a simple SPICE deck for the first scenario where we have an NMOS
+transistor discharging a load capacitance.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>* MMOS Discharging Capacitor
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>* ========================================================================
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>* Parameters and Models
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>* ------------------------------------------------------------------------
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>.param VDD=&#39;1.1V&#39;
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>.temp  25
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>.inc   &quot;/classes/ece6745/install/adk-pkgs/freepdk-45nm/stdview/pdk-models.sp&quot;
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>* Supply Voltage Source
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>* ------------------------------------------------------------------------
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>Vdd vdd gnd VDD
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>* Transistors
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>* ------------------------------------------------------------------------
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>*  src  gate drain body type
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>M1 gnd  in   out   gnd  NMOS_VTL W=0.450um L=0.045um
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>* Output Load
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>* ------------------------------------------------------------------------
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>Cload out gnd 7fF
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>* Input Signals
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>* ------------------------------------------------------------------------
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>Vin in gnd pwl( 0ns 0V 0.5ns 0V 0.7ns VDD )
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>* Analysis
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>* ------------------------------------------------------------------------
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>.ic   V(out)=VDD
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>.tran 0.01ns 2.5ns
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>.control
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>run
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>set color0=white
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>set color1=black
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>set xbrushwidth=2
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>plot V(in) V(out)
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>.endc
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>.end
+</span></code></pre></div>
+<p>The first line in the SPICE deck must be a comment. Comments start with
+an asterisk. Let's discuss each part. The first part sets up parameters
+and models:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>.param VDD=&#39;1.1V&#39;
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>.temp  25
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>.inc   &quot;/classes/ece6745/install/adk-pkgs/freepdk-45nm/stdview/pdk-models.sp&quot;
+</span></code></pre></div>
+<p>We create a constant named VDD which is the supply voltage we want to use
+in our circuit. Note that VDD is -not- a voltage source or a node in our
+circuit. It is just a constant. We set the temperature we want to use for
+the simulation. Finally, we include the model files associated with the
+technology we want to use. We will be using the FreePDK 45nm technology
+in the labs/projects, so here we are including the transistor models from
+that technology.</p>
+<p>The next part instantiates a supply voltage source:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Vdd vdd gnd VDD
+</span></code></pre></div>
+<p>SPICE decks have this weird thing where the very first character of a
+line indicates the type of circuit element you want to instantiate. The
+book gives many more examples. If the first character is a <code>V</code> then it is
+a voltage source. So here we are creating a voltage source between two
+nodes named <code>vdd</code> and <code>gnd</code>. Other examples include <code>R</code> for resistor, <code>C</code>
+for capacitor, <code>M</code> for MOSFET transistor, <code>A</code> for models with special
+code, and <code>X</code> for subcircuits. Note that SPICE decks are case sensitive.
+The voltage source is a constant 1.1V. We just use the constant <code>VDD</code> so
+we can set the supply voltage in one place at the top of the deck.</p>
+<p>The next part instantiates a transistor:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>*  src   gate drain body type
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>M1 gnd   in   out   gnd  NMOS_VTL W=0.450um L=0.045um
+</span></code></pre></div>
+<p>The first letter is an <code>M</code> which means MOSFET. We specify nodes for the
+source, gate, drain, and body. We also indicate whether this is an NMOS
+or PMOS and the width and length in micron. This is a 45nm technology, so
+we use the minimum transistor length of 45nm (0.045um). If we look at our
+Nangate standard cell library for a INV_X1 we can see that the NMOS has a
+width of about 10x the length, so for we make the NMOS width to be
+0.450um. So the above example creates a "minimum" sized NMOS transistor,
+where "minimum" means the NMOS we will be using in a minimum sized
+inverter.</p>
+<p>The next part instantiates an output load:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Cload out gnd 7fF
+</span></code></pre></div>
+<p>The first letter is a <code>C</code> which means capacitor. We specify the positive
+and negative terminals and the capacitance. An INV_X4 inverter has an
+input cap of 6.25fF so we round up to 7fF as a reasonable output load.</p>
+<p>The next part instantiates another voltage source, but this source will
+be used for the input signal:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Vin in gnd pwl( 0ns 0V 0.5ns 0V 0.7ns 1.1V )
+</span></code></pre></div>
+<p>Here we can use <code>pwl</code> to create a piece-wise-linear voltage signal.</p>
+<p>The final part specifies what analysis we want to do:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>.ic   V(out)=VDD
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>.tran 0.01ns 2.5ns
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>.control
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>run
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>set color0=white
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>set color1=black
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>set xbrushwidth=2
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>plot V(in) V(out)
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>.endc
+</span></code></pre></div>
+<p>So the <code>.ic</code> line sets an initial condition. Here we want to make sure
+the output node is initially charged up. The <code>.tran</code> line specifies that
+we want to do transient analysis for 2.5ns in 0.01ns timesteps. The
+<code>.control</code>/<code>.endc</code> block is a set of interactive commands which run the
+simulation and then plot the results.</p>
+<p>Now let's run the simulation using ngspice:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>ngspice<span class="w"> </span>nmos-discharge-cap-sim.sp
+</span></code></pre></div>
+<p>Note that if we use ngspice to display plots, then it is a Linux GUI
+application so you will need to use Microsoft Remote Desktop. A little
+plot should pop up that looks like the following. This plot clearly shows
+Vin going from 0V to 1.1V and Vout going from 1.1V to 0V. Everything is
+"full rail".</p>
+<p><img alt="" src="../img/tut12-nmos-discharge-cap.png" /></p>
+<p><strong>To Do On Your Own:</strong> Increase the load capacitance by 10x and then 100x
+and observe the impact on the time to discharge the capacitor.</p>
+<h2 id="2-simulating-an-nmos-charging-a-load-capacitance">2. Simulating an NMOS Charging a Load Capacitance</h2>
+<p>Now let's try a similar experiment except this time we are going to use
+the NMOS transistor to charge up an output load. Here is the
+corresponding spice deck:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>* MMOS Charging Capacitor
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>* ========================================================================
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>* Parameters and Models
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>* ------------------------------------------------------------------------
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>.param VDD=&#39;1.1V&#39;
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>.temp  25
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>.inc   &quot;/classes/ece6745/install/adk-pkgs/freepdk-45nm/stdview/pdk-models.sp&quot;
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>* Supply Voltage Source
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>* ------------------------------------------------------------------------
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>Vdd vdd gnd VDD
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>* Transistors
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>* ------------------------------------------------------------------------
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>*  src  gate drain body type
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>M1 vdd  in   out   gnd  NMOS_VTL W=0.450um L=0.045um
+</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>
+</span><span id="__span-9-22"><a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>* Output Load
+</span><span id="__span-9-23"><a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>* ------------------------------------------------------------------------
+</span><span id="__span-9-24"><a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>
+</span><span id="__span-9-25"><a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>CLoad out gnd 7fF
+</span><span id="__span-9-26"><a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>
+</span><span id="__span-9-27"><a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a>* Input Signals
+</span><span id="__span-9-28"><a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a>* ------------------------------------------------------------------------
+</span><span id="__span-9-29"><a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a>
+</span><span id="__span-9-30"><a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a>Vin in gnd pwl( 0ns 0V 0.5ns 0V 0.7ns VDD )
+</span><span id="__span-9-31"><a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a>
+</span><span id="__span-9-32"><a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a>* Analysis
+</span><span id="__span-9-33"><a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a>* ------------------------------------------------------------------------
+</span><span id="__span-9-34"><a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a>
+</span><span id="__span-9-35"><a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a>.ic   V(out)=0V
+</span><span id="__span-9-36"><a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a>.tran 0.01ns 2.5ns
+</span><span id="__span-9-37"><a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a>
+</span><span id="__span-9-38"><a id="__codelineno-9-38" name="__codelineno-9-38" href="#__codelineno-9-38"></a>.control
+</span><span id="__span-9-39"><a id="__codelineno-9-39" name="__codelineno-9-39" href="#__codelineno-9-39"></a>run
+</span><span id="__span-9-40"><a id="__codelineno-9-40" name="__codelineno-9-40" href="#__codelineno-9-40"></a>set color0=white
+</span><span id="__span-9-41"><a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a>set color1=black
+</span><span id="__span-9-42"><a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a>set xbrushwidth=2
+</span><span id="__span-9-43"><a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a>plot V(in) V(out) V(in)-V(out) V(vdd)-V(out)
+</span><span id="__span-9-44"><a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a>.endc
+</span><span id="__span-9-45"><a id="__codelineno-9-45" name="__codelineno-9-45" href="#__codelineno-9-45"></a>
+</span><span id="__span-9-46"><a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a>.end
+</span></code></pre></div>
+<p>This is similar to what we had above except now the source of the NMOS
+transistor is connected to vdd, and we set the initial condition such
+that the output load is initially discharged. Now let's run the
+simulation using ngspice:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>%<span class="w"> </span>ngspice<span class="w"> </span>nmos-charge-cap-sim.sp
+</span></code></pre></div>
+<p>A little plot should pop up that looks like the following. This plot
+shows things are not working as well! Vin obviously goes from 0V to 1.1V,
+but Vout goes from 0V and then starts to level off around 0.8V. It never
+reaches 1.1V. Why? Well, we are also plotting Vgs (this is the organize
+line, it is V(in)-V(out)). You can see that Vgs goes up but then starts
+to go down because Vout is increasing! The transistor starts to turn off
+an this prevents us from fully charging up Vout. Notice that Vout is
+still slowly increasing ... this is probably due to some second order
+effect like leakage or more likely that the NMOS is not 100% off since
+Vgs is right around the threshold voltage.</p>
+<p><img alt="" src="../img/tut12-nmos-charge-cap.png" /></p>
+<p><strong>To Do On Your Own:</strong> Increase the load capacitance by 10x and then 100x
+and observe the impact on the time to discharge the capacitor.</p>
+<h2 id="3-simulating-simple-logic-gates">3. Simulating Simple Logic Gates</h2>
+<p>Let's experiment with some simple logic gates. Take a look at the SPICE
+deck in <code>inv-sim.sp</code> which contains the canonical minimum sized inverter:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>*  src  gate drain body type
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>M1 vdd  in   out   vdd  PMOS_VTL W=0.900um L=0.045um
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>M2 gnd  in   out   gnd  NMOS_VTL W=0.450um L=0.045um
+</span></code></pre></div>
+<p>Notice how the PMOS transistor is sized to be twice the size of the
+minimum-sized NMOS transistor. We can use a more complicated piece-wise
+linear voltage source to toggle the input to the inverter:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Vin in gnd pwl
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>+ (
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>+   0.0ns  0V
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>+   0.4ns  0V
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>+   0.6ns VDD
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>+   0.9ns VDD
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>+   1.1ns VDD
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>+   1.4ns VDD
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>+   1.6ns  0V
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>+   1.9ns  0V
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>+ )
+</span></code></pre></div>
+<p>We can use <code>+</code> to continue a long line SPICE command across multiple
+lines in the SPICE deck. Here we have formatted the piece-wise linear
+voltage source to look a little like a table. The input is low for 0.5ns,
+then goes high for 1ns, and then goes low again for 0.5ns. Our SPICE deck
+also includes some measurement commands:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>.measure tran tpdr trig v(in) val=&#39;VDD/2&#39; fall=1 targ v(out) val=&#39;VDD/2&#39; rise=1
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>.measure tran tpdf trig v(in) val=&#39;VDD/2&#39; rise=1 targ v(out) val=&#39;VDD/2&#39; fall=1
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>.measure tran tpd param=&#39;(tpdr+tpdf)/2&#39;
+</span></code></pre></div>
+<p>The ngspice manual explains measurement commands in more detail. Briefly,
+the first command measures the propagation delay for a low-to-high output
+transition, and the second command measures the propagation delay for a
+high-to-low output transition. These delays are measured from when the
+input is VDD/2 to when the output is VDD/2. The third measurement command
+uses the average of these two propagation delays to estimate the overall
+propagation delay of the inverter. Chapter 8 of Weste &amp; Harris discusses
+in more detail how to effectively characterize various CMOS circuits. Now
+let's run the simulation using ngspice:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>%<span class="w"> </span>ngspice<span class="w"> </span>inv-sim.sp
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>...
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nv">tpdr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>.037703e-11<span class="w"> </span><span class="nv">targ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>.510377e-09<span class="w"> </span><span class="nv">trig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>.500000e-09
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nv">tpdf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>.409571e-11<span class="w"> </span><span class="nv">targ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>.240957e-10<span class="w"> </span><span class="nv">trig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>.000000e-10
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="nv">tpd</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>.72364e-11
+</span></code></pre></div>
+<p>A little plot should pop up that shows the input and output voltages, and
+the measurement results will be displayed in the terminal. The
+propagation delay is approximately 17.2ps.</p>
+<p><strong>To Do On Your Own:</strong> Increase the load capacitance by 10x and then 100x
+and observe the impact on the propagation delay. Make sure you look at
+the actual waveforms to see if the output has time to go full rail. If
+not, you need to increase the time between input transitions to make an
+accurate estimate of the propagation delay.</p>
+<p>Let's dig a little deeper. Notice that the rise time is not equal to the
+fall time for our inverter. The rise time is 10.4ps but the fall time is
+24.1ps. We have made the PMOS twice the width of the NMOS (i.e., the PMOS
+is 900nm wide while the NMOS is 450nm wide), so why aren't the rise and
+fall times equal? Part of the reason is the PMOS mobility is not exactly
+half the NMOS mobility in this technology as well as many other second
+order effects. Change the size of PMOS so it is only 1.5x as large as the
+NMOS like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>*  src  gate drain body type
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>M1 vdd  in   out   vdd  PMOS_VTL W=0.675um L=0.045um
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>M2 gnd  in   out   gnd  NMOS_VTL W=0.450um L=0.045um
+</span></code></pre></div>
+<p>Rerun the simulation:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>% cd $TOPDIR/sim
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>% ngspice inv-sim.sp
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>...
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>tpdr = 1.940778e-11 targ = 2.019408e-09 trig = 2.000000e-09
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>tpdf = 1.812324e-11 targ = 1.018123e-09 trig = 1.000000e-09
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>tpd  = 1.87655e-11
+</span></code></pre></div>
+<p>You can now see the rise and fall times are much closer to being equal.
+Of course this begs the question, "Why is it important to have equal rise
+and fall times?". To some degree this is a design decision. It is
+certainly possible to have unequal rise and fall times, and indeed this
+can also often lead to better area/power or enabling making a critical
+transition faster (at the expense of the other transition). However, the
+largest motivation for equal rise and fall times is that it maximizes the
+noise margins. To understand this, let's use ngspice to analyze the DC
+transfer curve of an inverter. Take a look at the SPICE deck in
+<code>inv-sim-xfer.sp</code> which contains the same canonical minimum sized
+inverter but with DC instead of transient analysis:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>.dc Vin 0 &#39;VDD&#39; 0.01
+</span></code></pre></div>
+<p>Here is the resulting DC transfer curve showing Vin vs Vout (after I
+manually annotated the noise margins):</p>
+<p><img alt="" src="../img/tut12-inv-xfer-curve-pmos625-nmos450.png" /></p>
+<p>Recall that the noise margins are with respect to where the slope of the
+transfer curve is -1 (i.e., maximum gain). V_IL is the maximum low input
+voltage and V_IH is the minimum high input voltage. V_OL is the maximum
+low output voltage and V_OH is the minimum high output voltage. The noise
+margins are NM_H = V_OH - V_IH and NM_L = V_IL - V_OL and we want these
+noise margins to be as large as possible. With large noise margins we can
+tolerate noise on the input without it propagating through the inverter
+and causing it to switch the output. For this example the noise margins
+are roughly equal at 0.3V:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>V_IL = 0.45V
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>V_IH = 0.65V
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>V_OL = 0.15V
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>V_OH = 0.95V
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>NM_H = V_OH - V_IH = 0.95V - 0.65V = 0.31V
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>NM_L = V_IL - V_OL = 0.45V - 0.15V = 0.30V
+</span></code></pre></div>
+<p>Now the problem with unequal rise and fall times is it means we
+essentially skew the noise margins. We make one noise larger but the
+other noise margin smaller. Try rerunning the simulation, but this time
+make the PMOS the same size as the NMOS like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>*  src  gate drain body type
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>M1 vdd  in   out   vdd  PMOS_VTL W=0.450um L=0.045um
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>M2 gnd  in   out   gnd  NMOS_VTL W=0.450um L=0.045um
+</span></code></pre></div>
+<p>Rerun the simulation and you should see something like the following
+(after I manually annotated the noise margins):</p>
+<p><img alt="" src="../img/tut12-inv-xfer-curve-pmos450-nmos450.png" /></p>
+<p>And here are roughly the corresponding noise margins:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>V_IL = 0.35V
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>V_IH = 0.48V
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>V_OL = 0.15V
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>V_OH = 0.98V
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>NM_H = V_OH - V_IH = 0.98V - 0.48V = 0.5V
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>NM_L = V_IL - V_OL = 0.35V - 0.15V = 0.2V
+</span></code></pre></div>
+<p>Notice how the low noise margin has gone from 0.3V to 0.2V. This means
+the gate is now much more sensitive to noise. So in general we perfer
+equal rise and fall times becuase it improves our noise margins (and also
+simplifies our analysis).</p>
+<p><strong>To Do On Your Own:</strong> Make the NMOS twice as big as the PMOS and observe
+how this impacts the noise margins.</p>
+<p>Creating voltage sources to change the inputs can be very tedious,
+especially when we want to drive multiple inputs. We can take advantage
+of ngspice's support for mixed-signal analog/digital simulation to
+simplify the task of creating many digital input values. Take a look at
+the SPICE deck in <code>inv-dsource-sim.sp</code> to see a different way of
+generating input sources:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>A1 [in_] inv_source
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>.model inv_source d_source (input_file=&quot;inv-source.txt&quot;)
+</span></code></pre></div>
+<p>Here we are instantiating a <code>d_source</code> and giving this new component the
+name <code>a1</code>. The <code>d_source</code> reads an input text file to see the values of
+the given input nodes (i.e., <code>in_</code>). The <code>inv-source.txt</code> file looks like
+this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>* inv-source.txt
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>* ====================================================================
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>* time in
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>0.0ns  0s
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>1.0ns  1s
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>2.0ns  0s
+</span></code></pre></div>
+<p>Lines that start with <code>*</code> are comments. The first column corresponds to
+time and each remaining column corresponds to an input node. The input
+node can be either <code>0s</code> (for a strong logic zero) or <code>1s</code> (for a strong
+logic one). So the above example toggles the input node just as with the
+previous piece-wise linear voltage source. Note that there is a
+positional mapping from the columns in the text file to the nodes in the
+SPICE deck when instantiating the <code>d_source</code>. So the second column maps
+to the <code>in_</code> input node.</p>
+<p>We also need to instantiate a digital-to-analog converter (DAC) to
+translate the digital values into analog values suitable for driving a
+CMOS circuit:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>Ain [in_] [in] dac_in
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>.model dac_in dac_bridge (out_low=0V out_high=&#39;VDD&#39; t_rise=0.2ns t_fall=0.2ns)
+</span></code></pre></div>
+<p>The <code>dac_bridge</code> component takes parameters specifying the logic low and
+logic high voltage levels and the rise/fall times. We also need to
+specify the mapping from digital input nodes (<code>in_</code>) to analog input
+nodes (<code>in</code>). Now let's run the simulation using ngspice and confirm that
+the result is the same as when using piece-wise linear voltage sources:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>%<span class="w"> </span>ngspice<span class="w"> </span>inv-dsource-sim.sp
+</span></code></pre></div>
+<p>Now let's experiment with a NAND2 gate. Take a look at the SPICE deck in
+<code>nand2-sim.sp</code> which contains the canonical NAND2 gate:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>*  src  gate drain body type
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>M1 vdd  a    y     vdd  PMOS_VTL W=0.900um L=0.045um
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>M2 vdd  b    y     vdd  PMOS_VTL W=0.900um L=0.045um
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>M3 n0   a    y     gnd  NMOS_VTL W=0.900um L=0.045um
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>M4 gnd  b    n0    gnd  NMOS_VTL W=0.900um L=0.045um
+</span></code></pre></div>
+<p>Notice how we have sized this NAND2 gate to have equal worst-case rise
+and fall times assuming a PMOS/NMOS mobility ratio of two, and we have
+also sized this NAND2 gate to have similar effective resistance as the
+canonical minimum-sized inverter</p>
+<p><strong>To Do On Your Own:</strong> Copy the <code>nand2-sim.sp</code> SPICE deck to create a new
+file named <code>nor2-sim.sp</code> and copy the <code>nand2-source.txt</code> input file to
+create a new file named <code>nor2-source.txt</code>. Replace the NAND2 gate with an
+explicit transistor implementation of a NOR2 gate. Size the NOR2 gate to
+have equal worst-case rise and fall times assuming a PMOS/NMOS mobility
+ratio of two and similar effective resistance as the canonical
+minimum-sized inverter. Run the simulation and verify the functionality
+using the waveforms.</p>
+<h2 id="4-simulating-standard-cells">4. Simulating Standard Cells</h2>
+<p>A standard cell library will include many views including SPICE decks for
+each standard cell. Actually, the standard cell library will usually
+include two kinds of SPICE decks. The <em>schematic SPICE deck</em> includes
+just the transistors, while the <em>extracted SPICE deck</em> will include all
+of the extracted parasitic resistances and capacitances. Take a look at
+the schematic SPICE deck for a minimum sized inverter (INV_X1):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>% less -p INV_X1 ${ECE6745_STDCELLS}/stdcells.spi
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>.SUBCKT INV_X1 A ZN VDD VSS
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>*.PININFO A:I ZN:O VDD:P VSS:G
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>*.EQN ZN=!A
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>M_i_0 ZN A VSS VSS NMOS_VTL W=0.415000U L=0.050000U
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>M_i_1 ZN A VDD VDD PMOS_VTL W=0.630000U L=0.050000U
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>.ENDS
+</span></code></pre></div>
+<p>The SPICE deck for an inverter is encapsulated in a SPICE subcircuit
+(<code>SUBCKT</code>). A subcircuit is like a PyMTL3 or Verilog module with an
+interface (i.e., list of ports) and an implementation (i.e.,
+instantiating transistors or other subcircuits). In this case, the INV_X1
+gate includes four ports: the input (<code>A</code>), the output (<code>ZN</code>), the power
+supply (<code>VDD</code>) and ground (<code>VSS</code>). As expected, the implementation
+includes a PMOS and NMOS transistor. Notice that even though the minimum
+length transistor in this technology is 0.045um, both transistors are
+0.050um. This is actually quite common. Standard cells often use slightly
+longer transistors to offer a better performance vs. power trade-off
+(i.e., lower leakage). Some standard cell libraries will actually include
+different implementations of every gate each with a different channel
+length. Also notice how the PMOS is only 1.5x larger than the NMOS.
+Again, this is actually quite common. A PMOS/NMOS mobility ratio of two
+is just an assumption; a specific technology will likely have a different
+mobility ratio which is often less than two. Standard cells will also
+often have slightly skewed rise/fall times to offer a better area vs.
+noise margin trade-off.</p>
+<p>While we could certainly simulate the schematic SPICE deck, it is more
+useful to simulate the extracted SPICE deck since this will provide
+accurate performance analysis. Take a loo at the extracted SPICE deck for
+a minimum sized inverter (INV_X1):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>% less -p INV_X1 $ECE6745_STDCELLS/stdcells-lpe.spi
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>.SUBCKT INV_X1 VDD VSS A ZN
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>*.PININFO VDD:P VSS:G A:I ZN:O
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>*.EQN ZN=!A
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>M_M1 N_ZN_M0_d N_A_M0_g N_VDD_M0_s VDD PMOS_VTL W=0.630000U L=0.050000U
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>M_M0 N_ZN_M1_d N_A_M1_g N_VSS_M1_s VSS NMOS_VTL W=0.415000U L=0.050000U
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>C_x_PM_INV_X1%VDD_c0 x_PM_INV_X1%VDD_31 VSS 4.13109e-17
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>C_x_PM_INV_X1%VDD_c1 x_PM_INV_X1%VDD_19 VSS 2.61599e-16
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>C_x_PM_INV_X1%VDD_c2 x_PM_INV_X1%VDD_18 VSS 1.89932e-17
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>C_x_PM_INV_X1%VDD_c3 N_VDD_M0_s VSS 3.88255e-17
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>C_x_PM_INV_X1%VDD_c4 x_PM_INV_X1%VDD_12 VSS 1.92462e-17
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a>C_x_PM_INV_X1%VDD_c5 x_PM_INV_X1%VDD_11 VSS 2.334e-16
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>C_x_PM_INV_X1%VDD_c6 x_PM_INV_X1%VDD_8 VSS 5.52247e-16
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a>R_x_PM_INV_X1%VDD_r7 VDD x_PM_INV_X1%VDD_31 0.13879
+</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a>R_x_PM_INV_X1%VDD_r8 VDD x_PM_INV_X1%VDD_28 0.392137
+</span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a>...
+</span><span id="__span-27-17"><a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a>.ENDS
+</span></code></pre></div>
+<p>The INV_X1 gate still includes four ports (although they are in a
+different order which is annoying), but notice that the implementation is
+radically different. There are ~50 parasitic resistances and capacitances
+extracted from the actual layout for this standard cell. These parasitics
+are what enable more accurate performance analysis.</p>
+<p>Take a look at the SPICE deck in <code>inv-stdcell-sim.sp</code> which is meant for
+simulating the INV_X1 standard cell. First, notice that we need to
+include the standard cell SPICE deck:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>.param VDD=&#39;1.1V&#39;
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>.temp  25
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>.inc   &quot;/classes/ece6745/install/adk-pkgs/freepdk-45nm/stdview/pdk-models.sp&quot;
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>.inc   &quot;/classes/ece6745/install/adk-pkgs/freepdk-45nm/stdview/stdcells-lpe.spi&quot;
+</span></code></pre></div>
+<p>Instead of directly instantiating transistors, we simply instantiate the
+<code>INV_X1</code> subcircuit:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>X1 vdd gnd in out INV_X1
+</span></code></pre></div>
+<p>The instance name of subcircuits (<code>X1</code>) must start with <code>X</code>. The instance
+name is followed by the list of nodes that should be connected to the
+ports of the subcircuit. The nodes are connected by position. So since
+the port list in the subcircuit definition is <code>VDD VSS A ZN</code>, we must
+list the nodes in the subcircuit instance in the exact same order.
+The subcircuit instance ends with the type of subcircuit we wish to
+instantiate. The rest of the SPICE deck is the same as earlier in the
+tutorial. Let's run the simulation using ngspice:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>%<span class="w"> </span>ngspice<span class="w"> </span>inv-stdcell-sim.sp
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>...
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="nv">tpdr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>.577757e-11<span class="w"> </span><span class="nv">targ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>.125778e-09<span class="w"> </span><span class="nv">trig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>.100000e-09
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="nv">tpdf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>.275623e-11<span class="w"> </span><span class="nv">targ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>.122756e-09<span class="w"> </span><span class="nv">trig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>.100000e-09
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="nv">tpd</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>.42669e-11
+</span></code></pre></div>
+<p>Recall that the propagation delay when we instantiated transistors
+directly was 17.2ps while now it is 24.3ps. The extracted SPICE decks are
+almost always slower than schematic SPICE decks, since we are actually
+modeling the parasitic resistances and capacitances.</p>
+<p><strong>To Do On Your Own:</strong> Increase the load capacitance by 10x and then 100x
+and observe the impact on the propagation delay. Make sure you look at
+the actual waveforms to see if the output has time to go full rail. If
+not, you need to increase the time between input transitions to make an
+accurate estimate of the propagation delay.</p>
+<p>Now let's experiment with the NAND2_X1 gate from the standard cell
+library. Take a look at the SPICE deck in <code>nand2-stdcell-sim.sp</code> which
+instantiates the appropriate subcircuit, then run the simulation using
+ngspice:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$TOPDIR</span>/sim
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>%<span class="w"> </span>ngspice<span class="w"> </span>nand2-stdcell-sim.sp
+</span></code></pre></div>
+<p><strong>To Do On Your Own:</strong> Copy the <code>nand2-stdcell-sim.sp</code> SPICE deck to
+create a new file named <code>nor2-stdcell-sim.sp</code> and copy the
+<code>nand2-source.txt</code> input file to create a new file named
+<code>nor2-source.txt</code>. Replace the NAND2_X1 subcircuit instance with an
+instance of the NOR2_X1 gate from the standard cell library. Run the
+simulation and verify the functionality using the waveforms.</p>
+<h2 id="5-to-do-on-your-own">5. To Do On Your Own</h2>
+<p>The Nangate standard cell library includes a full-adder gate:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>% less -p FA_X1 ${ECE6745_STDCELLS}/stdcells-lpe.spi
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>.SUBCKT FA_X1 VDD VSS CO CI A B S
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>*.PININFO VDD:P VSS:G CO:O CI:I A:I B:I S:O
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>*.EQN CO=((A * B) + (CI * (A + B)));S=(CI ^ (A ^ B))
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>M_M14 N_VDD_M0_d N_4_M0_g N_CO_M0_s VDD PMOS_VTL W=0.630000U L=0.050000U
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>M_M15 net_007 N_B_M1_g N_VDD_M0_d VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a>M_M16 N_4_M2_d N_A_M2_g net_007 VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-8"><a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a>M_M17 N_6_M3_d N_CI_M3_g N_4_M2_d VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-9"><a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a>M_M18 N_VDD_M4_d N_A_M4_g N_6_M3_d VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-10"><a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a>M_M19 N_6_M5_d N_B_M5_g N_VDD_M4_d VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-11"><a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a>M_M20 N_11_M6_d N_B_M6_g N_VDD_M6_s VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-12"><a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a>M_M21 N_VDD_M7_d N_CI_M7_g N_11_M6_d VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-13"><a id="__codelineno-32-13" name="__codelineno-32-13" href="#__codelineno-32-13"></a>M_M22 N_11_M8_d N_A_M8_g N_VDD_M7_d VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-14"><a id="__codelineno-32-14" name="__codelineno-32-14" href="#__codelineno-32-14"></a>M_M23 N_12_M9_d N_4_M9_g N_11_M8_d VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-15"><a id="__codelineno-32-15" name="__codelineno-32-15" href="#__codelineno-32-15"></a>M_M24 net_010 N_CI_M10_g N_12_M9_d VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-16"><a id="__codelineno-32-16" name="__codelineno-32-16" href="#__codelineno-32-16"></a>M_M25 net_009 N_B_M11_g net_010 VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-17"><a id="__codelineno-32-17" name="__codelineno-32-17" href="#__codelineno-32-17"></a>M_M26 N_VDD_M12_d N_A_M12_g net_009 VDD PMOS_VTL W=0.315000U L=0.050000U
+</span><span id="__span-32-18"><a id="__codelineno-32-18" name="__codelineno-32-18" href="#__codelineno-32-18"></a>M_M27 N_S_M13_d N_12_M13_g N_VDD_M12_d VDD PMOS_VTL W=0.630000U L=0.050000U
+</span><span id="__span-32-19"><a id="__codelineno-32-19" name="__codelineno-32-19" href="#__codelineno-32-19"></a>M_M0 N_VSS_M14_d N_4_M14_g N_CO_M14_s VSS NMOS_VTL W=0.415000U L=0.050000U
+</span><span id="__span-32-20"><a id="__codelineno-32-20" name="__codelineno-32-20" href="#__codelineno-32-20"></a>M_M1 net_000 N_B_M15_g N_VSS_M14_d VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-21"><a id="__codelineno-32-21" name="__codelineno-32-21" href="#__codelineno-32-21"></a>M_M2 N_4_M16_d N_A_M16_g net_000 VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-22"><a id="__codelineno-32-22" name="__codelineno-32-22" href="#__codelineno-32-22"></a>M_M3 N_7_M17_d N_CI_M17_g N_4_M16_d VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-23"><a id="__codelineno-32-23" name="__codelineno-32-23" href="#__codelineno-32-23"></a>M_M4 N_VSS_M18_d N_A_M18_g N_7_M17_d VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-24"><a id="__codelineno-32-24" name="__codelineno-32-24" href="#__codelineno-32-24"></a>M_M5 net_002 N_B_M19_g N_VSS_M18_d VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-25"><a id="__codelineno-32-25" name="__codelineno-32-25" href="#__codelineno-32-25"></a>M_M6 net_006 N_B_M20_g N_VSS_M20_s VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-26"><a id="__codelineno-32-26" name="__codelineno-32-26" href="#__codelineno-32-26"></a>M_M7 N_VSS_M21_d N_CI_M21_g net_006 VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-27"><a id="__codelineno-32-27" name="__codelineno-32-27" href="#__codelineno-32-27"></a>M_M8 N_10_M22_d N_A_M22_g N_VSS_M21_d VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-28"><a id="__codelineno-32-28" name="__codelineno-32-28" href="#__codelineno-32-28"></a>M_M9 N_12_M23_d N_4_M23_g N_10_M22_d VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-29"><a id="__codelineno-32-29" name="__codelineno-32-29" href="#__codelineno-32-29"></a>M_M10 net_004 N_CI_M24_g N_12_M23_d VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-30"><a id="__codelineno-32-30" name="__codelineno-32-30" href="#__codelineno-32-30"></a>M_M11 net_003 N_B_M25_g net_004 VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-31"><a id="__codelineno-32-31" name="__codelineno-32-31" href="#__codelineno-32-31"></a>M_M12 N_VSS_M26_d N_A_M26_g net_003 VSS NMOS_VTL W=0.210000U L=0.050000U
+</span><span id="__span-32-32"><a id="__codelineno-32-32" name="__codelineno-32-32" href="#__codelineno-32-32"></a>M_M13 N_S_M27_d N_12_M27_g N_VSS_M26_d VSS NMOS_VTL W=0.415000U L=0.050000U
+</span><span id="__span-32-33"><a id="__codelineno-32-33" name="__codelineno-32-33" href="#__codelineno-32-33"></a>...
+</span><span id="__span-32-34"><a id="__codelineno-32-34" name="__codelineno-32-34" href="#__codelineno-32-34"></a>.ENDS
+</span></code></pre></div>
+<p>Try instantiating and chaining four of these gates together to create a
+four-bit ripple-carry adder. Create an appropriate SPICE deck to drive
+the simulation including a <code>d_source</code> that reads in a text file with the
+two four-bit input values. Here is what the results look like if you
+start with adding 0b1111 to 0b0000 and then change the b input to 0b0001
+at 200ps. Notice the sum outputs transitioning from 0 to 1 as the carry
+is propagated through the full-adder gates. As discussed in Chapter 8 of
+Weste &amp; Harris, for more accurate performance analysis you would need to
+add inverters to the inputs for realistic waveform shaping and to the
+outputs for realistic load capacitance.</p>
+<p><img alt="" src="../img/tut12-fa.png" /></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>
