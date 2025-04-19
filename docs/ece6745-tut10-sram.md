@@ -1191,17 +1191,40 @@ and width of the floorplan to be 175um.
 
 ![](img/tut10-cadence-innovus-1.png)
 
-The next step is to place the design. Cadence Innovus will automatically
-place the SRAM macro and the standard cells at the same time, but first
-we add a "halo" around all SRAM macros using the `addHaloToBlock`
-command. A halo is a way to tell Cadence Innovus not to place any
-standard cells too close to the SRAM macros. We specify a halo of 2.4um.
+The next step is to place the design. We first need to add a "halo"
+around all SRAM macros using the `addHaloToBlock` command. A halo is a
+way to tell Cadence Innovus not to place any standard cells too close to
+the SRAM macros. We specify a halo of 4.8um.
+
+```
+innovus> addHaloToBlock 4.8 4.8 4.8 4.8 -allMacro
+```
+
+Now we need to use extra commands to concurrently place the standard
+cells and the SRAM macro at the same time. For best results, we would
+need to create a representative power grid so Cadence Innovus can take
+into account power distribution when automatically placing SRAM macros,
+but to simplify our flow we can just specify 20% metal 1 power routing
+density.
+
+```
+innovus> set_macro_place_constraint -pg_resource_model {metal1 0.2}
+innovus> place_design -concurrent_macros
+innovus> refine_macro_place
+```
+
+After these steps the macros will be placed in their final positions, but
+the standard cells are likely not in legal positions. So we now do the
+final optimized placement.
+
+```
+innovus> place_opt_design
+```
+
 After placing the design we want to automatically place tie hi/lo cells
 and the IO pins around the perimeter of the floorplan.
 
 ```
-innovus> addHaloToBlock 2.4 2.4 2.4 2.4 -allMacro
-innovus> place_design
 innovus> addTieHiLo -cell "LOGIC1_X1 LOGIC0_X1"
 innovus> assignIoPins -pin *
 ```

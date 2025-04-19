@@ -410,13 +410,13 @@ Note that we can use `$env(ECE6745_STDCELLS)` to get access to the
 containing the standard cells, and that we are referencing the abstract
 logical and timing views in the `.db` format.
 
-We also need to tell Synopsys DC not use a specific kind of scan
-flip-flop which is included in our standard-cell library. If Synopsys DC
-uses these flip-flops it can cause isses with gate-level simulation. We
-can do this using the `set_dont_use` command as fllows.
+We also need to tell Synopsys DC not use scan flip-flops and clock-gating
+cells which are included in our standard-cell library. If Synopsys DC
+uses these cells it can cause isses with gate-level simulation. We can do
+this using the `set_dont_use` command as follows.
 
 ```
-dc_shell> set_dont_use {
+dc_shell> set_dont_use -power {
   NangateOpenCellLibrary/SDFF_X1
   NangateOpenCellLibrary/SDFF_X2
   NangateOpenCellLibrary/SDFFS_X1
@@ -425,6 +425,10 @@ dc_shell> set_dont_use {
   NangateOpenCellLibrary/SDFFR_X2
   NangateOpenCellLibrary/SDFFRS_X1
   NangateOpenCellLibrary/SDFFRS_X2
+  NangateOpenCellLibrary/CLKGATETST_X1
+  NangateOpenCellLibrary/CLKGATETST_X2
+  NangateOpenCellLibrary/CLKGATETST_X4
+  NangateOpenCellLibrary/CLKGATETST_X8
 }
 ```
 

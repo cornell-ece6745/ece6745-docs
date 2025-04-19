@@ -393,11 +393,11 @@ You can use the _View > Fit_ menu option to see the entire chip.
 
 ### 2.4. Placement
 
-The next substep is cell placement. We can do the initial placement and
-routing of the standard cells using the `place_design` command:
+The next substep is cell placement. We can do the placement and initial
+routing of the standard cells using the `place_opt_design` command:
 
 ```
-innovus> place_design
+innovus> place_opt_design
 ```
 
 The following screen capture illustrates what you should see: the gates
@@ -542,7 +542,7 @@ command to optimize the clock tree routing.
 ```
 innovus> create_ccopt_clock_tree_spec
 innovus> set_ccopt_property update_io_latency false
-innovus> ccopt_design -cts
+innovus> clock_opt_design
 ```
 
 By default, Cadence Innovus can optimize the clock tree by adding a
