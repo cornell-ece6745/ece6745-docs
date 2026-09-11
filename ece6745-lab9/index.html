@@ -1,0 +1,2682 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-lab8/">
+      
+      
+        <link rel="next" href="../ece6745-project1a/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Lab 9: Chip Flow - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-lab-9-commercial-chip-flow" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Lab 9: Chip Flow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-lab1/" class="md-tabs__link">
+          
+  
+  
+  Labs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-project1a/" class="md-tabs__link">
+          
+  
+  
+  Projects
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tinyflow-180nm-drm/" class="md-tabs__link">
+          
+  
+  
+  Misc
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6950-lab1/" class="md-tabs__link">
+          
+  
+  
+  Chip Testing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 0: ECE Linux Server Remote Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 1: Linux Development Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 2: Git Distributed Version Control System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: Full-Custom Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 2: Standard-Cell Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 3: Tiny Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 4: Tiny Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 5: TinyRV2 Accelerators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 6: Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 7: Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 8: Block Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 9: Chip Flow
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 9: Chip Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-logging-into-ecelinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Logging Into ecelinux
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-gcd-accelerator-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GCD Accelerator Block
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-chip-level-rtl-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Chip-Level RTL Design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Chip-Level RTL Design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-io-cells" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. I/O Cells
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-chip-top-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Chip Top Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-chip-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Chip Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-chip-flow-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Chip Flow Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Chip Flow Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-step-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Step Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-design-yaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Design YAML
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-padring-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Padring Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-running-the-chip-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Running the Chip Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Running the Chip Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-padring-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1. Padring Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-chip-front-end-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2. Chip Front-End Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-chip-back-end-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3. Chip Back-End Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-viewing-the-chip-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4. Viewing the Chip Layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-todo-on-your-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Todo On Your Own
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: TinyFlow Standard Cells
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: TinyFlow Front End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: TinyFlow Back End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2: Xcel Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 2: Xcel Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: Software & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: Xcel RTL Milestone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: Xcel RTL Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part D: ASIC Evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2e/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part E: Tape-Out and Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Misc
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tinyflow-180nm-drm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tinyflow 180nm Design Rules Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2-ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2 Ideas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip Testing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chip Testing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6950-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: FPGA Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-logging-into-ecelinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Logging Into ecelinux
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-gcd-accelerator-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GCD Accelerator Block
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-chip-level-rtl-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Chip-Level RTL Design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Chip-Level RTL Design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-io-cells" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. I/O Cells
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-chip-top-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Chip Top Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-chip-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Chip Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-chip-flow-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Chip Flow Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Chip Flow Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-step-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Step Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-design-yaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Design YAML
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-padring-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Padring Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-running-the-chip-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Running the Chip Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Running the Chip Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-padring-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1. Padring Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-chip-front-end-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2. Chip Front-End Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-chip-back-end-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3. Chip Back-End Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-viewing-the-chip-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4. Viewing the Chip Layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-todo-on-your-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Todo On Your Own
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-lab-9-commercial-chip-flow">ECE 6745 Lab 9: Commercial Chip Flow</h1>
+<p>In this lab, we will be learning about chip-level RTL design and the
+commercial chip ASIC flow. In the previous lab, we pushed designs
+through the <em>block-level</em> ASIC flow which synthesizes, places, and
+routes a design but does not include the I/O pads, seal ring, or fill
+structures needed for tapeout. In this lab, we extend that block flow
+into a full <em>chip-level</em> flow.</p>
+<ul>
+<li>
+<p><strong>Chip-Level RTL Design:</strong> A real chip needs I/O cells around the
+    perimeter for signal buffering, ESD protection, and level shifting
+    between core and I/O voltage domains. We will study how the GCD
+    accelerator is wrapped with I/O pads, a two-flop reset
+    synchronizer, and an SPI minion to create a chip-level design. This
+    is the same pattern you will use to wrap your own accelerator for
+    Project 2.</p>
+</li>
+<li>
+<p><strong>Padring, Seal Ring, and Fill:</strong> Tapeout requires physical
+    structures beyond the core logic. The <em>padring</em> places I/O cells
+    and bond pads around the chip perimeter. The <em>seal ring</em> is a guard
+    structure along the die edge that prevents cracks from wafer dicing
+    from propagating into the active circuit area. <em>Metal, poly, and
+    via fill</em> insert dummy patterns to maintain uniform density for CMP
+    (chemical-mechanical polishing) planarity.</p>
+</li>
+<li>
+<p><strong>Chip-Level Verification:</strong> The chip flow extends DRC to include
+    wirebond and metal-fuse checks, and LVS must now account for I/O
+    cell SPICE models. The chip flow has 14 steps compared to the block
+    flow's 11 steps.</p>
+</li>
+</ul>
+<p>The following diagrams illustrate the primary tools we have already seen
+in the previous labs. Notice that the ASIC tools all require various
+views from the standard-cell library.</p>
+<p><img alt="" src="../img/T08-full-flow.png" /></p>
+<p>We will be adding additional steps for the padring, seal ring, and fill.
+Here is list of all of the steps we will be using in the chip flow.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>00-padring-gen
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>01-pymtl-rtlsim
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>02-synopsys-vcs-rtlsim
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>03-synopsys-dc-synth
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>04-synopsys-vcs-ffglsim
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>05-cadence-innovus-pnr
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>06-synopsys-pt-sta
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>07-synopsys-vcs-baglsim
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>08-synopsys-pt-pwr
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>09-mentor-calibre-seal
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>10-mentor-calibre-fill
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>11-mentor-calibre-drc
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>12-mentor-calibre-lvs
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>13-summarize-results
+</span></code></pre></div>
+<p>Extensive documentation is provided by Synopsys, Cadence, and Siemens for
+these ASIC tools. We have organized this documentation and made it
+available to you on the public course webpage:</p>
+<ul>
+<li><a href="https://www.csl.cornell.edu/courses/ece6745/asicdocs">https://www.csl.cornell.edu/courses/ece6745/asicdocs</a></li>
+</ul>
+<h2 id="1-logging-into-ecelinux">1. Logging Into <code>ecelinux</code></h2>
+<div class="admonition warning">
+<p class="admonition-title">Students MUST work in pairs!</p>
+<p>You MUST work in pairs for this lab, as having too many instances of
+Innovus open at once can cause the <code>ecelinux</code> servers to crash. So
+find a partner and work together at a workstation to complete today's
+lab.</p>
+</div>
+<p>Follow the same process as previous labs. Find a free workstation and log
+into the workstation using your NetID and standard NetID password. Then
+complete the following steps.</p>
+<ul>
+<li>Start VS Code</li>
+<li>Install the Remote-SSH extension, Surfer, Python, and Verilog extensions</li>
+<li>Use View &gt; Command Palette to execute Remote-SSH: Connect Current Window to Host...</li>
+<li>Enter netid@ecelinux-XX.ece.cornell.edu where XX is an ecelinux server number</li>
+<li>Use View &gt; Explorer to open your home directory on ecelinux</li>
+<li>Use View &gt; Terminal to open a terminal on ecelinux</li>
+<li>Start MS Remote Desktop</li>
+</ul>
+<p>Now use the following commands to clone the repo we will be using for
+today's lab.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/ece6745-lab9<span class="w"> </span>lab9
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>lab9
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>To make it easier to cut-and-paste commands from this handout onto the
+command line, you can tell Bash to ignore the <code>%</code> character using the
+following command:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>%<span class="w"> </span><span class="nb">alias</span><span class="w"> </span>%<span class="o">=</span><span class="s2">""</span>
+</span></code></pre></div>
+<h2 id="2-gcd-accelerator-block">2. GCD Accelerator Block</h2>
+<p>We need to make sure our GCD accelerator is functionally correct and can
+go through the block flow before we attempt to use the chip flow. Let's
+start by making sure our accelerator is fully functional using RTL
+simulation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/sim/build
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/sim/build
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../lab5_xcel/test/GcdXcel_test.py
+</span></code></pre></div>
+<p>Now let's make sure our accelerator can go through the block flow.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/lab5-gcd-xcel.yml
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>%<span class="w"> </span>./run-flow
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w"> </span><span class="nv">timestamp</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="m">2026</span>-03-20<span class="w"> </span><span class="m">10</span>:47:45
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w"> </span><span class="nv">design_name</span><span class="w">         </span><span class="o">=</span><span class="w"> </span>GcdXcel_noparam
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w"> </span><span class="nv">clock_period</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>.0
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w"> </span>vcs-rtlsim<span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="m">18</span>/18<span class="w"> </span>passed
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w"> </span><span class="nv">synth_setup_slack</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>.3217<span class="w"> </span>ns
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w"> </span><span class="nv">synth_num_stdcells</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">461</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w"> </span><span class="nv">synth_area</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="m">9112</span>.275<span class="w"> </span>um^2
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w"> </span><span class="nv">ffglsim</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="m">18</span>/18<span class="w"> </span>passed
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w"> </span><span class="nv">pnr_setup_slack</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>.0442<span class="w"> </span>ns
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w"> </span><span class="nv">pnr_hold_slack</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>.0132<span class="w"> </span>ns
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w"> </span><span class="nv">pnr_clk_ins_src_lat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>ns
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w"> </span><span class="nv">pnr_num_stdcells</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">527</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w"> </span><span class="nv">pnr_area</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="m">10146</span>.214<span class="w"> </span>um^2
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w"> </span><span class="nv">sta_setup_slack</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>.0500<span class="w"> </span>ns
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w"> </span><span class="nv">sta_hold_slack</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>.0140<span class="w"> </span>ns
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w"> </span><span class="nv">baglsim</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="m">18</span>/18<span class="w"> </span>passed
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w"> </span><span class="nv">main_drc_results</span><span class="w">    </span><span class="o">=</span><span class="w"> </span>no<span class="w"> </span>violations<span class="w"> </span>found
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w"> </span><span class="nv">antenna_drc_results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>no<span class="w"> </span>violations<span class="w"> </span>found
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w"> </span><span class="nv">lvs</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span>no<span class="w"> </span>violations<span class="w"> </span>found
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w"> </span>GcdXcel_noparam_gcd-xcel-sim-rtl-random
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">exec_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3220</span><span class="w"> </span>cycles
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">exec_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">9660</span>.0000<span class="w"> </span>ns
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">power</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>.0170<span class="w"> </span>mW
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">energy</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">19</span>.4842<span class="w"> </span>nJ
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>
+</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="w"> </span>GcdXcel_noparam_gcd-xcel-sim-rtl-small
+</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">exec_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">458</span><span class="w"> </span>cycles
+</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">exec_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1374</span>.0000<span class="w"> </span>ns
+</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">power</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>.9820<span class="w"> </span>mW
+</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">energy</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">4</span>.0973<span class="w"> </span>nJ
+</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>
+</span><span id="__span-4-38"><a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="w"> </span>GcdXcel_noparam_gcd-xcel-sim-rtl-zeros
+</span><span id="__span-4-39"><a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">exec_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">157</span><span class="w"> </span>cycles
+</span><span id="__span-4-40"><a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">exec_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">471</span>.0000<span class="w"> </span>ns
+</span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">power</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>.2430<span class="w"> </span>mW
+</span><span id="__span-4-42"><a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="w">  </span>-<span class="w"> </span><span class="nv">energy</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>.5275<span class="w"> </span>nJ
+</span></code></pre></div>
+<h2 id="3-chip-level-rtl-design">3. Chip-Level RTL Design</h2>
+<p>Now we are ready to turn our accelerator into a complete chip. We need to
+integrate the accelerator with I/O cells, a reset synchronizer, and an
+SPI minion to create a complete chip-level design. Here is a block-level
+diagram of the chip.</p>
+<p><img alt="" src="../img/lab9-gcd-xcel-chip.png" /></p>
+<h3 id="31-io-cells">3.1. I/O Cells</h3>
+<p>Each IO cell includes some ciruitry along with a <em>bond pad</em> which is a
+large rectangle of top-level metal which will be exposed during the chip
+fabrication process. Then during packaging we can use bond wires to
+connect the package to the bond pad. These are the key IO cells we will
+be using:</p>
+<ul>
+<li>Signal IO Cell (PDDW0812CDG)</li>
+<li>Clock IO Cell (PDDW0812SCDG)</li>
+<li>IO Vdd (PVDD2CDG)</li>
+<li>Core Vdd (PVDD1CDG)</li>
+<li>Common Ground (PVSS3CDG)</li>
+</ul>
+<p>Let's take a look at the databook for the IO cells.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%<span class="w"> </span>evince<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/iocells.pdf
+</span></code></pre></div>
+<p>Find the entry for the signal IO cell we will be using. Notice that these
+are bidirectional IO cells (i.e., the same cell is can be used as both an
+input and as an output). Then take a look at the layout view for this
+cell.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/klayout.lyp<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/iocells.gds
+</span></code></pre></div>
+<p>Take a look at the I/O cell behavioral models we will be using.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/sim/iocells
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span>code<span class="w"> </span>InputIO.v
+</span></code></pre></div>
+<p>Here is the <code>InputIO</code> module:</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">module</span><span class="w"> </span><span class="n">iocells_InputIO</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="p">(</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="n">off_chip</span><span class="p">,</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="k">output</span><span class="w"> </span><span class="kt">logic</span><span class="w"> </span><span class="n">on_chip</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">);</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span><span class="no">`ifndef</span><span class="w"> </span><span class="n">SYNTHESIS</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="k">assign</span><span class="w"> </span><span class="n">on_chip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">off_chip</span><span class="p">;</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">  </span><span class="no">`else</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span><span class="n">PDDW0812CDG</span><span class="w"> </span><span class="n">io</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">    </span><span class="p">(</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">      </span><span class="p">.</span><span class="n">I</span><span class="w">   </span><span class="p">(</span><span class="mh">1</span><span class="mb">'b0</span><span class="p">),</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">      </span><span class="p">.</span><span class="n">OEN</span><span class="w"> </span><span class="p">(</span><span class="mh">1</span><span class="mb">'b1</span><span class="p">),</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">      </span><span class="p">.</span><span class="n">PAD</span><span class="w"> </span><span class="p">(</span><span class="n">off_chip</span><span class="p">),</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">      </span><span class="p">.</span><span class="n">C</span><span class="w">   </span><span class="p">(</span><span class="n">on_chip</span><span class="p">),</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">      </span><span class="p">.</span><span class="n">IE</span><span class="w">  </span><span class="p">(</span><span class="mh">1</span><span class="mb">'b1</span><span class="p">),</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="w">      </span><span class="p">.</span><span class="n">PE</span><span class="w">  </span><span class="p">(</span><span class="mh">1</span><span class="mb">'b1</span><span class="p">),</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="w">      </span><span class="p">.</span><span class="n">DS</span><span class="w">  </span><span class="p">(</span><span class="mh">1</span><span class="mb">'b0</span><span class="p">)</span>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="w">    </span><span class="p">);</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="w">  </span><span class="no">`endif</span>
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="k">endmodule</span>
+</span></code></pre></div>
+<p>The <code>off_chip</code> port will be connected to the pad, bond wire, and package
+off chip. The <code>on_chip</code> port will be connected to the logic within the
+chip.</p>
+<p>The key pattern here is <code>ifndef SYNTHESIS</code>. During simulation, the pad is
+a simple wire passthrough (<code>assign on_chip = off_chip</code>). During
+synthesis, it instantiates the real I/O cell for TSMC 180nm. The I/O cell
+pins are:</p>
+<ul>
+<li><code>PAD</code>: The external bond pad connection</li>
+<li><code>C</code>: The core-side connection</li>
+<li><code>I</code>: Output data (driven by on-chip logic)</li>
+<li><code>OEN</code>: Output enable (active low); set to <code>1'b1</code> for input mode</li>
+<li><code>IE</code>: Input enable; set to <code>1'b1</code> to enable the input buffer</li>
+<li><code>PE</code>: Pull enable; set to <code>1'b1</code> to enable a pull-up/pull-down</li>
+<li><code>DS</code>: Drive strength select</li>
+</ul>
+<p>The <code>OutputIO</code> module is similar but configures the cell in output mode:
+<code>OEN</code> is <code>1'b0</code> (output enabled), <code>I</code> drives the on-chip signal out, and
+<code>IE</code> is <code>1'b0</code> (input buffer disabled).</p>
+<p>When floorplanning the chip we will need to place these IO cells in a
+ring around the outside of the chip into what is called a <em>padring</em>.</p>
+<h3 id="32-chip-top-module">3.2. Chip Top Module</h3>
+<p>You now need to implement the top-level module for the chip.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/sim/lab5_xcel
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>code<span class="w"> </span>GcdXcelChip.v
+</span></code></pre></div>
+<p>Your implementation should have four sections:</p>
+<ul>
+<li>IO Cells: instanatiate nine IO cells, one for each top-level port</li>
+<li>Clock and Reset: connect <code>clk</code> to <code>clk_out</code> and add a reset synchronizer</li>
+<li>SPI Minion: instantiate the SPI minion and connect it to <code>cs</code>, <code>sclk</code>,
+   <code>mosi</code>, <code>miso</code>, and the GCD accelerator</li>
+<li>GCD Accelerator: instantiate the GCD accelerator and connect it to the
+   SPI minion</li>
+</ul>
+<p>Be sure to use the correct IO cell for each top-level port:</p>
+<ul>
+<li><code>ClkInputIO</code>: use for the clock input</li>
+<li><code>InputIO</code>: use for all top-level input ports</li>
+<li><code>OutputIO</code>: use for all top-level output ports</li>
+</ul>
+<p><strong>You must use very specific names for each IO cell! Name the IO
+cells as follows:</strong></p>
+<ul>
+<li><code>clk_io</code></li>
+<li><code>reset_io</code></li>
+<li><code>cs_io</code></li>
+<li><code>sclk_io</code></li>
+<li><code>mosi_io</code></li>
+<li><code>miso_io</code></li>
+<li><code>mparity_io</code></li>
+<li><code>aparity_io</code></li>
+<li><code>clk_out_io</code></li>
+</ul>
+<p>The off-chip reset signal arrives asynchronously relative to the on-chip
+clock. Sampling an asynchronous signal with a single flip-flop can cause
+<em>metastability</em> -- the flip-flop output can settle to an unpredictable
+value. The two-flop synchronizer reduces the probability of metastability
+to a negligible level by giving the first flop's output a full clock
+cycle to resolve before the second flop samples it. All downstream logic
+should use the synchronized version of the reset signal. You can
+implement the synchronizer using an <code>always_ff</code> block.</p>
+<p>Configure the SPI Minion parameters as shown below.</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="w">  </span><span class="n">spi_Minion</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="p">#(</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="p">.</span><span class="n">BIT_WIDTH</span><span class="w"> </span><span class="p">(</span><span class="mh">38</span><span class="p">),</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="p">.</span><span class="n">N_SAMPLES</span><span class="w"> </span><span class="p">(</span><span class="mh">4</span><span class="p">)</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="p">)</span>
+</span></code></pre></div>
+<p>The SPI minion will produce a 38-bit message which is exactly the correct
+amount for an accelerator request message (i.e., 1 bit for type, 5 bits
+for the accelerator register specifier, 32 bits for data). An accelerator
+response message is only 33 bits (i.e., 1 bit for type, 32 bits for data)
+so you will need to zero extend the accelerator response message when
+connecting it to the SPI minion.</p>
+<div class="admonition warning">
+<p class="admonition-title">Show a TA your top-level implementation!</p>
+<p>Once you have finished, show a TA your top-level implementation to
+get feedback before continuing.</p>
+</div>
+<h3 id="33-chip-testing">3.3. Chip Testing</h3>
+<p>Once you have finished implementing the chip top-level module, we of
+course need to test it. Take a look at the PyMTL wrapper for the chip
+module:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/sim/lab5_xcel
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span>code<span class="w"> </span>GcdXcelChip.py
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pymtl3</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pymtl3.passes.backends.verilog</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">GcdXcelChip</span><span class="p">(</span> <span class="n">VerilogPlaceholder</span><span class="p">,</span> <span class="n">Component</span> <span class="p">):</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>  <span class="k">def</span><span class="w"> </span><span class="nf">construct</span><span class="p">(</span> <span class="n">s</span> <span class="p">):</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="n">s</span><span class="o">.</span><span class="n">cs</span>      <span class="o">=</span> <span class="n">InPort</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="n">s</span><span class="o">.</span><span class="n">sclk</span>    <span class="o">=</span> <span class="n">InPort</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">s</span><span class="o">.</span><span class="n">mosi</span>    <span class="o">=</span> <span class="n">InPort</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="n">s</span><span class="o">.</span><span class="n">miso</span>    <span class="o">=</span> <span class="n">OutPort</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="n">s</span><span class="o">.</span><span class="n">mparity</span> <span class="o">=</span> <span class="n">OutPort</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>    <span class="n">s</span><span class="o">.</span><span class="n">aparity</span> <span class="o">=</span> <span class="n">OutPort</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>    <span class="n">s</span><span class="o">.</span><span class="n">clk_out</span> <span class="o">=</span> <span class="n">OutPort</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Take a look at the chip-level test harness:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/sim/lab5_xcel/test
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>%<span class="w"> </span>code<span class="w"> </span>GcdXcelChip_test.py
+</span></code></pre></div>
+<p>The test harness structure is:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>  StreamSourceFL    SpiMasterFL      GcdXcelChip      SpiMasterFL    StreamSinkFL
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>  (XcelReqMsg) --&gt; (bit-bang SPI) --&gt; (SPI wires) --&gt; (SPI wires) --&gt; (XcelRespMsg)
+</span></code></pre></div>
+<p>The key idea is to reuse the same tests you used to test your accelerator
+in isolation to test the chip. We simply need to put the accelerator
+request/response messages for each test in the source and sinks and then
+the <code>SpiMasterFL</code> will take care of converting these messages into SPI
+transactions.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">TestHarness</span><span class="p">(</span> <span class="n">Component</span> <span class="p">):</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>  <span class="k">def</span><span class="w"> </span><span class="nf">construct</span><span class="p">(</span> <span class="n">s</span><span class="p">,</span> <span class="n">ChipType</span> <span class="p">):</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">s</span><span class="o">.</span><span class="n">src</span>    <span class="o">=</span> <span class="n">StreamSourceFL</span><span class="p">(</span> <span class="n">XcelReqMsg</span> <span class="p">)</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="n">s</span><span class="o">.</span><span class="n">sink</span>   <span class="o">=</span> <span class="n">StreamSinkFL</span><span class="p">(</span> <span class="n">XcelRespMsg</span> <span class="p">)</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="n">s</span><span class="o">.</span><span class="n">master</span> <span class="o">=</span> <span class="n">SpiMasterFL</span><span class="p">()</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="n">s</span><span class="o">.</span><span class="n">chip</span>   <span class="o">=</span> <span class="n">ChipType</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>    <span class="c1"># src -&gt; SpiMasterFL (xcel req)</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>    <span class="n">s</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">ostream</span> <span class="o">//=</span> <span class="n">s</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">recv</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>    <span class="c1"># SpiMasterFL -&gt; sink (xcel resp)</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>    <span class="n">s</span><span class="o">.</span><span class="n">sink</span><span class="o">.</span><span class="n">istream</span> <span class="o">//=</span> <span class="n">s</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">send</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>    <span class="c1"># SpiMasterFL &lt;-&gt; chip (SPI wires)</span>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>    <span class="n">s</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">cs</span>   <span class="o">//=</span> <span class="n">s</span><span class="o">.</span><span class="n">chip</span><span class="o">.</span><span class="n">cs</span>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a>    <span class="n">s</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">sclk</span> <span class="o">//=</span> <span class="n">s</span><span class="o">.</span><span class="n">chip</span><span class="o">.</span><span class="n">sclk</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a>    <span class="n">s</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">mosi</span> <span class="o">//=</span> <span class="n">s</span><span class="o">.</span><span class="n">chip</span><span class="o">.</span><span class="n">mosi</span>
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a>    <span class="n">s</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">miso</span> <span class="o">//=</span> <span class="n">s</span><span class="o">.</span><span class="n">chip</span><span class="o">.</span><span class="n">miso</span>
+</span></code></pre></div>
+<p>The <code>SpiMasterFL</code> (in <code>sim/spi/SpiMasterFL.py</code>) is a functional-level
+model that bit-bangs the SPI protocol: it takes xcel request messages,
+serializes them into SPI transactions, and deserializes the SPI responses
+back into xcel response messages. Again the exact same logical tests work
+at both the functional level (direct xcel interface) and the chip level
+(over SPI). The only difference is the test harness: the chip test
+interposes the <code>SpiMasterFL</code> between the source/sink and the design under
+test. This is an important design pattern -- you should reuse your
+existing FL test cases when creating your own chip-level tests.</p>
+<p>The chip test also supports the <code>--dump-xmsgs</code> flag, which generates
+transaction log files recording each xcel message sent/received over
+SPI. These transaction logs are not used in the ASIC flow itself, but
+they will be essential for future chip testing -- when we have
+fabricated silicon, we can replay these transaction logs through a
+real SPI master to verify that the physical chip produces the correct
+responses.</p>
+<p>Let's go ahead and run all of the tests on the RTL model of the complete
+chip.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/sim/build
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../lab5_xcel/test/GcdXcelChip_test.py
+</span></code></pre></div>
+<h3 id="34-simulator">3.4. Simulator</h3>
+<p>Take a look at the simulator script:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/sim/lab5_xcel
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>%<span class="w"> </span>code<span class="w"> </span>gcd-xcel-sim
+</span></code></pre></div>
+<p>The simulator supports three implementations:</p>
+<ul>
+<li><code>--impl fl</code>: Functional-level GCD accelerator (no RTL)</li>
+<li><code>--impl rtl</code>: RTL GCD accelerator with direct xcel interface</li>
+<li><code>--impl rtl-chip</code>: RTL GCD accelerator wrapped in chip-level I/O</li>
+</ul>
+<p>For the chip flow, we use <code>--impl rtl-chip</code> which instantiates
+<code>GcdXcelChip</code> and uses the <code>ChipTestHarness</code> with the <code>SpiMasterFL</code>.
+The key flags for the ASIC flow are:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/sim/lab5_xcel
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>%<span class="w"> </span>./gcd-xcel-sim<span class="w"> </span>--impl<span class="w"> </span>rtl-chip<span class="w"> </span>--input<span class="w"> </span>random<span class="w"> </span>--translate<span class="w"> </span>--dump-vtb<span class="w"> </span>--dump-xmsgs
+</span></code></pre></div>
+<ul>
+<li><code>--translate</code>: Converts the PyMTL RTL to pickled Verilog for synthesis</li>
+<li><code>--dump-vtb</code>: Generates Verilog test benches for VCS simulation</li>
+<li><code>--dump-xmsgs</code>: Generates SPI transaction logs for future chip testing</li>
+</ul>
+<h2 id="4-chip-flow-overview">4. Chip Flow Overview</h2>
+<p>Now that we understand the chip-level RTL design, let's look at the
+chip ASIC flow that will take this design all the way to layout.</p>
+<h3 id="41-step-templates">4.1. Step Templates</h3>
+<p>The chip flow step templates are located in the <code>asic/steps/chip</code>
+directory:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/steps/chip
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>%<span class="w"> </span>tree
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>.
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>├──<span class="w"> </span><span class="m">00</span>-padring-gen
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>├──<span class="w"> </span><span class="m">01</span>-pymtl-rtlsim
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>├──<span class="w"> </span><span class="m">02</span>-synopsys-vcs-rtlsim
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>├──<span class="w"> </span><span class="m">03</span>-synopsys-dc-synth
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>├──<span class="w"> </span><span class="m">04</span>-synopsys-vcs-ffglsim
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>├──<span class="w"> </span><span class="m">05</span>-cadence-innovus-pnr
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>├──<span class="w"> </span><span class="m">06</span>-synopsys-pt-sta
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>├──<span class="w"> </span><span class="m">07</span>-synopsys-vcs-baglsim
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>├──<span class="w"> </span><span class="m">08</span>-synopsys-pt-pwr
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>├──<span class="w"> </span><span class="m">09</span>-mentor-calibre-seal
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>├──<span class="w"> </span><span class="m">10</span>-mentor-calibre-fill
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>├──<span class="w"> </span><span class="m">11</span>-mentor-calibre-drc
+</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>├──<span class="w"> </span><span class="m">12</span>-mentor-calibre-lvs
+</span><span id="__span-19-17"><a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a>└──<span class="w"> </span><span class="m">13</span>-summarize-results
+</span></code></pre></div>
+<p>Compared to the block flow from the previous lab (11 steps), the chip
+flow has 14 steps. The three new steps are:</p>
+<ul>
+<li><code>00-padring-gen</code>: Generates the I/O padring placement files</li>
+<li><code>09-mentor-calibre-seal</code>: Generates and merges the seal ring</li>
+<li><code>10-mentor-calibre-fill</code>: Generates and merges metal/poly/via fill</li>
+</ul>
+<p>Several existing steps are also modified to handle I/O cells:</p>
+<ul>
+<li><code>03-synopsys-dc-synth</code>: Adds <code>iocells.db</code> to the target library</li>
+<li><code>05-cadence-innovus-pnr</code>: Uses a fixed padring-aware floorplan with
+   I/O cell placement and separate VDD/VSS power rings</li>
+<li><code>11-mentor-calibre-drc</code>: Adds wirebond and metal-fuse DRC checks</li>
+<li><code>12-mentor-calibre-lvs</code>: Uses <code>iocells.sp</code> and <code>lvs-devices.sp</code> for
+   I/O cell SPICE models</li>
+</ul>
+<h3 id="42-design-yaml">4.2. Design YAML</h3>
+<p>Take a look at the design YAML file for the chip-level GCD accelerator:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/designs
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>%<span class="w"> </span>code<span class="w"> </span>lab9-gcd-xcel-chip.yml
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>steps:
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a> - chip/00-padring-gen
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a> - chip/01-pymtl-rtlsim
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a> - chip/02-synopsys-vcs-rtlsim
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a> - chip/03-synopsys-dc-synth
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a> - chip/04-synopsys-vcs-ffglsim
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a> - chip/05-cadence-innovus-pnr
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a> - chip/06-synopsys-pt-sta
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a> - chip/07-synopsys-vcs-baglsim
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a> - chip/08-synopsys-pt-pwr
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a> - chip/09-mentor-calibre-seal
+</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a> - chip/10-mentor-calibre-fill
+</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a> - chip/11-mentor-calibre-drc
+</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a> - chip/12-mentor-calibre-lvs
+</span><span id="__span-21-15"><a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a> - chip/13-summarize-results
+</span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>
+</span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>design_name  : GcdXcelChip_noparam
+</span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a>clock_period : 4.5
+</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a>dump_vcd     : true
+</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a>
+</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a>pymtl_rtlsim: |
+</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a>  pytest ../../../sim/lab5_xcel/test/GcdXcelChip_test.py \
+</span><span id="__span-21-23"><a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a>    --test-verilog --dump-vtb | tee -a run.log
+</span><span id="__span-21-24"><a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a>  ...
+</span><span id="__span-21-25"><a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a>
+</span><span id="__span-21-26"><a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a>tests:
+</span><span id="__span-21-27"><a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a>  - GcdXcelChip_noparam_test_basic
+</span><span id="__span-21-28"><a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a>  - GcdXcelChip_noparam_test_zeros
+</span><span id="__span-21-29"><a id="__codelineno-21-29" name="__codelineno-21-29" href="#__codelineno-21-29"></a>  ...
+</span><span id="__span-21-30"><a id="__codelineno-21-30" name="__codelineno-21-30" href="#__codelineno-21-30"></a>
+</span><span id="__span-21-31"><a id="__codelineno-21-31" name="__codelineno-21-31" href="#__codelineno-21-31"></a>evals:
+</span><span id="__span-21-32"><a id="__codelineno-21-32" name="__codelineno-21-32" href="#__codelineno-21-32"></a> - GcdXcelChip_noparam_gcd-xcel-sim-rtl-chip-zeros
+</span><span id="__span-21-33"><a id="__codelineno-21-33" name="__codelineno-21-33" href="#__codelineno-21-33"></a> - GcdXcelChip_noparam_gcd-xcel-sim-rtl-chip-small
+</span><span id="__span-21-34"><a id="__codelineno-21-34" name="__codelineno-21-34" href="#__codelineno-21-34"></a> - GcdXcelChip_noparam_gcd-xcel-sim-rtl-chip-random
+</span></code></pre></div>
+<p>The design YAML specifies all 14 chip flow steps (note the <code>chip/</code>
+prefix). The design name is <code>GcdXcelChip_noparam</code> and the clock period is
+4.5ns. Note the clock period is slower than the 3.0ns used in the block
+flow because I/O cell delays add overhead. When doing a rigorous
+comparative analysis with the processor we will use the block flow and
+set our clock contraint equal to what the processor can run out. However,
+for the chip flow you are free to use whatever frequency you like as long
+as you can close timing.</p>
+<p>The <code>pymtl_rtlsim</code> section runs both the pytest test suite and the
+simulator with three input patterns (random, small, zeros). The <code>tests</code>
+list and <code>evals</code> list name all 15 tests and 3 evaluations that will be
+run through subsequent simulation steps.</p>
+<h3 id="43-padring-configuration">4.3. Padring Configuration</h3>
+<p>Take a look at the padring configuration file:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/steps/chip/00-padring-gen
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>%<span class="w"> </span>code<span class="w"> </span>padring-config.yaml
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>chip:
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>  pitch: 60
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>  pad_height: 102.4
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>  corner_size: 130
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>  sealring_width: 15
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>  width: 950
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>  height: 950
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>cells:
+</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>  io: PDDW0812CDG
+</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>  clk: PDDW0812SCDG
+</span><span id="__span-23-12"><a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a>  poc: PVDD2POC
+</span><span id="__span-23-13"><a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a>  io_vdd: PVDD2CDG
+</span><span id="__span-23-14"><a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a>  core_vdd: PVDD1CDG
+</span><span id="__span-23-15"><a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a>  common_vss: PVSS3CDG
+</span><span id="__span-23-16"><a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a>  corner: PCORNER
+</span><span id="__span-23-17"><a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a>  pad: PAD60LU_SL_SM
+</span></code></pre></div>
+<p>The chip dimensions are 950um x 950um. The <code>pad_height</code> (102.4um) is the
+height of the I/O cells, the <code>corner_size</code> (130um) is the size of the
+corner cells, and <code>sealring_width</code> (15um) is the width of the seal ring.
+The <code>pitch</code> (60um) is the spacing between bond pads.</p>
+<p>The pad assignments for each side are:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a># Left side pads (bottom to top) -- SPI bus grouped together
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>left:
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>  - CGVSS
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>  - IOVDD
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>  - cs
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>  - sclk
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>  - mosi
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>  - miso
+</span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>  - CRVDD
+</span><span id="__span-24-10"><a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a>  - CGVSS
+</span><span id="__span-24-11"><a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a>
+</span><span id="__span-24-12"><a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a># Right side pads (bottom to top) -- remaining signals
+</span><span id="__span-24-13"><a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a>right:
+</span><span id="__span-24-14"><a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a>  - CGVSS
+</span><span id="__span-24-15"><a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a>  - IOVDD
+</span><span id="__span-24-16"><a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a>  - clk
+</span><span id="__span-24-17"><a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a>  - reset
+</span><span id="__span-24-18"><a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a>  - clk_out
+</span><span id="__span-24-19"><a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a>  - minion_parity
+</span><span id="__span-24-20"><a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a>  - adapter_parity
+</span><span id="__span-24-21"><a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a>  - UNBONDED
+</span></code></pre></div>
+<p>Each side has a mix of signal pads and power/ground pads. The pad types
+are:</p>
+<ul>
+<li><code>CGVSS</code>: Common ground pad</li>
+<li><code>IOVDD</code>: I/O voltage power pad</li>
+<li><code>CRVDD</code>: Core voltage power pad</li>
+<li><code>POC</code>: Power-on-control pad (exactly one required)</li>
+<li><code>UNBONDED</code>: Unbonded I/O VDD pad (used for pad count balance)</li>
+<li>Signal names (e.g., <code>cs</code>, <code>sclk</code>): Signal I/O pads</li>
+</ul>
+<p>The top and bottom sides contain only power/ground pads. The SPI bus
+signals are grouped on the left side for clean routing, while the clock,
+reset, and parity signals are on the right side. This setup will likely not
+be the final padring we use for the tapeouts, but it provides a reasonable
+organization for the purposes of this lab and early trials for your own
+accelerators.</p>
+<h2 id="5-running-the-chip-flow">5. Running the Chip Flow</h2>
+<p>Let's generate the chip flow scripts:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/lab9-gcd-xcel-chip.yml
+</span></code></pre></div>
+<p>Just like the block flow, pyhflow copies the step template directories
+into the build directory and applies Jinja2 template substitution. For
+example, let's see how the synthesis script was filled in:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>%<span class="w"> </span>code<span class="w"> </span><span class="m">03</span>-synopsys-dc-synth/run.tcl
+</span></code></pre></div>
+<p>Notice how <code>{{ design_name }}</code> has been replaced with
+<code>GcdXcelChip_noparam</code> and <code>{{ clock_period }}</code> has been replaced with
+<code>4.5</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>analyze -format sverilog ../01-pymtl-rtlsim/GcdXcelChip_noparam__pickled.v
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>elaborate GcdXcelChip_noparam
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>...
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>create_clock [get_ports clk] -name ideal_clock1 -period 4.5
+</span></code></pre></div>
+<h3 id="51-padring-generation">5.1. Padring Generation</h3>
+<p>Let's run the padring generation step:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>%<span class="w"> </span>./00-padring-gen/run
+</span></code></pre></div>
+<p>The <code>run-padring-gen.py</code> script reads the <code>padring-config.yaml</code> and
+generates two output files:</p>
+<ul>
+<li><code>padring_gen.io</code>: An I/O assignment file that tells Cadence Innovus
+   where to place the I/O cells (used during <code>init_design</code>)</li>
+<li><code>padring_gen.tcl</code>: A Tcl script that places bond pads at computed
+   positions and adds route blockages in the I/O cell regions</li>
+</ul>
+<p>Take a look at these files.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>%<span class="w"> </span>code<span class="w"> </span>./00-padring-gen/padring_gen.io
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>%<span class="w"> </span>code<span class="w"> </span>./00-padring-gen/padring_gen.tcl
+</span></code></pre></div>
+<p>These files are consumed later during the place-and-route step.</p>
+<h3 id="52-chip-front-end-flow">5.2. Chip Front-End Flow</h3>
+<p>We are
+now ready to run steps 1-4. Run each step one at a time looking for
+errors.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>%<span class="w"> </span>./01-pymtl-rtlsim/run
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>%<span class="w"> </span>./02-synopsys-vcs-rtlsim/run
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>%<span class="w"> </span>./03-synopsys-dc-synth/run
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>%<span class="w"> </span>./04-synopsys-vcs-ffglsim/run
+</span></code></pre></div>
+<h3 id="53-chip-back-end-flow">5.3. Chip Back-End Flow</h3>
+<p>For the place-and-route step we will be using the GUI to be able to see
+the results.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip/05-cadence-innovus-pnr
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>%<span class="w"> </span>innovus
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>innovus&gt;<span class="w"> </span><span class="nb">set</span><span class="w"> </span>interactive<span class="w"> </span><span class="m">1</span>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>innovus&gt;<span class="w"> </span><span class="nb">source</span><span class="w"> </span>run.tcl
+</span></code></pre></div>
+<p>When using interactive pause mode, the <code>run.tcl</code> script will run one
+stage at a time and then pause. You can inspect the results and type <code>go</code>
+when you are ready to move on to the next stage. Once you have finished
+check the timing and area reports:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">05</span>-cadence-innovus-pnr/timing-setup.rpt
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">05</span>-cadence-innovus-pnr/timing-hold.rpt
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">05</span>-cadence-innovus-pnr/area.rpt
+</span></code></pre></div>
+<p>Verify that both setup and hold slack are positive. Also check the log
+output for <code>verifyConnectivity</code>, <code>verify_drc</code>, and <code>verify_antenna</code>
+to make sure there are no errors.</p>
+<p>Take a closer look at the hierarchical area report:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">05</span>-cadence-innovus-pnr/area.rpt
+</span></code></pre></div>
+<p>The area report shows a breakdown by module. Here is a simplified view
+of the key modules:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a> Hinst Name              Module Name                                      Total Area
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a> ---------------------------------------------------------------------------------------
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a> GcdXcelChip_noparam                                                      77282.579
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>   v/clk_io              InputIO_is_clk1                                   5113.171
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>   v/reset_io            InputIO_3                                         5113.171
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>   v/cs_io               InputIO_2                                         5113.171
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>   v/sclk_io             InputIO_1                                         5113.171
+</span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a>   v/mosi_io             InputIO_0                                         5113.171
+</span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a>   v/miso_io             OutputIO_2                                        5121.952
+</span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a>   v/minion_parity_io    OutputIO_1                                        5135.123
+</span><span id="__span-34-11"><a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a>   v/adapter_parity_io   OutputIO_0                                        5106.586
+</span><span id="__span-34-12"><a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a>   v/clk_out_io          OutputIO_is_clk1                                  5124.147
+</span><span id="__span-34-13"><a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a>   v/minion              spi_Minion_BIT_WIDTH38_N_SAMPLES4                 21627.110
+</span><span id="__span-34-14"><a id="__codelineno-34-14" name="__codelineno-34-14" href="#__codelineno-34-14"></a>     v/minion/adapter1   spi_helpers_Minion_Adapter_...                    15563.968
+</span><span id="__span-34-15"><a id="__codelineno-34-15" name="__codelineno-34-15" href="#__codelineno-34-15"></a>     v/minion/minion     spi_helpers_Minion_PushPull_...                    6063.142
+</span><span id="__span-34-16"><a id="__codelineno-34-16" name="__codelineno-34-16" href="#__codelineno-34-16"></a>   v/xcel                lab5_xcel_GcdXcel                                  9349.357
+</span><span id="__span-34-17"><a id="__codelineno-34-17" name="__codelineno-34-17" href="#__codelineno-34-17"></a>     v/xcel/gcd          tut3_verilog_gcd_GcdUnit                          4432.109
+</span><span id="__span-34-18"><a id="__codelineno-34-18" name="__codelineno-34-18" href="#__codelineno-34-18"></a>     v/xcel/mngr         lab5_xcel_GcdXcelMngr                             4910.662
+</span></code></pre></div>
+<p>Notice how the area breaks down across the chip:</p>
+<ul>
+<li><strong>I/O pads:</strong> ~46,000 um^2 (9 pads at ~5,100 um^2 each) -- this
+   dominates the total area at about 60%</li>
+<li><strong>SPI minion:</strong> ~21,600 um^2 (~28% of total area) -- the SPI
+   interface is surprisingly large, with the adapter queues
+   (<code>adapter1</code>) consuming ~15,600 um^2 and the push/pull shift
+   registers (<code>minion</code>) consuming ~6,100 um^2</li>
+<li><strong>GCD accelerator:</strong> ~9,300 um^2 (~12% of total area) -- the actual
+   compute logic is a small fraction of the total chip</li>
+</ul>
+<p>This is a common pattern in chip design: the I/O infrastructure and
+communication interfaces often dominate the area, while the actual
+compute logic is relatively small. When you push your own accelerator
+through the chip flow, you should look at this area breakdown to
+understand how much area your accelerator adds compared to the I/O and
+SPI overhead.</p>
+<p>We can now complete the remaining steps of the chip flow using the run
+scripts.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>%<span class="w"> </span>./06-synopsys-pt-sta/run
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>%<span class="w"> </span>./07-synopsys-vcs-baglsim/run
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>%<span class="w"> </span>./08-synopsys-pt-pwr/run
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>%<span class="w"> </span>./09-mentor-calibre-seal/run
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>%<span class="w"> </span>./10-mentor-calibre-fill/run
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>%<span class="w"> </span>./11-mentor-calibre-drc/run
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a>%<span class="w"> </span>./12-mentor-calibre-lvs/run
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a>%<span class="w"> </span>./13-summarize-results/run
+</span></code></pre></div>
+<p>Take a close look at the results summary. For a chip to be eligible for
+tapeout, the following must all be true:</p>
+<ul>
+<li>All PyMTL 2-state RTL simulations pass</li>
+<li>All four-state RTL simulations pass</li>
+<li>All fast-functional gate-level simulations pass</li>
+<li>All back-annotated gate-level simulations pass</li>
+<li>Place-and-route setup slack is positive</li>
+<li>Place-and-route hold slack is positive</li>
+<li>PrimeTime setup slack is positive</li>
+<li>PrimeTime hold slack is positive</li>
+<li>All four DRC types pass (zero violations)</li>
+<li>LVS passes (CORRECT)</li>
+</ul>
+<p>If your design does not meet timing after synthesis but <em>does</em> meet
+timing after place-and-route then these are still valid results. If
+PrimeTime STA passes timing but Innovus fails timing, <strong>this is not
+valid -- you must go back and modify your design to fix this.</strong></p>
+<h3 id="54-viewing-the-chip-layout">5.4. Viewing the Chip Layout</h3>
+<p>You can load the design in Cadence Innovus for interactive debugging:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip/05-cadence-innovus-pnr
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>%<span class="w"> </span>innovus
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>innovus&gt;<span class="w"> </span><span class="nb">source</span><span class="w"> </span>post-pnr.enc
+</span></code></pre></div>
+<p>Use <em>Windows &gt; Workspaces &gt; Design Browser + Physical</em> to browse the
+design hierarchy. Right click on a module and choose <em>Highlight</em> to
+color different modules. You can use <em>Timing &gt; Debug Timing</em> to
+visualize the critical path on the layout.</p>
+<p>You can use Klayout to view the chip layout at various stages:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip/05-cadence-innovus-pnr
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/klayout.lyp<span class="w"> </span>post-pnr.gds
+</span></code></pre></div>
+<p>You should see the core logic in the center surrounded by I/O cells
+around the perimeter. You can use <em>Display &gt; Full Hierarchy</em> to show all
+layout detail including standard cell internals.</p>
+<p>To see the final layout with seal ring and fill:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab9/asic/build-gcd-xcel-chip/10-mentor-calibre-fill
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/klayout.lyp<span class="w"> </span>post-filled.gds
+</span></code></pre></div>
+<h2 id="6-todo-on-your-own">6. Todo On Your Own</h2>
+<p>We have pushed the chip flow files to your project 2 repos. Go ahead and
+implement the chip top-level module for project 2 in the same way you did
+for the GCD accelerator. Then try pushing project 2 through the chip flow
+as you start pushing towards tapeout!</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

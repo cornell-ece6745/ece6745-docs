@@ -1,0 +1,3103 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-lab7/">
+      
+      
+        <link rel="next" href="../ece6745-lab9/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Lab 8: Block Flow - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-lab-8-commercial-block-flow" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Lab 8: Block Flow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-lab1/" class="md-tabs__link">
+          
+  
+  
+  Labs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-project1a/" class="md-tabs__link">
+          
+  
+  
+  Projects
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tinyflow-180nm-drm/" class="md-tabs__link">
+          
+  
+  
+  Misc
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6950-lab1/" class="md-tabs__link">
+          
+  
+  
+  Chip Testing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 0: ECE Linux Server Remote Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 1: Linux Development Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 2: Git Distributed Version Control System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: Full-Custom Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 2: Standard-Cell Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 3: Tiny Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 4: Tiny Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 5: TinyRV2 Accelerators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 6: Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 7: Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 8: Block Flow
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 8: Block Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-logging-into-ecelinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Logging Into ecelinux
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-sram-generator-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. SRAM Generator Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. SRAM Generator Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-openram-sram-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. OpenRAM SRAM Generator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-commercial-sram-compiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. Commercial SRAM Compiler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-sram-rtl-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4. SRAM RTL Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-srams-w-asic-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. SRAMs w/ ASIC Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-automated-asic-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Automated ASIC Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Automated ASIC Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-running-asic-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Running ASIC Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-interactive-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Interactive Debugging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-key-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Key Reports
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-gcd-accelerator-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. GCD Accelerator Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. GCD Accelerator Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-baseline-rtl-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Baseline RTL Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-alternative-rtl-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Alternative RTL Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-baseline-asic-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Baseline ASIC Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-alternative-asic-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4. Alternative ASIC Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5. Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-processor-with-caches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Processor with Caches
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab9/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 9: Chip Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: TinyFlow Standard Cells
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: TinyFlow Front End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: TinyFlow Back End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2: Xcel Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 2: Xcel Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: Software & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: Xcel RTL Milestone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: Xcel RTL Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part D: ASIC Evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2e/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part E: Tape-Out and Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Misc
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tinyflow-180nm-drm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tinyflow 180nm Design Rules Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2-ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2 Ideas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip Testing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chip Testing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6950-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: FPGA Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-logging-into-ecelinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Logging Into ecelinux
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-sram-generator-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. SRAM Generator Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. SRAM Generator Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-openram-sram-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. OpenRAM SRAM Generator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-commercial-sram-compiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. Commercial SRAM Compiler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-sram-rtl-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4. SRAM RTL Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-srams-w-asic-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. SRAMs w/ ASIC Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-automated-asic-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Automated ASIC Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Automated ASIC Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-running-asic-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Running ASIC Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-interactive-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Interactive Debugging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-key-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Key Reports
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-gcd-accelerator-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. GCD Accelerator Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. GCD Accelerator Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-baseline-rtl-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Baseline RTL Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-alternative-rtl-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Alternative RTL Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-baseline-asic-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Baseline ASIC Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-alternative-asic-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4. Alternative ASIC Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5. Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-processor-with-caches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Processor with Caches
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-lab-8-commercial-block-flow">ECE 6745 Lab 8: Commercial Block Flow</h1>
+<p>In this lab, we will be learning about SRAM generators and how to
+automate using the ASIC flow, before doing comparative analysis of the
+GCD accelerator developed in previous labs.</p>
+<ul>
+<li>
+<p><strong>SRAM Compilers:</strong> Small memories can be easily synthesized using
+    flip-flop or latch standard cells, but synthesizing large memories
+    can significantly impact the area, energy, and timing of the overall
+    design. ASIC designers often use SRAM generators to "generate" arrays
+    of memory bitcells and the corresponding peripheral circuitry (e.g.,
+    address decoders, bitline drivers, sense amps) which are combined
+    into what is called an "SRAM macro". These SRAM generators are
+    parameterized to enable generating a wide range of SRAM macros with
+    different numbers of rows, columns, and column muxes, as well as
+    optional support for partial writes, built-in self-test, and error
+    correction. Similar to a standard-cell library, an SRAM generator
+    must generate not just layout but also the six views: behavioral,
+    schematic, layout, extracted schematic, front-end, and back-end.
+    These views can then by used by the ASIC tools to produce a complete
+    design which includes a mix of both standard cells and SRAM macros.
+    We will first see how to use the open-source OpenRAM memory generator
+    to generate various views of an SRAM macro. Then we will see how to
+    use SRAMs in our RTL designs. Finally, we will put the these two
+    pieces together to combine synthesizable RTL with SRAM macros and
+    push the composition through the ASIC toolflow.</p>
+</li>
+<li>
+<p><strong>ASIC Automated Flow:</strong> We will also go over the ASIC automated flow.
+   In the previous labs, we manually entered commands for each tool to
+   take a design from RTL to layout. Flow scripts can help automate the
+   process but copying and modifying these flow scripts for every design
+   is tedious and error prone. An agile hardware design flow demands
+   automation to simplify rapidly exploring the area, energy, timing
+   design space of one or more designs. In this section, we will
+   introduce a simple tool called pyhflow which takes as input a <em>step
+   templates</em> and a <em>design YAML</em> and generates appropriate flow scripts.</p>
+</li>
+<li>
+<p><strong>GCD Accelerator:</strong> Finally, we will complete a rigorous comparative
+   analysis of the GCD accelerator developed in the previous labs. We
+   will push the GCD accelerator through the flow using pyhflow to
+   analyze its area, energy, and performance in isolation. We will then
+   push two larger designs through the flow using pyhflow: the baseline
+   processor and processor+accelerator composition. We can then compare
+   the area, energy, and performance of the software baseline to the
+   accelerator.</p>
+</li>
+</ul>
+<p>The following diagrams illustrate the primary tools we have already seen
+in the previous labs. Notice that the ASIC tools all require various
+views from the standard-cell library. Using the SRAM generator will
+involve adding an initial step to generate the necessary SRAM views.</p>
+<p><img alt="" src="../img/T08-full-flow.png" /></p>
+<p>Extensive documentation is provided by Synopsys, Cadence, and Siemens for
+these ASIC tools. We have organized this documentation and made it
+available to you on the public course webpage:</p>
+<ul>
+<li><a href="https://www.csl.cornell.edu/courses/ece6745/asicdocs">https://www.csl.cornell.edu/courses/ece6745/asicdocs</a></li>
+</ul>
+<h2 id="1-logging-into-ecelinux">1. Logging Into <code>ecelinux</code></h2>
+<div class="admonition warning">
+<p class="admonition-title">Students MUST work in pairs!</p>
+<p>You MUST work in pairs for this lab, as having too many instances of
+Innovus open at once can cause the <code>ecelinux</code> servers to crash. So
+find a partner and work together at a workstation to complete today's
+lab.</p>
+</div>
+<p>Follow the same process as previous labs. Find a free workstation and log
+into the workstation using your NetID and standard NetID password. Then
+complete the following steps.</p>
+<ul>
+<li>Start VS Code</li>
+<li>Install the Remote-SSH extension, Surfer, Python, and Verilog extensions</li>
+<li>Use View &gt; Command Palette to execute Remote-SSH: Connect Current Window to Host...</li>
+<li>Enter netid@ecelinux-XX.ece.cornell.edu where XX is an ecelinux server number</li>
+<li>Use View &gt; Explorer to open your home directory on ecelinux</li>
+<li>Use View &gt; Terminal to open a terminal on ecelinux</li>
+<li>Start MS Remote Desktop</li>
+</ul>
+<p>Now use the following commands to clone the repo we will be using for
+today's lab.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/ece6745-lab8<span class="w"> </span>lab8
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>lab8
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>To make it easier to cut-and-paste commands from this handout onto the
+command line, you can tell Bash to ignore the <code>%</code> character using the
+following command:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span><span class="nb">alias</span><span class="w"> </span>%<span class="o">=</span><span class="s2">""</span>
+</span></code></pre></div>
+<h2 id="2-sram-generator-flow">2. SRAM Generator Flow</h2>
+<p>Just as with standard-cell libraries, acquiring real SRAM generators is a
+complex and potentially expensive process. It requires gaining access to
+a specific fabrication technology, negotiating with a company which makes
+the SRAM generator, and usually signing multiple non-disclosure
+agreements. The OpenRAM memory generator is based on the same "fake" 45nm
+technology that we are using for the Nangate standard-cell library. We
+will first be using OpenRAM so we can see how an SRAM generator works and
+then look at the resulting front- and back-end views. We will then
+transition to using a commercial SRAM generator with the ASIC flow. Due
+to licensing issues, we do not have access to the GDS layout view for the
+commercial SRAMs, but we can still use in them in the ASIC flow and our
+resulting final GDS will just have an empty hole where the SRAM layout
+would go.</p>
+<h3 id="21-openram-sram-generator">2.1. OpenRAM SRAM Generator</h3>
+<p>An SRAM generator takes as input a configuration file which specifies the
+various parameters for the desired SRAM macro. Create a configuration
+file with the following content using VS Code. You should name your file
+<code>SRAM_128x32_1rw_cfg.py</code> and it should be located in the directory shown
+below.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/openram
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>%<span class="w"> </span>code<span class="w"> </span>SRAM_128x32_1rw_cfg.py
+</span></code></pre></div>
+<p>The configuration file should look like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>use_conda       = False
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>num_rw_ports    = 1
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>num_r_ports     = 0
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>num_w_ports     = 0
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>word_size       = 32
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>num_words       = 128
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>num_banks       = 1
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>words_per_row   = 4
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>write_size      = 8
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>tech_name       = "freepdk45"
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>process_corners = ["TT"]
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>supply_voltages = [1.1]
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>temperatures    = [25]
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>route_supplies  = True
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>check_lvsdrc    = False
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>output_path     = "SRAM_128x32_1rw"
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>output_name     = "SRAM_128x32_1rw"
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>instance_name   = "SRAM_128x32_1rw"
+</span></code></pre></div>
+<p>In this example, we are generating a single-ported SRAM which has 128
+rows and 32 bits per row for a total capacity of 4096 bits or 512B. This
+size is probably near the cross-over point where you might transition
+from using synthesized memories to SRAM macros. OpenRAM will take this
+configuration file as input and generate many different views of the SRAM
+macro including: Verilog behavioral view (<code>.v</code>), SPICE schematic view
+(<code>.sp</code>), GDS layout view (<code>.gds</code>), Liberty front-end view (<code>.lib</code>), and a
+LEF back-end view (<code>.lef</code>). These views can then be used by the ASIC
+tools.</p>
+<p>You can use the following command to run the OpenRAM memory generator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/openram
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>%<span class="w"> </span>openram<span class="w"> </span>-v<span class="w"> </span>-v<span class="w"> </span>SRAM_128x32_1rw_cfg.py
+</span></code></pre></div>
+<p>It will take about 4-5 minutes to generate the SRAM macro. You can see
+the resulting views here:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/openram/SRAM_128x32_1rw
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>%<span class="w"> </span>ls<span class="w"> </span>-1
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>SRAM_128x32_1rw.gds
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>SRAM_128x32_1rw.lef
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>SRAM_128x32_1rw.sp
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>SRAM_128x32_1rw_TT_1p1V_25C.lib
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>SRAM_128x32_1rw.v
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>SRAM_128x32_1rw.html
+</span></code></pre></div>
+<p>You can find more information about the OpenRAM memory generator on the
+project's webpage here:</p>
+<ul>
+<li><a href="https://openram.org">https://openram.org</a></li>
+</ul>
+<p>Or in this research paper:</p>
+<ul>
+<li>M. Guthaus et. al, "OpenRAM: An Open-Source Memory Compiler", Int'l
+   Conf. on Computer-Aided Design (ICCAD), Nov. 2016.
+   (https://doi.org/10.1145/2966986.2980098)</li>
+</ul>
+<p>The following excerpt from the paper illustrates the microarchitecture
+used in the single-port SRAM macro.</p>
+<p><img alt="" src="../img/tut10-openram-sram-uarch.png" /></p>
+<p>The functionality of the pins are as follows:</p>
+<ul>
+<li><code>clk</code>: clock</li>
+<li><code>WEb</code>: write enable (active low)</li>
+<li><code>OEb</code>: output enable (active low)</li>
+<li><code>CSb</code>: whole SRAM enable (active low)</li>
+<li><code>ADDR</code>: address</li>
+<li><code>DATA</code>: read/write data</li>
+</ul>
+<p>Notice that there is a single address, and a single read/write data bus.
+This SRAM macro has a single read/write port and only supports executing
+a single transaction at a time. The following excerpt from the paper
+shows the timing diagram for a read and write transaction.</p>
+<p><img alt="" src="../img/tut10-openram-sram-timing.png" /></p>
+<p>Prof. Batten will explain this timing diagram in more detail, especially
+the important distinction between a <em>synchronous</em> read SRAM and a
+<em>combinational</em> read register file. Take a few minutes to look at the
+Verilog behavioral view. See if you can see how this models a synchronous
+read SRAM.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/openram/SRAM_128x32_1rw
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>%<span class="w"> </span>code<span class="w"> </span>SRAM_128x32_1rw.v
+</span></code></pre></div>
+<p>You can take a look at the generated transistor-level netlist for a
+single bit-cell in the schematic view:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/openram/SRAM_128x32_1rw
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span>less<span class="w"> </span>-p<span class="w"> </span><span class="s2">" cell_1rw "</span><span class="w"> </span>SRAM_128x32_1rw.sp
+</span></code></pre></div>
+<p>Now let's use Klayout look at the actual layout view produced by the
+OpenRAM memory generator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/openram/SRAM_128x32_1rw
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="si">${</span><span class="nv">FREEPDK_45NM</span><span class="si">}</span>/klayout.lyp<span class="w"> </span>SRAM_128x32_1rw.gds
+</span></code></pre></div>
+<p>Take a quick look at the <code>.lib</code> file and the <code>.lef</code> file for the SRAM
+macro.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-sram/00-openram-memgen/SRAM_128x32_1rw
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>code<span class="w"> </span>SRAM_128x32_1rw_TT_1p1V_25C.lib
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>%<span class="w"> </span>code<span class="w"> </span>SRAM_128x32_1rw.lef
+</span></code></pre></div>
+<h3 id="23-commercial-sram-compiler">2.3. Commercial SRAM Compiler</h3>
+<p>You can find pregenerated views for various SRAMs here:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>%<span class="w"> </span>ls<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/srams
+</span></code></pre></div>
+<p>Take a look at the Verilog view, front-end view, and back-end view for
+the commercial SRAM with 128 words and 32 bits/word.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span>code<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/srams/SRAM_128x32_1rw.v
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span>code<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/srams/SRAM_128x32_1rw.lib
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>%<span class="w"> </span>code<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/srams/SRAM_128x32_1rw.lef
+</span></code></pre></div>
+<p>These files are similar in spirit to what we saw when using OpenRAM. Now
+take a look at the PDF databook which is also generated by the commercial
+SRAM generator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>%<span class="w"> </span>evince<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/srams/SRAM_128x32_1rw.pdf
+</span></code></pre></div>
+<h3 id="24-sram-rtl-models">2.4. SRAM RTL Models</h3>
+<p>Now that we understand how SRAM generators work, let's see see how to
+reference an SRAM in Verilog RTL. Our basic SRAMs are located in the
+<code>sim/sram</code> subdirectory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/sim/sram
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>%<span class="w"> </span>ls
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>...
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>SRAM_generic.v
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>SRAM.v
+</span></code></pre></div>
+<p>Take a look the interface of the SRAM in <code>SRAM.v</code>.</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">module</span><span class="w"> </span><span class="n">sram_SRAM</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="p">#(</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="k">parameter</span><span class="w"> </span><span class="n">p_num_entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">256</span><span class="p">,</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span><span class="k">parameter</span><span class="w"> </span><span class="n">p_data_nbits</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">32</span><span class="p">,</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">  </span><span class="c1">// Local constants not meant to be set from outside the module</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">  </span><span class="k">parameter</span><span class="w"> </span><span class="n">c_addr_nbits</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">$clog2</span><span class="p">(</span><span class="n">p_num_entries</span><span class="p">),</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">  </span><span class="k">parameter</span><span class="w"> </span><span class="n">c_data_nbytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">p_data_nbits</span><span class="o">+</span><span class="mh">7</span><span class="p">)</span><span class="o">/</span><span class="mh">8</span><span class="w"> </span><span class="c1">// $ceil(p_data_nbits/8)</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="p">)(</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w">                        </span><span class="n">clk</span><span class="p">,</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w">                        </span><span class="n">reset</span><span class="p">,</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w">                        </span><span class="n">port0_val</span><span class="p">,</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w">                        </span><span class="n">port0_type</span><span class="p">,</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="p">[</span><span class="n">c_addr_nbits</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">     </span><span class="n">port0_idx</span><span class="p">,</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="p">[(</span><span class="n">p_data_nbits</span><span class="o">/</span><span class="mh">8</span><span class="p">)</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="n">port0_wben</span><span class="p">,</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="p">[</span><span class="n">p_data_nbits</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">     </span><span class="n">port0_wdata</span><span class="p">,</span>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="w">  </span><span class="k">output</span><span class="w"> </span><span class="kt">logic</span><span class="w"> </span><span class="p">[</span><span class="n">p_data_nbits</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">     </span><span class="n">port0_rdata</span>
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a><span class="p">);</span>
+</span></code></pre></div>
+<p>The SRAM model is parameterized by the number of words and the bits per
+word, and has the following pin-level interface:</p>
+<ul>
+<li><code>port0_val</code>: port enable</li>
+<li><code>port0_type</code>: transaction type (0 = read, 1 = write)</li>
+<li><code>port0_idx</code>: which row to read/write</li>
+<li><code>port0_wben</code>: write byte enables</li>
+<li><code>port0_wdata</code>: write data</li>
+<li><code>port0_rdata</code>: read data</li>
+</ul>
+<p>Now look at the implementation of the SRAM. You will see a generate if
+statement which uses the parameters to either (1) instantiate a specific
+SRAM macro or (2) instantiate a generic SRAM. It is critical that the
+name of the specific SRAM macro matches the name generated by SRAM
+generator. In this lab, we will be generating an SRAM with 128 words each
+of which is 32 bits, and we can see that this SRAM macro is already
+included. Take a look at the implementation in <code>SRAM_128x32_1rw.v</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/sim/sram
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span>code<span class="w"> </span>SRAM_128x32_1rw.v
+</span></code></pre></div>
+<p>The most important part is these Verilog preprocessor directives.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>`ifndef SYNTHESIS
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>...
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>`endif
+</span></code></pre></div>
+<p>What this means is that the implementation of this module will be used
+for RTL simulation but <em>not</em> for synthesis. We don't want to synthesize
+the SRAM into flip-flops, we want to use the generated SRAM macro.</p>
+<p>Let's run the tests for the specific SRAM we will be using in this lab.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/sim/build
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/sim/build
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../sram/test/SRAM_test.py<span class="w"> </span>-k<span class="w"> </span>test_direct_128x32<span class="w"> </span>-s
+</span></code></pre></div>
+<p>You can run the random test like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/sim/build
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../sram/test/SRAM_test.py<span class="w"> </span>-k<span class="w"> </span>test_random<span class="o">[</span><span class="m">128</span>-32<span class="o">]</span><span class="w"> </span>-s
+</span></code></pre></div>
+<p>SRAMs use a latency <em>sensitive</em> interface meaning a user must carefully
+manage the timing for correct operation (i.e., set the read address and
+then exactly one cycle later use the read data). In addition, the SRAM
+cannot be "stalled". To illustrate how to use SRAM macros, we will create
+a latency <em>insensitive</em> minion wrapper around an SRAM which enables
+writing and reading the SRAM using our standard memory messages. The
+following figure illustrates our approach to implementing this wrapper:</p>
+<p><img alt="" src="../img/tut10-sram-valrdy-wrapper-uarch2.png" /></p>
+<p>Here is a pipeline diagram that illustrates how this works.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a> cycle : 0  1  2  3  4  5  6  7  8
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a> msg a : M0 Mx
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a> msg b :    M0 Mx
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a> msg c :       M0 M1 M2 M2 M2
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a> msg d :          M0 M1 q  q  M2     # msg c is in skid buffer
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a> msg e :             M0 M0 M0 M0 Mx
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a> cycle M0 M1 [q ] M2
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>    0: a
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>    1: b  a       a  # a flows through bypass queue
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>    2: c  b       b  # b flows through bypass queue
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>    3: d  c          # M2 is stalled, c will need to go into bypq
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>    4: e  d    c     #
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>    5: e      dc     # d skids behind c into the bypq
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>    6: e       d  c  # c is dequeued from bypq
+</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>    7: e          d  # d is dequeued from bypq
+</span><span id="__span-19-17"><a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a>    8:    e       e  # e flows through bypass queue
+</span></code></pre></div>
+<p>Take a closer look at the SRAM minion wrapper we provide you.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/sim/lab8_sram
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>%<span class="w"> </span>less<span class="w"> </span>SRAMMinion.v
+</span></code></pre></div>
+<p>To use an SRAM, simply include <code>sram/SRAM.v</code>, instantiate the SRAM, and
+set the number of words and number of bits per word. Here is what the
+instantiation of the SRAM looks like in the wrapper.</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="no">`include</span><span class="w"> </span><span class="s">"sram/SRAM.v"</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="p">...</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="n">sram_SRAM</span><span class="p">#(</span><span class="mh">128</span><span class="p">,</span><span class="mh">32</span><span class="p">)</span><span class="w"> </span><span class="n">sram</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="p">(</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">  </span><span class="p">.</span><span class="n">clk</span><span class="w">         </span><span class="p">(</span><span class="n">clk</span><span class="p">),</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">  </span><span class="p">.</span><span class="n">reset</span><span class="w">       </span><span class="p">(</span><span class="n">reset</span><span class="p">),</span>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">  </span><span class="p">.</span><span class="n">port0_idx</span><span class="w">   </span><span class="p">(</span><span class="n">sram_addr_M0</span><span class="p">),</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="w">  </span><span class="p">.</span><span class="n">port0_type</span><span class="w">  </span><span class="p">(</span><span class="n">sram_wen_M0</span><span class="p">),</span>
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="w">  </span><span class="p">.</span><span class="n">port0_val</span><span class="w">   </span><span class="p">(</span><span class="n">sram_en_M0</span><span class="p">),</span>
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="w">  </span><span class="p">.</span><span class="n">port0_wben</span><span class="w">  </span><span class="p">(</span><span class="n">sram_wben_M0</span><span class="p">),</span>
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="w">  </span><span class="p">.</span><span class="n">port0_wdata</span><span class="w"> </span><span class="p">(</span><span class="n">memreq_msg_data_M0</span><span class="p">),</span>
+</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a><span class="w">  </span><span class="p">.</span><span class="n">port0_rdata</span><span class="w"> </span><span class="p">(</span><span class="n">sram_read_data_M1</span><span class="p">)</span>
+</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="p">);</span>
+</span></code></pre></div>
+<p>We can run a test on the SRAM minion wrapper like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="w"> </span>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/sim/build
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w"> </span>%<span class="w"> </span>pytest<span class="w"> </span>../lab8_sram/test/SRAMMinion_test.py<span class="w"> </span>-k<span class="w"> </span>random_0_3<span class="w"> </span>-s
+</span></code></pre></div>
+<p>Here is what the trace output should look like.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>  1r                           &gt; (  (). ) &gt; .
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>  2r                           &gt; (  (). ) &gt; .
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>  3:                           &gt; (  (). ) &gt; .
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>  4: wr:00:00000000:0:55fceed9 &gt; (wr(). ) &gt; .
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>  5: wr:01:00000004:0:5bec8a7b &gt; (wr()# ) &gt; #
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>  6: #                         &gt; (# ()# ) &gt; #
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>  7: #                         &gt; (# ()wr) &gt; wr:00:0:0:
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>  8: #                         &gt; (# ()# ) &gt; #
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>  9: #                         &gt; (# ()# ) &gt; #
+</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a> 10: #                         &gt; (# ()# ) &gt; #
+</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a> 11: #                         &gt; (# ()wr) &gt; wr:01:0:0:
+</span><span id="__span-23-12"><a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a> 12: wr:02:00000008:0:b1aa20f1 &gt; (wr(). ) &gt; .
+</span><span id="__span-23-13"><a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a> 13: wr:03:0000000c:0:a5b6b6bb &gt; (wr()# ) &gt; #
+</span><span id="__span-23-14"><a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a> 14: #                         &gt; (# ()# ) &gt; #
+</span><span id="__span-23-15"><a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a> 15: #                         &gt; (# ()wr) &gt; wr:02:0:0:
+</span></code></pre></div>
+<p>The first write transaction takes a single cycle to go through the SRAM
+minion wrapper, but then the response interface is not ready on cycles
+5-6. The second write transaction is still accepted by the SRAM minion
+wrapper and it will end up in the bypass queue, but the later
+transactions are stalled because the request interface is not ready. No
+transactions are lost.</p>
+<h3 id="23-srams-w-asic-flow">2.3. SRAMs w/ ASIC Flow</h3>
+<p>Let's now push the SRAMMinion through the ASIC flow. First step is to
+copy the pregenerated commercial SRAMs into our playground.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/sram/00-artisan-sramgen
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>%<span class="w"> </span>cp<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/srams/*<span class="w"> </span>.
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>Now<span class="w"> </span>we<span class="w"> </span>need<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>an<span class="w"> </span>interactive<span class="w"> </span>simulator<span class="w"> </span>to<span class="w"> </span>generate<span class="w"> </span>the<span class="w"> </span>Verilog<span class="w"> </span>RTL
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>design<span class="w"> </span>and<span class="w"> </span>Verilog<span class="w"> </span>testbench.
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="sb">```</span>bash
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/sram/01-pymtl-rtlsim
+</span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>%<span class="w"> </span>../../../../sim/lab8_sram/sram-sim<span class="w"> </span>--impl<span class="w"> </span>rtl<span class="w"> </span>--input<span class="w"> </span>random<span class="w"> </span>--translate<span class="w"> </span>--dump-vtb
+</span></code></pre></div>
+<p>We use Synopsys VCS for four-state RTL simulation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/sram/02-synopsys-vcs-rtlsim
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>%<span class="w"> </span>vcs<span class="w"> </span>-sverilog<span class="w"> </span>-xprop<span class="o">=</span>tmerge<span class="w"> </span>-override_timescale<span class="o">=</span>1ns/1ps<span class="w"> </span>-top<span class="w"> </span>Top<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">  </span>+vcs+dumpvars+waves.vcd<span class="w"> </span>-o<span class="w"> </span>simv<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">  </span>+incdir+../01-pymtl-rtlsim<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">  </span>../01-pymtl-rtlsim/SRAMMinion_noparam__pickled.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">  </span>../01-pymtl-rtlsim/SRAMMinion_noparam_sram-rtl-random_tb.v
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>%<span class="w"> </span>./simv
+</span></code></pre></div>
+<p>Now we are ready for to use Synopsys DC for synthesis. Go ahead and start
+the Synopsys DC REPL.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/sram/03-synopsys-dc-synth
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>%<span class="w"> </span>dc_shell-xg-t
+</span></code></pre></div>
+<p>Here are the setup commands. The key difference from earlier labs is that
+now we have to include the front-end views for <em>both</em> the standard cells
+and the SRAM macros.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>dc_shell&gt; set_app_var target_library "$env(TSMC_180NM)/stdcells.db ../00-artisan-sramgen/SRAM_128x32_1rw.db"
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>dc_shell&gt; set_app_var link_library   "* $env(TSMC_180NM)/stdcells.db ../00-artisan-sramgen/SRAM_128x32_1rw.db"
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>dc_shell&gt; set_app_var report_default_significant_digits 4
+</span></code></pre></div>
+<p>Now we can read in the Verilog.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>dc_shell&gt; analyze -format sverilog ../01-pymtl-rtlsim/SRAMMinion_noparam__pickled.v
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>dc_shell&gt; elaborate SRAMMinion_noparam
+</span></code></pre></div>
+<p>Remember, because of the <code>ifndef SYNTHESIS</code> Synopsys DC will <em>not</em> read
+in the implementation of the SRAM. It will instead realize that there is
+no Verilog implementation and then use the corresponding SRAM macro with
+the same name.</p>
+<p>We use similar constraints to previous labs.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>dc_shell&gt; set_max_transition 0.250 SRAMMinion_noparam
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>dc_shell&gt; set_driving_cell -lib_cell INVD1BWP7T [all_inputs]
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>dc_shell&gt; set_load 0.005 [all_outputs]
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>dc_shell&gt; create_clock clk -name clk -period 3.0
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>dc_shell&gt; set_input_delay -clock clk -max 0.050 [all_inputs -exclude_clock_ports]
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a>dc_shell&gt; set_input_delay -clock clk -min 0.000 [all_inputs -exclude_clock_ports]
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a>
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>dc_shell&gt; set_output_delay -clock clk -max 0.050 [all_outputs]
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a>dc_shell&gt; set_output_delay -clock clk -min 0.000 [all_outputs]
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a>dc_shell&gt; set_max_delay 3.0 -from [all_inputs -exclude_clock_ports] -to [all_outputs]
+</span></code></pre></div>
+<p>Let's synthesize the design with optimizations.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>dc_shell&gt; compile_ultra -no_autoungroup -gate_clock
+</span></code></pre></div>
+<p>And finally we can write out the results.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>dc_shell&gt; write -format ddc     -hierarchy -output post-synth.ddc
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>dc_shell&gt; write -format verilog -hierarchy -output post-synth.v
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>dc_shell&gt; write_sdc                                post-synth.sdc
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>dc_shell&gt; report_timing -nets      &gt; timing.rpt
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>dc_shell&gt; report_area   -hierarchy &gt; area.rpt
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>dc_shell&gt; exit
+</span></code></pre></div>
+<p>Take a close look at the post-synthesis gate-level netlist.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/sram/03-synopsys-dc-synth
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>%<span class="w"> </span>code<span class="w"> </span>post-synth.v
+</span></code></pre></div>
+<p>Notice how there is no implementation of the SRAM! This is because we are
+not synthesizing the SRAM; we are using the generated SRAM macro.</p>
+<p>We can use fast-functional gate-level simulation to make sure the
+post-synthesis gate-level netlist works.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/sram/04-synopsys-vcs-ffglsim
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>%<span class="w"> </span>vcs<span class="w"> </span>-sverilog<span class="w"> </span>-xprop<span class="o">=</span>tmerge<span class="w"> </span>-override_timescale<span class="o">=</span>1ns/1ps<span class="w"> </span>-top<span class="w"> </span>Top<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">    </span>+delay_mode_zero<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">    </span>+vcs+dumpvars+waves.vcd<span class="w"> </span>-o<span class="w"> </span>simv<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="w">    </span>+incdir+../01-pymtl-rtlsim<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="w">    </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/stdcells.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="w">    </span>../00-artisan-sramgen/SRAM_128x32_1rw.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="w">    </span>../03-synopsys-dc-synth/post-synth.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="w">    </span>../01-pymtl-rtlsim/SRAMMinion_noparam_sram-rtl-random_tb.v
+</span><span id="__span-33-10"><a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>./simv
+</span></code></pre></div>
+<p>Notice how we have to provide the Verilog behavioral view for the
+standard cells <em>and</em> the Verilog behavioral view from the SRAM generator.</p>
+<p>We can now do place-and-route on the design. Create a <code>setup-timing.tcl</code>
+file as in previous labs.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/sram/05-cadence-innovus-pnr
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>%<span class="w"> </span>code<span class="w"> </span>setup-timing.tcl
+</span></code></pre></div>
+<p>The contents should look like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>create_rc_corner -name typical \
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>   -cap_table "$env(TSMC_180NM)/typical.captable" \
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>   -T 25
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>create_library_set -name libs_typical \
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>    -timing [list "$env(TSMC_180NM)/stdcells.lib" \
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>                 "../00-artisan-sramgen/SRAM_128x32_1rw.lib"]
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a>
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a>create_delay_corner -name delay_default \
+</span><span id="__span-35-10"><a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a>   -library_set libs_typical \
+</span><span id="__span-35-11"><a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a>   -rc_corner typical
+</span><span id="__span-35-12"><a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a>
+</span><span id="__span-35-13"><a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a>create_constraint_mode -name constraints_default \
+</span><span id="__span-35-14"><a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a>   -sdc_files [list ../03-synopsys-dc-synth/post-synth.sdc]
+</span><span id="__span-35-15"><a id="__codelineno-35-15" name="__codelineno-35-15" href="#__codelineno-35-15"></a>
+</span><span id="__span-35-16"><a id="__codelineno-35-16" name="__codelineno-35-16" href="#__codelineno-35-16"></a>create_analysis_view -name analysis_default \
+</span><span id="__span-35-17"><a id="__codelineno-35-17" name="__codelineno-35-17" href="#__codelineno-35-17"></a>   -constraint_mode constraints_default \
+</span><span id="__span-35-18"><a id="__codelineno-35-18" name="__codelineno-35-18" href="#__codelineno-35-18"></a>   -delay_corner delay_default
+</span><span id="__span-35-19"><a id="__codelineno-35-19" name="__codelineno-35-19" href="#__codelineno-35-19"></a>
+</span><span id="__span-35-20"><a id="__codelineno-35-20" name="__codelineno-35-20" href="#__codelineno-35-20"></a>set_analysis_view \
+</span><span id="__span-35-21"><a id="__codelineno-35-21" name="__codelineno-35-21" href="#__codelineno-35-21"></a>   -setup analysis_default \
+</span><span id="__span-35-22"><a id="__codelineno-35-22" name="__codelineno-35-22" href="#__codelineno-35-22"></a>   -hold analysis_default
+</span></code></pre></div>
+<p>The key difference from earlier labs is that now we have to include the
+front-end views for <em>both</em> the standard cells and the SRAM macros. Go
+ahead and start the Cadence Innovus REPL.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/sram/05-cadence-innovus-pnr
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>%<span class="w"> </span>innovus
+</span></code></pre></div>
+<p>Here are the commands to setup the design.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>innovus&gt; set init_mmmc_file "setup-timing.tcl"
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>innovus&gt; set init_verilog   "../03-synopsys-dc-synth/post-synth.v"
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>innovus&gt; set init_top_cell  "SRAMMinion_noparam"
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a>innovus&gt; set init_lef_file  [list \
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>           "$env(TSMC_180NM)/apr-tech.tlef" \
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a>           "$env(TSMC_180NM)/stdcells.lef" \
+</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a>           "../00-artisan-sramgen/SRAM_128x32_1rw.lef" \
+</span><span id="__span-37-8"><a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a>           ]
+</span><span id="__span-37-9"><a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a>innovus&gt; set init_pwr_net   "VDD"
+</span><span id="__span-37-10"><a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a>innovus&gt; set init_gnd_net   "VSS"
+</span><span id="__span-37-11"><a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a>
+</span><span id="__span-37-12"><a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a>innovus&gt; init_design
+</span><span id="__span-37-13"><a id="__codelineno-37-13" name="__codelineno-37-13" href="#__codelineno-37-13"></a>
+</span><span id="__span-37-14"><a id="__codelineno-37-14" name="__codelineno-37-14" href="#__codelineno-37-14"></a>innovus&gt; setDesignMode -process 180
+</span><span id="__span-37-15"><a id="__codelineno-37-15" name="__codelineno-37-15" href="#__codelineno-37-15"></a>innovus&gt; setDelayCalMode -SIAware false
+</span><span id="__span-37-16"><a id="__codelineno-37-16" name="__codelineno-37-16" href="#__codelineno-37-16"></a>innovus&gt; setOptMode -usefulSkew false
+</span><span id="__span-37-17"><a id="__codelineno-37-17" name="__codelineno-37-17" href="#__codelineno-37-17"></a>innovus&gt; setOptMode -holdTargetSlack 0.010
+</span><span id="__span-37-18"><a id="__codelineno-37-18" name="__codelineno-37-18" href="#__codelineno-37-18"></a>innovus&gt; setOptMode -holdFixingCells { BUFFD1BWP7T BUFFD2BWP7T BUFFD4BWP7T }
+</span></code></pre></div>
+<p>Again, the key difference from earlier labs is that now we have to
+include the back-end views for <em>both</em> the standard cells and the SRAM
+macros. Let's create a floorplan:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>innovus&gt; floorPlan -d 400 350 10.0 10.0 10.0 10.0
+</span></code></pre></div>
+<p>Unlike prior labs, here we are using a fixed floorplan. SRAM macros have
+large fixed shapes and so it can be hard for an automatic floorplan to
+work.</p>
+<p>For placement we start by automatically placing the SRAM macro first.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>innovus&gt; addHaloToBlock 4.8 4.8 4.8 4.8 -allMacro
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>innovus&gt; set_macro_place_constraint -pg_resource_model {METAL1 0.2}
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>innovus&gt; place_design -concurrent_macros
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a>innovus&gt; refine_macro_place
+</span></code></pre></div>
+<p>Then we can go ahead and place the standard cells.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>innovus&gt; place_opt_design
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>innovus&gt; addTieHiLo -cell "TIEHBWP7T TIELBWP7T"
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>innovus&gt; assignIoPins -pin *
+</span></code></pre></div>
+<p>Next is power routing.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>innovus&gt; globalNetConnect VDD -type pgpin -pin VDD -all -verbose
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>innovus&gt; globalNetConnect VSS -type pgpin -pin VSS -all -verbose
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a>innovus&gt; globalNetConnect VDD -type tiehi -pin VDD -all -verbose
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a>innovus&gt; globalNetConnect VSS -type tielo -pin VSS -all -verbose
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a>
+</span><span id="__span-41-7"><a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a>innovus&gt; addRing \
+</span><span id="__span-41-8"><a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a>           -nets {VDD VSS} -width 2.6 -spacing 2.5 \
+</span><span id="__span-41-9"><a id="__codelineno-41-9" name="__codelineno-41-9" href="#__codelineno-41-9"></a>           -layer [list top 6 bottom 6 left 5 right 5] \
+</span><span id="__span-41-10"><a id="__codelineno-41-10" name="__codelineno-41-10" href="#__codelineno-41-10"></a>           -extend_corner {tl tr bl br lt lb rt rb}
+</span><span id="__span-41-11"><a id="__codelineno-41-11" name="__codelineno-41-11" href="#__codelineno-41-11"></a>
+</span><span id="__span-41-12"><a id="__codelineno-41-12" name="__codelineno-41-12" href="#__codelineno-41-12"></a>innovus&gt; addStripe \
+</span><span id="__span-41-13"><a id="__codelineno-41-13" name="__codelineno-41-13" href="#__codelineno-41-13"></a>           -nets {VSS VDD} -layer 6 -direction horizontal \
+</span><span id="__span-41-14"><a id="__codelineno-41-14" name="__codelineno-41-14" href="#__codelineno-41-14"></a>           -width 5.52 -spacing 16.88 \
+</span><span id="__span-41-15"><a id="__codelineno-41-15" name="__codelineno-41-15" href="#__codelineno-41-15"></a>           -set_to_set_distance 44.8 -start_offset 22.4
+</span><span id="__span-41-16"><a id="__codelineno-41-16" name="__codelineno-41-16" href="#__codelineno-41-16"></a>
+</span><span id="__span-41-17"><a id="__codelineno-41-17" name="__codelineno-41-17" href="#__codelineno-41-17"></a>innovus&gt; addStripe \
+</span><span id="__span-41-18"><a id="__codelineno-41-18" name="__codelineno-41-18" href="#__codelineno-41-18"></a>          -nets {VSS VDD} -layer 5 -direction vertical \
+</span><span id="__span-41-19"><a id="__codelineno-41-19" name="__codelineno-41-19" href="#__codelineno-41-19"></a>          -width 5.52 -spacing 16.88 \
+</span><span id="__span-41-20"><a id="__codelineno-41-20" name="__codelineno-41-20" href="#__codelineno-41-20"></a>          -set_to_set_distance 44.8 -start_offset 22.4
+</span><span id="__span-41-21"><a id="__codelineno-41-21" name="__codelineno-41-21" href="#__codelineno-41-21"></a>
+</span><span id="__span-41-22"><a id="__codelineno-41-22" name="__codelineno-41-22" href="#__codelineno-41-22"></a>innovus&gt; sroute -nets {VDD VSS}
+</span></code></pre></div>
+<p>Then comes clock routing.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>innovus&gt; create_ccopt_clock_tree_spec
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>innovus&gt; set_ccopt_property update_io_latency false
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>innovus&gt; clock_opt_design
+</span><span id="__span-42-4"><a id="__codelineno-42-4" name="__codelineno-42-4" href="#__codelineno-42-4"></a>innovus&gt; optDesign -postCTS -setup
+</span><span id="__span-42-5"><a id="__codelineno-42-5" name="__codelineno-42-5" href="#__codelineno-42-5"></a>innovus&gt; optDesign -postCTS -hold
+</span></code></pre></div>
+<p>And finally we do signal routing.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>innovus&gt; routeDesign
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>innovus&gt; optDesign -postRoute -setup
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a>innovus&gt; optDesign -postRoute -hold
+</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a>innovus&gt; optDesign -postRoute -drv
+</span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5" href="#__codelineno-43-5"></a>innovus&gt; extractRC
+</span></code></pre></div>
+<p>We can now add filler cells and write the outpus.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>innovus&gt; setFillerMode -core {FILL1BWP7T FILL2BWP7T FILL4BWP7T FILL8BWP7T }
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>innovus&gt; addFiller
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>
+</span><span id="__span-44-4"><a id="__codelineno-44-4" name="__codelineno-44-4" href="#__codelineno-44-4"></a>innovus&gt; verifyConnectivity
+</span><span id="__span-44-5"><a id="__codelineno-44-5" name="__codelineno-44-5" href="#__codelineno-44-5"></a>innovus&gt; verify_drc
+</span><span id="__span-44-6"><a id="__codelineno-44-6" name="__codelineno-44-6" href="#__codelineno-44-6"></a>
+</span><span id="__span-44-7"><a id="__codelineno-44-7" name="__codelineno-44-7" href="#__codelineno-44-7"></a>innovus&gt; saveDesign post-pnr.enc
+</span><span id="__span-44-8"><a id="__codelineno-44-8" name="__codelineno-44-8" href="#__codelineno-44-8"></a>innovus&gt; saveNetlist post-pnr.v
+</span><span id="__span-44-9"><a id="__codelineno-44-9" name="__codelineno-44-9" href="#__codelineno-44-9"></a>
+</span><span id="__span-44-10"><a id="__codelineno-44-10" name="__codelineno-44-10" href="#__codelineno-44-10"></a>innovus&gt; rcOut -rc_corner typical -spef post-pnr.spef
+</span><span id="__span-44-11"><a id="__codelineno-44-11" name="__codelineno-44-11" href="#__codelineno-44-11"></a>innovus&gt; write_sdf -recompute_delay_calc post-pnr.sdf
+</span><span id="__span-44-12"><a id="__codelineno-44-12" name="__codelineno-44-12" href="#__codelineno-44-12"></a>innovus&gt; write_sdc -strict post-pnr.sdc
+</span><span id="__span-44-13"><a id="__codelineno-44-13" name="__codelineno-44-13" href="#__codelineno-44-13"></a>
+</span><span id="__span-44-14"><a id="__codelineno-44-14" name="__codelineno-44-14" href="#__codelineno-44-14"></a>innovus&gt; streamOut post-pnr.gds -units 1000 \
+</span><span id="__span-44-15"><a id="__codelineno-44-15" name="__codelineno-44-15" href="#__codelineno-44-15"></a>           -merge "$env(TSMC_180NM)/stdcells.gds" \
+</span><span id="__span-44-16"><a id="__codelineno-44-16" name="__codelineno-44-16" href="#__codelineno-44-16"></a>           -mapFile "$env(TSMC_180NM)/gds_out.map"
+</span><span id="__span-44-17"><a id="__codelineno-44-17" name="__codelineno-44-17" href="#__codelineno-44-17"></a>
+</span><span id="__span-44-18"><a id="__codelineno-44-18" name="__codelineno-44-18" href="#__codelineno-44-18"></a>innovus&gt; report_timing -late  -path_type full_clock -net &gt; timing-setup.rpt
+</span><span id="__span-44-19"><a id="__codelineno-44-19" name="__codelineno-44-19" href="#__codelineno-44-19"></a>innovus&gt; report_timing -early -path_type full_clock -net &gt; timing-hold.rpt
+</span><span id="__span-44-20"><a id="__codelineno-44-20" name="__codelineno-44-20" href="#__codelineno-44-20"></a>innovus&gt; report_area &gt; area.rpt
+</span></code></pre></div>
+<p>If you take a look at the GDS using klayout you will see there is a whole
+for SRAM.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/playground/sram/05-cadence-innovus-pnr
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="si">${</span><span class="nv">TSMC_180NM</span><span class="si">}</span>/klayout.lyp<span class="w"> </span>post-pnr.gds
+</span></code></pre></div>
+<h2 id="3-automated-asic-flow">3. Automated ASIC Flow</h2>
+<p>pyhflow is based on the idea of <em>step templates</em> which are located in the
+<code>asic/steps/block</code> directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/steps/block
+</span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a>%<span class="w"> </span>tree
+</span><span id="__span-46-3"><a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a>.
+</span><span id="__span-46-4"><a id="__codelineno-46-4" name="__codelineno-46-4" href="#__codelineno-46-4"></a>├──<span class="w"> </span><span class="m">00</span>-artisan-sramgen
+</span><span id="__span-46-5"><a id="__codelineno-46-5" name="__codelineno-46-5" href="#__codelineno-46-5"></a>│<span class="w">   </span>└──<span class="w"> </span>run
+</span><span id="__span-46-6"><a id="__codelineno-46-6" name="__codelineno-46-6" href="#__codelineno-46-6"></a>├──<span class="w"> </span><span class="m">01</span>-pymtl-rtlsim
+</span><span id="__span-46-7"><a id="__codelineno-46-7" name="__codelineno-46-7" href="#__codelineno-46-7"></a>│<span class="w">   </span>└──<span class="w"> </span>run
+</span><span id="__span-46-8"><a id="__codelineno-46-8" name="__codelineno-46-8" href="#__codelineno-46-8"></a>├──<span class="w"> </span><span class="m">02</span>-synopsys-vcs-rtlsim
+</span><span id="__span-46-9"><a id="__codelineno-46-9" name="__codelineno-46-9" href="#__codelineno-46-9"></a>│<span class="w">   </span>└──<span class="w"> </span>run
+</span><span id="__span-46-10"><a id="__codelineno-46-10" name="__codelineno-46-10" href="#__codelineno-46-10"></a>├──<span class="w"> </span><span class="m">03</span>-synopsys-dc-synth
+</span><span id="__span-46-11"><a id="__codelineno-46-11" name="__codelineno-46-11" href="#__codelineno-46-11"></a>│<span class="w">   </span>├──<span class="w"> </span>dc-warnings.tcl
+</span><span id="__span-46-12"><a id="__codelineno-46-12" name="__codelineno-46-12" href="#__codelineno-46-12"></a>│<span class="w">   </span>├──<span class="w"> </span>run
+</span><span id="__span-46-13"><a id="__codelineno-46-13" name="__codelineno-46-13" href="#__codelineno-46-13"></a>│<span class="w">   </span>└──<span class="w"> </span>run.tcl
+</span><span id="__span-46-14"><a id="__codelineno-46-14" name="__codelineno-46-14" href="#__codelineno-46-14"></a>├──<span class="w"> </span><span class="m">04</span>-synopsys-vcs-ffglsim
+</span><span id="__span-46-15"><a id="__codelineno-46-15" name="__codelineno-46-15" href="#__codelineno-46-15"></a>│<span class="w">   </span>└──<span class="w"> </span>run
+</span><span id="__span-46-16"><a id="__codelineno-46-16" name="__codelineno-46-16" href="#__codelineno-46-16"></a>├──<span class="w"> </span><span class="m">05</span>-cadence-innovus-pnr
+</span><span id="__span-46-17"><a id="__codelineno-46-17" name="__codelineno-46-17" href="#__codelineno-46-17"></a>│<span class="w">   </span>├──<span class="w"> </span>innovus-warnings.tcl
+</span><span id="__span-46-18"><a id="__codelineno-46-18" name="__codelineno-46-18" href="#__codelineno-46-18"></a>│<span class="w">   </span>├──<span class="w"> </span>run
+</span><span id="__span-46-19"><a id="__codelineno-46-19" name="__codelineno-46-19" href="#__codelineno-46-19"></a>│<span class="w">   </span>├──<span class="w"> </span>run.tcl
+</span><span id="__span-46-20"><a id="__codelineno-46-20" name="__codelineno-46-20" href="#__codelineno-46-20"></a>│<span class="w">   </span>└──<span class="w"> </span>setup-timing.tcl
+</span><span id="__span-46-21"><a id="__codelineno-46-21" name="__codelineno-46-21" href="#__codelineno-46-21"></a>├──<span class="w"> </span><span class="m">06</span>-synopsys-pt-sta
+</span><span id="__span-46-22"><a id="__codelineno-46-22" name="__codelineno-46-22" href="#__codelineno-46-22"></a>│<span class="w">   </span>├──<span class="w"> </span>run
+</span><span id="__span-46-23"><a id="__codelineno-46-23" name="__codelineno-46-23" href="#__codelineno-46-23"></a>│<span class="w">   </span>└──<span class="w"> </span>run.tcl
+</span><span id="__span-46-24"><a id="__codelineno-46-24" name="__codelineno-46-24" href="#__codelineno-46-24"></a>├──<span class="w"> </span><span class="m">07</span>-synopsys-vcs-baglsim
+</span><span id="__span-46-25"><a id="__codelineno-46-25" name="__codelineno-46-25" href="#__codelineno-46-25"></a>│<span class="w">   </span>├──<span class="w"> </span>calc-clk-ins-src-lat
+</span><span id="__span-46-26"><a id="__codelineno-46-26" name="__codelineno-46-26" href="#__codelineno-46-26"></a>│<span class="w">   </span>└──<span class="w"> </span>run
+</span><span id="__span-46-27"><a id="__codelineno-46-27" name="__codelineno-46-27" href="#__codelineno-46-27"></a>├──<span class="w"> </span><span class="m">08</span>-synopsys-pt-pwr
+</span><span id="__span-46-28"><a id="__codelineno-46-28" name="__codelineno-46-28" href="#__codelineno-46-28"></a>│<span class="w">   </span>├──<span class="w"> </span>run
+</span><span id="__span-46-29"><a id="__codelineno-46-29" name="__codelineno-46-29" href="#__codelineno-46-29"></a>│<span class="w">   </span>└──<span class="w"> </span>run.tcl
+</span><span id="__span-46-30"><a id="__codelineno-46-30" name="__codelineno-46-30" href="#__codelineno-46-30"></a>├──<span class="w"> </span><span class="m">09</span>-mentor-calibre-drc
+</span><span id="__span-46-31"><a id="__codelineno-46-31" name="__codelineno-46-31" href="#__codelineno-46-31"></a>│<span class="w">   </span>├──<span class="w"> </span>run_antenna.rs
+</span><span id="__span-46-32"><a id="__codelineno-46-32" name="__codelineno-46-32" href="#__codelineno-46-32"></a>│<span class="w">   </span>├──<span class="w"> </span>run_main.rs
+</span><span id="__span-46-33"><a id="__codelineno-46-33" name="__codelineno-46-33" href="#__codelineno-46-33"></a>│<span class="w">   </span>├──<span class="w"> </span>print-drc-summary
+</span><span id="__span-46-34"><a id="__codelineno-46-34" name="__codelineno-46-34" href="#__codelineno-46-34"></a>│<span class="w">   </span>├──<span class="w"> </span>run
+</span><span id="__span-46-35"><a id="__codelineno-46-35" name="__codelineno-46-35" href="#__codelineno-46-35"></a>│<span class="w">   </span>└──<span class="w"> </span>run-interactive
+</span><span id="__span-46-36"><a id="__codelineno-46-36" name="__codelineno-46-36" href="#__codelineno-46-36"></a>├──<span class="w"> </span><span class="m">10</span>-mentor-calibre-lvs
+</span><span id="__span-46-37"><a id="__codelineno-46-37" name="__codelineno-46-37" href="#__codelineno-46-37"></a>│<span class="w">   </span>├──<span class="w"> </span>run.rs
+</span><span id="__span-46-38"><a id="__codelineno-46-38" name="__codelineno-46-38" href="#__codelineno-46-38"></a>│<span class="w">   </span>├──<span class="w"> </span>print-lvs-summary
+</span><span id="__span-46-39"><a id="__codelineno-46-39" name="__codelineno-46-39" href="#__codelineno-46-39"></a>│<span class="w">   </span>├──<span class="w"> </span>run
+</span><span id="__span-46-40"><a id="__codelineno-46-40" name="__codelineno-46-40" href="#__codelineno-46-40"></a>│<span class="w">   </span>└──<span class="w"> </span>run-interactive
+</span><span id="__span-46-41"><a id="__codelineno-46-41" name="__codelineno-46-41" href="#__codelineno-46-41"></a>└──<span class="w"> </span><span class="m">11</span>-summarize-results
+</span><span id="__span-46-42"><a id="__codelineno-46-42" name="__codelineno-46-42" href="#__codelineno-46-42"></a><span class="w">    </span>├──<span class="w"> </span>run
+</span><span id="__span-46-43"><a id="__codelineno-46-43" name="__codelineno-46-43" href="#__codelineno-46-43"></a><span class="w">    </span>└──<span class="w"> </span>summarize-results
+</span></code></pre></div>
+<p>Each step is a directory with a run script and possibly other scripts.
+The key difference from the scripts we used in the previous tutorials, is
+that these scripts are templated using the Jinja2 templating system:</p>
+<ul>
+<li><a href="https://jinja.palletsprojects.com">https://jinja.palletsprojects.com</a></li>
+</ul>
+<p>Open the <code>run.tcl</code> script in the <code>03-synopsys-dc-synth</code> step template
+which uses Synopsys DC for synthesis.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>% cd ${HOME}/ece6745/lab8/asic/steps/block/03-synopsys-dc-synth
+</span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>% code run.tcl
+</span></code></pre></div>
+<p>Notice how the <code>run.tcl</code> script is templated based on the design name and
+the target clock period.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>analyze -format sverilog ../01-pymtl-rtlsim/{{design_name}}__pickled.v
+</span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a>elaborate {{design_name}}
+</span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a>...
+</span><span id="__span-48-4"><a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a>create_clock clk -name ideal_clock1 -period {{clock_period}}
+</span></code></pre></div>
+<p>The <code>{{ }}</code> directive is the standard syntax for template variable
+substitution using Jinja2.</p>
+<p>The pyhflow program takes as input a design YAML file which specifies:</p>
+<ul>
+<li>what steps make up the flow</li>
+<li>key/value pairs for variables to substitute into scripts</li>
+<li>2-state RTL simulation commands</li>
+<li>list of tests</li>
+<li>list of evals</li>
+</ul>
+<p>Take a look at the provided design YAML file for the GCD accelerator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/designs
+</span><span id="__span-49-2"><a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a>%<span class="w"> </span>code<span class="w"> </span>lab8-gcd-xcel.yml
+</span><span id="__span-49-3"><a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a>
+</span><span id="__span-49-4"><a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a>steps:
+</span><span id="__span-49-5"><a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a><span class="w"> </span>-<span class="w"> </span>block/01-pymtl-rtlsim
+</span><span id="__span-49-6"><a id="__codelineno-49-6" name="__codelineno-49-6" href="#__codelineno-49-6"></a><span class="w"> </span>-<span class="w"> </span>block/02-synopsys-vcs-rtlsim
+</span><span id="__span-49-7"><a id="__codelineno-49-7" name="__codelineno-49-7" href="#__codelineno-49-7"></a><span class="w"> </span>-<span class="w"> </span>block/03-synopsys-dc-synth
+</span><span id="__span-49-8"><a id="__codelineno-49-8" name="__codelineno-49-8" href="#__codelineno-49-8"></a><span class="w"> </span>-<span class="w"> </span>block/04-synopsys-vcs-ffglsim
+</span><span id="__span-49-9"><a id="__codelineno-49-9" name="__codelineno-49-9" href="#__codelineno-49-9"></a><span class="w"> </span>-<span class="w"> </span>block/05-cadence-innovus-pnr
+</span><span id="__span-49-10"><a id="__codelineno-49-10" name="__codelineno-49-10" href="#__codelineno-49-10"></a><span class="w"> </span>-<span class="w"> </span>block/06-synopsys-pt-sta
+</span><span id="__span-49-11"><a id="__codelineno-49-11" name="__codelineno-49-11" href="#__codelineno-49-11"></a><span class="w"> </span>-<span class="w"> </span>block/07-synopsys-vcs-baglsim
+</span><span id="__span-49-12"><a id="__codelineno-49-12" name="__codelineno-49-12" href="#__codelineno-49-12"></a><span class="w"> </span>-<span class="w"> </span>block/08-synopsys-pt-pwr
+</span><span id="__span-49-13"><a id="__codelineno-49-13" name="__codelineno-49-13" href="#__codelineno-49-13"></a><span class="w"> </span>-<span class="w"> </span>block/09-mentor-calibre-drc
+</span><span id="__span-49-14"><a id="__codelineno-49-14" name="__codelineno-49-14" href="#__codelineno-49-14"></a><span class="w"> </span>-<span class="w"> </span>block/10-mentor-calibre-lvs
+</span><span id="__span-49-15"><a id="__codelineno-49-15" name="__codelineno-49-15" href="#__codelineno-49-15"></a><span class="w"> </span>-<span class="w"> </span>block/11-summarize-results
+</span><span id="__span-49-16"><a id="__codelineno-49-16" name="__codelineno-49-16" href="#__codelineno-49-16"></a>
+</span><span id="__span-49-17"><a id="__codelineno-49-17" name="__codelineno-49-17" href="#__codelineno-49-17"></a>design_name<span class="w">  </span>:<span class="w"> </span>GcdXcel_noparam
+</span><span id="__span-49-18"><a id="__codelineno-49-18" name="__codelineno-49-18" href="#__codelineno-49-18"></a>clock_period<span class="w"> </span>:<span class="w"> </span><span class="m">3</span>.0
+</span><span id="__span-49-19"><a id="__codelineno-49-19" name="__codelineno-49-19" href="#__codelineno-49-19"></a>dump_vcd<span class="w">     </span>:<span class="w"> </span><span class="nb">false</span>
+</span><span id="__span-49-20"><a id="__codelineno-49-20" name="__codelineno-49-20" href="#__codelineno-49-20"></a>
+</span><span id="__span-49-21"><a id="__codelineno-49-21" name="__codelineno-49-21" href="#__codelineno-49-21"></a>pymtl_rtlsim:<span class="w"> </span><span class="p">|</span>
+</span><span id="__span-49-22"><a id="__codelineno-49-22" name="__codelineno-49-22" href="#__codelineno-49-22"></a><span class="w">  </span>pytest<span class="w"> </span>../../../sim/lab5_xcel/test/GcdXcel_test.py<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-49-23"><a id="__codelineno-49-23" name="__codelineno-49-23" href="#__codelineno-49-23"></a><span class="w">    </span>--test-verilog<span class="w"> </span>--dump-vtb<span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>run.log
+</span><span id="__span-49-24"><a id="__codelineno-49-24" name="__codelineno-49-24" href="#__codelineno-49-24"></a>
+</span><span id="__span-49-25"><a id="__codelineno-49-25" name="__codelineno-49-25" href="#__codelineno-49-25"></a><span class="w">  </span>../../../sim/lab5_xcel/gcd-xcel-sim<span class="w"> </span>--impl<span class="w"> </span>rtl<span class="w"> </span>--input<span class="w"> </span>random<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-49-26"><a id="__codelineno-49-26" name="__codelineno-49-26" href="#__codelineno-49-26"></a><span class="w">    </span>--stats<span class="w"> </span>--translate<span class="w"> </span>--dump-vtb<span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>run.log
+</span><span id="__span-49-27"><a id="__codelineno-49-27" name="__codelineno-49-27" href="#__codelineno-49-27"></a>
+</span><span id="__span-49-28"><a id="__codelineno-49-28" name="__codelineno-49-28" href="#__codelineno-49-28"></a><span class="w">  </span>../../../sim/lab5_xcel/gcd-xcel-sim<span class="w"> </span>--impl<span class="w"> </span>rtl<span class="w"> </span>--input<span class="w"> </span>small<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-49-29"><a id="__codelineno-49-29" name="__codelineno-49-29" href="#__codelineno-49-29"></a><span class="w">    </span>--stats<span class="w"> </span>--translate<span class="w"> </span>--dump-vtb<span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>run.log
+</span><span id="__span-49-30"><a id="__codelineno-49-30" name="__codelineno-49-30" href="#__codelineno-49-30"></a>
+</span><span id="__span-49-31"><a id="__codelineno-49-31" name="__codelineno-49-31" href="#__codelineno-49-31"></a><span class="w">  </span>../../../sim/lab5_xcel/gcd-xcel-sim<span class="w"> </span>--impl<span class="w"> </span>rtl<span class="w"> </span>--input<span class="w"> </span>zeros<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-49-32"><a id="__codelineno-49-32" name="__codelineno-49-32" href="#__codelineno-49-32"></a><span class="w">    </span>--stats<span class="w"> </span>--translate<span class="w"> </span>--dump-vtb<span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>run.log
+</span><span id="__span-49-33"><a id="__codelineno-49-33" name="__codelineno-49-33" href="#__codelineno-49-33"></a>
+</span><span id="__span-49-34"><a id="__codelineno-49-34" name="__codelineno-49-34" href="#__codelineno-49-34"></a>tests:
+</span><span id="__span-49-35"><a id="__codelineno-49-35" name="__codelineno-49-35" href="#__codelineno-49-35"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_basic
+</span><span id="__span-49-36"><a id="__codelineno-49-36" name="__codelineno-49-36" href="#__codelineno-49-36"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_zeros
+</span><span id="__span-49-37"><a id="__codelineno-49-37" name="__codelineno-49-37" href="#__codelineno-49-37"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_equal
+</span><span id="__span-49-38"><a id="__codelineno-49-38" name="__codelineno-49-38" href="#__codelineno-49-38"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_divides
+</span><span id="__span-49-39"><a id="__codelineno-49-39" name="__codelineno-49-39" href="#__codelineno-49-39"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_common_factors
+</span><span id="__span-49-40"><a id="__codelineno-49-40" name="__codelineno-49-40" href="#__codelineno-49-40"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_coprime
+</span><span id="__span-49-41"><a id="__codelineno-49-41" name="__codelineno-49-41" href="#__codelineno-49-41"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_powers_of_two
+</span><span id="__span-49-42"><a id="__codelineno-49-42" name="__codelineno-49-42" href="#__codelineno-49-42"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_larger_numbers
+</span><span id="__span-49-43"><a id="__codelineno-49-43" name="__codelineno-49-43" href="#__codelineno-49-43"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_swap_ordering
+</span><span id="__span-49-44"><a id="__codelineno-49-44" name="__codelineno-49-44" href="#__codelineno-49-44"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_fibonacci
+</span><span id="__span-49-45"><a id="__codelineno-49-45" name="__codelineno-49-45" href="#__codelineno-49-45"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_sub_stress
+</span><span id="__span-49-46"><a id="__codelineno-49-46" name="__codelineno-49-46" href="#__codelineno-49-46"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_random_0x0
+</span><span id="__span-49-47"><a id="__codelineno-49-47" name="__codelineno-49-47" href="#__codelineno-49-47"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_random_5x0
+</span><span id="__span-49-48"><a id="__codelineno-49-48" name="__codelineno-49-48" href="#__codelineno-49-48"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_random_0x5
+</span><span id="__span-49-49"><a id="__codelineno-49-49" name="__codelineno-49-49" href="#__codelineno-49-49"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_test_random_3x9
+</span><span id="__span-49-50"><a id="__codelineno-49-50" name="__codelineno-49-50" href="#__codelineno-49-50"></a>
+</span><span id="__span-49-51"><a id="__codelineno-49-51" name="__codelineno-49-51" href="#__codelineno-49-51"></a>evals:
+</span><span id="__span-49-52"><a id="__codelineno-49-52" name="__codelineno-49-52" href="#__codelineno-49-52"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_gcd-xcel-sim-rtl-random
+</span><span id="__span-49-53"><a id="__codelineno-49-53" name="__codelineno-49-53" href="#__codelineno-49-53"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_gcd-xcel-sim-rtl-small
+</span><span id="__span-49-54"><a id="__codelineno-49-54" name="__codelineno-49-54" href="#__codelineno-49-54"></a><span class="w"> </span>-<span class="w"> </span>GcdXcel_noparam_gcd-xcel-sim-rtl-zeros
+</span></code></pre></div>
+<p>This design YAML file specifies the generated flow should use all eleven
+steps. We run PyMTL 2-state RTL sim, VCS 4-state RTL sim, FFGL sim, and
+BAGL sim on all tests and evals, but we only do energy analysis on the
+evals. The evals usually come from running an interactive simulator like
+<code>gcd-xcel-sim</code>. All pyhflow does is use the YAML file to figure out what
+to substitute into the templated steps and then copy the run scripts into
+the current working directory. You can also override parameters on
+pyhflow command line.</p>
+<h3 id="31-running-asic-flow">3.1. Running ASIC Flow</h3>
+<p>Let's go ahead and use pyhflow to generate the flow scripts for the GCD
+accelerator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel
+</span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel
+</span><span id="__span-50-3"><a id="__codelineno-50-3" name="__codelineno-50-3" href="#__codelineno-50-3"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/lab8-gcd-xcel.yml
+</span></code></pre></div>
+<p>Let's see how the step template has been filled in for the Synopsys DC
+synthesis step.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel
+</span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a>%<span class="w"> </span>code<span class="w"> </span><span class="m">03</span>-synopsys-dc-synth/run.tcl
+</span><span id="__span-51-3"><a id="__codelineno-51-3" name="__codelineno-51-3" href="#__codelineno-51-3"></a>...
+</span><span id="__span-51-4"><a id="__codelineno-51-4" name="__codelineno-51-4" href="#__codelineno-51-4"></a>analyze<span class="w"> </span>-format<span class="w"> </span>sverilog<span class="w"> </span>../01-pymtl-rtlsim/GcdXcel_noparam__pickled.v
+</span><span id="__span-51-5"><a id="__codelineno-51-5" name="__codelineno-51-5" href="#__codelineno-51-5"></a>elaborate<span class="w"> </span>GcdXcel_noparam
+</span><span id="__span-51-6"><a id="__codelineno-51-6" name="__codelineno-51-6" href="#__codelineno-51-6"></a>...
+</span><span id="__span-51-7"><a id="__codelineno-51-7" name="__codelineno-51-7" href="#__codelineno-51-7"></a>create_clock<span class="w"> </span>clk<span class="w"> </span>-name<span class="w"> </span>ideal_clock1<span class="w"> </span>-period<span class="w"> </span><span class="m">3</span>.0
+</span></code></pre></div>
+<p>Notice how the name of the source Verilog RTL File, the top-level
+modulename, and the clock period have all been filled in.</p>
+<p>After generating a flow, we always recommend explicitly running at least
+the first few steps to ensure there are no errors.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel
+</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>%<span class="w"> </span>./01-pymtl-rtlsim/run
+</span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>%<span class="w"> </span>./02-synopsys-vcs-rtlsim/run
+</span></code></pre></div>
+<p>Make sure the step can find the source files and passes the test. Then
+run synthesis as follows.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel
+</span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a>%<span class="w"> </span>./03-synopsys-dc-synth/run
+</span></code></pre></div>
+<p>Carefully look at the output from the synthesis step (also stored in the
+<code>run.log</code> file). Look for the output after <code>Running PRESTO HDLC</code> for any
+warnings to ensure that all of your Verilog RTL is indeed synthesizable.
+Scan through the rest of the logs to ensure there are no worrying
+warnings or errors.</p>
+<p>Once you have explicitly run the first few steps to ensure there are no
+errors, you can run the remaining steps.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel
+</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a>%<span class="w"> </span>./04-synopsys-vcs-ffglsim/run
+</span><span id="__span-54-3"><a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a>%<span class="w"> </span>./05-cadence-innovus-pnr/run
+</span><span id="__span-54-4"><a id="__codelineno-54-4" name="__codelineno-54-4" href="#__codelineno-54-4"></a>%<span class="w"> </span>./06-synopsys-pt-sta/run
+</span><span id="__span-54-5"><a id="__codelineno-54-5" name="__codelineno-54-5" href="#__codelineno-54-5"></a>%<span class="w"> </span>./07-synopsys-vcs-baglsim/run
+</span><span id="__span-54-6"><a id="__codelineno-54-6" name="__codelineno-54-6" href="#__codelineno-54-6"></a>%<span class="w"> </span>./08-synopsys-pt-pwr/run
+</span><span id="__span-54-7"><a id="__codelineno-54-7" name="__codelineno-54-7" href="#__codelineno-54-7"></a>%<span class="w"> </span>./09-mentor-calibre-drc/run
+</span><span id="__span-54-8"><a id="__codelineno-54-8" name="__codelineno-54-8" href="#__codelineno-54-8"></a>%<span class="w"> </span>./10-mentor-calibre-lvs/run
+</span><span id="__span-54-9"><a id="__codelineno-54-9" name="__codelineno-54-9" href="#__codelineno-54-9"></a>%<span class="w"> </span>./11-summarize-results/run
+</span></code></pre></div>
+<p><strong>pyhflow will also create a <code>run-flow</code> script which will run all of the
+steps in sequence for you, but only use this if you are confident there
+are no errors!</strong></p>
+<p>For the results to be valid, the following must be true:</p>
+<ul>
+<li>all PyMTL 2-state RTL simulations pass</li>
+<li>all four-state RTL simulations pass</li>
+<li>all fast-functional gate-level simulations pass</li>
+<li>all back-annotated gate-level simulations pass</li>
+<li>place-and-route setup slack is positive</li>
+<li>place-and-route hold slack is positive</li>
+<li>static timing analysis (PrimeTime) setup slack is positive</li>
+<li>static timing analysis (PrimeTime) hold slack is positive</li>
+<li>DRC contains no violations</li>
+<li>LVS contains no violations</li>
+</ul>
+<p>If your design does not meet timing after synthesis but <em>does</em> meet
+timing after place-and-route then these are still valid results. It just
+means Synopsys DC was conservative and/or Cadence Innovus did a good job
+further optimizing the design. If PrimeTime STA passes timing but Innovus
+fails timing, <strong>this is not valid - you must go back and modify your
+design to fix this.</strong> Additionally, your design must be DRC and LVS
+clean. You can use the <code>run-interactive</code> scripts in the corresponding
+step directories to debug any violations. If you have a DRC or LVS
+violation, you likely need to change your clock period constraint;
+placement and routing can produce vastly different results depending on
+its value.</p>
+<p>You will notice that the step template scripts contain many extra
+commands compared to the scripts we used in the previous lab. These
+additional commands are necessary to ensure that more complex designs
+pass DRC and LVS checks. You can look in the ASIC tool documentation
+referenced above to find out what each command does.</p>
+<p>In addition to the main DRC deck, there is now a separate <em>antenna</em> DRC
+deck. Antenna violations occur when long metal wires connected to
+transistor gates accumulate charge during the manufacturing process.
+During fabrication, each metal layer is deposited and etched one at a
+time, and exposed metal wires can act like antennas that collect charge
+from the plasma used in the etching process. If too much charge builds up
+on a wire connected to a thin gate oxide, it can damage or destroy the
+transistor gate. The antenna DRC deck checks for wires that exceed the
+maximum allowed antenna ratio. The place-and-route step template includes
+additional commands to automatically detect and fix antenna violations by
+inserting diodes that provide a discharge path for the accumulated
+charge.</p>
+<h3 id="32-interactive-debugging">3.2. Interactive Debugging</h3>
+<p>Let's start Cadence Innovus in interactive mode and then load the design.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel/05-cadence-innovus-pnr
+</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a>%<span class="w"> </span>innovus
+</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>innovus&gt;<span class="w"> </span><span class="nb">source</span><span class="w"> </span>post-pnr.enc
+</span></code></pre></div>
+<p>You can use Cadence Innovus to analyze the static timing of any path in
+the design. For example, let's look at the static timing for a path in
+the first stage:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a>innovus&gt;<span class="w"> </span>report_timing<span class="w"> </span>-path_type<span class="w"> </span>full_clock<span class="w"> </span>-net<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a><span class="w">  </span>-from<span class="w"> </span>v/gcd/dpath/b_reg/q_reg_0_<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a><span class="w">  </span>-to<span class="w"> </span>v/gcd/dpath/a_reg/q_reg_15_
+</span></code></pre></div>
+<p>You can use the Amoeba workspace to help visualize how modules are mapped
+across the chip. Choose <em>Windows &gt; Workspaces &gt; Amoeba</em> from the menu.
+However, we recommend using the design browser to help visualize how
+modules are mapped across the chip. Here are the steps:</p>
+<ul>
+<li>Choose <em>Windows &gt; Workspaces &gt; Design Browser + Physical</em> from the menu</li>
+<li>Hide all of the metal layers by pressing the number keys</li>
+<li>Browse the design hierarchy using the panel on the left</li>
+<li>Right click on a module, click <em>Highlight</em>, select a color</li>
+</ul>
+<p>Go ahead and highlight each stage in a different color.</p>
+<p>You can use the following steps in Cadence Innovus to display where the
+critical path is on the actual chip.</p>
+<ul>
+<li>Choose <em>Timing &gt; Debug Timing</em> from the menu</li>
+<li>Click <em>OK</em> in the pop-up window</li>
+<li>Right click on first path in the <em>Path List</em></li>
+<li>Choose <em>Highlight &gt; Only This Path &gt; Color</em></li>
+</ul>
+<p>Finally, you can use Klayout to capture a screen shot demonstrating that
+you have successfully taken a design from RTL to layout.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel/05-cadence-innovus-pnr
+</span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-l<span class="w"> </span><span class="nv">$TSMC_180NM</span>/klayout.lyp<span class="w"> </span>post-pnr.gds
+</span></code></pre></div>
+<p>You can use <em>Display &gt; Full Hierarchy</em> to show all of the layout
+including the layout inside the standard cells. You can use <em>Display &gt;
+Decrement Hierarchy</em> and <em>Display &gt; Decrement Hierarchy</em> to show/hide the
+layout inside the standard cells to focus on the routing. Try toggling
+<em>View &gt; Show Cell Frames</em> to show/hide the standard cell bounding boxes.</p>
+<h3 id="33-key-reports">3.3. Key Reports</h3>
+<p>Let's look at some reports. Let's start by looking at the synthesis
+resources report.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel
+</span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">03</span>-synopsys-dc-synth/resources.rpt
+</span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a>...
+</span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a><span class="o">===============================================================================</span>
+</span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a><span class="p">|</span><span class="w">                    </span><span class="p">|</span><span class="w">                  </span><span class="p">|</span><span class="w"> </span>Current<span class="w">            </span><span class="p">|</span><span class="w"> </span>Set<span class="w">            </span><span class="p">|</span>
+</span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="p">|</span><span class="w"> </span>Cell<span class="w">               </span><span class="p">|</span><span class="w"> </span>Module<span class="w">           </span><span class="p">|</span><span class="w"> </span>Implementation<span class="w">     </span><span class="p">|</span><span class="w"> </span>Implementation<span class="w"> </span><span class="p">|</span>
+</span><span id="__span-58-7"><a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a><span class="o">===============================================================================</span>
+</span><span id="__span-58-8"><a id="__codelineno-58-8" name="__codelineno-58-8" href="#__codelineno-58-8"></a><span class="p">|</span><span class="w"> </span>lt_x_1<span class="w">             </span><span class="p">|</span><span class="w"> </span>DW_cmp<span class="w">           </span><span class="p">|</span><span class="w"> </span>apparch<span class="w"> </span><span class="o">(</span>area<span class="o">)</span><span class="w">     </span><span class="p">|</span><span class="w">                </span><span class="p">|</span>
+</span><span id="__span-58-9"><a id="__codelineno-58-9" name="__codelineno-58-9" href="#__codelineno-58-9"></a><span class="o">===============================================================================</span>
+</span></code></pre></div>
+<p>This means that Synopsys DC is using a DesignWare module named <code>DW_cmp</code>.
+You can read the datasheet here:</p>
+<ul>
+<li><a href="https://web.csl.cornell.edu/courses/ece6745/asicdocs/dwbb_datasheets">https://web.csl.cornell.edu/courses/ece6745/asicdocs/dwbb_datasheets</a></li>
+</ul>
+<p>Notice that DesignWare provides different microarchitectures. For example
+the adder has the following microarchitectures: a ripple-carry adder, a
+carry-look-ahead adder, a delay optimized parallel-prefix adder, and an
+area-optimized parallel-prefix adder. Synopsys DC will choose the
+appropriate microarchitecture based on power, performance, and area
+targets for the current design.</p>
+<p>Now let's look at the post-place-and-route setup and hold time reports
+from using Cadence Innovus.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel
+</span><span id="__span-59-2"><a id="__codelineno-59-2" name="__codelineno-59-2" href="#__codelineno-59-2"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">05</span>-cadence-innovus-pnr/timing-setup.rpt
+</span><span id="__span-59-3"><a id="__codelineno-59-3" name="__codelineno-59-3" href="#__codelineno-59-3"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">05</span>-cadence-innovus-pnr/timing-hold.rpt
+</span><span id="__span-59-4"><a id="__codelineno-59-4" name="__codelineno-59-4" href="#__codelineno-59-4"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">05</span>-cadence-innovus-pnr/area.rpt
+</span></code></pre></div>
+<p>We can also look at the setup and hold time reports from using Synopsys
+PT.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-60-1"><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-gcd-xcel
+</span><span id="__span-60-2"><a id="__codelineno-60-2" name="__codelineno-60-2" href="#__codelineno-60-2"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">06</span>-synopsys-pt-sta/timing-setup.rpt
+</span><span id="__span-60-3"><a id="__codelineno-60-3" name="__codelineno-60-3" href="#__codelineno-60-3"></a>%<span class="w"> </span>cat<span class="w"> </span><span class="m">06</span>-synopsys-pt-sta/timing-hold.rpt
+</span></code></pre></div>
+<h2 id="4-gcd-accelerator-analysis">4. GCD Accelerator Analysis</h2>
+<p>Now that we understand the automated flow, let's use it to compare two
+processor configurations: one with a GCD accelerator and one without
+(i.e., a null accelerator). Students will need to do a similar
+comparative analysis for project 2. For this part we will be just
+analyzing the processor and accelerator without caches. We will discuss
+using caches and SRAMs in the final part of the lab.</p>
+<h3 id="41-baseline-rtl-analysis">4.1. Baseline RTL Analysis</h3>
+<p>Let's start by revisiting the RTL-based comparison we completed in an
+earlier lab. We always start by running our baseline software natively.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a>% cd ${HOME}/ece6745/lab8/app
+</span><span id="__span-61-2"><a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a>% mkdir build-native
+</span><span id="__span-61-3"><a id="__codelineno-61-3" name="__codelineno-61-3" href="#__codelineno-61-3"></a>% cd build-native
+</span><span id="__span-61-4"><a id="__codelineno-61-4" name="__codelineno-61-4" href="#__codelineno-61-4"></a>% ../configure
+</span><span id="__span-61-5"><a id="__codelineno-61-5" name="__codelineno-61-5" href="#__codelineno-61-5"></a>% make ubmark-gcd-test ubmark-gcd-eval
+</span><span id="__span-61-6"><a id="__codelineno-61-6" name="__codelineno-61-6" href="#__codelineno-61-6"></a>% ./ubmark-gcd-test
+</span><span id="__span-61-7"><a id="__codelineno-61-7" name="__codelineno-61-7" href="#__codelineno-61-7"></a>% ./ubmark-gcd-eval
+</span></code></pre></div>
+<p>Now we can cross-compile the baseline software and run it on the ISA
+simulator.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-62-1"><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a>% cd ${HOME}/ece6745/lab8/app
+</span><span id="__span-62-2"><a id="__codelineno-62-2" name="__codelineno-62-2" href="#__codelineno-62-2"></a>% mkdir build
+</span><span id="__span-62-3"><a id="__codelineno-62-3" name="__codelineno-62-3" href="#__codelineno-62-3"></a>% cd build
+</span><span id="__span-62-4"><a id="__codelineno-62-4" name="__codelineno-62-4" href="#__codelineno-62-4"></a>% ../configure --host=riscv64-unknown-elf
+</span><span id="__span-62-5"><a id="__codelineno-62-5" name="__codelineno-62-5" href="#__codelineno-62-5"></a>% make ubmark-gcd-test ubmark-gcd-eval
+</span><span id="__span-62-6"><a id="__codelineno-62-6" name="__codelineno-62-6" href="#__codelineno-62-6"></a>% ../../sim/pmx/pmx-sim ./ubmark-gcd-test
+</span><span id="__span-62-7"><a id="__codelineno-62-7" name="__codelineno-62-7" href="#__codelineno-62-7"></a>% ../../sim/pmx/pmx-sim ./ubmark-gcd-eval
+</span></code></pre></div>
+<p>Let's test our cross-compiled baseline software on the processor RTL
+with the null accelerator.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a>% cd ${HOME}/ece6745/lab8/app/build
+</span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a>% ../../sim/pmx/pmx-sim --proc-impl rtl --xcel-impl null-rtl ./ubmark-gcd-test
+</span></code></pre></div>
+<p>Finally, we can run an experiment and see how many cycles it takes to
+execute the baseline software on the baseline processor.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-64-1"><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a>% cd ${HOME}/ece6745/lab8/app/build
+</span><span id="__span-64-2"><a id="__codelineno-64-2" name="__codelineno-64-2" href="#__codelineno-64-2"></a>% ../../sim/pmx/pmx-sim --proc-impl rtl --xcel-impl null-rtl --stats ./ubmark-gcd-eval
+</span></code></pre></div>
+<h3 id="42-alternative-rtl-analysis">4.2. Alternative RTL Analysis</h3>
+<p>Now let's run our accelerator software natively.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-65-1"><a id="__codelineno-65-1" name="__codelineno-65-1" href="#__codelineno-65-1"></a>% cd ${HOME}/ece6745/lab8/app/build-native
+</span><span id="__span-65-2"><a id="__codelineno-65-2" name="__codelineno-65-2" href="#__codelineno-65-2"></a>% make ubmark-gcd-xcel-test ubmark-gcd-xcel-eval
+</span><span id="__span-65-3"><a id="__codelineno-65-3" name="__codelineno-65-3" href="#__codelineno-65-3"></a>% ./ubmark-gcd-xcel-test
+</span><span id="__span-65-4"><a id="__codelineno-65-4" name="__codelineno-65-4" href="#__codelineno-65-4"></a>% ./ubmark-gcd-xcel-eval
+</span></code></pre></div>
+<p>Now we can cross-compile the accelerator software and run it on the ISA
+simulator.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-66-1"><a id="__codelineno-66-1" name="__codelineno-66-1" href="#__codelineno-66-1"></a>% cd ${HOME}/ece6745/lab8/app/build
+</span><span id="__span-66-2"><a id="__codelineno-66-2" name="__codelineno-66-2" href="#__codelineno-66-2"></a>% make ubmark-gcd-xcel-test ubmark-gcd-xcel-eval
+</span><span id="__span-66-3"><a id="__codelineno-66-3" name="__codelineno-66-3" href="#__codelineno-66-3"></a>% ../../sim/pmx/pmx-sim --xcel-impl gcd-fl ./ubmark-gcd-xcel-test
+</span><span id="__span-66-4"><a id="__codelineno-66-4" name="__codelineno-66-4" href="#__codelineno-66-4"></a>% ../../sim/pmx/pmx-sim --xcel-impl gcd-fl ./ubmark-gcd-xcel-eval
+</span></code></pre></div>
+<p>Let's test our cross-compiled accelerator software on the processor RTL
+with the GCD accelerator to make sure it works.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-67-1"><a id="__codelineno-67-1" name="__codelineno-67-1" href="#__codelineno-67-1"></a>% cd ${HOME}/ece6745/lab8/app/build
+</span><span id="__span-67-2"><a id="__codelineno-67-2" name="__codelineno-67-2" href="#__codelineno-67-2"></a>% ../../sim/pmx/pmx-sim --proc-impl rtl --xcel-impl gcd-rtl ./ubmark-gcd-xcel-test
+</span></code></pre></div>
+<p>Finally, we can run an experiment and see how many cycles it takes to
+execute the accelerator software on the processor with the GCD
+accelerator.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-68-1"><a id="__codelineno-68-1" name="__codelineno-68-1" href="#__codelineno-68-1"></a>% cd ${HOME}/ece6745/lab8/app/build
+</span><span id="__span-68-2"><a id="__codelineno-68-2" name="__codelineno-68-2" href="#__codelineno-68-2"></a>% ../../sim/pmx/pmx-sim --proc-impl rtl --xcel-impl gcd-rtl --stats ./ubmark-gcd-xcel-eval
+</span></code></pre></div>
+<p>The number of cycles it takes to execute the baseline design by the
+number of cycles it takes to execute the alternative design is the
+speedup.</p>
+<h3 id="43-baseline-asic-analysis">4.3. Baseline ASIC Analysis</h3>
+<p>Now let's push the processor with the null accelerator (i.e., no
+accelerator) through the full flow. Take a look at the provided design
+YAML file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-69-1"><a id="__codelineno-69-1" name="__codelineno-69-1" href="#__codelineno-69-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/designs
+</span><span id="__span-69-2"><a id="__codelineno-69-2" name="__codelineno-69-2" href="#__codelineno-69-2"></a>%<span class="w"> </span>code<span class="w"> </span>lab8-px-null.yml
+</span></code></pre></div>
+<p>Notice that the design name is <code>ProcMemXcel_v0_NullXcel</code> and the clock
+period is also 10ns. Let's use pyhflow to generate the flow scripts and
+run the flow.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-70-1"><a id="__codelineno-70-1" name="__codelineno-70-1" href="#__codelineno-70-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-px-null
+</span><span id="__span-70-2"><a id="__codelineno-70-2" name="__codelineno-70-2" href="#__codelineno-70-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-px-null
+</span><span id="__span-70-3"><a id="__codelineno-70-3" name="__codelineno-70-3" href="#__codelineno-70-3"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/lab8-px-null.yml
+</span></code></pre></div>
+<p>Run the steps one at a time to make sure there are no errors. Do not just
+use <code>run-flow</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-71-1"><a id="__codelineno-71-1" name="__codelineno-71-1" href="#__codelineno-71-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-px-null
+</span><span id="__span-71-2"><a id="__codelineno-71-2" name="__codelineno-71-2" href="#__codelineno-71-2"></a>%<span class="w"> </span>./01-pymtl-rtlsim/run
+</span><span id="__span-71-3"><a id="__codelineno-71-3" name="__codelineno-71-3" href="#__codelineno-71-3"></a>%<span class="w"> </span>./02-synopsys-vcs-rtlsim/run
+</span><span id="__span-71-4"><a id="__codelineno-71-4" name="__codelineno-71-4" href="#__codelineno-71-4"></a>%<span class="w"> </span>./03-synopsys-dc-synth/run
+</span><span id="__span-71-5"><a id="__codelineno-71-5" name="__codelineno-71-5" href="#__codelineno-71-5"></a>%<span class="w"> </span>./04-synopsys-vcs-ffglsim/run
+</span><span id="__span-71-6"><a id="__codelineno-71-6" name="__codelineno-71-6" href="#__codelineno-71-6"></a>%<span class="w"> </span>./05-cadence-innovus-pnr/run
+</span><span id="__span-71-7"><a id="__codelineno-71-7" name="__codelineno-71-7" href="#__codelineno-71-7"></a>%<span class="w"> </span>./06-synopsys-pt-sta/run
+</span><span id="__span-71-8"><a id="__codelineno-71-8" name="__codelineno-71-8" href="#__codelineno-71-8"></a>%<span class="w"> </span>./07-synopsys-vcs-baglsim/run
+</span><span id="__span-71-9"><a id="__codelineno-71-9" name="__codelineno-71-9" href="#__codelineno-71-9"></a>%<span class="w"> </span>./08-synopsys-pt-pwr/run
+</span><span id="__span-71-10"><a id="__codelineno-71-10" name="__codelineno-71-10" href="#__codelineno-71-10"></a>%<span class="w"> </span>./09-mentor-calibre-drc/run
+</span><span id="__span-71-11"><a id="__codelineno-71-11" name="__codelineno-71-11" href="#__codelineno-71-11"></a>%<span class="w"> </span>./10-mentor-calibre-lvs/run
+</span><span id="__span-71-12"><a id="__codelineno-71-12" name="__codelineno-71-12" href="#__codelineno-71-12"></a>%<span class="w"> </span>./11-summarize-results/run
+</span></code></pre></div>
+<p>It will take about 15 minutes to go through all the steps.</p>
+<h3 id="44-alternative-asic-analysis">4.4. Alternative ASIC Analysis</h3>
+<p>Now let's push the processor with the GCD accelerator through the full
+flow. Take a look at the provided design YAML file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-72-1"><a id="__codelineno-72-1" name="__codelineno-72-1" href="#__codelineno-72-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/designs
+</span><span id="__span-72-2"><a id="__codelineno-72-2" name="__codelineno-72-2" href="#__codelineno-72-2"></a>%<span class="w"> </span>code<span class="w"> </span>lab8-px-gcd.yml
+</span></code></pre></div>
+<p>Notice that the design name is <code>ProcMemXcel_v0_GcdXcel</code> and the clock
+period is also 10ns. For a fair comparison we want to make sure the
+processor with the accelerator can meet the same timing constraints as
+the processor without the accelerator. Let's use pyhflow to generate the
+flow scripts and run the flow.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-73-1"><a id="__codelineno-73-1" name="__codelineno-73-1" href="#__codelineno-73-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-px-gcd
+</span><span id="__span-73-2"><a id="__codelineno-73-2" name="__codelineno-73-2" href="#__codelineno-73-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-px-gcd
+</span><span id="__span-73-3"><a id="__codelineno-73-3" name="__codelineno-73-3" href="#__codelineno-73-3"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/lab8-px-gcd.yml
+</span></code></pre></div>
+<p>Run the steps one at a time to make sure there are no errors. Do not just
+use <code>run-flow</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-74-1"><a id="__codelineno-74-1" name="__codelineno-74-1" href="#__codelineno-74-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-proc-null-xcel
+</span><span id="__span-74-2"><a id="__codelineno-74-2" name="__codelineno-74-2" href="#__codelineno-74-2"></a>%<span class="w"> </span>./01-pymtl-rtlsim/run
+</span><span id="__span-74-3"><a id="__codelineno-74-3" name="__codelineno-74-3" href="#__codelineno-74-3"></a>%<span class="w"> </span>./02-synopsys-vcs-rtlsim/run
+</span><span id="__span-74-4"><a id="__codelineno-74-4" name="__codelineno-74-4" href="#__codelineno-74-4"></a>%<span class="w"> </span>./03-synopsys-dc-synth/run
+</span><span id="__span-74-5"><a id="__codelineno-74-5" name="__codelineno-74-5" href="#__codelineno-74-5"></a>%<span class="w"> </span>./04-synopsys-vcs-ffglsim/run
+</span><span id="__span-74-6"><a id="__codelineno-74-6" name="__codelineno-74-6" href="#__codelineno-74-6"></a>%<span class="w"> </span>./05-cadence-innovus-pnr/run
+</span><span id="__span-74-7"><a id="__codelineno-74-7" name="__codelineno-74-7" href="#__codelineno-74-7"></a>%<span class="w"> </span>./06-synopsys-pt-sta/run
+</span><span id="__span-74-8"><a id="__codelineno-74-8" name="__codelineno-74-8" href="#__codelineno-74-8"></a>%<span class="w"> </span>./07-synopsys-vcs-baglsim/run
+</span><span id="__span-74-9"><a id="__codelineno-74-9" name="__codelineno-74-9" href="#__codelineno-74-9"></a>%<span class="w"> </span>./08-synopsys-pt-pwr/run
+</span><span id="__span-74-10"><a id="__codelineno-74-10" name="__codelineno-74-10" href="#__codelineno-74-10"></a>%<span class="w"> </span>./09-mentor-calibre-drc/run
+</span><span id="__span-74-11"><a id="__codelineno-74-11" name="__codelineno-74-11" href="#__codelineno-74-11"></a>%<span class="w"> </span>./10-mentor-calibre-lvs/run
+</span><span id="__span-74-12"><a id="__codelineno-74-12" name="__codelineno-74-12" href="#__codelineno-74-12"></a>%<span class="w"> </span>./11-summarize-results/run
+</span></code></pre></div>
+<p>It will take about 15 minutes to go through all the steps.</p>
+<h3 id="45-comparison">4.5. Comparison</h3>
+<p>Now that both designs have been pushed through the full flow, let's
+compare the results. First, make sure both designs meet the 10ns timing
+constraint. If both designs do not meet the same timing constraint then
+we cannot compare the area and energy.</p>
+<p>We can compare the timing reports to see if adding the GCD accelerator
+impacts the critical path.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-75-1"><a id="__codelineno-75-1" name="__codelineno-75-1" href="#__codelineno-75-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic
+</span><span id="__span-75-2"><a id="__codelineno-75-2" name="__codelineno-75-2" href="#__codelineno-75-2"></a>%<span class="w"> </span>cat<span class="w"> </span>build-px-null/06-synopsys-pt-sta/timing-setup.rpt
+</span><span id="__span-75-3"><a id="__codelineno-75-3" name="__codelineno-75-3" href="#__codelineno-75-3"></a>%<span class="w"> </span>cat<span class="w"> </span>build-px-gcd/06-synopsys-pt-sta/timing-setup.rpt
+</span></code></pre></div>
+<p>Look at the detailed area reports from Cadence Innovus.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-76-1"><a id="__codelineno-76-1" name="__codelineno-76-1" href="#__codelineno-76-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic
+</span><span id="__span-76-2"><a id="__codelineno-76-2" name="__codelineno-76-2" href="#__codelineno-76-2"></a>%<span class="w"> </span>cat<span class="w"> </span>build-px-null/05-cadence-innovus-pnr/area.rpt
+</span><span id="__span-76-3"><a id="__codelineno-76-3" name="__codelineno-76-3" href="#__codelineno-76-3"></a>%<span class="w"> </span>cat<span class="w"> </span>build-px-gcd/05-cadence-innovus-pnr/area.rpt
+</span></code></pre></div>
+<p>Compare the total area and the hierarchical area breakdown between the
+two designs. The processor with the GCD accelerator should have a larger
+area due to the additional hardware for the GCD unit. Look at the
+hierarchical breakdown to understand exactly how much area the GCD
+accelerator adds compared to the null accelerator.</p>
+<p>Compare the power reports from Synopsys PT.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-77-1"><a id="__codelineno-77-1" name="__codelineno-77-1" href="#__codelineno-77-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic
+</span><span id="__span-77-2"><a id="__codelineno-77-2" name="__codelineno-77-2" href="#__codelineno-77-2"></a>%<span class="w"> </span>cat<span class="w"> </span>build-px-null/08-synopsys-pt-pwr/ProcMemXcel_v0_NullXcel_pmx-sim-null-rtl-ubmark-gcd-eval-detailed.rpt
+</span><span id="__span-77-3"><a id="__codelineno-77-3" name="__codelineno-77-3" href="#__codelineno-77-3"></a>%<span class="w"> </span>cat<span class="w"> </span>build-px-gcd/08-synopsys-pt-pwr/ProcMemXcel_v0_GcdXcel_pmx-sim-gcd-rtl-ubmark-gcd-xcel-eval-detailed.rpt
+</span></code></pre></div>
+<p>Compare the total power and the breakdown into internal, switching, and
+leakage power between the two designs. The processor with the GCD
+accelerator will likely have higher leakage power due to the additional
+area, but the dynamic power (internal + switching) may differ depending
+on the workload.</p>
+<p>Compare the summary results too.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-78-1"><a id="__codelineno-78-1" name="__codelineno-78-1" href="#__codelineno-78-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic
+</span><span id="__span-78-2"><a id="__codelineno-78-2" name="__codelineno-78-2" href="#__codelineno-78-2"></a>%<span class="w"> </span>cat<span class="w"> </span>build-px-null/11-summarize-results/run.log
+</span><span id="__span-78-3"><a id="__codelineno-78-3" name="__codelineno-78-3" href="#__codelineno-78-3"></a>%<span class="w"> </span>cat<span class="w"> </span>build-px-gcd/11-summarize-results/run.log
+</span></code></pre></div>
+<p>Think about the tradeoffs involved in terms of execution time in cycles,
+cycle time (i.e., clock period), area, and energy. Should we add the GCD
+accelerator to our system-on-chip?</p>
+<h2 id="5-processor-with-caches">5. Processor with Caches</h2>
+<p>If you have time you can try pushing the processor, caches, and GCD
+accelerator through the flow. This takes about 30 minutes, and currently
+the automatic SRAM macro placement scheme does not always work well. But
+feel free to give it a try!</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-79-1"><a id="__codelineno-79-1" name="__codelineno-79-1" href="#__codelineno-79-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-pmx-gcd
+</span><span id="__span-79-2"><a id="__codelineno-79-2" name="__codelineno-79-2" href="#__codelineno-79-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-pmx-gcd
+</span><span id="__span-79-3"><a id="__codelineno-79-3" name="__codelineno-79-3" href="#__codelineno-79-3"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/lab8-pmx-gcd.yml
+</span></code></pre></div>
+<p>Run the steps one at a time to make sure there are no errors. Do not just
+use <code>run-flow</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-80-1"><a id="__codelineno-80-1" name="__codelineno-80-1" href="#__codelineno-80-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab8/asic/build-proc-null-xcel
+</span><span id="__span-80-2"><a id="__codelineno-80-2" name="__codelineno-80-2" href="#__codelineno-80-2"></a>%<span class="w"> </span>./01-pymtl-rtlsim/run
+</span><span id="__span-80-3"><a id="__codelineno-80-3" name="__codelineno-80-3" href="#__codelineno-80-3"></a>%<span class="w"> </span>./02-synopsys-vcs-rtlsim/run
+</span><span id="__span-80-4"><a id="__codelineno-80-4" name="__codelineno-80-4" href="#__codelineno-80-4"></a>%<span class="w"> </span>./03-synopsys-dc-synth/run
+</span><span id="__span-80-5"><a id="__codelineno-80-5" name="__codelineno-80-5" href="#__codelineno-80-5"></a>%<span class="w"> </span>./04-synopsys-vcs-ffglsim/run
+</span><span id="__span-80-6"><a id="__codelineno-80-6" name="__codelineno-80-6" href="#__codelineno-80-6"></a>%<span class="w"> </span>./05-cadence-innovus-pnr/run
+</span><span id="__span-80-7"><a id="__codelineno-80-7" name="__codelineno-80-7" href="#__codelineno-80-7"></a>%<span class="w"> </span>./06-synopsys-pt-sta/run
+</span><span id="__span-80-8"><a id="__codelineno-80-8" name="__codelineno-80-8" href="#__codelineno-80-8"></a>%<span class="w"> </span>./07-synopsys-vcs-baglsim/run
+</span><span id="__span-80-9"><a id="__codelineno-80-9" name="__codelineno-80-9" href="#__codelineno-80-9"></a>%<span class="w"> </span>./08-synopsys-pt-pwr/run
+</span><span id="__span-80-10"><a id="__codelineno-80-10" name="__codelineno-80-10" href="#__codelineno-80-10"></a>%<span class="w"> </span>./09-mentor-calibre-drc/run
+</span><span id="__span-80-11"><a id="__codelineno-80-11" name="__codelineno-80-11" href="#__codelineno-80-11"></a>%<span class="w"> </span>./10-mentor-calibre-lvs/run
+</span><span id="__span-80-12"><a id="__codelineno-80-12" name="__codelineno-80-12" href="#__codelineno-80-12"></a>%<span class="w"> </span>./11-summarize-results/run
+</span></code></pre></div>
+<p>If you want, you can try experimenting with a fixed SRAM placement
+instead of an automatic placement. This might enable the flow to work
+better. Comment out the automatic placement:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-81-1"><a id="__codelineno-81-1" name="__codelineno-81-1" href="#__codelineno-81-1"></a>set_macro_place_constraint -pg_resource_model {METAL1 0.2}
+</span><span id="__span-81-2"><a id="__codelineno-81-2" name="__codelineno-81-2" href="#__codelineno-81-2"></a>place_design -concurrent_macros
+</span><span id="__span-81-3"><a id="__codelineno-81-3" name="__codelineno-81-3" href="#__codelineno-81-3"></a>refine_macro_place
+</span></code></pre></div>
+<p>And replace it with the following:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-82-1"><a id="__codelineno-82-1" name="__codelineno-82-1" href="#__codelineno-82-1"></a>placeInstance icache/v/cache/dpath/data_array_way0/genblk1_sram  180  100 R90
+</span><span id="__span-82-2"><a id="__codelineno-82-2" name="__codelineno-82-2" href="#__codelineno-82-2"></a>placeInstance icache/v/cache/dpath/data_array_way1/genblk1_sram  670  100 MX90
+</span><span id="__span-82-3"><a id="__codelineno-82-3" name="__codelineno-82-3" href="#__codelineno-82-3"></a>placeInstance icache/v/cache/dpath/tag_array_way0/genblk1_sram   180 1210 R90
+</span><span id="__span-82-4"><a id="__codelineno-82-4" name="__codelineno-82-4" href="#__codelineno-82-4"></a>placeInstance icache/v/cache/dpath/tag_array_way1/genblk1_sram   670 1210 MX90
+</span><span id="__span-82-5"><a id="__codelineno-82-5" name="__codelineno-82-5" href="#__codelineno-82-5"></a>
+</span><span id="__span-82-6"><a id="__codelineno-82-6" name="__codelineno-82-6" href="#__codelineno-82-6"></a>placeInstance dcache/v/cache/dpath/data_array_way0/genblk1_sram 1020  100 R90
+</span><span id="__span-82-7"><a id="__codelineno-82-7" name="__codelineno-82-7" href="#__codelineno-82-7"></a>placeInstance dcache/v/cache/dpath/data_array_way1/genblk1_sram 1500  100 MX90
+</span><span id="__span-82-8"><a id="__codelineno-82-8" name="__codelineno-82-8" href="#__codelineno-82-8"></a>placeInstance dcache/v/cache/dpath/tag_array_way0/genblk1_sram  1020 1210 R90
+</span><span id="__span-82-9"><a id="__codelineno-82-9" name="__codelineno-82-9" href="#__codelineno-82-9"></a>placeInstance dcache/v/cache/dpath/tag_array_way1/genblk1_sram  1500 1210 MX90
+</span></code></pre></div>
+<p>You migh want to experiment with the fixed SRAM macro placement using the
+Cadence Innovus GUI to see what it looks like.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

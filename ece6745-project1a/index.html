@@ -1,0 +1,2585 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-lab9/">
+      
+      
+        <link rel="next" href="../ece6745-project1b/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Part A: TinyFlow Standard Cells - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-project-1-tinyflow-tape-outtinyflow-standard-cells" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Part A: TinyFlow Standard Cells
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-lab1/" class="md-tabs__link">
+          
+  
+  
+  Labs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Projects
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tinyflow-180nm-drm/" class="md-tabs__link">
+          
+  
+  
+  Misc
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6950-lab1/" class="md-tabs__link">
+          
+  
+  
+  Chip Testing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 0: ECE Linux Server Remote Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 1: Linux Development Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 2: Git Distributed Version Control System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: Full-Custom Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 2: Standard-Cell Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 3: Tiny Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 4: Tiny Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 5: TinyRV2 Accelerators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 6: Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 7: Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 8: Block Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab9/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 9: Chip Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: TinyFlow Standard Cells
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: TinyFlow Standard Cells
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-standard-cell-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Standard-Cell Library
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Standard-Cell Library">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-behavioral-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Behavioral View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-schematic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. Schematic View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-layout-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3. Layout View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-extracted-schematic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4. Extracted Schematic View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-front-end-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5. Front-End View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-back-end-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.6. Back-End View
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-optional-extensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Optional Extensions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-project-submission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Project Submission
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: TinyFlow Front End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: TinyFlow Back End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2: Xcel Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 2: Xcel Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: Software & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: Xcel RTL Milestone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: Xcel RTL Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part D: ASIC Evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2e/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part E: Tape-Out and Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Misc
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tinyflow-180nm-drm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tinyflow 180nm Design Rules Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2-ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2 Ideas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip Testing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chip Testing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6950-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: FPGA Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-standard-cell-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Standard-Cell Library
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Standard-Cell Library">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-behavioral-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Behavioral View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-schematic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. Schematic View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-layout-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3. Layout View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-extracted-schematic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4. Extracted Schematic View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-front-end-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5. Front-End View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-back-end-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.6. Back-End View
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-optional-extensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Optional Extensions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-project-submission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Project Submission
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-project-1-tinyflow-tape-outtinyflow-standard-cells">ECE 6745 Project 1: TinyFlow Tape-Out<br>TinyFlow Standard Cells</h1>
+<p>In this project, students will build their own TinyFlow, a very simple
+standard-cell-based flow. They will develop seven standard cells in TSMC
+180nm and the corresponding standard cell behavioral, schematic, layout,
+extracted schematic, front-end, and back-end views. They will then
+implement simple algorithms for synthesis (technology mapping via tree
+covering, static timing analysis) and place-and-route (simulated
+annealing, 3D maze routing). Finally they will combine this work with
+open-source Verilog RTL and gate-level simulators and an open-source
+LVS/DRC tool to create the complete TinyFlow. Even though their TinyFlow
+will only support a very small combinational subset of Verilog, this
+project still gives students a unique hands-on opportunity to appreciate
+every step required in more sophisticated commercial tools. Each group
+will create a tiny block using their TinyFlow and these blocks will be
+aggregated into a single unified tape-out on the TSMC 180nm technology
+node.</p>
+<p>The project includes three parts:</p>
+<ul>
+<li>Part A: TinyFlow Standard Cells</li>
+<li>Part B: TinyFlow Front End</li>
+<li>Part C: TinyFlow Back End</li>
+</ul>
+<p>All parts must be done in a group of 2-3 students. You can confirm your
+group on Canvas (Click on People, then Groups, then search for your name
+to find your project group).</p>
+<div class="admonition warning">
+<p class="admonition-title">All students must contribute to and understand all submitted work!</p>
+<p>It is not acceptable for one student to do all of part A and a
+different student to do all of part B. It is not acceptable for one
+student to exclusively work on the layout while the other student
+exclusively works on SPICE characterization. All students must
+contribute and understand all aspects of all parts. The instructors
+will also survey the Git commit log on GitHub to confirm that all
+students are contributing equally. If you are using a "pair
+programming" style, then both students must take turns using their
+own account so both students have representative Git commits.
+Students should create commits after finishing each step of the
+project, so their contribution is clear in the Git commit log. It is
+fine for the Git commit log to indicate that a student took the lead
+on one standard cell but the student is still responsible for
+reviewing and undrestanding all standard cells included as part of
+the submission. <strong>A student whose contribution is limited as
+represented by the Git commit log will receive a significant
+deduction to their project score.</strong></p>
+</div>
+<p>This handout assumes that you have read and understand the course
+tutorials and that you have attended the lab sections. To get started,
+use VS Code to log into a specific <code>ecelinux</code> server, use MS Remote
+Desktop to log into the same <code>ecelinux</code> server, source the setup scripts,
+and clone your remote repository from GitHub:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span>xclock<span class="w"> </span><span class="p">&amp;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/project1-groupXX
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>project1-groupXX
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>where <code>XX</code> should be replaced with your group number. You can both pull
+and push to your remote repository. If you have already cloned your
+remote repository, then use git pull to ensure you have any recent
+updates before working on your lab assignment.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>where <code>XX</code> should be replaced with your group number. Your repo contains
+the following files for the views and simulation scripts for each
+standard cell:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>.
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>└── stdcells/
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    ├── verilog-test/
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    │   ├── AOI21X1-test.v
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    │   ├── INVX1-test.v
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    │   ├── NAND2X1-test.v
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    │   ├── NOR2X1-test.v
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    │   ├── TIEHI-test.v
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    │   └── TIELO-test.v
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    ├── stdcells-be.yml
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    ├── stdcells-fe.yml
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    ├── stdcells-rcx.yml
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    ├── stdcells.gds
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    ├── stdcells.sp
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    └── stdcells.v
+</span></code></pre></div>
+<p>Go ahead and create a build directory where you will run your simulations
+when verifying and characterizing your standard cells.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>% cd ${HOME}/ece6745/project1-groupXX
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>% mkdir -p stdcells/build
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>% cd stdcells/build
+</span></code></pre></div>
+<h2 id="1-standard-cell-library">1. Standard-Cell Library</h2>
+<p>In this part, you will need to implement the following seven standard
+cells.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Logic Function</th>
+<th>Rise/Fall Time</th>
+<th>Drive Strength</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INVX1</td>
+<td><span class="arithmatex">\(Y = \overline{A}\)</span></td>
+<td>Similar</td>
+<td></td>
+</tr>
+<tr>
+<td>NAND2X1</td>
+<td><span class="arithmatex">\(Y = \overline{AB}\)</span></td>
+<td>Similar</td>
+<td>Similar to INVX1</td>
+</tr>
+<tr>
+<td>NOR2X1</td>
+<td><span class="arithmatex">\(Y = \overline{A+B}\)</span></td>
+<td>(see below)</td>
+<td>(see below)</td>
+</tr>
+<tr>
+<td>AOI21X1</td>
+<td><span class="arithmatex">\(Y = \overline{AB+C}\)</span></td>
+<td>(see below)</td>
+<td>(see below)</td>
+</tr>
+<tr>
+<td>TIEHI</td>
+<td><span class="arithmatex">\(Y = 1\)</span></td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>TIELO</td>
+<td><span class="arithmatex">\(Y = 0\)</span></td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>FILL</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<p>The INVX1 and NAND2X1 standard cells should be sized to have roughly
+equal rise and fall times assuming the effective resistance of PNMOS
+transistor is twice the effective resistance of an NMOS transistor with
+the same width. The NAND2X1 standard cell should be sized to have roughly
+the same drive strength (i.e., effective resistance) as the INVX1
+standard cell.</p>
+<p>For NOR2X1 and AOI21X1 standard cells, students can choose one of two
+options.</p>
+<ul>
+<li>
+<p>Option 1: Size these gates such that they have roughly equal rise and
+   fall times and roughly the same drive strength (i.e., effective
+   resistance) as the INVX1 standard cell; this will require using
+   fingers.</p>
+</li>
+<li>
+<p>Option 2: Do not use fingers meaning the gates will likely have
+   non-equal rise and fall times. You should size the pull-down network
+   to have similar effective resistance as compared to an INVX1 standard
+   cell. The pull-up network will likely have a different effective
+   resistance as compared to an INVX1 standard cell.</p>
+</li>
+</ul>
+<p>The TIEHI standard cell should use a weak PMOS to pull-up the output to
+VDD; gate of weak PMOS should be connected to a diode-connected NMOS. The
+TIELO standard cell should use a weak NMOS to pull-down the output to
+ground, gate of weak NMOS should be connected to a diode-connected PMOS.</p>
+<p>The FILL cell should be a one-track wide filler cell with a vertical
+strip of polysilicon to meet poly density design rules.</p>
+<p>Our standard cell library will include the following six views:</p>
+<ul>
+<li>
+<p><strong>Behavioral View (BV):</strong> Logical function of the standard cell, used
+     for gate-level simulation</p>
+</li>
+<li>
+<p><strong>Schematic View (SV):</strong> Transistor-level representation of standard
+     cell, used for functional verification and layout-vs-schematic</p>
+</li>
+<li>
+<p><strong>Layout View (LV):</strong> Layout of standard cell, used for design-rule
+     checking (DRC), layout-vs-schematic (LVS), resistance/capacitance
+     extraction (RCX), and fabrication</p>
+</li>
+<li>
+<p><strong>Extracted Schematic View (ESV):</strong> Transistor-level representation
+     with extracted resistance and capacitances, used for
+     layout-vs-schematic (LVS) and timing characterization</p>
+</li>
+<li>
+<p><strong>Front-End View (FEV):</strong> High-level information about standard cell
+     including area, input capacitance, logical function, and delay
+     model; used in synthesis</p>
+</li>
+<li>
+<p><strong>Back-End View (BEV):</strong> Low-level information about standard cell
+     including height, width, and pin locations; used in placement and
+     routing</p>
+</li>
+</ul>
+<p>The following table shows which views need to be implemented for which
+standard cells.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>BV</th>
+<th>SV</th>
+<th>LV</th>
+<th>ESV</th>
+<th>FEV</th>
+<th>BEV</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INVX1</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>NAND2X1</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>NOR2X1</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>AOI21X1</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>TIEHI</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes (b)</td>
+<td>yes (c)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>TIELO</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes (b)</td>
+<td>yes (c)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>FILL</td>
+<td>yes (a)</td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+<td>yes (c,d)</td>
+<td>yes (d)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>(a) The behavioral view for the FILL standard cell is an empty Verilog
+   module.</p>
+</li>
+<li>
+<p>(b) Extracted schematic simulation for the TIEHI and TIELO standard
+   cells is only for functional verification; these gates do not switch
+   so there is no timing characterization.</p>
+</li>
+<li>
+<p>(c) The front-end view for the TIEHI, TIELO, and FILL standard cells
+   does not include a linear delay model nor any patterns.</p>
+</li>
+<li>
+<p>(d) The front-end and back-end views for the FILL standard cell do not
+   include any pins.</p>
+</li>
+</ul>
+<p>We will be using the following TinyFlow standard-cell design flow.</p>
+<p><img alt="" src="../img/T02-flow.png" /></p>
+<p>We will begin by writing the behavioral view in Verilog and verifying
+its functionality using a Verilog test bench and Icarus Verilog. We will
+then write the schematic view in SPICE and verify its functionality using
+a SPICE test bench and TinyFlow-Ngspice. Instead of using Ngspice
+directly, we will use our TinyFlow-Ngspice wrapper script which makes it
+much easier to run SPICE simulations. We will then use the KLayout design
+editor to create the layout, perform a design-rules check (DRC), perform
+a layout vs. schematic check (LVS), and generate an extracted schematic.
+We will re-simulate the extracted transistor-level schematic using
+TinyFlow-Ngspice to characterize the propagation delay for different load
+capacitances in order to create a linear delay model. Finally, we will
+write the front-end and back-end views for our standard-cell inverter in
+two YAML files. We will also implement three <em>auxiliary standard cells</em>
+(i.e., TIEHI, TIELO, FILL).</p>
+<p>We recommend implementing all six views for one standard cell before
+moving on to the next standard cell. Consider having each student
+implement all six views for different standard cells.</p>
+<h3 id="11-behavioral-view">1.1. Behavioral View</h3>
+<p>Start by working out the truth table for a standard cell. Once you have
+your truth table, then implement the logic equation which corresponds to
+this truth table in a Verilog module in <code>stdcells.v</code>. The Verilog module
+must have the exact module name and port names as what is used in the
+other views. For example, the interface for the INVX1 standard cell is as
+follows.</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">module</span><span class="w"> </span><span class="n">INVX1</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="p">(</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="k">input</span><span class="w">  </span><span class="n">A</span><span class="p">,</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="k">output</span><span class="w"> </span><span class="n">Y</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">);</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">...</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">endmodule</span>
+</span></code></pre></div>
+<p>The Verilog implementation should use a single assign statement with
+simple bitwise operators.</p>
+<p>We have provided test benches to test each Verilog module. The test
+benches are structured as shown below.</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">module</span><span class="w"> </span><span class="n">Top</span><span class="p">;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="c1">//----------------------------------------------------------------------</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="c1">// Instantiate design under test</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="c1">//----------------------------------------------------------------------</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="n">A</span><span class="p">;</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span><span class="kt">logic</span><span class="w"> </span><span class="n">Y</span><span class="p">;</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">  </span><span class="n">INVX1</span><span class="w"> </span><span class="n">dut</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">  </span><span class="p">(</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="p">.</span><span class="n">A</span><span class="w"> </span><span class="p">(</span><span class="n">A</span><span class="p">),</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="p">.</span><span class="n">Y</span><span class="w"> </span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">  </span><span class="p">);</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">  </span><span class="c1">//----------------------------------------------------------------------</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">  </span><span class="c1">// check</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">  </span><span class="c1">//----------------------------------------------------------------------</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">  </span><span class="k">task</span><span class="w"> </span><span class="n">check</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">  </span><span class="p">(</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">logic</span><span class="w"> </span><span class="n">A_</span><span class="p">,</span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">    </span><span class="k">input</span><span class="w"> </span><span class="kt">logic</span><span class="w"> </span><span class="n">Y_</span>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">  </span><span class="p">);</span>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">    </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A_</span><span class="p">;</span>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">    </span><span class="p">#</span><span class="mh">1</span><span class="p">;</span>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>
+</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">    </span><span class="nb">$display</span><span class="p">(</span><span class="w"> </span><span class="s">"%d: %b &gt; %b"</span><span class="p">,</span><span class="w"> </span><span class="mh">8</span><span class="p">'(</span><span class="nb">$time</span><span class="p">),</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>
+</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">Y</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="n">Y_</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="n">print</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="p">...</span>
+</span><span id="__span-5-34"><a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="w">      </span><span class="nb">$finish</span><span class="p">();</span>
+</span><span id="__span-5-35"><a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="w">    </span><span class="k">end</span>
+</span><span id="__span-5-36"><a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>
+</span><span id="__span-5-37"><a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a><span class="w">  </span><span class="k">endtask</span>
+</span><span id="__span-5-38"><a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a>
+</span><span id="__span-5-39"><a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a><span class="w">  </span><span class="c1">//----------------------------------------------------------------------</span>
+</span><span id="__span-5-40"><a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a><span class="w">  </span><span class="c1">// main</span>
+</span><span id="__span-5-41"><a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a><span class="w">  </span><span class="c1">//----------------------------------------------------------------------</span>
+</span><span id="__span-5-42"><a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a>
+</span><span id="__span-5-43"><a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a><span class="w">  </span><span class="k">initial</span><span class="w"> </span><span class="k">begin</span>
+</span><span id="__span-5-44"><a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a>
+</span><span id="__span-5-45"><a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a><span class="w">    </span><span class="n">$dumpfile</span><span class="p">(</span><span class="s">"INVX1-test.vcd"</span><span class="p">);</span>
+</span><span id="__span-5-46"><a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a><span class="w">    </span><span class="n">$dumpvars</span><span class="p">();</span>
+</span><span id="__span-5-47"><a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a><span class="w">    </span><span class="nb">$display</span><span class="p">(</span><span class="s">""</span><span class="p">);</span>
+</span><span id="__span-5-48"><a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a>
+</span><span id="__span-5-49"><a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a><span class="w">    </span><span class="c1">//     A     Y</span>
+</span><span id="__span-5-50"><a id="__codelineno-5-50" name="__codelineno-5-50" href="#__codelineno-5-50"></a><span class="w">    </span><span class="n">check</span><span class="p">(</span><span class="w"> </span><span class="mh">1</span><span class="mb">'b0</span><span class="p">,</span><span class="w"> </span><span class="mh">1</span><span class="mb">'b1</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-5-51"><a id="__codelineno-5-51" name="__codelineno-5-51" href="#__codelineno-5-51"></a>
+</span><span id="__span-5-52"><a id="__codelineno-5-52" name="__codelineno-5-52" href="#__codelineno-5-52"></a><span class="w">    </span><span class="nb">$display</span><span class="p">(</span><span class="s">""</span><span class="p">);</span>
+</span><span id="__span-5-53"><a id="__codelineno-5-53" name="__codelineno-5-53" href="#__codelineno-5-53"></a><span class="w">  </span><span class="k">end</span>
+</span><span id="__span-5-54"><a id="__codelineno-5-54" name="__codelineno-5-54" href="#__codelineno-5-54"></a>
+</span><span id="__span-5-55"><a id="__codelineno-5-55" name="__codelineno-5-55" href="#__codelineno-5-55"></a><span class="k">endmodule</span>
+</span></code></pre></div>
+<p>The <code>check</code> task is used to set the inputs and check that the output is
+as expected. We provide you a single check for each standard cell. You
+are responsible for adding additional checks to ensure you have
+exhaustively tested all inputs, i.e., you need one check for every row in
+your truth table. You can run a test bench as follows.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/stdcells/build
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-Wall<span class="w"> </span>-g2012<span class="w"> </span>-I<span class="w"> </span>..<span class="w"> </span>-o<span class="w"> </span>INVX1-test<span class="w"> </span>../verilog-test/INVX1-test.v
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>%<span class="w"> </span>./INVX1-test
+</span></code></pre></div>
+<h3 id="12-schematic-view">1.2. Schematic View</h3>
+<p>Start by drawing the schematic view and then sizing the transistors
+appropriately based on whether you are targetting equal rise and fall
+times and your target drive strength. Once you have your drawing, then
+implement this schematic view in a SPICE subcircuit in <code>stdcells.sp</code>. The
+SPICE subcircuit must have the exact subcircuit name and port names as
+what is used in the other views. For example, the interface for the INVX1
+standard cell is as follows.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>.SUBCKT INVX1 A Y VDD VSS
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>...
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>.ENDS INVX1
+</span></code></pre></div>
+<p>Recall from from lecture that the SPICE syntax is as follows:</p>
+<ul>
+<li>PMOS: <code>M_P &lt;D&gt; &lt;G&gt; &lt;S&gt; &lt;B&gt; PMOS L=&lt;length&gt;U W=&lt;width&gt;U</code></li>
+<li>NMOS: <code>M_N &lt;D&gt; &lt;G&gt; &lt;S&gt; &lt;B&gt; NMOS L=&lt;length&gt;U W=&lt;width&gt;U</code></li>
+</ul>
+<p>For standard cells with more than one NMOS and PMOS. You will need to
+make sure each transistor has a unique name (e.g., <code>M_N1</code>, <code>M_N2</code>, etc).
+If your schematic view needs a temporary internal wire/net, simply use a
+new name like <code>net1</code>; SPICE will assume this implicitly refers to a new
+temporary internal wire/net.</p>
+<p>Once you have a completed the schematic view, you will now simulate it
+with TinyFlow-Ngspice. The following shows the syntax of how to use the
+new <code>tinyflow-ngspice</code> wrapper script.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>&lt;SPICE_FILE&gt;<span class="w"> </span>--cell<span class="o">=</span>&lt;CELLNAME&gt;<span class="w"> </span>--cload<span class="o">=</span>&lt;CLOAD&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>--inputs<span class="o">=</span>&lt;INPUTS_SPEC&gt;
+</span></code></pre></div>
+<p>Let's break down each input (all four are required):</p>
+<ul>
+<li>
+<p><code>--spice=&lt;SPICE_FILE&gt;</code>: replace <code>&lt;SPICE_FILE&gt;</code> with the path to
+   <code>stdcells.sp</code> where you have defined your SPICE schematic (e.g.,
+   <code>../stdcells.sp</code>)</p>
+</li>
+<li>
+<p><code>--cell=&lt;CELLNAME&gt;</code>: replace <code>&lt;CELLNAME&gt;</code> with the name of your cell
+   to test (e.g., <code>INVX1</code>)</p>
+</li>
+<li>
+<p><code>--cload=&lt;CLOAD&gt;</code>: replace <code>&lt;CLOAD&gt;</code> with the capacitance to put on
+   the output pin of your cell, you can use regular integers followed by
+   a unit suffix (e.g., <code>10f</code> for 10 femtofarads)</p>
+</li>
+<li>
+<p><code>--inputs=&lt;INPUTS_SPEC&gt;</code>: replace <code>&lt;INPUTS_SPEC&gt;</code> with a string
+   surrounded by quotes of the following form:
+   <code>&lt;PIN1&gt;:&lt;VAL0&gt;-&lt;VAL1&gt;...&lt;VALN&gt;;&lt;PIN2&gt;:&lt;VAL0&gt;-&lt;VAL1&gt;...&lt;VALN&gt;</code> where
+   <code>&lt;PINN&gt;</code> specifies one of the input pins for your cell (e.g. A, B,
+   etc.), and <code>&lt;VALN&gt;</code> specifies a 0 or 1 to assert on that input pin.
+   Each of these values are separated by a dash (-), such that each input
+   value will be set for one timestep (2ns) before the next value is set.
+   All input pins and their corresponding values are separated by a
+   semicolon (;), and input pin names are separated from their values
+   list by a colon (:). All input pins as specified by your standard cell
+   must be present, and they must all have the same number of
+   transitions.</p>
+</li>
+</ul>
+<p>Use TinyFlow-Ngspice to simulate the INVX1 standard cell with a 0fF load
+and an input toggling between zero and one.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/stdcells/build
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells.sp<span class="w"> </span>--cell<span class="o">=</span>INVX1<span class="w"> </span>--cload<span class="o">=</span>0f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span>--inputs<span class="o">=</span><span class="s2">"A:0-1-0-1-0"</span>
+</span></code></pre></div>
+<p>When the command has completed, you will see an output to the console
+specifying the transitions of both the input and output pins of your
+standard cell throughout the simulation. It will also print rising and
+falling delays if captured from each input pin to the output; this will
+be discussed later when characterizing the cell. Additionally, your build
+directory will contain a new subdirectory <code>ngspice-results/</code> with more
+subdirectories within it named with a concatenation of the inputs you
+specified. Each of these subdirectories will contain the following:</p>
+<ul>
+<li><code>-tb.sp</code>: the Spice testbench used to simulate your schematic</li>
+<li><code>.csv</code>: CSV data generated by Ngspice for each pin of your standard cell</li>
+<li><code>.png</code>: an image plotting the voltage of each pin of your standard cell over
+   time</li>
+<li><code>.txt</code>: a text file containing the same output as what was printed to the
+   console</li>
+</ul>
+<p>Use TinyFlow-Ngspice to verify functionality of the schematic view for
+each standard cell. Look at the text output and the waveform plot.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/stdcells/build
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>%<span class="w"> </span>code<span class="w"> </span>ngspice-results/INVX1-50f-stdcells-A_0_1_0_1_0/INVX1-50f-stdcells-A_0_1_0_1_0.png
+</span></code></pre></div>
+<h3 id="13-layout-view">1.3. Layout View</h3>
+<p>Start by drawing a stick diagram for your layout to make a plan for how
+you want to place your transitors and use polysilicon and metal 1 to
+connect these transistors together. Once you have a stick diagram you can
+check to make sure your transistors will fit in a fixed height standard
+cell. If the transistors will not fit then you need to either consider
+using fingers OR supporting non-equal rise and fall times and/or reducing
+the drive strength. If you do use fingers you do <em>not</em> need to go back
+and add fingers to the schematic view. KLayout LVS is smart enough to
+know that a wide transistor in the schematic can map to fingers in the
+layout.</p>
+<p>Once you are happy with your stick diagram, go ahead and use KLayout to
+draw the corresponding standard cell in <code>stdcells.gds</code>. When switching to
+a new cell in the KLayout GUI, make sure to right-click it from the
+<em>Cells</em> panel on the left and select <em>Show As New Top</em>. Try to minimize
+the width of your standard cell; when you are done you can shrink it to
+take the minimum number of <em>sites</em> (i.e., vertical routing tracks). Use
+DRC and LVS to complete physical verification of your layout.</p>
+<h3 id="14-extracted-schematic-view">1.4. Extracted Schematic View</h3>
+<p>The extracted schematic view is generated automatically when you run LVS.
+You will need to copy the contents of the generated SPICE file into
+<code>stdcells-rcx.sp</code>. Now you can use TinyFlow-Ngspice to do functional
+verification and timing characterization of your standard cell.</p>
+<p>Start by creating a spreadsheet with one row for every possible input
+transition. For example, a two-input standard cell (i.e., NAND2X1 and
+NOR2X1) would use the following table:</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>Y</th>
+<th>intercept</th>
+<th>slope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0-&gt;1</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>0</td>
+<td>1-&gt;0</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>0-&gt;1</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>1-&gt;0</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>0-&gt;1</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1-&gt;0</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>0-&gt;1</td>
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1-&gt;0</td>
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>A three-input standard cell (i.e., AOI21X1) needs a table with 24 rows.
+For each row, run a simulation using TinyFlow-Ngspice with a load
+capacitance of 10fF and record what happens to the output in the table
+(i.e, does it stay at 0, stay at 1, transition from 0 to 1, transition
+from 1 to 0).</p>
+<p>If the output transitions, first ensure the propagation delay measurements
+are reasonable. You should be anywhere from 10s of ps to 100s of ps. Then
+rerun the TinyFlow-Ngspice simulation with a load capacitance of 20fF and
+then 30fF. Record the propagation delay for each simulation. You now have
+three points for load capacitance and propagation delay. Then use a
+spreadsheet to determine a linear regression through these three points.
+Confirm that the linear regression is a good fit, and record the
+corresponding intercept (i.e., parasitic delay in ps) and slope (i.e.,
+load delay factor in ps/fF) in the table.</p>
+<p>Here is an example for how to generate the data necessary to analyze the
+fall time of the INVX1 standard cell. Note that 10f, 20f, 30f for the
+<code>cload</code> argument corresponds to 10fF, 20fF, and 30fF.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/stdcells/build
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells-rcx.sp<span class="w"> </span>--cell<span class="o">=</span>INVX1<span class="w"> </span>--cload<span class="o">=</span>10f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span>--inputs<span class="o">=</span><span class="s2">"A:0-1"</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells-rcx.sp<span class="w"> </span>--cell<span class="o">=</span>INVX1<span class="w"> </span>--cload<span class="o">=</span>20f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span>--inputs<span class="o">=</span><span class="s2">"A:0-1"</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells-rcx.sp<span class="w"> </span>--cell<span class="o">=</span>INVX1<span class="w"> </span>--cload<span class="o">=</span>30f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">    </span>--inputs<span class="o">=</span><span class="s2">"A:0-1"</span>
+</span></code></pre></div>
+<p>Once you are done look at all of your data. Our goal is to create a
+single path- and value-independent linear model for the propagation delay
+(i.e., the worst case delay through the standard cell across all possible
+paths and values). Find the maximum parasitic delay and the max load
+delay factor across all propagation delay equations. It is ok if these
+come from different rows. We will use this parasitic delay and load delay
+factor for the linear delay model of the standard cell.</p>
+<h3 id="15-front-end-view">1.5. Front-End View</h3>
+<p>The front-end view is stored in the <code>stdcells-fe.yml</code> file. This YAML
+file will use much of the information we have obtained in previous steps,
+and combine it together for the front-end tools to use. This view
+primarily contains timing, logical, and basic area information for each
+cell.</p>
+<p>The following is a template for the front-end view for the INVX1
+standard cell.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a> - name: INVX1
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>   area_cost: 0 # lambda^2
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>   pins:
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>     - name: A
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>       type: input
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>       cgate: 0 # fF
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>     - name: Y
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>       type: output
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>       function: # tree of generic gates
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>   parasitic_delay:   0 # ps
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>   load_delay_factor: 0 # ps/fF
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>   patterns:
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>     - # list of equivalent trees of generic NAND and INV gates
+</span></code></pre></div>
+<p>Fill in the <code>area_cost</code> value as the area of the standard cell in
+lambda-squared, starting from the bottom-left corner of the intersecting
+black lines indicating the horizontal and vertical tracks, and ending at
+the top-right corner at the intersection of the black lines for the
+horizontal and vertical tracks.</p>
+<p>Each cell also has pin information under the "pin" key. The pin
+information itself will be a list of data for each input and output pin,
+where each pin has a name and type (input or output).</p>
+<p>For input pins, you will need to specify a value for the gate capacitance
+(<code>cgate</code>) in fF associated with that pin. The calculation for gate
+capacitance is as follows:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Cgate = 1.60 * (total gate width in lambda) * 0.09
+</span></code></pre></div>
+<p>The value of 1.60 fF/um is a reasonable value for a generic 180nm
+process. You need to convert it to just units of fF by multiplying by the
+total gate width in um associated with the given input pin. You will need
+to find this total gate width in units of lambda by looking at your
+layout and comparing against your SPICE schematic. The multiplication by
+0.09 is to convert lambda to microns.</p>
+<p>For output pins, you will need to specify the function which determines
+the logical functionality of this pin as a function of the input pins.
+You can specify it using a tree of <em>generic gates</em>. Here is a list of the
+valid generic gates:</p>
+<ul>
+<li><code>BUF</code>, <code>NOT</code>, <code>INV</code></li>
+<li><code>AND2</code>, <code>OR2</code>, <code>XOR2</code></li>
+<li><code>NAND2</code>, <code>NOR2</code>, <code>XNOR2</code></li>
+</ul>
+<p>So for example, here is an example tree for a more complicated
+three-input standard cell: <code>NAND2(INV(A),OR2(INV(B),C))</code>.</p>
+<p>You will need to fill in your values for <code>load_delay_factor</code> and
+<code>parasitic_delay</code> as calculated when simulating the extracted schematic
+view. <strong>Note that <code>load_delay_factor</code> MUST be in units of ps/fF, and
+<code>parasitic_delay</code> MUST be in units of ps. Go back and double check you
+performed the conversions if necessary.</strong></p>
+<p>Finally, you will need to specify a list of patterns <strong>using only INV()
+and NAND2() logical gates</strong> that matches the functionality of your gate
+for all of its inputs.</p>
+<h3 id="16-back-end-view">1.6. Back-End View</h3>
+<p>The back-end view is stored in the <code>stdcells-be.yml</code> file. This YAML file
+will use much of the information we have obtained in previous steps, and
+combine it together for the back-end tools to use. This file primarily
+contains physical data for each cell including width, height, and pin
+locations.</p>
+<p>We give you the following template for the back-end view for the INVX1
+standard cell.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>  - name: INVX1
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    size:
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>      width:  0 # lambda
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>      height: 0 # lambda
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    pins:
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>      - name: A
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>        loc:  (0,0) # (x,y) lambda
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>      - name: Y
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>        loc:  (0,0) # (x,y) lambda
+</span></code></pre></div>
+<p>Each cell has a "size" sub-dictionary, with keys for width and height.
+Fill these values in using the same lower-left and upper-right track
+intersection points used for calculating area in the front-end YAML.
+These width and height values should therefore be in units of lambda.
+Next is the pin list, similar again to the front-end view. In this file,
+each pin once again has a name, but also an X and Y location. Look at
+your layout, and get the X and Y location of the pin marker for each pin
+relative to the lower-left track intersection. These values should once
+again be in units of lambda.</p>
+<h2 id="2-optional-extensions">2. Optional Extensions</h2>
+<p>Students are welcome to add another standard cell to their standard cell
+library. Students should focus on adding a combinational logic gate since
+TinyFlow does not support sequential logic gates (e.g., flip-flops).
+Students should not implement a gate with increased drive strength (e.g.,
+INVX2, INVX4) since TinyFlow cannot take advantage of these larger cells.
+Some ideas include:</p>
+<ul>
+<li>NAND3X1, NOR3X1, NAND4X1, NOR4X1</li>
+<li>AND2X1, OR2X1</li>
+<li>OAI21X1, AOI22X1, OAI22X1</li>
+</ul>
+<p>Students will need to add this new gate to all six views. We do not
+recommend implementing XORX1 or XNORX1. These are very complicated gates
+and they are unlikely to actually be used by the TinyFlow front end.</p>
+<h2 id="3-project-submission">3. Project Submission</h2>
+<p>To submit your code you simply push your code to GitHub. You can push
+your code as many times as you like before the deadline. Students are
+responsible for going to the GitHub website for your repository, browsing
+the source code, and confirming that the code they want to submit is on
+GitHub. Be sure to verify your code is passing all of
+your simulations on <code>ecelinux</code>.</p>
+<p>Here is how we will be testing your final code submission for Part A.
+First, we will create a build directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/project1-groupXX
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>project1-groupXX/stdcells/build
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>project1-groupXX/stdcells/build
+</span></code></pre></div>
+<p>We will check the behavioral views are functionally correct.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-Wall<span class="w"> </span>-g2012<span class="w"> </span>-I<span class="w"> </span>..<span class="w"> </span>-o<span class="w"> </span>INVX1-test<span class="w"> </span>../verilog-test/INVX1-test.v
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>%<span class="w"> </span>./INVX1-test
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-Wall<span class="w"> </span>-g2012<span class="w"> </span>-I<span class="w"> </span>..<span class="w"> </span>-o<span class="w"> </span>NAND2X1-test<span class="w"> </span>../verilog-test/NAND2X1-test.v
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>%<span class="w"> </span>./NAND2X1-test
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-Wall<span class="w"> </span>-g2012<span class="w"> </span>-I<span class="w"> </span>..<span class="w"> </span>-o<span class="w"> </span>NOR2X1-test<span class="w"> </span>../verilog-test/NOR2X1-test.v
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>%<span class="w"> </span>./NOR2X1-test
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-Wall<span class="w"> </span>-g2012<span class="w"> </span>-I<span class="w"> </span>..<span class="w"> </span>-o<span class="w"> </span>AOI21X1-test<span class="w"> </span>../verilog-test/AOI21X1-test.v
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>%<span class="w"> </span>./AOI21X1-test
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-Wall<span class="w"> </span>-g2012<span class="w"> </span>-I<span class="w"> </span>..<span class="w"> </span>-o<span class="w"> </span>TIEHI-test<span class="w"> </span>../verilog-test/TIEHI-test.v
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>%<span class="w"> </span>./TIEHI-test
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-Wall<span class="w"> </span>-g2012<span class="w"> </span>-I<span class="w"> </span>..<span class="w"> </span>-o<span class="w"> </span>TIELO-test<span class="w"> </span>../verilog-test/TIELO-test.v
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>%<span class="w"> </span>./TIELO-test
+</span></code></pre></div>
+<p>We will check if the schematic views are functionally correct.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells.sp<span class="w"> </span>--cell<span class="o">=</span>INVX1<span class="w">   </span>--cload<span class="o">=</span>0f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">                   </span>--inputs<span class="o">=</span><span class="s2">"A:0-1-0-1"</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells.sp<span class="w"> </span>--cell<span class="o">=</span>NAND2X1<span class="w"> </span>--cload<span class="o">=</span>0f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">                   </span>--inputs<span class="o">=</span><span class="s2">"A:0-1-0-1;B:0-0-1-1"</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells.sp<span class="w"> </span>--cell<span class="o">=</span>NOR2X1<span class="w">  </span>--cload<span class="o">=</span>0f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">                  </span>--inputs<span class="o">=</span><span class="s2">"A:0-1-0-1;B:0-0-1-1"</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells.sp<span class="w"> </span>--cell<span class="o">=</span>AOI21X1<span class="w"> </span>--cload<span class="o">=</span>0f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">                  </span>--inputs<span class="o">=</span><span class="s2">"A:0-1-0-1-0-1-0-1;B:0-0-1-1-0-0-1-1;C:0-0-0-0-1-1-1-1"</span>
+</span></code></pre></div>
+<p>We will check to make sure the layout view is DRC and LVS clean.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>%<span class="w"> </span>tinyflow-batch-drc
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>%<span class="w"> </span>tinyflow-batch-lvs
+</span></code></pre></div>
+<p>We will check if the extracted schematic views are functionally correct.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells-rcx.sp<span class="w"> </span>--cell<span class="o">=</span>INVX1<span class="w">   </span>--cload<span class="o">=</span>0f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">                   </span>--inputs<span class="o">=</span><span class="s2">"A:0-1-0-1"</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells-rcx.sp<span class="w"> </span>--cell<span class="o">=</span>NAND2X1<span class="w"> </span>--cload<span class="o">=</span>0f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">                   </span>--inputs<span class="o">=</span><span class="s2">"A:0-1-0-1;B:0-0-1-1"</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells-rcx.sp<span class="w"> </span>--cell<span class="o">=</span>NOR2X1<span class="w">  </span>--cload<span class="o">=</span>0f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">                  </span>--inputs<span class="o">=</span><span class="s2">"A:0-1-0-1;B:0-0-1-1"</span>
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>%<span class="w"> </span>tinyflow-ngspice<span class="w"> </span>--spice<span class="o">=</span>../stdcells-rcx.sp<span class="w"> </span>--cell<span class="o">=</span>AOI21X1<span class="w"> </span>--cload<span class="o">=</span>0f<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="w">                  </span>--inputs<span class="o">=</span><span class="s2">"A:0-1-0-1-0-1-0-1;B:0-0-1-1-0-0-1-1;C:0-0-0-0-1-1-1-1"</span>
+</span></code></pre></div>
+<p>We will also simulate all possible transistors for all standard cells. We
+will check your front-end and back-end view values to ensure they are
+reasonable and match your other views.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

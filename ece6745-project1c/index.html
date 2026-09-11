@@ -1,0 +1,3866 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-project1b/">
+      
+      
+        <link rel="next" href="../ece6745-project2a/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Part C: TinyFlow Back End - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-project-1-tinyflow-tape-outtinyflow-back-end" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Part C: TinyFlow Back End
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-lab1/" class="md-tabs__link">
+          
+  
+  
+  Labs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-project1a/" class="md-tabs__link">
+          
+  
+  
+  Projects
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tinyflow-180nm-drm/" class="md-tabs__link">
+          
+  
+  
+  Misc
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6950-lab1/" class="md-tabs__link">
+          
+  
+  
+  Chip Testing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 0: ECE Linux Server Remote Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 1: Linux Development Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 2: Git Distributed Version Control System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: Full-Custom Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 2: Standard-Cell Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 3: Tiny Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 4: Tiny Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 5: TinyRV2 Accelerators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 6: Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 7: Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 8: Block Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab9/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 9: Chip Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: TinyFlow Standard Cells
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: TinyFlow Front End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: TinyFlow Back End
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: TinyFlow Back End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-background-on-tinyflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Background on TinyFlow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-algorithm-floorplan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Algorithm: Floorplan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Algorithm: Floorplan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-fixed-floorplan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Fixed Floorplan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-automatic-floorplan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Automatic Floorplan
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-algorithm-optimized-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Algorithm: Optimized Placement
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Algorithm: Optimized Placement">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-half-perimeter-wire-length-hpwl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Half-Perimeter Wire Length (HPWL)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-initial-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Initial Placement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-simulated-annealing-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Simulated Annealing Placement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Placement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-algorithm-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Algorithm: Routing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Algorithm: Routing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-bfs-to-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. BFS to Tree
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-single-net-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Single-Net Routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-multi-net-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Multi-Net Routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-algorithm-fill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Algorithm: Fill
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tinyflow-front-and-back-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. TinyFlow Front and Back End
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. TinyFlow Front and Back End">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-front-end-manual-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1. Front-End Manual Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-place-and-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2. Place and Route
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-design-rule-checking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3. Design Rule Checking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-layout-vs-schematic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4. Layout vs. Schematic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-tiny-automated-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5. Tiny Automated Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-tinyflow-tapeout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. TinyFlow Tapeout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-project-submission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Project Submission
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. API Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. API Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-stdcellbackendview-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1. StdCellBackEndView (view)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-tinybackenddb-db" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2. TinyBackEndDB (db)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-cell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3. Cell
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104-pin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4. Pin
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#105-ioport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5. IOPort
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#106-net" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.6. Net
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#107-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.7. Line
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#108-site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.8. Site
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2: Xcel Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 2: Xcel Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: Software & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: Xcel RTL Milestone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: Xcel RTL Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part D: ASIC Evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2e/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part E: Tape-Out and Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Misc
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tinyflow-180nm-drm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tinyflow 180nm Design Rules Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2-ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2 Ideas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip Testing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chip Testing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6950-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: FPGA Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-background-on-tinyflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Background on TinyFlow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-algorithm-floorplan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Algorithm: Floorplan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Algorithm: Floorplan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-fixed-floorplan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Fixed Floorplan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-automatic-floorplan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Automatic Floorplan
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-algorithm-optimized-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Algorithm: Optimized Placement
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Algorithm: Optimized Placement">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-half-perimeter-wire-length-hpwl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Half-Perimeter Wire Length (HPWL)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-initial-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Initial Placement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-simulated-annealing-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Simulated Annealing Placement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Placement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-algorithm-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Algorithm: Routing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Algorithm: Routing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-bfs-to-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. BFS to Tree
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-single-net-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Single-Net Routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-multi-net-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Multi-Net Routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-algorithm-fill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Algorithm: Fill
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tinyflow-front-and-back-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. TinyFlow Front and Back End
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. TinyFlow Front and Back End">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-front-end-manual-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1. Front-End Manual Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-place-and-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2. Place and Route
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-design-rule-checking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3. Design Rule Checking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-layout-vs-schematic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4. Layout vs. Schematic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-tiny-automated-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5. Tiny Automated Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-tinyflow-tapeout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. TinyFlow Tapeout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-project-submission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Project Submission
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. API Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. API Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-stdcellbackendview-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1. StdCellBackEndView (view)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-tinybackenddb-db" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2. TinyBackEndDB (db)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-cell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3. Cell
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104-pin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4. Pin
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#105-ioport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5. IOPort
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#106-net" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.6. Net
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#107-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.7. Line
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#108-site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.8. Site
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-project-1-tinyflow-tape-outtinyflow-back-end">ECE 6745 Project 1: TinyFlow Tape-Out<br>TinyFlow Back-End</h1>
+<p>In this project, students will build their own TinyFlow, a very simple
+standard-cell-based flow. They will develop seven standard cells in TSMC
+180nm and the corresponding standard cell behavioral, schematic, layout,
+extracted schematic, front-end, and back-end views. They will then
+implement simple algorithms for synthesis (technology mapping via tree
+covering, static timing analysis) and place-and-route (simulated
+annealing, 3D maze routing). Finally they will combine this work with
+open-source Verilog RTL and gate-level simulators and an open-source
+LVS/DRC tool to create the complete TinyFlow. Even though their TinyFlow
+will only support a very small combinational subset of Verilog, this
+project still gives students a unique hands-on opportunity to appreciate
+every step required in more sophisticated commercial tools. Each group
+will create a tiny block using their TinyFlow and these blocks will be
+aggregated into a single unified tape-out on the TSMC 180nm technology
+node.</p>
+<p>The project includes three parts:</p>
+<ul>
+<li>Part A: TinyFlow Standard Cells</li>
+<li>Part B: TinyFlow Front End</li>
+<li>Part C: TinyFlow Back End</li>
+</ul>
+<p>Continue working with your group from Part A and B. You can confirm your
+group on Canvas (Click on People, then Groups, then search for your name
+to find your project group).</p>
+<div class="admonition warning">
+<p class="admonition-title">All students must contribute to and understand all submitted work!</p>
+<p>It is not acceptable for one student to do all of part A+B and a
+different student to do all of part C. It is not acceptable for one
+student to exclusively work on one algorithm while the other student
+exclusively works on a different algorithm. All students must
+contribute to and understand all parts. The instructors will also
+survey the Git commit log on GitHub to confirm that all students are
+contributing equally. If you are using a "pair programming" style,
+then both students must take turns using their own account so both
+students have representative Git commits. Students should create
+commits after finishing each step of the project, so their
+contribution is clear in the Git commit log. It is fine for the Git
+commit log to indicate that a student took the lead on one algorithm,
+but the student is still responsible for reviewing and undrestanding
+all algorithms included as part of the submission. <strong>A student's
+whose contribution is limited as represented by the Git commit log
+will receive a significant deduction to their project score.</strong></p>
+</div>
+<p>This handout assumes that you have read and understand the course
+tutorials and that you have attended the lab sections. To get started,
+use VS Code to log into a specific <code>ecelinux</code> server, use MS Remote
+Desktop to log into the same <code>ecelinux</code> server, source the setup scripts,
+and clone your remote repository from GitHub:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span>xclock<span class="w"> </span><span class="p">&amp;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/project1-groupXX
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>project1-groupXX
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>where <code>XX</code> should be replaced with your group number. You can both pull
+and push to your remote repository. If you have already cloned your
+remote repository, then use git pull to ensure you have any recent
+updates before working on your lab assignment.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>where <code>XX</code> should be replaced with your group number. Your repo currently
+contains the following files (more files will be released soon!).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>.
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>├── asic
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│   └── build-fa
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│       ├── 01-verilator-rtlsim
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│       ├── 02-iverilog-rtlsim
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>│       ├── 03-tinyflow-synth
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│       │   └── run.py
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>│       └── 04-iverilog-ffglsim
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>├── rtl
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>│   ├── FullAdder.v
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>│   └── test
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>│       └── FullAdder-test.v
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>├── stdcells
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>│   ├── stdcells.v
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>│   ├── stdcells.sp
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>│   ├── stdcells.gds
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>│   ├── stdcells-rcx.sp
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>│   ├── stdcells-fe.yml
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>│   ├── stdcells-be.yml
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>│   └── verilog-test
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>│       └── ...
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>└── tinyflow
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    ├── conftest.py
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    ├── pytest.ini
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>    ├── pnr
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>    │   ├── tinyv.lark
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>    │   ├── verilog_parser.py
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>    │   ├── StdCellBackEndView.py
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>    │   ├── TinyBackEndDB.py
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    │   ├── TinyBackEndGUI.py
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>    │   ├── floorplan.py
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>    │   ├── place.py
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>    │   ├── place_unopt.py
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>    │   └── tests
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>    │       └── ...
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>    ├── synth
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>    │   ├── tinyv.lark
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>    │   ├── verilog_parser.py
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>    │   ├── StdCellFrontEndView.py
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>    │   ├── TinyFrontEndDB.py
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>    │   ├── TinyFrontEndGUI.py
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>    │   ├── substitute.py
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a>    │   ├── techmap_unopt.py
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>    │   ├── techmap.py
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a>    │   ├── sta.py
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>    │   └── tests
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a>    │       └── ...
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a>    ├── tinyflow-pnr
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>    └── tinyflow-synth
+</span></code></pre></div>
+<p>Go ahead and create a build directory where you will run the synthesis
+tools and tests:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>tinyflow/build
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tinyflow/build
+</span></code></pre></div>
+<h2 id="1-background-on-tinyflow">1. Background on TinyFlow</h2>
+<p>The complete TinyFlow standard-cell and ASIC design flow is shown below
+with the back end highlighted in red.</p>
+<p><img alt="" src="../img/lab4-tinyflow.png" /></p>
+<p>The back end includes place-and-route, design rule checking (DRC), and
+layout-vs-schematic (LVS). Place-and-route itself consists of six key
+algorithms.</p>
+<p><img alt="" src="../img/lab4-pnr-flow.png" width="60%" /></p>
+<ul>
+<li>
+<p><strong>Gate-Level Netlist Reader:</strong> Parses Verilog gate-level netlist into
+   directed acyclic graph of standard cells</p>
+</li>
+<li>
+<p><strong>Floorplan:</strong> Creates grid of sites and positions input/output pins</p>
+</li>
+<li>
+<p><strong>Place:</strong> Places each standard cell on the grid of sites</p>
+</li>
+<li>
+<p><strong>Route:</strong> Routes each net on the routing grid</p>
+</li>
+<li>
+<p><strong>Fill:</strong> Fills in empty space using FILL standard cells</p>
+</li>
+<li>
+<p><strong>Layout &amp; Gate-Level Netlist Writer:</strong> Outputs the final layout along
+     with an updated standard-cell gate-level netlist</p>
+</li>
+</ul>
+<p>We provide you the readers and writers. In this project you are
+reponsible for implementing the floorplan, place, route, and fill
+algorithms.</p>
+<h2 id="2-algorithm-floorplan">2. Algorithm: Floorplan</h2>
+<p>Implement both fixed floorplan and automatic floorplan algorithms in the
+<code>tinyflow/pnr/floorplan.py</code> file.</p>
+<h3 id="21-fixed-floorplan">2.1. Fixed Floorplan</h3>
+<p>The fixed floorplan is useful if we know ahead of time the size of the
+final block and the position of the input and output pins. This kind of
+floorplanning will be used for the actual tapeout.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>floorplan_fixed(db, view, width_um, height_um, io_locs)</code></p>
+<p><strong>Goal:</strong> Initialize floorplan with fixed dimensions and IO locations.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyBackEndDB containing cells to place</li>
+<li><code>view</code>: StdCellBackEndView containing site dimensions</li>
+<li><code>width_um</code>: Chip width in micrometers</li>
+<li><code>height_um</code>: Chip height in micrometers</li>
+<li><code>io_locs</code>: Dict mapping port names to (x_um, y_um) locations</li>
+</ul>
+<p><strong>Returns:</strong> None (modifies db in place)</p>
+<p><strong>Hint:</strong> You will need to use <code>db.floorplan(width,height)</code> which
+takes as input a width and height in units of sites. You will need to
+use <code>db.get_ioport(name).place(i,j)</code> which takes as input the
+location of the ioport in units of the routing grid. Carefully
+consider how to convert the provided width, height, and locations in
+um to the appropriate units when calling <code>db.floorplan(width,height)</code>
+and <code>db.get_ioport(name).place(i,j)</code></p>
+</div>
+<p>To test your floorplan interactively with the REPL and GUI, you will
+need a gate-level netlist as input. Run <code>FullAdder.v</code> through Part B's
+synthesis first to generate <code>asic/playground/03-tinyflow-synth/post-synth.v</code>.
+Then try your fixed floorplan:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>%<span class="w"> </span>../tinyflow-pnr
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="n">StdCellBackEndView</span><span class="p">(</span><span class="n">be</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells-be.yml'</span><span class="p">,</span> <span class="n">gds</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells.gds'</span><span class="p">)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span> <span class="o">=</span> <span class="n">TinyBackEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s1">'../../asic/playground/03-tinyflow-synth/post-synth.v'</span><span class="p">)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">enable_gui</span><span class="p">()</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">io_locs</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">'&lt;port_name&gt;'</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">x_um</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">y_um</span><span class="o">&gt;</span><span class="p">),</span> <span class="o">...</span> <span class="p">}</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">floorplan_fixed</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">width_um</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">height_um</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">io_locs</span><span class="p">)</span>
+</span></code></pre></div>
+<p>You should see the site grid and IO ports appear in the GUI.</p>
+<h3 id="22-automatic-floorplan">2.2. Automatic Floorplan</h3>
+<p>The automatic floorplan is useful for design-space exploration where we
+want to rapidly place-and-route a design without knowing ahead of time
+how large it might be. The actual width and height of the floorplan is
+calculated from the target utilization. If the target utilization is 0.5
+then this means we want the sum of the area of all the standard cells
+divided by the area of the final floorplan to be about 0.5. The actual
+input pin locations are evenly distributed along the left edge of the
+block, and the actual output pin locations are evenly distributed along
+the right edge of the block.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>floorplan_auto(db, view, target_utilization, aspect_ratio)</code></p>
+<p><strong>Goal:</strong> Determine chip dimensions based on cell area and
+utilization. Also places IO pins along the chip edges.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyBackEndDB containing cells to place</li>
+<li><code>view</code>: StdCellBackEndView containing site dimensions</li>
+<li><code>target_utilization</code>: Fraction of area used (0.0 to 1.0)</li>
+<li><code>aspect_ratio</code>: Physical width / height (1.0 = square chip)</li>
+</ul>
+<p><strong>Returns:</strong> None (modifies db in place)</p>
+<p><strong>Hint:</strong> Sum the area of all of the standard cells. Keep in mind
+<code>get_width()</code> for a standard cell returns the width of the standard
+cell in sites. Divide this total area by the target utilization to
+get the actual block are. Use the aspect ratio to determine the
+height and width of the block, and then use these values with
+<code>db.floorplan(width,height)</code>. Use <code>db.get_ioport(name).place(i,j)</code> to
+place the input/output pins. Carefully consider the units when
+specifying all widths, heights, and locations.</p>
+</div>
+<p>Try your automatic floorplan interactively using the REPL with the GUI:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>%<span class="w"> </span>../tinyflow-pnr
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="n">StdCellBackEndView</span><span class="p">(</span><span class="n">be</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells-be.yml'</span><span class="p">,</span> <span class="n">gds</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells.gds'</span><span class="p">)</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span> <span class="o">=</span> <span class="n">TinyBackEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s1">'../../asic/playground/03-tinyflow-synth/post-synth.v'</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">enable_gui</span><span class="p">()</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">floorplan_auto</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span></code></pre></div>
+<p>You should see the floorplan grid and IO ports appear in the GUI. Try
+different utilization and aspect ratio values to see how they affect the
+floorplan.</p>
+<p>Once you have implemented both floorplan algorithms, run all of the
+floorplan tests:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../pnr/tests/floorplan_test.py<span class="w"> </span>-v
+</span></code></pre></div>
+<h2 id="3-algorithm-optimized-placement">3. Algorithm: Optimized Placement</h2>
+<p>Implement a simulated annealing placement algorithm that attempts to
+optimize overall wirelength in the <code>tinyflow/pnr/place.py</code> file. Use the
+total half-perimeter wire length (HPWL) as the cost estimate for a
+placement.</p>
+<p>Instead of placing cells on the site grid, your algorithm should place
+cells on the coarser <em>placement grid</em>. To determine the placement grid,
+first find the max width across all standard cells in the design. Then
+use this max width to set the size of each location in the placement
+grid. Although this is less area efficient, it significantly simplifies
+placement since we are guaranteed placed cells will not overlap.</p>
+<h3 id="31-half-perimeter-wire-length-hpwl">3.1. Half-Perimeter Wire Length (HPWL)</h3>
+<p>We will be using the total half-perimeter wire length (HPWL) as our cost
+metric for any given placement. The HPWL is computed over all placed
+cells and IO ports. For each net:</p>
+<ul>
+<li>Collect all placed pins (skip pins whose cell is not yet placed)</li>
+<li>Find the minimal bounding box around these pins</li>
+<li>The HPWL for that net is the height plus width of the bounding box</li>
+</ul>
+<p>Nets with fewer than two placed pins contribute zero (no wires!). To
+find the total HPWL simply add together the HPWL for every net.
+Implement the <code>hpwl</code> function in <code>tinyflow/pnr/place.py</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>hpwl(db)</code></p>
+<p><strong>Goal:</strong> Compute total HPWL (half-perimeter wirelength) using
+bounding box per net. Use pin locations in routing grid units
+(from <code>pin.get_node()</code>).</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyBackEndDB with placement</li>
+</ul>
+<p><strong>Returns:</strong> HPWL (<code>int</code>)</p>
+<p><strong>Hint:</strong> <code>pin.get_node()</code> returns <code>(None, None, None)</code> if the
+pin's cell is not placed. Use this to skip unplaced pins.</p>
+</div>
+<p>Try computing HPWL interactively using the REPL with the GUI:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>../tinyflow-pnr
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="n">StdCellBackEndView</span><span class="p">(</span><span class="n">be</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells-be.yml'</span><span class="p">,</span> <span class="n">gds</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells.gds'</span><span class="p">)</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span> <span class="o">=</span> <span class="n">TinyBackEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s1">'../../asic/playground/03-tinyflow-synth/post-synth.v'</span><span class="p">)</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">enable_gui</span><span class="p">()</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">floorplan_auto</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">hpwl</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The IO ports are already placed by <code>floorplan_auto</code>. Try manually
+placing cells using <code>cell.set_place(row, col)</code> and calling
+<code>hpwl(db)</code> to see how your HPWL changes. You can also call <code>cell.set_unplace()</code> and <code>cell.set_place()</code> to move cells around and re-evaluate the HPWL. </p>
+<h3 id="32-initial-placement">3.2. Initial Placement</h3>
+<p>For simulated annealing we want to start with a random initial placement.
+Remember we are placing cells on the coarser <em>placement grid</em>. The seed
+can be used to create different random initial placements which might be
+useful if we are unable to route a specific placement. Ensure that two
+cells are never overlap. Implement the <code>place_initial</code> function in
+<code>tinyflow/pnr/place.py</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>place_initial(db, seed)</code></p>
+<p><strong>Goal:</strong> Random initial cell placement.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyBackEndDB with floorplan initialized</li>
+<li><code>seed</code>: Random seed for reproducibility (None = don't reseed)</li>
+</ul>
+<p><strong>Returns:</strong> None (modifies db in place)</p>
+</div>
+<p>Try your initial placement in the REPL:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="n">StdCellBackEndView</span><span class="p">(</span><span class="n">be</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells-be.yml'</span><span class="p">,</span> <span class="n">gds</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells.gds'</span><span class="p">)</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span> <span class="o">=</span> <span class="n">TinyBackEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s1">'../../asic/playground/03-tinyflow-synth/post-synth.v'</span><span class="p">)</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">enable_gui</span><span class="p">()</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">floorplan_auto</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">place_initial</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span></code></pre></div>
+<p>You should see the cells randomly placed in the GUI.</p>
+<h3 id="33-simulated-annealing-placement">3.3. Simulated Annealing Placement</h3>
+<p>This function should assume we have already done the initial placement.
+The function should iterate for a given number of iterations. Each
+iteration should:</p>
+<ul>
+<li>Initialize the temperature with the given initial temperature</li>
+<li>Randomly select a cell</li>
+<li>Randomly select a location in the coarser placement grid</li>
+<li>If the selected location is empty, perform the move by calling
+   <code>cell.set_unplace()</code> then <code>cell.set_place()</code> at the new location</li>
+<li>If the selected location is not empty, perform the swap by first
+   calling <code>set_unplace()</code> on both cells to free their sites, then
+   calling <code>set_place()</code> on both cells at their new locations</li>
+<li>Compute the new total HPWL cost after the move or swap</li>
+<li>If the change in cost is negative, accept the move or swap</li>
+<li>If the change in cost is positive, only accept the move or swap with
+   probability <span class="arithmatex">\(e^{-\Delta c/T}\)</span></li>
+<li>If the move or swap is not accepted, revert by calling
+   <code>set_unplace()</code> and <code>set_place()</code> to restore the original positions</li>
+<li>Decrease the temperature by the cooling rate</li>
+<li>If the temperature is less than the given final temperature stop</li>
+</ul>
+<p>Note that students can experiment with different cost functions. They may
+want to penalize a net with a very small HPWL to try and avoid cells from
+being bunched too close together causing significant routing congestion.
+Implement the <code>place_anneal</code> function in <code>tinyflow/pnr/place.py</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>place_anneal(db, seed, initial_temp, cooling_rate, final_temp, max_iter)</code></p>
+<p><strong>Goal:</strong> Simulated annealing optimization to minimize wirelength.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyBackEndDB with initial placement</li>
+<li><code>seed</code>: Random seed for reproducibility (None = don't reseed)</li>
+<li><code>initial_temp</code>: Starting temperature</li>
+<li><code>cooling_rate</code>: T *= cooling_rate each iteration</li>
+<li><code>final_temp</code>: Stop when T &lt; final_temp</li>
+<li><code>max_iter</code>: Maximum iterations</li>
+</ul>
+<p><strong>Returns:</strong> None (modifies db in place)</p>
+</div>
+<p>Try simulated annealing in the REPL:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="n">StdCellBackEndView</span><span class="p">(</span><span class="n">be</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells-be.yml'</span><span class="p">,</span> <span class="n">gds</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells.gds'</span><span class="p">)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span> <span class="o">=</span> <span class="n">TinyBackEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s1">'../../asic/playground/03-tinyflow-synth/post-synth.v'</span><span class="p">)</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">enable_gui</span><span class="p">()</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">floorplan_auto</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">place_initial</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">place_anneal</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span></code></pre></div>
+<p>You should see the cells move in the GUI as simulated annealing
+optimizes the placement. The HPWL should decrease compared to the
+initial placement.</p>
+<h3 id="34-placement">3.4. Placement</h3>
+<p>Now that we have an initial placement algorithm and the simulated
+annealing we can put them together in the placement function which should
+just call <code>place_init</code> and then <code>place_anneal</code>. Implement the <code>place</code>
+function in <code>tinyflow/pnr/place.py</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>place(db, seed)</code></p>
+<p><strong>Goal:</strong>   Run complete placement: initial placement, SA optimization.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyBackEndDB with initial placement</li>
+<li><code>seed</code>: Random seed for reproducibility (None = don't reseed)</li>
+</ul>
+<p><strong>Returns:</strong> None (modifies db in place)</p>
+</div>
+<p>Once you have implemented all placement functions, try running the
+complete placement in a fresh REPL session:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>%<span class="w"> </span>../tinyflow-pnr
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="n">StdCellBackEndView</span><span class="p">(</span><span class="n">be</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells-be.yml'</span><span class="p">,</span> <span class="n">gds</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells.gds'</span><span class="p">)</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span> <span class="o">=</span> <span class="n">TinyBackEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s1">'../../asic/playground/03-tinyflow-synth/post-synth.v'</span><span class="p">)</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">enable_gui</span><span class="p">()</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">floorplan_auto</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">place</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</span></code></pre></div>
+<p>You should see the cells being placed and then optimized in the GUI. Then run all of the placement tests to verify your implementation:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../pnr/tests/place_test.py<span class="w"> </span>-v
+</span></code></pre></div>
+<h2 id="4-algorithm-routing">4. Algorithm: Routing</h2>
+<p>After placement, we need to connect the pins of each net using metal
+wires. Routing operates on a 3D routing grid where <code>(i, j)</code> are the
+spatial coordinates and <code>k</code> is the metal layer. Each layer serves a
+different purpose:</p>
+<ul>
+<li><strong>M1 (k=1):</strong> Intra-cell routing only (pins live here) — do not
+   route on M1</li>
+<li><strong>M2–M4 (k=2–4):</strong> Inter-cell routing layers — route here</li>
+<li><strong>M5–M6 (k=5-6):</strong> Power grid — do not use</li>
+</ul>
+<p>A wire segment on the same layer is a <em>planar</em> move. Changing layers
+at the same <code>(i, j)</code> location is a <em>via</em>. Each node <code>(i, j, k)</code> in
+the routing grid can only be occupied by one net at a time. Use
+<code>db.get_occupancy(i, j, k)</code> to check if a node is available; it
+returns <code>None</code> if free, or the occupying <code>Net</code> if taken.</p>
+<p>Routing is decomposed into three functions that build on each other:</p>
+<ul>
+<li>
+<p><strong><code>bfs_to_tree</code></strong> finds a path on M2–M4 from a starting node to
+   an existing routing tree using BFS and commits the path to the
+   routing grid. This is the core pathfinding building block.</p>
+</li>
+<li>
+<p><strong><code>single_route</code></strong> routes all pins of a single net. It is
+   responsible for adding M1-to-M2 via segments at each cell pin
+   (since pins live on M1 but BFS operates on M2-M4). It connects
+   pins incrementally by growing a routing tree; each unconnected
+   pin is BFS-routed to the nearest tree node.</p>
+</li>
+<li>
+<p><strong><code>multi_route</code></strong> routes all nets in the design by calling
+   <code>single_route</code> for each net. If a net fails to route, it rips up
+   all routing and retries with a different net ordering.</p>
+</li>
+</ul>
+<p>Implement these functions in <code>tinyflow/pnr/single_route.py</code> and
+<code>tinyflow/pnr/multi_route.py</code> as described below.</p>
+<div class="admonition info">
+<p class="admonition-title">Pin Occupancy Reservation</p>
+<p>Cell pins live on M1 and IO port pins live on M2. When a cell is
+placed, the backend database automatically reserves M1 through M4
+at each pin location in the occupancy grid. When an IO port is
+placed, it reserves M2 through M4. This creates a pillar of
+occupied nodes so that other nets will route around the pin rather
+than across it. Without this reservation, a net could route across
+a pin's M2 node without knowing a pin is directly below on M1, and
+when we later try to route that pin upward, there would be no
+escape path. Nodes belonging to the pin's own net can still pass
+through.</p>
+<p>You do not need to do anything to handle this reservation. It is
+already reflected in <code>db.get_occupancy(i, j, k)</code>, so your BFS will
+naturally route around these pillars. Your routing code only needs
+to add the M1-to-M2 via segments to connect each cell pin up to
+the routing layers.</p>
+</div>
+<h3 id="41-bfs-to-tree">4.1. BFS to Tree</h3>
+<p>The core building block for routing is a BFS (breadth-first search)
+that finds a path from a starting node to any node in an existing
+routing tree. The BFS explores the 3D routing grid on layers M2–M4,
+making planar moves (same layer, adjacent <code>i</code> or <code>j</code>) and via moves
+(same <code>i,j</code>, adjacent <code>k</code>). A node is blocked if it is occupied by a
+different net. Nodes occupied by the current net (i.e., already part
+of the routing tree) are valid targets; reaching any of them means
+we have connected to the tree.</p>
+<p>Implement the <code>bfs_to_tree</code> function in <code>tinyflow/pnr/single_route.py</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>bfs_to_tree(db, net, start, tree)</code></p>
+<p><strong>Goal:</strong> BFS from <code>start</code> to any node in <code>tree</code>, avoiding
+nodes occupied by other nets.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyBackEndDB for occupancy checks</li>
+<li><code>net</code>: Current net (allowed to pass through own routes)</li>
+<li><code>start</code>: Starting <code>(i, j, k)</code> tuple</li>
+<li><code>tree</code>: Set of <code>(i, j, k)</code> tuples representing the current
+  routing tree</li>
+</ul>
+<p><strong>Returns:</strong> Path as list of <code>(i, j, k)</code> tuples from <code>start</code>
+to tree, or <code>None</code> if no path exists. On success, the path is
+also committed as <code>Line</code> segments to the net.</p>
+<p><strong>Hint:</strong> Use a standard BFS with a queue and parent dictionary.
+Each node has up to six neighbors and should stay within layers
+2-4. Use <code>db.get_occupancy(i, j, k)</code> to
+check if a neighbor is blocked by another net. Backtrace through
+the parent dictionary to obtain the path. Convert the path to
+<code>Line</code> segments with <code>Line(path[n], path[n+1])</code> and commit with
+<code>net.add_route_segments(lines)</code>.</p>
+</div>
+<p>Try your BFS interactively using the REPL with the GUI:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>%<span class="w"> </span>../tinyflow-pnr
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="n">StdCellBackEndView</span><span class="p">(</span><span class="n">be</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells-be.yml'</span><span class="p">,</span> <span class="n">gds</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells.gds'</span><span class="p">)</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span> <span class="o">=</span> <span class="n">TinyBackEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s1">'../../asic/playground/03-tinyflow-synth/post-synth.v'</span><span class="p">)</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">enable_gui</span><span class="p">()</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">floorplan_auto</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">place</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">net</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_net</span><span class="p">(</span><span class="s1">'&lt;net_name&gt;'</span><span class="p">)</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">i</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">j</span><span class="o">&gt;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">tree</span> <span class="o">=</span> <span class="p">{(</span><span class="o">&lt;</span><span class="n">i_t</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">j_t</span><span class="o">&gt;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">path</span> <span class="o">=</span> <span class="n">bfs_to_tree</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">tree</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Pick a net and two of its pin locations (elevated to M2) as the start
+and tree. You should see the BFS path appear in the GUI. You can use
+<code>db.clear_all_routing()</code> to clear and try again easily.</p>
+<h3 id="42-single-net-routing">4.2. Single-Net Routing</h3>
+<p>Given a net, <code>single_route</code> connects all of its pins by growing a
+routing tree. Cell pins live on M1, but BFS operates on M2-M4, so
+you need to work with the M2 "elevated" pin locations for BFS and
+add the M1-to-M2 via segments separately.</p>
+<p>The algorithm works as follows:</p>
+<ul>
+<li>Collect the pin locations for the net. For cell pins on M1, add
+   the M1-to-M2 via <code>Line</code> segment and use the M2 location
+   <code>(i, j, 2)</code> as the BFS routing point</li>
+<li>Initialize the routing tree with the first pin</li>
+<li>For each remaining unconnected pin, use <code>bfs_to_tree</code> to find
+   a path from the pin to the tree (this also commits the path)</li>
+<li>Grow the tree with the returned path so subsequent pins can
+   connect to any node routed so far</li>
+</ul>
+<p>Implement the <code>single_route</code> function in
+<code>tinyflow/pnr/single_route.py</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>single_route(db, net_name)</code></p>
+<p><strong>Goal:</strong> Route a single net by connecting all pins using
+tree-growing BFS.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyBackEndDB with placed design</li>
+<li><code>net_name</code>: Name of the net to route</li>
+</ul>
+<p><strong>Returns:</strong> <code>True</code> if routing succeeded, <code>False</code> otherwise.</p>
+<p><strong>Hint:</strong> Use a <code>set</code> for the tree and <code>tree.update(path)</code> to
+grow it after each successful BFS. <code>bfs_to_tree</code> handles
+committing the path to the routing grid. You still need to
+commit the M1-to-M2 via segments separately using
+<code>net.add_route_segments()</code>.</p>
+</div>
+<p>Try routing a single net in the REPL:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">clear_all_routing</span><span class="p">()</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">single_route</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s1">'&lt;net_name&gt;'</span><span class="p">)</span>
+</span></code></pre></div>
+<p>You should see the full route for that net appear in the GUI, including
+the M1-to-M2 vias at each pin. Use <code>db.clear_all_routing()</code> to clear
+and try different nets.</p>
+<div class="admonition tip">
+<p class="admonition-title">Heuristic: Connect Closest Pin First</p>
+<p>Instead of connecting pins in arbitrary order, you can improve
+route quality by always connecting the closest unconnected pin
+to the tree next (using Manhattan distance). This tends to
+produce shorter routes and reduce congestion.</p>
+</div>
+<h3 id="43-multi-net-routing">4.3. Multi-Net Routing</h3>
+<p>The goal of <code>multi_route</code> is to route all nets in the design using
+<code>single_route</code>. The order in which nets are routed matters: nets
+routed first have more available routing resources, while nets routed
+later may be blocked by earlier routes.</p>
+<p>The algorithm works as follows:</p>
+<ul>
+<li>Sort nets by HPWL (shortest first) using <code>net_hpwl</code> as the sort
+   key, since shorter nets are easier to route and less likely to
+   block others</li>
+<li>Route each net using <code>single_route</code></li>
+<li>If a net fails to route, rip up all routing using
+   <code>db.clear_all_routing()</code>, move the failed net to the front of the
+   list, and retry</li>
+<li>If all retries are exhausted, return <code>False</code></li>
+</ul>
+<p>Implement the <code>multi_route</code> function and the <code>net_hpwl</code> helper
+function in <code>tinyflow/pnr/multi_route.py</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>net_hpwl(net)</code></p>
+<p><strong>Goal:</strong> Compute HPWL for a single net (used for sorting).</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>net</code>: A single <code>Net</code> object</li>
+</ul>
+<p><strong>Returns:</strong> HPWL for this net (<code>int</code>)</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>multi_route(db, max_retries)</code></p>
+<p><strong>Goal:</strong> Route all nets in the design.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyBackEndDB with placed design</li>
+<li><code>max_retries</code>: Maximum rip-up and retry attempts</li>
+</ul>
+<p><strong>Returns:</strong> <code>True</code> if all nets routed, <code>False</code> otherwise.</p>
+<p><strong>Hint:</strong> Use <code>db.clear_all_routing()</code> to rip up all routes
+before each retry attempt. Only route nets with two or more
+pins. Use <code>list.remove()</code> and <code>list.insert(0, ...)</code> to move
+the failed net to the front.</p>
+</div>
+<p>Try routing all nets in the REPL:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">clear_all_routing</span><span class="p">()</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">multi_route</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</span></code></pre></div>
+<p>You should see all nets get routed in the GUI.</p>
+<p>Once you have implemented the routing algorithms, run all of the
+routing tests:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../pnr/tests/single_route_test.py<span class="w"> </span>-v
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../pnr/tests/multi_route_test.py<span class="w"> </span>-v
+</span></code></pre></div>
+<h2 id="5-algorithm-fill">5. Algorithm: Fill</h2>
+<p>After placement and routing, any sites in the core that are not occupied
+by a standard cell need to be filled with FILL cells. Filler cells
+ensure there are no gaps in the layout. They maintain continuous
+n-well and power rail connections across the chip.</p>
+<p>The algorithm is straightforward: iterate through every site in the
+core grid and mark any empty site as filler. Implement the <code>add_filler</code>
+function in <code>tinyflow/pnr/add_filler.py</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>add_filler(db)</code></p>
+<p><strong>Goal:</strong> Insert filler cells into all empty sites.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyBackEndDB with placed and routed design</li>
+</ul>
+<p><strong>Returns:</strong> None (modifies db in place)</p>
+<p><strong>Hint:</strong> Use <code>db.get_core()</code> to get the 2D site grid. See
+the Site API reference (Section 7.8) for methods to check and
+mark sites. After filling, count the filler sites and call
+<code>db.set_filler_count(count)</code>.</p>
+</div>
+<p>Try adding filler interactively using the REPL with the GUI:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>%<span class="w"> </span>../tinyflow-pnr
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="n">StdCellBackEndView</span><span class="p">(</span><span class="n">be</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells-be.yml'</span><span class="p">,</span> <span class="n">gds</span><span class="o">=</span><span class="s1">'../../stdcells/stdcells.gds'</span><span class="p">)</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span> <span class="o">=</span> <span class="n">TinyBackEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s1">'../../asic/playground/03-tinyflow-synth/post-synth.v'</span><span class="p">)</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">enable_gui</span><span class="p">()</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">floorplan_auto</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">place</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">multi_route</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">add_filler</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</span></code></pre></div>
+<p>You should see filler cells appear in all empty sites in the GUI. Every
+site should now be either occupied by a standard cell or marked as
+filler.</p>
+<p>Once you have implemented the fill algorithm, run the filler tests:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../pnr/tests/add_filler_test.py<span class="w"> </span>-v
+</span></code></pre></div>
+<h2 id="6-testing">6. Testing</h2>
+<p>Once you have implemented all algorithms, run all of the back-end tests
+at once to verify everything works together.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../pnr/tests<span class="w"> </span>-v
+</span></code></pre></div>
+<p>Just because all of the tests pass does not mean your implementation is
+correct. You are encouraged to add more tests.</p>
+<h2 id="7-tinyflow-front-and-back-end">7. TinyFlow Front and Back End</h2>
+<p>The complete TinyFlow includes both the front-end and back-end. The
+front-end flow consists of four steps: two-state simulation, four-state
+simulation, synthesis, and fast-functional gate-level simulation. The
+back-end flow consists of three steps: place-and-route, design rule
+checking, and layout-vs-schematic. In this final part, we push the full
+adder design through all steps of the flow to illustrate going from
+Verilog RTL to a gate-level netlist to layout. We first manually run each
+step before showing how we can automate running the flow.</p>
+<h3 id="71-front-end-manual-flow">7.1. Front-End Manual Flow</h3>
+<p>We need to first run the front-end flow as in project 1B to generate the
+gate-level netlist. We provide the Verilog RTL in <code>rtl/FullAdder.v</code> and a
+basic testbench in <code>rtl/test/FullAdder-test.v</code>. These are the same as in
+the project 1B. Run the two-state simulation with Verilator.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/01-verilator-rtlsim
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>%<span class="w"> </span>verilator<span class="w"> </span>--top<span class="w"> </span>Top<span class="w"> </span>--timing<span class="w"> </span>--binary<span class="w"> </span>-o<span class="w"> </span>FullAdder-test<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">    </span>../../../rtl/FullAdder.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">    </span>../../../rtl/test/FullAdder-test.v
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>%<span class="w"> </span>./obj_dir/FullAdder-test
+</span></code></pre></div>
+<p>Now run four-state simulation with Icarus Verilog.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/02-iverilog-rtlsim
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-g2012<span class="w"> </span>-o<span class="w"> </span>FullAdder-test<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">    </span>../../../rtl/FullAdder.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">    </span>../../../rtl/test/FullAdder-test.v
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>%<span class="w"> </span>./FullAdder-test
+</span></code></pre></div>
+<p>Create a <code>run.py</code> script for synthesis.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/03-tinyflow-synth
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>%<span class="w"> </span>code<span class="w"> </span>run.py
+</span></code></pre></div>
+<p>Populate the script with the commands to perform optimized technology
+mapping and static timing analysis using your work Project 1B.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># Load the standard-cell front-end view and create front-end database</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="n">view</span> <span class="o">=</span> <span class="n">StdCellFrontEndView</span><span class="o">.</span><span class="n">parse_lib</span><span class="p">(</span><span class="s2">"../../../stdcells/stdcells-fe.yml"</span><span class="p">)</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="n">db</span> <span class="o">=</span> <span class="n">TinyFrontEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="c1"># Read Verilog file into the database</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s2">"../../../rtl/FullAdder.v"</span><span class="p">)</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="c1"># Optimized technology mapping</span>
+</span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a>
+</span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="n">techmap</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+</span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a>
+</span><span id="__span-28-14"><a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="c1"># Static timing analysis with output load of 10fF</span>
+</span><span id="__span-28-15"><a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a>
+</span><span id="__span-28-16"><a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="n">output_load</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span id="__span-28-17"><a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a><span class="n">sta</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">output_load</span><span class="p">)</span>
+</span><span id="__span-28-18"><a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a>
+</span><span id="__span-28-19"><a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="c1"># Check design for issues</span>
+</span><span id="__span-28-20"><a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a>
+</span><span id="__span-28-21"><a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a><span class="n">db</span><span class="o">.</span><span class="n">check_design</span><span class="p">()</span>
+</span><span id="__span-28-22"><a id="__codelineno-28-22" name="__codelineno-28-22" href="#__codelineno-28-22"></a>
+</span><span id="__span-28-23"><a id="__codelineno-28-23" name="__codelineno-28-23" href="#__codelineno-28-23"></a><span class="c1"># Output reports</span>
+</span><span id="__span-28-24"><a id="__codelineno-28-24" name="__codelineno-28-24" href="#__codelineno-28-24"></a>
+</span><span id="__span-28-25"><a id="__codelineno-28-25" name="__codelineno-28-25" href="#__codelineno-28-25"></a><span class="n">db</span><span class="o">.</span><span class="n">report_area</span><span class="p">()</span>
+</span><span id="__span-28-26"><a id="__codelineno-28-26" name="__codelineno-28-26" href="#__codelineno-28-26"></a><span class="n">db</span><span class="o">.</span><span class="n">report_timing</span><span class="p">()</span>
+</span><span id="__span-28-27"><a id="__codelineno-28-27" name="__codelineno-28-27" href="#__codelineno-28-27"></a><span class="n">db</span><span class="o">.</span><span class="n">report_summary</span><span class="p">()</span>
+</span><span id="__span-28-28"><a id="__codelineno-28-28" name="__codelineno-28-28" href="#__codelineno-28-28"></a>
+</span><span id="__span-28-29"><a id="__codelineno-28-29" name="__codelineno-28-29" href="#__codelineno-28-29"></a><span class="c1"># Write front-end database to a Verilog gate-level netlist</span>
+</span><span id="__span-28-30"><a id="__codelineno-28-30" name="__codelineno-28-30" href="#__codelineno-28-30"></a>
+</span><span id="__span-28-31"><a id="__codelineno-28-31" name="__codelineno-28-31" href="#__codelineno-28-31"></a><span class="n">db</span><span class="o">.</span><span class="n">write_verilog</span><span class="p">(</span><span class="s2">"post-synth.v"</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Now go ahead and run synthesis.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/03-tinyflow-synth
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>%<span class="w"> </span>../../../tinyflow/tinyflow-synth<span class="w"> </span>-f<span class="w"> </span>run.py
+</span></code></pre></div>
+<p>Finally run fast-functional gate-level simulation to ensure the
+gate-level netlist is correct.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/04-iverilog-ffglsim
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-g2012<span class="w"> </span>-o<span class="w"> </span>FullAdder-test<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w">    </span>../../../stdcells/stdcells.v<span class="w"> </span>../03-tinyflow-synth/post-synth.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="w">    </span>../../../rtl/test/FullAdder-test.v
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>%<span class="w"> </span>./FullAdder-test
+</span></code></pre></div>
+<h3 id="72-place-and-route">7.2. Place and Route</h3>
+<p>Let's first run the back-end flow interactively, and then we will create
+a corresponding <code>run.py</code> script. Start the place-and-route REPL.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/05-tinyflow-pnr
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>%<span class="w"> </span>../../../tinyflow/tinyflow-pnr
+</span></code></pre></div>
+<p>Now load the standard view, create the tiny back-end database, and start
+the GUI.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="n">StdCellBackEndView</span><span class="p">(</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>                <span class="n">be</span>     <span class="o">=</span> <span class="s1">'../../../stdcells/stdcells-be.yml'</span><span class="p">,</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>                <span class="n">gds</span>    <span class="o">=</span> <span class="s1">'../../../stdcells/stdcells.gds'</span><span class="p">,</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>                <span class="n">rcx_sp</span> <span class="o">=</span> <span class="s1">'../../../stdcells/stdcells-rcx.sp'</span><span class="p">,</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>              <span class="p">)</span>
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span> <span class="o">=</span> <span class="n">TinyBackEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">enable_gui</span><span class="p">()</span>
+</span></code></pre></div>
+<p>Read the gate-level netlist Verilog file into the database.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s1">'../03-tinyflow-synth/post-synth.v'</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Create an automated floorplan.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">floorplan_auto</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Place and route the design and insert filler cells.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">place</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">multi_route</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">add_filler</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Check the design for issues and output a summary report.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">check_design</span><span class="p">()</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">report_summary</span><span class="p">()</span>
+</span></code></pre></div>
+<p>If the design is not able to route then you might need to try replacing
+the design with a different seed and/or decreasing the density during
+automated floorplanning. Write the tiny back-end database to a SPICE
+netlist and GDS layout file and exit the REPL.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">write_spice</span><span class="p">(</span><span class="s1">'post-pnr-rcx.sp'</span><span class="p">)</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">write_gds</span><span class="p">(</span><span class="s1">'post-pnr.gds'</span><span class="p">)</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">pnr</span><span class="o">&gt;</span> <span class="n">exit</span><span class="p">()</span>
+</span></code></pre></div>
+<p>You can now view the final layout using Klayout.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/05-tinyflow-pnr
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>post-pnr.gds
+</span></code></pre></div>
+<p>Choose <em>Display &gt; Top Level Only</em> to hide the internals of each standard
+cell and show just the placement and routing of the standard cells. Try
+hiding and showing different metal layers to better visualize the
+routing. Spend some time appreciating all your hard work!</p>
+<p>Create a <code>run.py</code> script to make it easier to run place-and-route.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/05-tinyflow-pnr
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>%<span class="w"> </span>code<span class="w"> </span>run.py
+</span></code></pre></div>
+<p>Populate the script with the above commands. Note that we do not enable
+the GUI when using a <code>run.py</code> script. Now rerun place-and-route using
+this <code>run.py</code> script.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/05-tinyflow-pnr
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>%<span class="w"> </span>../../../tinyflow/tinyflow-pnr<span class="w"> </span>-f<span class="w"> </span>run.py
+</span></code></pre></div>
+<h3 id="73-design-rule-checking">7.3. Design Rule Checking</h3>
+<p>Although we have already ensured our standard cells are DRC clean, we
+also need to check to ensure the final layout for entire full adder is
+DRC clean. We can do that interactively using Klayout or using the
+command line like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/06-tinyflow-drc
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>%<span class="w"> </span>tinyflow-batch-drc<span class="w"> </span>../05-tinyflow-pnr/post-pnr.gds
+</span></code></pre></div>
+<h3 id="74-layout-vs-schematic">7.4. Layout vs. Schematic</h3>
+<p>Similarly, although we have already ensured our standard cells are LVS
+clean, we also need to check to ensure the final layout for entire full
+adder is LVS clean. We can do that interactively using Klayout or using
+the command line like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/playground/07-tinyflow-lvs
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>%<span class="w"> </span>tinyflow-batch-lvs<span class="w"> </span>../05-tinyflow-pnr/post-pnr.gds<span class="w"> </span>../05-tinyflow-pnr/post-pnr-rcx.sp
+</span></code></pre></div>
+<h3 id="75-tiny-automated-flow">7.5. Tiny Automated Flow</h3>
+<p>In the previous sections, we manually commands entering commands for each
+tool to take a design from RTL to layout. Using <code>run.py</code> scripts can
+help, and we could even create <code>run</code> Bash scripts to further automate the
+flow. However, truly agile hardware design demands more sophisticated
+automation to simplify rapidly exploring the design space of one or more
+designs. In this section, we will introduce a tool called pyhflow which
+takes as input step templates and a design YAML and generates appropriate
+flow scripts.</p>
+<p>pyflow is based on the idea of step templates which are located in the
+asic/steps directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/steps
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>The directory layout should look as follows.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>.
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>├── 01-verilator-rtlsim
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>│   └── run
+</span><span id="__span-44-4"><a id="__codelineno-44-4" name="__codelineno-44-4" href="#__codelineno-44-4"></a>├── 02-iverilog-rtlsim
+</span><span id="__span-44-5"><a id="__codelineno-44-5" name="__codelineno-44-5" href="#__codelineno-44-5"></a>│   └── run
+</span><span id="__span-44-6"><a id="__codelineno-44-6" name="__codelineno-44-6" href="#__codelineno-44-6"></a>├── 03-tinyflow-synth
+</span><span id="__span-44-7"><a id="__codelineno-44-7" name="__codelineno-44-7" href="#__codelineno-44-7"></a>│   ├── run
+</span><span id="__span-44-8"><a id="__codelineno-44-8" name="__codelineno-44-8" href="#__codelineno-44-8"></a>│   └── run.py
+</span><span id="__span-44-9"><a id="__codelineno-44-9" name="__codelineno-44-9" href="#__codelineno-44-9"></a>├── 04-iverilog-ffglsim
+</span><span id="__span-44-10"><a id="__codelineno-44-10" name="__codelineno-44-10" href="#__codelineno-44-10"></a>│   └── run
+</span><span id="__span-44-11"><a id="__codelineno-44-11" name="__codelineno-44-11" href="#__codelineno-44-11"></a>├── 05-tinyflow-pnr
+</span><span id="__span-44-12"><a id="__codelineno-44-12" name="__codelineno-44-12" href="#__codelineno-44-12"></a>│   ├── run
+</span><span id="__span-44-13"><a id="__codelineno-44-13" name="__codelineno-44-13" href="#__codelineno-44-13"></a>│   └── run.py
+</span><span id="__span-44-14"><a id="__codelineno-44-14" name="__codelineno-44-14" href="#__codelineno-44-14"></a>├── 06-klayout-drc
+</span><span id="__span-44-15"><a id="__codelineno-44-15" name="__codelineno-44-15" href="#__codelineno-44-15"></a>│   └── run
+</span><span id="__span-44-16"><a id="__codelineno-44-16" name="__codelineno-44-16" href="#__codelineno-44-16"></a>├── 07-klayout-lvs
+</span><span id="__span-44-17"><a id="__codelineno-44-17" name="__codelineno-44-17" href="#__codelineno-44-17"></a>│   └── run
+</span><span id="__span-44-18"><a id="__codelineno-44-18" name="__codelineno-44-18" href="#__codelineno-44-18"></a>└── 08-summarize-results
+</span><span id="__span-44-19"><a id="__codelineno-44-19" name="__codelineno-44-19" href="#__codelineno-44-19"></a>    └── run
+</span></code></pre></div>
+<p>Each step is a directory with a run script and possibly other scripts.
+The key difference from the <code>run.py</code> and <code>run</code> scripts we used
+previously, is that these scripts are templated using the Jinja2
+templating system:</p>
+<ul>
+<li><a href="https://jinja.palletsprojects.com">https://jinja.palletsprojects.com</a></li>
+</ul>
+<p>Open the <code>run.py</code> script in the <code>03-tinyflow-synth</code> step template.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/steps/03-tinyflow-synth
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>%<span class="w"> </span>code<span class="w"> </span>run.py
+</span></code></pre></div>
+<p>Notice how the <code>run.py</code> script is templated based on the design name.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s2">"{{top_dir}}/rtl/{{design_name}}.v"</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The <code>{{ }}</code> directive is the standard syntax for template variable
+substitution using Jinja2. The pyhflow program takes as input a design
+YAML file which specifies how to fill in these template variables. Take a
+look at the provided design YAML for the full ader.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/designs
+</span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>%<span class="w"> </span>code<span class="w"> </span>fa.yml
+</span></code></pre></div>
+<p>The contents should look as follows.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>steps:
+</span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a> - 01-verilator-rtlsim
+</span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a> - 02-iverilog-rtlsim
+</span><span id="__span-48-4"><a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a> - 03-tinyflow-synth
+</span><span id="__span-48-5"><a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a> - 04-iverilog-ffglsim
+</span><span id="__span-48-6"><a id="__codelineno-48-6" name="__codelineno-48-6" href="#__codelineno-48-6"></a> - 05-tinyflow-pnr
+</span><span id="__span-48-7"><a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a> - 06-klayout-drc
+</span><span id="__span-48-8"><a id="__codelineno-48-8" name="__codelineno-48-8" href="#__codelineno-48-8"></a> - 07-klayout-lvs
+</span><span id="__span-48-9"><a id="__codelineno-48-9" name="__codelineno-48-9" href="#__codelineno-48-9"></a> - 08-summarize-results
+</span><span id="__span-48-10"><a id="__codelineno-48-10" name="__codelineno-48-10" href="#__codelineno-48-10"></a>
+</span><span id="__span-48-11"><a id="__codelineno-48-11" name="__codelineno-48-11" href="#__codelineno-48-11"></a>top_dir     : ../../..
+</span><span id="__span-48-12"><a id="__codelineno-48-12" name="__codelineno-48-12" href="#__codelineno-48-12"></a>design_name : FullAdder
+</span><span id="__span-48-13"><a id="__codelineno-48-13" name="__codelineno-48-13" href="#__codelineno-48-13"></a>test        : FullAdder-test
+</span><span id="__span-48-14"><a id="__codelineno-48-14" name="__codelineno-48-14" href="#__codelineno-48-14"></a>
+</span><span id="__span-48-15"><a id="__codelineno-48-15" name="__codelineno-48-15" href="#__codelineno-48-15"></a>techmap     : optimized
+</span><span id="__span-48-16"><a id="__codelineno-48-16" name="__codelineno-48-16" href="#__codelineno-48-16"></a>place       : optimized
+</span><span id="__span-48-17"><a id="__codelineno-48-17" name="__codelineno-48-17" href="#__codelineno-48-17"></a>
+</span><span id="__span-48-18"><a id="__codelineno-48-18" name="__codelineno-48-18" href="#__codelineno-48-18"></a>floorplan              : auto
+</span><span id="__span-48-19"><a id="__codelineno-48-19" name="__codelineno-48-19" href="#__codelineno-48-19"></a>floorplan_density      : 0.5
+</span><span id="__span-48-20"><a id="__codelineno-48-20" name="__codelineno-48-20" href="#__codelineno-48-20"></a>floorplan_aspect_ratio : 1.0
+</span></code></pre></div>
+<p>This design YAML file specifies the generated flow should use eight steps
+and also includes the design name, test name, and floorplan information.
+You can choose to use your unoptimized technology mapping algorithm and
+simply random placement as a baseline. All pyhflow does is use the YAML
+file to figure out what to substitute into the templated steps and then
+copy the run scripts into the current working directory. You can also
+override parameters on pyhflow command line.</p>
+<p>Let's now use pyhflow to easily automate the entire process of pushing a
+full adder through the tiny flow.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic
+</span><span id="__span-49-2"><a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>build-fa
+</span><span id="__span-49-3"><a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build-fa
+</span><span id="__span-49-4"><a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/fa.yml
+</span><span id="__span-49-5"><a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a>%<span class="w"> </span>./01-verilator-rtlsim/run
+</span><span id="__span-49-6"><a id="__codelineno-49-6" name="__codelineno-49-6" href="#__codelineno-49-6"></a>%<span class="w"> </span>./02-iverilog-rtlsim/run
+</span><span id="__span-49-7"><a id="__codelineno-49-7" name="__codelineno-49-7" href="#__codelineno-49-7"></a>%<span class="w"> </span>./03-tinyflow-synth/run
+</span><span id="__span-49-8"><a id="__codelineno-49-8" name="__codelineno-49-8" href="#__codelineno-49-8"></a>%<span class="w"> </span>./04-iverilog-ffglsim/run
+</span><span id="__span-49-9"><a id="__codelineno-49-9" name="__codelineno-49-9" href="#__codelineno-49-9"></a>%<span class="w"> </span>./05-tinyflow-pnr/run
+</span><span id="__span-49-10"><a id="__codelineno-49-10" name="__codelineno-49-10" href="#__codelineno-49-10"></a>%<span class="w"> </span>./06-klayout-drc/run
+</span><span id="__span-49-11"><a id="__codelineno-49-11" name="__codelineno-49-11" href="#__codelineno-49-11"></a>%<span class="w"> </span>./07-klayout-lvs/run
+</span><span id="__span-49-12"><a id="__codelineno-49-12" name="__codelineno-49-12" href="#__codelineno-49-12"></a>%<span class="w"> </span>./08-summarize-results/run
+</span></code></pre></div>
+<p>pyhflow also creates a <code>run-flow</code> script which will run all the steps
+further simplifying the process.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic
+</span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>build-fa
+</span><span id="__span-50-3"><a id="__codelineno-50-3" name="__codelineno-50-3" href="#__codelineno-50-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build-fa
+</span><span id="__span-50-4"><a id="__codelineno-50-4" name="__codelineno-50-4" href="#__codelineno-50-4"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/fa.yml
+</span><span id="__span-50-5"><a id="__codelineno-50-5" name="__codelineno-50-5" href="#__codelineno-50-5"></a>%<span class="w"> </span>./run-flow
+</span><span id="__span-50-6"><a id="__codelineno-50-6" name="__codelineno-50-6" href="#__codelineno-50-6"></a>
+</span><span id="__span-50-7"><a id="__codelineno-50-7" name="__codelineno-50-7" href="#__codelineno-50-7"></a><span class="w"> </span><span class="nv">timestamp</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="m">2026</span>-02-18<span class="w"> </span><span class="m">16</span>:27:36
+</span><span id="__span-50-8"><a id="__codelineno-50-8" name="__codelineno-50-8" href="#__codelineno-50-8"></a><span class="w"> </span><span class="nv">design_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span>FullAdder
+</span><span id="__span-50-9"><a id="__codelineno-50-9" name="__codelineno-50-9" href="#__codelineno-50-9"></a><span class="w"> </span><span class="nv">techmap</span><span class="w">              </span><span class="o">=</span><span class="w"> </span>optimized
+</span><span id="__span-50-10"><a id="__codelineno-50-10" name="__codelineno-50-10" href="#__codelineno-50-10"></a><span class="w"> </span><span class="nv">place</span><span class="w">                </span><span class="o">=</span><span class="w"> </span>optimized
+</span><span id="__span-50-11"><a id="__codelineno-50-11" name="__codelineno-50-11" href="#__codelineno-50-11"></a><span class="w"> </span><span class="nv">rtlsim_2state</span><span class="w">        </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-50-12"><a id="__codelineno-50-12" name="__codelineno-50-12" href="#__codelineno-50-12"></a><span class="w"> </span><span class="nv">rtlsim_4state</span><span class="w">        </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-50-13"><a id="__codelineno-50-13" name="__codelineno-50-13" href="#__codelineno-50-13"></a><span class="w"> </span><span class="nv">synth_num_stdcells</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">20</span>
+</span><span id="__span-50-14"><a id="__codelineno-50-14" name="__codelineno-50-14" href="#__codelineno-50-14"></a><span class="w"> </span><span class="nv">synth_area</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="m">38912</span><span class="w"> </span>lambda^2
+</span><span id="__span-50-15"><a id="__codelineno-50-15" name="__codelineno-50-15" href="#__codelineno-50-15"></a><span class="w"> </span><span class="nv">synth_critical_path</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">319</span>.604<span class="w"> </span>ps
+</span><span id="__span-50-16"><a id="__codelineno-50-16" name="__codelineno-50-16" href="#__codelineno-50-16"></a><span class="w"> </span><span class="nv">ffglsim</span><span class="w">              </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-50-17"><a id="__codelineno-50-17" name="__codelineno-50-17" href="#__codelineno-50-17"></a><span class="w"> </span><span class="nv">pnr_area</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="m">1069</span>.978<span class="w"> </span>um^2
+</span><span id="__span-50-18"><a id="__codelineno-50-18" name="__codelineno-50-18" href="#__codelineno-50-18"></a><span class="w"> </span><span class="nv">pnr_num_placed_cells</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span>/20
+</span><span id="__span-50-19"><a id="__codelineno-50-19" name="__codelineno-50-19" href="#__codelineno-50-19"></a><span class="w"> </span><span class="nv">pnr_num_routed_nets</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">23</span>/23
+</span><span id="__span-50-20"><a id="__codelineno-50-20" name="__codelineno-50-20" href="#__codelineno-50-20"></a><span class="w"> </span><span class="nv">pnr_check_design</span><span class="w">     </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-50-21"><a id="__codelineno-50-21" name="__codelineno-50-21" href="#__codelineno-50-21"></a><span class="w"> </span><span class="nv">drc_check_design</span><span class="w">     </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-50-22"><a id="__codelineno-50-22" name="__codelineno-50-22" href="#__codelineno-50-22"></a><span class="w"> </span><span class="nv">lvs_check_design</span><span class="w">     </span><span class="o">=</span><span class="w"> </span>passed
+</span></code></pre></div>
+<p>Now try taking the four-bit ripple-carry adder from RTL to a gate-level
+netlist to layout using the tiny automated flow.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic
+</span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>build-addrc-4b
+</span><span id="__span-51-3"><a id="__codelineno-51-3" name="__codelineno-51-3" href="#__codelineno-51-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build-addrc-4b
+</span><span id="__span-51-4"><a id="__codelineno-51-4" name="__codelineno-51-4" href="#__codelineno-51-4"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/addrc-4b.yml
+</span><span id="__span-51-5"><a id="__codelineno-51-5" name="__codelineno-51-5" href="#__codelineno-51-5"></a>%<span class="w"> </span>./run-flow
+</span><span id="__span-51-6"><a id="__codelineno-51-6" name="__codelineno-51-6" href="#__codelineno-51-6"></a>
+</span><span id="__span-51-7"><a id="__codelineno-51-7" name="__codelineno-51-7" href="#__codelineno-51-7"></a><span class="w"> </span><span class="nv">timestamp</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="m">2026</span>-02-18<span class="w"> </span><span class="m">16</span>:28:09
+</span><span id="__span-51-8"><a id="__codelineno-51-8" name="__codelineno-51-8" href="#__codelineno-51-8"></a><span class="w"> </span><span class="nv">design_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span>AdderRippleCarry_4b
+</span><span id="__span-51-9"><a id="__codelineno-51-9" name="__codelineno-51-9" href="#__codelineno-51-9"></a><span class="w"> </span><span class="nv">techmap</span><span class="w">              </span><span class="o">=</span><span class="w"> </span>optimized
+</span><span id="__span-51-10"><a id="__codelineno-51-10" name="__codelineno-51-10" href="#__codelineno-51-10"></a><span class="w"> </span><span class="nv">place</span><span class="w">                </span><span class="o">=</span><span class="w"> </span>optimized
+</span><span id="__span-51-11"><a id="__codelineno-51-11" name="__codelineno-51-11" href="#__codelineno-51-11"></a><span class="w"> </span><span class="nv">rtlsim_2state</span><span class="w">        </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-51-12"><a id="__codelineno-51-12" name="__codelineno-51-12" href="#__codelineno-51-12"></a><span class="w"> </span><span class="nv">rtlsim_4state</span><span class="w">        </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-51-13"><a id="__codelineno-51-13" name="__codelineno-51-13" href="#__codelineno-51-13"></a><span class="w"> </span><span class="nv">synth_num_stdcells</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">77</span>
+</span><span id="__span-51-14"><a id="__codelineno-51-14" name="__codelineno-51-14" href="#__codelineno-51-14"></a><span class="w"> </span><span class="nv">synth_area</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="m">158208</span><span class="w"> </span>lambda^2
+</span><span id="__span-51-15"><a id="__codelineno-51-15" name="__codelineno-51-15" href="#__codelineno-51-15"></a><span class="w"> </span><span class="nv">synth_critical_path</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">814</span>.604<span class="w"> </span>ps
+</span><span id="__span-51-16"><a id="__codelineno-51-16" name="__codelineno-51-16" href="#__codelineno-51-16"></a><span class="w"> </span><span class="nv">ffglsim</span><span class="w">              </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-51-17"><a id="__codelineno-51-17" name="__codelineno-51-17" href="#__codelineno-51-17"></a><span class="w"> </span><span class="nv">pnr_area</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="m">2575</span>.411<span class="w"> </span>um^2
+</span><span id="__span-51-18"><a id="__codelineno-51-18" name="__codelineno-51-18" href="#__codelineno-51-18"></a><span class="w"> </span><span class="nv">pnr_num_placed_cells</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">77</span>/77
+</span><span id="__span-51-19"><a id="__codelineno-51-19" name="__codelineno-51-19" href="#__codelineno-51-19"></a><span class="w"> </span><span class="nv">pnr_num_routed_nets</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">85</span>/85
+</span><span id="__span-51-20"><a id="__codelineno-51-20" name="__codelineno-51-20" href="#__codelineno-51-20"></a><span class="w"> </span><span class="nv">pnr_check_design</span><span class="w">     </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-51-21"><a id="__codelineno-51-21" name="__codelineno-51-21" href="#__codelineno-51-21"></a><span class="w"> </span><span class="nv">drc_check_design</span><span class="w">     </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-51-22"><a id="__codelineno-51-22" name="__codelineno-51-22" href="#__codelineno-51-22"></a><span class="w"> </span><span class="nv">lvs_check_design</span><span class="w">     </span><span class="o">=</span><span class="w"> </span>passed
+</span></code></pre></div>
+<h2 id="8-tinyflow-tapeout">8. TinyFlow Tapeout</h2>
+<p>Once your entire Tiny Flow is working, you can now implement a project of
+your choice as a Tiny Flow block. Each Tiny Flow block is limited to
+100x100um with exactly eight inputs pins and exactly eight output pins in
+a fixed floorplan. The course staff will the compose all of the Tiny Flow
+blocks into a single chip for a shared tapeout on TSMC 180nm. Each group
+will have a chance to test their Tiny Flow block on the shared tapeout in
+the fall. Here are some project ideas:</p>
+<ul>
+<li>3-bit ALU (add, sub, lt, gt)</li>
+<li>8-bit comparator (outputs indicate lt, gt, eq)</li>
+<li>8-bit popcount (output is number of ones in the input)</li>
+<li>3-bit multiplier (output is 6-bit product, 4-bit multiplier is probably too big)</li>
+<li>4-bit variable shifter (1-bit indicates left/right, 2-bits indicate amount to shift)</li>
+<li>4-bit variable rotator (1-bit indicates left/right, 2-bits indicate amount to shift)</li>
+<li>8-bit parity generator</li>
+<li>4-bit binary to seven-segment display</li>
+<li>8-bit absolute value</li>
+<li>4-bit min-max unit (top 4-bits of output is max, bottom 4-bits of output is min)</li>
+<li>3-bit median of three</li>
+<li><a href="https://en.wikipedia.org/wiki/Hamming(7,4)">hamming(7,4) encoder</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Rijndael_S-box">8-bit S-box</a></li>
+</ul>
+<p>Students can implement any project they want as long as it meets the
+following requirements:</p>
+<ul>
+<li>no unused inputs, no undriven outputs</li>
+<li>exhaustive Verilog test bench</li>
+<li>passes all tests for 2-state RTL simulation</li>
+<li>passes all tests for 4-state RTL simulation</li>
+<li>passes generic gates are technology mapped</li>
+<li>passes synthesis check design</li>
+<li>passes all tests for fast-function gate-level simulation</li>
+<li>uses standard 100x100um fixed floorplan</li>
+<li>all cells are successfully placed</li>
+<li>all nets are successfully placed</li>
+<li>passes pnr check design</li>
+<li>passes DRC check design</li>
+<li>passes LVS check design</li>
+</ul>
+<p>We have included an example of what a Tiny Flow block might look like in
+your repo. Take a look at the code in <code>TapeoutExample.v</code>. <strong>Notice that
+all inputs must be used and all outputs must be driven!</strong> Let's say you
+do use in0 but you do not use in7. Then you could do something like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>  assign in7_ = ~(in7 &amp; in7);
+</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>  assign in0_ = in7_ | in0;
+</span></code></pre></div>
+<p>This way in7 will be used but will not impact the output. If you do not
+use an output then simply assign one of the outputs you do use to the
+unused output to ensure all outputs are always driven. <strong>If your Tiny
+Flow block has unused inputs and/or undriven outputs it will not be
+included on the shared tapeout.</strong></p>
+<p>You can try pushing this example through your Tiny Flow as follows.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic
+</span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>build-tapeout-example
+</span><span id="__span-53-3"><a id="__codelineno-53-3" name="__codelineno-53-3" href="#__codelineno-53-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build-tapeout-example
+</span><span id="__span-53-4"><a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/tapeout-example.yml
+</span><span id="__span-53-5"><a id="__codelineno-53-5" name="__codelineno-53-5" href="#__codelineno-53-5"></a>%<span class="w"> </span>./run-flow
+</span><span id="__span-53-6"><a id="__codelineno-53-6" name="__codelineno-53-6" href="#__codelineno-53-6"></a>
+</span><span id="__span-53-7"><a id="__codelineno-53-7" name="__codelineno-53-7" href="#__codelineno-53-7"></a><span class="w"> </span><span class="nv">timestamp</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="m">2026</span>-02-18<span class="w"> </span><span class="m">20</span>:43:29
+</span><span id="__span-53-8"><a id="__codelineno-53-8" name="__codelineno-53-8" href="#__codelineno-53-8"></a><span class="w"> </span><span class="nv">design_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span>TapeoutExample
+</span><span id="__span-53-9"><a id="__codelineno-53-9" name="__codelineno-53-9" href="#__codelineno-53-9"></a><span class="w"> </span><span class="nv">techmap</span><span class="w">              </span><span class="o">=</span><span class="w"> </span>optimized
+</span><span id="__span-53-10"><a id="__codelineno-53-10" name="__codelineno-53-10" href="#__codelineno-53-10"></a><span class="w"> </span><span class="nv">place</span><span class="w">                </span><span class="o">=</span><span class="w"> </span>optimized
+</span><span id="__span-53-11"><a id="__codelineno-53-11" name="__codelineno-53-11" href="#__codelineno-53-11"></a><span class="w"> </span><span class="nv">rtlsim_2state</span><span class="w">        </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-53-12"><a id="__codelineno-53-12" name="__codelineno-53-12" href="#__codelineno-53-12"></a><span class="w"> </span><span class="nv">rtlsim_4state</span><span class="w">        </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-53-13"><a id="__codelineno-53-13" name="__codelineno-53-13" href="#__codelineno-53-13"></a><span class="w"> </span><span class="nv">synth_num_stdcells</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">109</span>
+</span><span id="__span-53-14"><a id="__codelineno-53-14" name="__codelineno-53-14" href="#__codelineno-53-14"></a><span class="w"> </span><span class="nv">synth_area</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="m">207360</span><span class="w"> </span>lambda^2
+</span><span id="__span-53-15"><a id="__codelineno-53-15" name="__codelineno-53-15" href="#__codelineno-53-15"></a><span class="w"> </span><span class="nv">synth_critical_path</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">971</span>.452<span class="w"> </span>ps
+</span><span id="__span-53-16"><a id="__codelineno-53-16" name="__codelineno-53-16" href="#__codelineno-53-16"></a><span class="w"> </span><span class="nv">ffglsim</span><span class="w">              </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-53-17"><a id="__codelineno-53-17" name="__codelineno-53-17" href="#__codelineno-53-17"></a><span class="w"> </span><span class="nv">pnr_area</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="m">9729</span>.331<span class="w"> </span>um^2
+</span><span id="__span-53-18"><a id="__codelineno-53-18" name="__codelineno-53-18" href="#__codelineno-53-18"></a><span class="w"> </span><span class="nv">pnr_num_placed_cells</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">109</span>/109
+</span><span id="__span-53-19"><a id="__codelineno-53-19" name="__codelineno-53-19" href="#__codelineno-53-19"></a><span class="w"> </span><span class="nv">pnr_num_routed_nets</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">117</span>/117
+</span><span id="__span-53-20"><a id="__codelineno-53-20" name="__codelineno-53-20" href="#__codelineno-53-20"></a><span class="w"> </span><span class="nv">pnr_check_design</span><span class="w">     </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-53-21"><a id="__codelineno-53-21" name="__codelineno-53-21" href="#__codelineno-53-21"></a><span class="w"> </span><span class="nv">drc_check_design</span><span class="w">     </span><span class="o">=</span><span class="w"> </span>passed
+</span><span id="__span-53-22"><a id="__codelineno-53-22" name="__codelineno-53-22" href="#__codelineno-53-22"></a><span class="w"> </span><span class="nv">lvs_check_design</span><span class="w">     </span><span class="o">=</span><span class="w"> </span>passed
+</span></code></pre></div>
+<p><img alt="" src="../img/project1c-tinyflow-block.png" /></p>
+<p>Notice that the block is 100x100um. The eight input pins are in fixed
+locations along the left edge and the eight output pins are in fixed
+locations on the right edge.</p>
+<p>You must implement your Tiny Flow project in <code>TapeoutGroupXX</code> where <code>XX</code>
+is your group number. To include your Tiny Flow project on the TinyFlow
+tapeout you must copy the final post-pnr layout and extracted schematic
+into this subdirectory, add them to your repository, and push them to
+GitHub like this.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic
+</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>build-tapeout-groupXX
+</span><span id="__span-54-3"><a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build-tapeout-groupXX
+</span><span id="__span-54-4"><a id="__codelineno-54-4" name="__codelineno-54-4" href="#__codelineno-54-4"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/tapeout-groupXX.yml
+</span><span id="__span-54-5"><a id="__codelineno-54-5" name="__codelineno-54-5" href="#__codelineno-54-5"></a>%<span class="w"> </span>cp<span class="w"> </span><span class="m">05</span>-tinyflow-pnr/post-pnr.gds<span class="w"> </span>../tapeout
+</span><span id="__span-54-6"><a id="__codelineno-54-6" name="__codelineno-54-6" href="#__codelineno-54-6"></a>%<span class="w"> </span>cp<span class="w"> </span><span class="m">05</span>-tinyflow-pnr/post-pnr-rcx.sp<span class="w"> </span>../tapeout
+</span><span id="__span-54-7"><a id="__codelineno-54-7" name="__codelineno-54-7" href="#__codelineno-54-7"></a>%<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>../tapeout
+</span><span id="__span-54-8"><a id="__codelineno-54-8" name="__codelineno-54-8" href="#__codelineno-54-8"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"tapeout ready"</span>
+</span><span id="__span-54-9"><a id="__codelineno-54-9" name="__codelineno-54-9" href="#__codelineno-54-9"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span></code></pre></div>
+<p>Where <code>XX</code> is your group number.</p>
+<h2 id="9-project-submission">9. Project Submission</h2>
+<p>To submit your code you simply push your code to GitHub. You can push
+your code as many times as you like before the deadline. Students are
+responsible for going to the GitHub website for your repository, browsing
+the source code, and confirming that the code they want to submit is on
+GitHub. Be sure to verify your code is passing all of
+your simulations on <code>ecelinux</code>.</p>
+<p>Here is how we will be testing your final code submission for Part C.
+First, we will clone your repo.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/project1-groupXX
+</span></code></pre></div>
+<p>Then we will run all of the tests for the synthesis and pnr flows</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../synth
+</span><span id="__span-56-4"><a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a>%<span class="w"> </span>pytest<span class="w"> </span>../pnr
+</span></code></pre></div>
+<p>Then we will verify that we can succesfully push the full adder through
+your TinyFlow using pyhflow.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa
+</span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa
+</span><span id="__span-57-3"><a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/ca.yml
+</span><span id="__span-57-4"><a id="__codelineno-57-4" name="__codelineno-57-4" href="#__codelineno-57-4"></a>%<span class="w"> </span>./run-flow
+</span></code></pre></div>
+<p>Then we will verify that we can succesfully push the ripple carry adder
+through your TinyFlow using pyhflow.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-addrc-4b
+</span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-addrc-4b
+</span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/addrc-4b.yml
+</span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a>%<span class="w"> </span>./run-flow
+</span></code></pre></div>
+<p>Finally, we will verify that we can successfully push your tapeout block
+through your TinyFlow using pyhflow and that the result matches what you
+have copied into the tapeout directory</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-tapeout-groupXX
+</span><span id="__span-59-2"><a id="__codelineno-59-2" name="__codelineno-59-2" href="#__codelineno-59-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-tapeout-groupXX
+</span><span id="__span-59-3"><a id="__codelineno-59-3" name="__codelineno-59-3" href="#__codelineno-59-3"></a>%<span class="w"> </span>pyhflow<span class="w"> </span>../designs/tapeout-groupXX.yml
+</span><span id="__span-59-4"><a id="__codelineno-59-4" name="__codelineno-59-4" href="#__codelineno-59-4"></a>%<span class="w"> </span>./run-flow
+</span><span id="__span-59-5"><a id="__codelineno-59-5" name="__codelineno-59-5" href="#__codelineno-59-5"></a>%<span class="w"> </span>diff<span class="w"> </span><span class="m">05</span>-tinyflow-pnr/post-pnr.gds<span class="w"> </span>../tapeout/post-pnr.gds
+</span><span id="__span-59-6"><a id="__codelineno-59-6" name="__codelineno-59-6" href="#__codelineno-59-6"></a>%<span class="w"> </span>diff<span class="w"> </span><span class="m">05</span>-tinyflow-pnr/post-pnr-rcx.sp<span class="w"> </span>../tapeout/post-pnr-rcx.sp
+</span></code></pre></div>
+<h2 id="10-api-reference">10. API Reference</h2>
+<p>This section provides a quick reference for the classes and methods you
+will use when implementing the back-end algorithms.</p>
+<div class="admonition info">
+<p class="admonition-title">Coordinate Systems</p>
+<p>There are two coordinate systems used in the back end:</p>
+<ul>
+<li>
+<p><strong>Site grid</strong> uses <code>(row, col)</code> coordinates. Each cell occupies
+  one or more sites in a row. Cell placement uses site grid
+  coordinates (e.g., <code>cell.set_place(row, col)</code>).</p>
+</li>
+<li>
+<p><strong>Routing grid</strong> uses <code>(i, j, k)</code> coordinates. <code>i</code> corresponds
+  to the row direction (vertical), <code>j</code> corresponds to the column
+  direction (horizontal), and <code>k</code> is the metal layer (1=M1, 2=M2,
+  etc.). The routing grid is finer than the site grid — there are
+  multiple routing tracks per site row in the <code>i</code> direction. Pin
+  locations and I/O port placement use routing grid coordinates
+  (e.g., <code>pin.get_node()</code> returns <code>(i, j, k)</code>).</p>
+</li>
+</ul>
+</div>
+<h3 id="101-stdcellbackendview-view">10.1. StdCellBackEndView (<code>view</code>)</h3>
+<p>The library view provides technology information (site dimensions, layer
+info, cell definitions).</p>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>view.get_site()</code></td>
+<td><code>Site</code></td>
+<td>Get the site definition</td>
+</tr>
+<tr>
+<td><code>view.get_site().get_width()</code></td>
+<td><code>int</code></td>
+<td>Site width in lambda</td>
+</tr>
+<tr>
+<td><code>view.get_site().get_height()</code></td>
+<td><code>int</code></td>
+<td>Site height in lambda</td>
+</tr>
+<tr>
+<td><code>view.get_cell(ref)</code></td>
+<td><code>Cell</code></td>
+<td>Get library cell by reference name</td>
+</tr>
+<tr>
+<td><code>view.get_cell(ref).get_width()</code></td>
+<td><code>int</code></td>
+<td>Cell width in lambda</td>
+</tr>
+<tr>
+<td><code>view.get_layer('metal1')</code></td>
+<td><code>Layer</code></td>
+<td>Get a metal layer</td>
+</tr>
+<tr>
+<td><code>view.get_layer(name).get_track_pitch()</code></td>
+<td><code>int</code></td>
+<td>Track pitch in lambda</td>
+</tr>
+<tr>
+<td><code>view.get_lambda_um()</code></td>
+<td><code>float</code></td>
+<td>Lambda unit in micrometers (0.09)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="102-tinybackenddb-db">10.2. TinyBackEndDB (<code>db</code>)</h3>
+<p>The backend database manages cells, nets, I/O ports, and the site
+and routing grids.</p>
+<p><strong>Floorplan and grid:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>db.floorplan(num_rows, num_cols)</code></td>
+<td>None</td>
+<td>Initialize site grid (units: sites)</td>
+</tr>
+<tr>
+<td><code>db.get_num_rows()</code></td>
+<td><code>int</code></td>
+<td>Number of rows in site grid</td>
+</tr>
+<tr>
+<td><code>db.get_num_cols()</code></td>
+<td><code>int</code></td>
+<td>Number of sites per row</td>
+</tr>
+<tr>
+<td><code>db.get_grid_size_i()</code></td>
+<td><code>int</code></td>
+<td>Routing grid size in i (vertical tracks)</td>
+</tr>
+<tr>
+<td><code>db.get_grid_size_j()</code></td>
+<td><code>int</code></td>
+<td>Routing grid size in j (horizontal tracks)</td>
+</tr>
+<tr>
+<td><code>db.get_core()</code></td>
+<td><code>list[list[Site]]</code></td>
+<td>2D site grid</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cells:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>db.get_cells()</code></td>
+<td><code>tuple[Cell]</code></td>
+<td>Get all cell instances</td>
+</tr>
+<tr>
+<td><code>db.get_cell(name)</code></td>
+<td><code>Cell</code></td>
+<td>Get a cell by instance name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nets:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>db.get_nets()</code></td>
+<td><code>tuple[Net]</code></td>
+<td>Get all nets</td>
+</tr>
+<tr>
+<td><code>db.get_net(name)</code></td>
+<td><code>Net</code></td>
+<td>Get a net by name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>I/O ports:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>db.get_ioport(name)</code></td>
+<td><code>IOPort</code></td>
+<td>Get an I/O port by name</td>
+</tr>
+<tr>
+<td><code>db.get_in_ports()</code></td>
+<td><code>tuple[IOPort]</code></td>
+<td>Get all input ports</td>
+</tr>
+<tr>
+<td><code>db.get_out_ports()</code></td>
+<td><code>tuple[IOPort]</code></td>
+<td>Get all output ports</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Placement helpers:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>db.get_placement()</code></td>
+<td><code>dict</code></td>
+<td>Get current placement as <code>{name: (row, col)}</code></td>
+</tr>
+<tr>
+<td><code>db.apply_placement(dict)</code></td>
+<td>None</td>
+<td>Apply a saved placement (unplaces all first)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Routing:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>db.get_occupancy(i, j, k)</code></td>
+<td><code>Net</code> or <code>None</code></td>
+<td>Get the net occupying a routing node, or <code>None</code> if free</td>
+</tr>
+<tr>
+<td><code>db.clear_all_routing()</code></td>
+<td>None</td>
+<td>Clear all routing and restore pin/IO occupancy</td>
+</tr>
+<tr>
+<td><code>db.set_filler_count(count)</code></td>
+<td>None</td>
+<td>Set filler cell count</td>
+</tr>
+</tbody>
+</table>
+<h3 id="103-cell">10.3. Cell</h3>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cell.get_name()</code></td>
+<td><code>str</code></td>
+<td>Instance name</td>
+</tr>
+<tr>
+<td><code>cell.get_width()</code></td>
+<td><code>int</code></td>
+<td>Width in sites</td>
+</tr>
+<tr>
+<td><code>cell.get_place()</code></td>
+<td><code>list</code></td>
+<td>Current placement <code>[row, col]</code> (site coords)</td>
+</tr>
+<tr>
+<td><code>cell.is_placed()</code></td>
+<td><code>bool</code></td>
+<td>Whether the cell is placed</td>
+</tr>
+<tr>
+<td><code>cell.set_place(row, col)</code></td>
+<td>None</td>
+<td>Place cell at site coordinates</td>
+</tr>
+<tr>
+<td><code>cell.set_unplace()</code></td>
+<td>None</td>
+<td>Remove cell from placement</td>
+</tr>
+<tr>
+<td><code>cell.pins</code></td>
+<td><code>list[Pin]</code></td>
+<td>List of pins on this cell</td>
+</tr>
+</tbody>
+</table>
+<h3 id="104-pin">10.4. Pin</h3>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pin.get_name()</code></td>
+<td><code>str</code></td>
+<td>Pin name</td>
+</tr>
+<tr>
+<td><code>pin.get_node()</code></td>
+<td><code>(i, j, k)</code></td>
+<td>Routing grid coordinates (None if unplaced)</td>
+</tr>
+<tr>
+<td><code>pin.net</code></td>
+<td><code>Net</code></td>
+<td>The net this pin belongs to</td>
+</tr>
+</tbody>
+</table>
+<h3 id="105-ioport">10.5. IOPort</h3>
+<p>IOPort is a subclass of Pin. It represents an I/O port at the chip
+boundary.</p>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ioport.place(i, j)</code></td>
+<td>None</td>
+<td>Place at routing grid edge coordinates</td>
+</tr>
+<tr>
+<td><code>ioport.get_node()</code></td>
+<td><code>(i, j, k)</code></td>
+<td>Routing grid coordinates (k = 2, i.e., M2)</td>
+</tr>
+<tr>
+<td><code>ioport.name</code></td>
+<td><code>str</code></td>
+<td>Port name</td>
+</tr>
+</tbody>
+</table>
+<h3 id="106-net">10.6. Net</h3>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>net.net_name</code></td>
+<td><code>str</code></td>
+<td>Net name</td>
+</tr>
+<tr>
+<td><code>net.pins</code></td>
+<td><code>list[Pin]</code></td>
+<td>List of connected pins (includes IOPorts)</td>
+</tr>
+<tr>
+<td><code>net.add_route_segments(lines)</code></td>
+<td>None</td>
+<td>Commit a list of <code>Line</code> segments to the routing grid</td>
+</tr>
+</tbody>
+</table>
+<h3 id="107-line">10.7. Line</h3>
+<p>A <code>Line</code> represents a wire segment between two adjacent nodes in the
+routing grid.</p>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Line(start, end)</code></td>
+<td><code>Line</code></td>
+<td>Create a segment from <code>(i,j,k)</code> to <code>(i,j,k)</code></td>
+</tr>
+<tr>
+<td><code>line.start</code></td>
+<td><code>(i,j,k)</code></td>
+<td>Start node</td>
+</tr>
+<tr>
+<td><code>line.end</code></td>
+<td><code>(i,j,k)</code></td>
+<td>End node</td>
+</tr>
+</tbody>
+</table>
+<h3 id="108-site">10.8. Site</h3>
+<p>Sites are accessed from <code>db.get_core()</code> which returns a 2D list
+indexed as <code>core[row][col]</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method/Attribute</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site._get_occupancy()</code></td>
+<td><code>Cell</code> or <code>None</code></td>
+<td>Get the cell occupying this site, or <code>None</code> if empty</td>
+</tr>
+<tr>
+<td><code>site.is_fill()</code></td>
+<td><code>bool</code></td>
+<td>Whether this site is marked as filler</td>
+</tr>
+<tr>
+<td><code>site.add_filler()</code></td>
+<td>None</td>
+<td>Mark this site as filler</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

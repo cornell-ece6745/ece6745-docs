@@ -1,0 +1,2623 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-tut02-git/">
+      
+      
+        <link rel="next" href="../ece6745-lab2/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Lab 1: Full-Custom Inverter - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-lab-1-full-custom-inverter" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Lab 1: Full-Custom Inverter
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Labs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-project1a/" class="md-tabs__link">
+          
+  
+  
+  Projects
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tinyflow-180nm-drm/" class="md-tabs__link">
+          
+  
+  
+  Misc
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6950-lab1/" class="md-tabs__link">
+          
+  
+  
+  Chip Testing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 0: ECE Linux Server Remote Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 1: Linux Development Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 2: Git Distributed Version Control System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: Full-Custom Inverter
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: Full-Custom Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-linux-development-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Linux Development Environment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Linux Development Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-remote-access-via-powershell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Remote Access via PowerShell
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-remote-access-via-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. Remote Access via VS Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-remote-access-via-ms-remote-desktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3. Remote Access via MS Remote Desktop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-github-account-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4. GitHub Account Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-clone-lab-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5. Clone Lab Repo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-klayout-tutorial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. KLayout Tutorial
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-full-custom-inverter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Full-Custom Inverter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Full-Custom Inverter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-transistor-level-schematics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Transistor-Level Schematics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-schematic-simulation-with-ngspice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Schematic Simulation with Ngspice
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-drawing-layout-with-klayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Drawing Layout with KLayout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-drc-with-klayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. DRC with KLayout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-lvs-with-klayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5. LVS with KLayout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-rcx-with-klayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6. RCX with KLayout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37-extracted-simulation-with-ngspice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7. Extracted Simulation with Ngspice
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-full-custom-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Full-Custom Buffer
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 2: Standard-Cell Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 3: Tiny Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 4: Tiny Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 5: TinyRV2 Accelerators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 6: Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 7: Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 8: Block Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab9/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 9: Chip Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: TinyFlow Standard Cells
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: TinyFlow Front End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: TinyFlow Back End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2: Xcel Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 2: Xcel Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: Software & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: Xcel RTL Milestone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: Xcel RTL Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part D: ASIC Evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2e/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part E: Tape-Out and Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Misc
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tinyflow-180nm-drm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tinyflow 180nm Design Rules Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2-ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2 Ideas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip Testing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chip Testing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6950-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: FPGA Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-linux-development-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Linux Development Environment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Linux Development Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-remote-access-via-powershell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Remote Access via PowerShell
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-remote-access-via-vs-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. Remote Access via VS Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-remote-access-via-ms-remote-desktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3. Remote Access via MS Remote Desktop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-github-account-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4. GitHub Account Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-clone-lab-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5. Clone Lab Repo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-klayout-tutorial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. KLayout Tutorial
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-full-custom-inverter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Full-Custom Inverter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Full-Custom Inverter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-transistor-level-schematics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Transistor-Level Schematics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-schematic-simulation-with-ngspice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Schematic Simulation with Ngspice
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-drawing-layout-with-klayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Drawing Layout with KLayout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-drc-with-klayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. DRC with KLayout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-lvs-with-klayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5. LVS with KLayout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-rcx-with-klayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6. RCX with KLayout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37-extracted-simulation-with-ngspice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7. Extracted Simulation with Ngspice
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-full-custom-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Full-Custom Buffer
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-lab-1-full-custom-inverter">ECE 6745 Lab 1: Full-Custom Inverter</h1>
+<p>In this lab, we will first make sure we can access the Linux development
+environment on the <code>ecelinux</code> servers. We will be using the <code>ecelinux</code>
+servers for all of the labs and projects. The <code>ecelinux</code> servers all run
+the Red Hat Enterprise Linux 8 operating system, and they all use an
+identical setup. We will then design the basic CMOS inverter we saw in
+lecture using the following TinyFlow full-custom design flow.</p>
+<p><img alt="" src="../img/lab1-flow.png" /></p>
+<p>We will write a transistor-level schematic, simulate the this schematic
+using Ngspice to verify its functionality, use the KLayout design editor
+to create the layout, perform a design-rules check (DRC), perform a
+layout vs. schematic check (LVS), and generate an extracted
+transistor-level schematic. Finally, we will re-simulate the extracted
+transistor-level schematic to characterize the timing. We will also be
+implementing a CMOS buffer to verify our intuition that NMOS transistors
+should only be used in the pull-down network and PMOS transistors should
+only be used in the pull-up network.</p>
+<p>To get started, find a free workstation and log into the workstation
+using your NetID and standard NetID password.</p>
+<h2 id="1-linux-development-environment">1. Linux Development Environment</h2>
+<p>It is important to keep in mind that we will use ecelinux as shorthand
+for the entire cluster of 20 servers. These servers are named as follows:</p>
+<ul>
+<li>ecelinux-01.ece.cornell.edu</li>
+<li>ecelinux-02.ece.cornell.edu</li>
+<li>ecelinux-03.ece.cornell.edu</li>
+<li>...</li>
+<li>ecelinux-18.ece.cornell.edu</li>
+<li>ecelinux-19.ece.cornell.edu</li>
+<li>ecelinux-20.ece.cornell.edu</li>
+</ul>
+<p>We need to try and balance the load across all the servers. So we have
+distributed handout which has specifies which server each student should
+use for today's lab. We will start by making sure we can access the
+<code>ecelinux</code> servers using PowerShell, then we will use VS Code, and
+finally we will setup MS Remote Desktop for running GUI Applications on
+<code>ecelinux</code>. We will also make sure our GitHub account is setup correctly.</p>
+<h3 id="11-remote-access-via-powershell">1.1. Remote Access via PowerShell</h3>
+<p>To start PowerShell click the Start menu then search for Windows
+PowerShell. After starting PowerShell, type in the following command at
+the prompt to log into an <code>ecelinux</code> server using SSH.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span>ssh<span class="w"> </span>netid@ecelinux-XX.ece.cornell.edu
+</span></code></pre></div>
+<p>Replace netid with your Cornell NetID in the command above and replace XX
+with the assign ecelinux server. You should not enter the % character. We
+use the <code>%</code> character to indicate what commands we should enter on the
+command line. Executing the command will prompt you to enter your Cornell
+NetID password, and then you should be connected to your selected
+ecelinux server.</p>
+<p>The very first time you log into an <code>ecelinux</code> server you may see a
+warning like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> The authenticity of host ’ecelinux-XX.ece.cornell.edu (128.253.51.206)’
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a> can’t be established. ECDSA key fingerprint is
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a> SHA256:smwMnf9dyhs5zW5I279C5oJBrTFc5FLghIJMfBR1cxI.
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a> Are you sure you want to continue connecting (yes/no)?
+</span></code></pre></div>
+<p>The very first time you log into an <code>ecelinux</code> server it is okay to enter
+yes, but from then on if you continue to receive this warning please
+contact the course staff.</p>
+<p>The very first thing you need to do after opening a terminal is source
+the course setup script. This will ensure your environment is setup with
+everything you need for working on the lab assignments. Enter the
+following command on the command line:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>% source setup-ece6745.sh
+</span></code></pre></div>
+<p>Note that you do not need to enter <code>%</code> character. In a tutorial like
+this, the <code>%</code> simply indicates what you should type at the command line.
+You should now see a blue <code>ECE 6745</code> in your prompt which means your
+environment is setup for the course. <strong>If for any reason you do not see a
+blue <code>ECE 6745</code> in your prompt, stop and raise your hand for help from an
+instructor!</strong></p>
+<p>It can be tedious to always remember to source the course setup script.
+You can also use auto setup which will automatically source the course
+setup for you when you log in. Note that if the environment for ECE 6745
+conflicts with the environment required by a different course then you
+will need to manually source the setup script when you are working on
+this course. Enter the following command on the command line to use auto
+setup:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>% source setup-ece6745.sh --enable-auto-setup
+</span></code></pre></div>
+<p>If at anytime you need to disable auto setup you can use the following command:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>% source setup-ece6745.sh --disable-auto-setup
+</span></code></pre></div>
+<h3 id="12-remote-access-via-vs-code">1.2. Remote Access via VS Code</h3>
+<p>PowerShell is primarily just used as a backup if we have trouble
+accessing <code>ecelinux</code> using VS Code. Students primarily should use VS Code
+to log into the <code>ecelinux</code> servers.</p>
+<p>To start VS Code click the <em>Start</em> menu then search for <em>Visual Studio
+Code</em>. The key to VS Code is installing the correct extensions. We want
+to start by installing a special extension which will enable remotely
+accessing the <code>ecelinux</code> servers using SSH. Choose <em>View &gt; Extensions</em>
+from the menubar. Enter the name of the extension in the "Search
+Extensions in Marketplace" and then click the blue Install button. Here
+is the name of the extension to install:</p>
+<ul>
+<li>Remote - SSH (use the one from Microsoft)</li>
+</ul>
+<p><img alt="" src="../img/tut00-vscode-remote-ssh.png" /></p>
+<p>Now we need to log into your assign <code>ecelinux</code> server. Choose <em>View &gt;
+Command Palette</em> from the menubar. This will cause a little "command
+palette" to drop down where you can enter commands to control VS Code.
+Enter the following command in the command palette:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Remote-SSH: Connect Current Window to Host...
+</span></code></pre></div>
+<p>As you start typing matching commands will be displayed and you can just
+click the command when you see it. VS Code will then ask you to Enter SSH
+Connection Command, and you should enter the following:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>netid@ecelinux-XX.ece.cornell.edu
+</span></code></pre></div>
+<p>Replace <code>netid</code> with your Cornell NetID and XX with the number of your
+assign ecelinux server in the command above.</p>
+<p>You may see a pop-up which stays that the <em>Windows Defender Firewall</em> as
+blocked some features of this app. This is not a problem. Simply click
+<em>Cancel</em>. You might also see a drop down which asks you to choose the
+operating system of the remote server with options like <em>Linux</em> and
+<em>Windows</em>. Choose <em>Linux</em>. Finally, the very first time you log into an
+<code>ecelinux</code> server you may see a warning like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>"ecelinux-XX.ece.cornell.edu" has fingerprint
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>"SHA256:YCh2FiadeTXEzuSkC0AOdglBgPciwc8WvcCPncvr2Fs"
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>Are you sure you want to continue?
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>Continue
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>Cancel
+</span></code></pre></div>
+<p>Also the very first time you log into an <code>ecelinux</code> server you will see a
+pop up dialog box in the lower right-hand corner which says <em>Setting up
+SSH host ecelinux-XX.ece.cornell.edu (details) Initializing....</em> It might
+take up to a minute for everything to be setup; please be patient! Once
+the pop up dialog box goes away and you see <em>SSH:
+ecelinux-XX.ece.cornell.edu</em> in the lower left-hand corner of VS Code
+then you know you are connected to your selected <code>ecelinux</code> server.</p>
+<p>VS Code includes an integrated file explorer which makes it very
+productive to browse and open files. Choose <em>View &gt; Explorer</em> from the
+menubar, and then click on <em>Open Folder</em>. VS Code will then ask you to
+<em>Open File Or Folder</em> with a default of <code>/home/netid</code>. Click <em>OK</em>.</p>
+<p>You might see a pop-up which asks you <em>Do you trust the authors of the
+files in this folder?</em> Since you will only be browsing your own files on
+the ecelinux servers, it is fine to choose <em>Yes, I trust the authors.</em></p>
+<p>This will reload VS Code, and you should now you will see a file explore
+in the left sidebar. You can easily browse your directory hierarchy, open
+files by clicking on them, create new files, and delete files.</p>
+<p>VS Code includes an integrated terminal which will give you access to the
+Linux command line on the <code>ecelinux</code> servers. Choose <em>Terminal &gt; New
+Terminal</em> from the menubar. You should see the same kind of Linux command
+line prompt that you saw when using PowerShell.</p>
+<p>Remember, the very first thing you need to do after logging into the
+ecelinux servers is source the course setup script. If you used
+<code>--enable-auto-setup</code> in the last section, then the setup script is
+already sourced for you automatically when you log into the ecelinux
+servers. If not, you will need to enter the following command on the
+command line:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>% source setup-ece6745.sh
+</span></code></pre></div>
+<p>You should now see a blue <code>ECE 6745</code> in your prompt which means your
+environment is setup for the course. <strong>If for any reason you do not see a
+blue <code>ECE 6745</code> in your prompt, stop and raise your hand for help from an
+instructor!</strong></p>
+<p>We highly recommend turning on auto save so you don't forget to save your
+work. You can do this by choosing <em>File &gt; Auto Save</em> from the menubar.</p>
+<h3 id="13-remote-access-via-ms-remote-desktop">1.3. Remote Access via MS Remote Desktop</h3>
+<p>We cannot use VS Code to run Linux GUI applications on <code>ecelinux</code>. We
+will instead need to use MS Remote Desktop. Use the <em>Start Menu</em> to
+search for <em>Microsoft Remote Desktop</em>. <strong>For the <em>Computer</em> you must
+choose the same <code>ecelinux</code> server you selected earlier in this lab.</strong>
+Then click on <em>Connect</em>. You may see a message like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>The remote computer could not be authenticated due to problems with its
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>security certificate. It may be unsafe to proceed.
+</span></code></pre></div>
+<p>If you see this message then take the following steps:</p>
+<ul>
+<li>Click <em>Don't ask me again for connections to this computer</em></li>
+<li>Click <em>Yes</em></li>
+</ul>
+<p>This should launch a "virtual desktop" on <code>ecelinux</code>. You will need to
+enter your NetID and password in the xrdp login.</p>
+<p>Now go back to your terminal in VS Code and use the following setup
+script.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>% source setup-gui.sh
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>% xclock &amp;
+</span></code></pre></div>
+<p>If everything works you should see an analog clock on the virtual
+desktop. Close the clock.</p>
+<p><img alt="" src="../img/tut00-xrdp.png" /></p>
+<h3 id="14-github-account-setup">1.4. GitHub Account Setup</h3>
+<p>We will be using GitHub for centralized repository hosting. You can check
+to see if you have a GitHub account using this link:
+<a href="https://github.com/githubid">https://github.com/githubid</a> where <code>githubid</code> is your GitHub username on
+GitHub. If the above link does not work, then you do not have an GitHub
+account. <strong>NOTE: We are using the commercial version of GitHub not the
+Cornell hosted GitHub!</strong> You will need to create one here:</p>
+<ul>
+<li><a href="https://github.com/join">https://github.com/join</a></li>
+</ul>
+<p>Your NetID makes a great GitHub username. If you are creating a new
+GitHub account, then be sure to use your Cornell email address. If you
+have an existing account it is fine for it to use a non-Cornell email
+address.</p>
+<p>Once your account is setup, please make sure you set your full name so we
+can know who you are on GitHub. Go to the following page and enter your
+first and last name in the Name field.</p>
+<ul>
+<li><a href="https://github.com/settings/profile">https://github.com/settings/profile</a></li>
+</ul>
+<p>Before you can begin using GitHub, you need to create an SSH key pair on
+an ecelinux server and upload the corresponding SSH public key to GitHub.
+GitHub uses these keys for authentication. The course setup script takes
+care of creating an SSH key pair which you can use. View the contents of
+your public key using the following command:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>% cat ~/.ssh/ece6745-github.pub
+</span></code></pre></div>
+<p>Use the following page to upload the public key to GitHub:</p>
+<ul>
+<li><a href="https://github.com/settings/ssh">https://github.com/settings/ssh</a></li>
+</ul>
+<p>Click on <em>New SSH Key</em>, and then cut-and-paste the public key you
+displayed using cat into the key textbox. Give the key the title
+<code>ece6745-github</code>. Then click <em>Add SSH key</em>. To test things out try the
+following command on <code>ecelinux</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>% ssh -T git@github.com
+</span></code></pre></div>
+<p>You may see a warning about the authenticity of the host. Don’t worry,
+this is supposed to happen the first time you access GitHub using your
+new key. Just enter <code>yes</code>. The GitHub server should output some text
+including your GitHub username. Verify that the GitHub username is
+correct, and then you should be all set.</p>
+<h3 id="15-clone-lab-repo">1.5. Clone Lab Repo</h3>
+<p>Now use the following commands to clone the repo we will be using for
+today's lab.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/ece6745-lab1<span class="w"> </span>lab1
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>lab1
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>Your repo contains the following files for modeling and simulating both
+the inverter and buffer.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>.
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>├── buf
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>│   ├── buf-rcx-sim.sp
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>│   ├── buf-sim.sp
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>│   ├── buf.gds
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>│   └── buf.sp
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>└── inv
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    ├── inv-rcx-sim.sp
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    ├── inv-sim.sp
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>    ├── inv.gds
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>    └── inv.sp
+</span></code></pre></div>
+<h2 id="2-klayout-tutorial">2. KLayout Tutorial</h2>
+<p><a href="https://www.klayout.de">KLayout</a> is a powerful, open-source layout tool
+that allows users to both view and edit layout files in GDS format.
+Additionally, it can perform design-rule checking, layout vs. schematic
+checking, and RC extraction among other features. In this lab, we will be
+using all of these features so that you can become familiar with making
+your own custom layout! We will start by designing a single NMOS
+transistor before working on the complete inverter in the next section.</p>
+<p>To open on the ECELinux server, first open KLayout in edit mode (<code>-e</code>).</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/lab1
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-e<span class="w"> </span><span class="p">&amp;</span>
+</span></code></pre></div>
+<p>Do not worry about libGL errors when starting KLayout. There will be a
+pop-up the first time you open KLayout asking about whether to use
+full-hierarchy mode. Select <em>Don't show this window again</em> and then click
+<em>Yes</em>.</p>
+<p>Choose <em>File &gt; New Layout</em> from the menubar and click <em>OK</em>. The KLayout
+window should look as follows.</p>
+<p><img alt="" src="../img/lab1-klayout.png" /></p>
+<p>Take a minute to become familiar with the user interface (some items are
+omitted as they are not used for our class):</p>
+<ul>
+<li>
+<p><strong>Toolbar:</strong> Includes back/forward (undo/redo) buttons, as well as
+   buttons for selecting a feature, moving a feature, drawing a feature,
+   measuring a feature (ruler), etc.</p>
+</li>
+<li>
+<p><strong>Technology:</strong> Notice the technology is automatically selected to
+   <em>tinyflow-180nm</em>.</p>
+</li>
+<li>
+<p><strong>Cells Panel:</strong> Displays names of all the cells in the current layout
+   file. In this case, we only have one cell in our layout file named
+   <em>TOP</em>, but we will have more cells in future labs/projects which
+   constitute an entire <em>library</em> of cells! You can right click on a cell
+   and choose <em>Show As New Top</em> to select which cell to view in the main
+   window.</p>
+</li>
+<li>
+<p><strong>Layers Panel:</strong> Displays all available layers which elements can be
+   placed on, take a minute to correlate these names with what you have
+   seen in lecture. You can right click on a layer to set visibility
+   options for it and other layers.</p>
+</li>
+<li>
+<p><strong>Main Drawing Area:</strong> The grid is also automatically set to 1x1
+   lambda. Recall that lambda is 90nm for the TinyFlow 180nm PDK. One
+   lambda is the minimum unit on which you can draw a feature.</p>
+</li>
+</ul>
+<p>Try zooming out by using the mouse scroll wheel. Eventually, the lines
+should disappear and a grid of interspersed dots only on the intersection
+of these boxes should be present instead. **When drawing a feature with a
+specific dimension of lambda, be sure that you are not zoomed out so far
+that you cannot see the lambda grid anymore. The intersection of the two
+solid lines represents the origin.</p>
+<div class="admonition warning">
+<p class="admonition-title">Do not use Ctrl+S to save layouts!</p>
+<p>When saving your layout use <em>File &gt; Save</em> from the menubar. <strong>DO NOT
+DO CTRL+S AS IT BREAKS THE VIEW!</strong> If you do use Ctrl+S then try
+clicking the back arrow many times and you might be able to get your
+layout back.</p>
+</div>
+<p>Let's now go ahead and draw an NMOS transistor step-by-step. First, draw
+two boxes on the <em>active</em> layer. Each box should be 8 lambda tall and 7
+lambda wide. To draw a box:</p>
+<ul>
+<li>Choose the desired layer in the <em>layer panel</em></li>
+<li>Choose the <em>Box</em> tool from the <em>toolbar</em></li>
+<li>Click in the <em>main drawing area</em> where you want the upper-left corner</li>
+<li>Click in the <em>main drawing area</em> where you want the lower-right corner</li>
+</ul>
+<p><img alt="" src="../img/lab1-klayout1.png" /></p>
+<p>Once you have drawn a box try deleting it.</p>
+<ul>
+<li>Choose the <em>Select</em> tool from the <em>toolbar</em></li>
+<li>Hover over the box until it is highlighted</li>
+<li>Click on the box, it will stay highlighted</li>
+<li>Choose <em>Edit &gt; Delete</em> from the menubar</li>
+</ul>
+<p>Redraw the box. Now let's use move the two boxes so they are adjacent. To
+move a box:</p>
+<ul>
+<li>Click on the <em>Move</em> tool from the <em>toolbar</em></li>
+<li>Hover over the box until it is highlighted</li>
+<li>Click on the box, it will stay highlighted</li>
+<li>Move the mouse to drag the box to the new location</li>
+<li>Click the box to place the box at the new location</li>
+</ul>
+<p><img alt="" src="../img/lab1-klayout2.png" /></p>
+<p>We now two boxes that are adjacent to each other. Let's merge them into a
+single box. To merge boxes:</p>
+<ul>
+<li>Click on the <em>Select</em> tool from the <em>toolbar</em></li>
+<li>Hover over the left box until it is highlighted</li>
+<li>Click on the box, it will stay highlighted</li>
+<li>Hover over the right box until it is highlighted</li>
+<li>Shift click on the box, both boxes will stay highlighted</li>
+<li>Choose <em>Edit &gt; Selection &gt; Merge Shapes</em></li>
+</ul>
+<p><img alt="" src="../img/lab1-klayout3.png" /></p>
+<p>Now use what you have learned to draw a complete NMOS with the <em>active</em>,
+<em>nselect</em>, <em>poly</em>, and <em>contact</em> layers. Note that in lecture we had
+separate layers for n-diffusion and p-diffusion. However, our TinyFlow
+180nm PDK represents n-diffusion and p-diffusion differently. The
+<em>active</em> layer indicates where we want either n-diffusion or p-diffusion,
+and the <em>pselect</em> and <em>nselect</em> layers are used to <em>select</em> whether that
+diffusion is n-type or p-type. So to create n-diffusion we need a box of
+on the <em>active</em> layer overlapped with a box on the <em>nselect</em> layer. Since
+we are implementing a NMOS transistor, we draw an <em>nselect</em> layer around
+the active we have already drawn.</p>
+<p><img alt="" src="../img/lab1-klayout4.png" /></p>
+<p>You can hide and show layers by double-clicking on the layer name in the
+<em>Layer Panel</em>. This can be useful to understand how different layers
+overlap.</p>
+<p>Once you have finish drawing your NMOS transistor let's make sure it
+follows all of the rules in the <em>TinyFlow 180nm Design-Rule Manual</em>
+(DRM):</p>
+<ul>
+<li><a href="https://cornell-ece6745.github.io/ece6745-mkdocs/ece6745-design-rule-manual">https://cornell-ece6745.github.io/ece6745-mkdocs/ece6745-design-rule-manual</a></li>
+</ul>
+<p>Go ahead and look through the DRM and find DRC Rule 3.3. This rule
+requires the poly box to extend at least 3 lambda beyond the active box.
+Verify that our NMOS transistor does indeed follow this rule. Obviously
+checking all of these rules would be tedious and error prone, so we will
+instead use KLayout to automatically check all DRC rules. Choose <em>Tools &gt;
+DRC &gt; tinyflow-180nm.lydrc</em> from the menubar.</p>
+<p>A new window should open with the DRC results, the left side shows all
+the performed DRC checks, with the numbers corresponding to the
+associated rules in the DRM. If your design is DRC-clean, then all the
+numbers should be green and the topcell name under <em>By Cell</em> should be
+green.</p>
+<p><img alt="" src="../img/lab1-klayout5.png" /></p>
+<p>If the topcell name is black, scroll down to find the rule number(s) that
+is also black and cross-reference it with the DRM. If you click on the
+violated rule, details will also be populated in the Info window in the
+bottom right.</p>
+<p>Let's go ahead and create a violation by erasing some of the poly box. To
+erase part of a box:</p>
+<ul>
+<li>Choose the desired layer in the <em>layer panel</em></li>
+<li>Click the down arrow next to the <em>Add</em> tool in <em>toolbar</em></li>
+<li>Click <em>Erase</em> to change the tool to the <em>Erase</em> tool</li>
+<li>Draw a box in the <em>main drawing area</em> around what part of the poly
+   layer you want to erase</li>
+</ul>
+<p><img alt="" src="../img/lab1-klayout6.png" /></p>
+<p>Once you have finish using the <em>Erase</em> tool don't forget to set it back
+to the <em>Add</em> tool otherwise you won't be able to draw new boxes in the
+future.</p>
+<p>Now rerun DRC. You should now have a DRC violation for DRC Rule 3.3. If
+you click on the violation in the DRC browser KLayout will highlight
+where the violation is on the layout. Edit your layout to fix the DRC
+violation and rerun DRC.</p>
+<p><img alt="" src="../img/lab1-klayout7.png" /></p>
+<p>Once you are done go ahead and close KLayout. You can save your layout if
+you want but it is not required.</p>
+<h2 id="3-full-custom-inverter">3. Full-Custom Inverter</h2>
+<p>We are now ready to experiment with implementing a full-custom inverter.
+Revisit the TinyFlow full-custom design flow shows at the top of this lab
+handout.</p>
+<h3 id="31-transistor-level-schematics">3.1. Transistor-Level Schematics</h3>
+<p>The first step is to implement the transistor-level schematic for our
+inverter.</p>
+<p><img alt="" src="../img/lab1-inv-circuit.png" width="30%" /></p>
+<p>We will do this by writing a Spice file which is just a plain text file
+which specifies how to instantiate and connect transistors. Use VS Code
+to open the blank Spice file for our inverter:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>% cd ${HOME}/lab1
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>% code inv/inv.sp
+</span></code></pre></div>
+<p>Add a line for each device (transistor) in your inverter circuit inside
+the sub-circuit using the following format:</p>
+<ul>
+<li>For the PMOS: <code>M_P &lt;D&gt; &lt;G&gt; &lt;S&gt; &lt;B&gt; PMOS L=&lt;length&gt;U W=&lt;width&gt;U</code></li>
+<li>For the NMOS: <code>M_N &lt;D&gt; &lt;G&gt; &lt;S&gt; &lt;B&gt; NMOS L=&lt;length&gt;U W=&lt;width&gt;U</code></li>
+</ul>
+<p>where D, G, S, and B represent the drain, gate, source, and body
+connections for the transistor, respectively. You should replace these
+with the correct pin name (A, Y, VDD, VSS) for those connections as
+discussed in lecture. You should also fill in numerical values for the
+length and width of the transistor. <strong>For this inverter, we are defining
+the width to be 8-lambda wide</strong>. This is a design requirement we are
+providing to you, but custom-circuit designers will test their design for
+a wide variety of parameters, including modifying this width to achieve
+their design goals of power, performance, or area. <strong>Additionally, the
+definition of lambda states that the gate-width (transistor length) for a
+given process is equal to 2-lambda.</strong> Convert the lambda measurement of
+these values to micron using our conversion factor of 1 lambda = 0.09um
+(the U suffix on the end of the values denotes that the numerical value
+should be interpreted in micron).</p>
+<h3 id="32-schematic-simulation-with-ngspice">3.2. Schematic Simulation with Ngspice</h3>
+<p>Now that we have written our reference Spice schematic, we need to test
+it to make sure it is functionally correct. To check this functionality,
+we provide a Spice deck, or testbench, for our Spice circuit, which
+will simulate the circuit given specific input stimuli. Open this Spice
+deck using VS Code.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>% cd ${HOME}/lab1
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>% code inv/inv-sim.sp
+</span></code></pre></div>
+<p>Take a minute to browse the testbench as well and understand how it works
+at a high level. Copy-and-paste your Spice circuit from <code>inv/inv.sp</code> into
+the <code>inv/inv-sim.sp</code> file where it says to. You need to copy the entire
+subcircuit definition (i.e., you must include the <code>.SUBCKT</code> and <code>.ENDS</code>
+lines).</p>
+<p><strong>Additionally, we need to make the following changes to the pasted Spice
+circuit to ensure it is compatible with the transistor models we will be
+using:</strong></p>
+<ul>
+<li>Replace the <code>PMOS</code> identifier with <code>sky130_fd_pr__pfet_01v8</code></li>
+<li>Replace the <code>NMOS</code> identifier with <code>sky130_fd_pr__nfet_01v8</code></li>
+<li>Replace the <code>M_P</code> identifier with <code>XM_P</code>, and the <code>M_N</code> identifier with
+   <code>XM_N</code></li>
+</ul>
+<p>To allow the simulation to work, we need to provide pre-characterized
+device models for the transistors, and we use the open-source
+<a href="https://skywater-pdk.readthedocs.io/en/main/">Sky130</a> models. The above
+changes modify the Spice to work with these models.</p>
+<p>We run the simulation using an open-source tool called
+<a href="https://ngspice.sourceforge.io">Ngspice</a>. Execute the following in your
+terminal to run the simulation:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/lab1
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>%<span class="w"> </span>ngspice<span class="w"> </span>inv/inv-sim.sp
+</span></code></pre></div>
+<p>Please be patient as it can take 30-45 seconds to finish the simulation.
+The simulation will open a new plot window in the virtual desktop,
+plotting both the input voltage (at A) vs. time as well as the output
+voltage (at Y) vs. time.</p>
+<div class="admonition warning">
+<p class="admonition-title">Be sure to change both <code>inv.sp</code> and <code>inv-sim.sp</code>!</p>
+<p>If you make any fixes to your transistor-level schematic
+<code>inv-sim.sp</code>, be sure to make the same changes in <code>inv.sp</code> otherwise
+later steps will not work.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Do not use Ctrl-C to exit Ngspice!</p>
+<p>To exit Ngspice type <code>exit</code> at the Ngspice prompt. If you try to use
+Ctr-C to exit Ngspice it will break your terminal. You might be able
+to fix your terminal by typing <code>clear</code> and then press enter, then
+typing <code>reset</code> and then press enter. You might not be able to see the
+letters when you type <code>clear</code> and <code>reset</code> but it still might work.
+You might need to use <code>source setup-gui.sh</code> again. Worst case you
+will need to close the terminal and open a new terminal.</p>
+</div>
+<div class="admonition question">
+<p class="admonition-title">Critical Thinking Questions</p>
+<p>Does the behavior of the inverter look correct? Think about the
+desired high-level functionality.</p>
+</div>
+<h3 id="33-drawing-layout-with-klayout">3.3. Drawing Layout with KLayout</h3>
+<p>We are now ready to draw the layout for the inverter. You can open the
+provided template in KLayout like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/lab1
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-e<span class="w"> </span>inv/inv.gds<span class="w"> </span><span class="p">&amp;</span>
+</span></code></pre></div>
+<p>Here is the complete layout from lecture that you should use as a guide.</p>
+<p><img alt="" src="../img/lab1-full-inverter.png" /></p>
+<p><strong>Be sure to follow the dimensions exactly! Otherwise you may fail DRC!</strong></p>
+<p>Once your layout is finished, add the labels for these pins:</p>
+<ul>
+<li>A (input connecting to the gates of both transistors)</li>
+<li>Y (output from the drains of both transistors)</li>
+<li>VDD (positive voltage power rail)</li>
+<li>VSS (negative voltage power rail)</li>
+</ul>
+<p>Each pin should be positioned in the center of the corresponding <em>metal1</em>
+box. To add a label:</p>
+<ul>
+<li>Choose the <em>metal1 label</em> layer in the <em>layer panel</em></li>
+<li>Choose the <em>Text</em> tool from the <em>toolbar</em></li>
+<li>Click in the <em>main drawing area</em> where you want the label</li>
+</ul>
+<p>Once the label is placed correctly, use the <em>Select</em> tool to select the
+label. Then choose <em>Edit &gt; Properties</em> from the menubar. Change the
+<em>Text</em> field to change the name of the pin. The pins need to be exactly
+labeled A, Y, VDD, and VSS.</p>
+<p>You can view your inverter in a semi-three-dimensional view called 2.5D.
+<strong>First, make sure your layout is fully-visible in the layout viewer.</strong>
+Then, choose <em>Tools &gt; 2.5d View &gt; tinyflow-180nm.lyd25</em> from the menubar.
+A new window should pop up with a 2.5D viewer which you can use the mouse
+to scroll around and view the inverter from different angles!</p>
+<p><img alt="" src="../img/lab1-3d-view.png" /></p>
+<h3 id="34-drc-with-klayout">3.4. DRC with KLayout</h3>
+<p>Once you have finished your layout, you should run DRC as before to
+ensure your design passes all design rule checks. <strong>Ensure your design is
+DRC-clean before moving onto the next step! Be sure to save the layout as
+well.</strong></p>
+<h3 id="35-lvs-with-klayout">3.5. LVS with KLayout</h3>
+<p>Layout vs. schematic checks compare the layout you just created with the
+transistor-level schematic you wrote earlier to ensure that the layout
+drawing matches the intended high-level functionality. The LVS tool in
+KLayout will <em>extract</em> a Spice schematic from the drawn layout and
+compare this to the reference one.</p>
+<p>Make sure your desired cell to check via LVS is active in the viewer
+(important if multiple such cells are in the same layout file as will
+happen in later projects and labs). Choose <em>Tools &gt; LVS &gt;
+tinyflow-180nm.lylvs</em> from the menubar.</p>
+<p>After running the script, and if LVS passes, you should see all green in
+the window that pops up. You can click through the dropdowns under <em>Cross
+Reference &gt; Objects</em> to see the comparison between the layout and
+reference schematic for pins, nets, and devices (transistors).</p>
+<p><img alt="" src="../img/lab1-lvs.png" /></p>
+<p>If you see any red stop signs, this means LVS failed. You can view the
+violations by clicking the drop-down arrows under <em>Cross Reference &gt;
+Objects</em> to see what is failing the check. If you have mismatched or
+missing pins, these errors will show up in the <em>Log</em> tab. Edit your
+layout and/or reference Spice file to fix the violations. Here are some
+examples of what might cause LVS violations.</p>
+<ul>
+<li>
+<p>The width of the transistors in the reference schematic do not match
+    the layout.</p>
+</li>
+<li>
+<p>The pins are not on the <em>metal1 label</em> layer (pins must be on <em>metal1
+    label</em> not <em>metal1</em>).</p>
+</li>
+<li>
+<p>Make sure you are using <code>PMOS</code> and <code>NMOS</code> in your <code>inv.sp</code> file not
+    <code>sky130_fd_pr__pfet_01v8</code> and <code>sky130_fd_pr__nfet_01v8</code>. The
+    <code>sky130_fd_pr__pfet_01v8</code> and <code>sky130_fd_pr__nfet_01v8</code> versions are
+    only for simulation, so they should only be in the <code>inv-sim.sp</code>.</p>
+</li>
+<li>
+<p>Make sure your transistors in the layout are really transistors
+    (i.e., make sure you are really using the <em>nselect</em> and <em>pselect</em>
+    layers correctly).</p>
+</li>
+</ul>
+<p>Let's go ahead and force an LVS violation. Close the LVS dialog box and
+swap the names of the A and Y pins. Then rerun LVS and you should be able
+to see the LVS violations in the <em>Log</em> tab.</p>
+<p><img alt="" src="../img/lab1-lvs-violation.png" /></p>
+<p>Now go back and fix the LVS violations and rerun LVS to verify your
+design is LVS clean.</p>
+<h3 id="36-rcx-with-klayout">3.6. RCX with KLayout</h3>
+<p>KLayout generates an extracted transistor-level schematic as a
+side-effect of running LVS. Go ahead and take a look at this extracted
+transistor-level schematic.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>% cd ${HOME}/lab1
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>% code inv/inv-rcx.sp
+</span></code></pre></div>
+<p>This file looks similar to the reference Spice file, except that it
+includes additional information for RC parasitics of the transistor using
+the parameters AS, AD, PS, and PD.</p>
+<h3 id="37-extracted-simulation-with-ngspice">3.7. Extracted Simulation with Ngspice</h3>
+<p>Our final step is to characterize the timing of our full-custom layout
+using the extracted transistor-level schematic. Open the following Spice
+deck using VS Code.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>% cd ${HOME}/lab1
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>% code inv/inv-rcx-sim.sp
+</span></code></pre></div>
+<p>Copy-and-paste the extracted Spice circuit from <code>inv/inv-rcx.sp</code> into the
+<code>inv/inv-rcx-sim.sp</code> file where it says to. <strong>Additionally, we need to
+make the following changes to the pasted Spice circuit to ensure it is
+compatible with the transistor models we will be using:</strong></p>
+<ul>
+<li>Replace the <code>PMOS</code> identifier with <code>sky130_fd_pr__pfet_01v8</code></li>
+<li>Replace the <code>NMOS</code> identifier with <code>sky130_fd_pr__nfet_01v8</code></li>
+<li>Replace the <code>M$1</code> identifier with <code>XM$1</code>, and the <code>M$2</code> identifier with
+   <code>XM$2</code></li>
+</ul>
+<p>We are now ready to run our simulation. Execute the following in your
+terminal to run the simulation (it should take a few seconds to run):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/lab1
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>%<span class="w"> </span>ngspice<span class="w"> </span>inv/inv-rcx-sim.sp
+</span></code></pre></div>
+<p>The simulation will open a new plot window in the virtual desktop,
+plotting both the input voltage (at A) vs. time as well as the output
+voltage (at Y) vs. time.</p>
+<div class="admonition question">
+<p class="admonition-title">Critical Thinking Questions</p>
+<p>Qualitatively, how does the rise time of the output compare to the
+fall time (compare this to your lecture notes)? Can you explain why
+one is faster than the other?</p>
+</div>
+<h2 id="4-full-custom-buffer">4. Full-Custom Buffer</h2>
+<p>Assume we want to implement a <em>buffer</em> in which the output is the same as
+the input. We might want this regenerate a signal for example. Many
+students wonder why we can't just make a buffer by "flipping" the NMOS
+and PMOS in the inverter.</p>
+<p><img alt="" src="../img/lab1-buf-circuit.png" width="30%" /></p>
+<p>If the input is one then the NMOS is on and the PMOS is off and the
+output would be one. If the input is zero then the NMOS is off and the
+PMOS is on and the output would be zero.</p>
+<p>Use everything you have learned to implement and test this kind of buffer.
+Go through all seven steps of the TinyFlow full-custom design flow:</p>
+<ul>
+<li>Step 1: Use VS Code to write a transistor-level schematic</li>
+<li>Step 2: Use Ngspice to functionally verify this schematic</li>
+<li>Step 3: Use KLayout to draw the layout for the buffer</li>
+<li>Step 4: Use KLayout to make sure the layout is DRC clean</li>
+<li>Step 5: Use KLayout to make sure the layout is LVS clean</li>
+<li>Step 6: Use KLayout to for RC extraction</li>
+<li>Step 7: Use Ngspice to characterize the timing of the buffer</li>
+</ul>
+<p>You should use these files which are provided for you.</p>
+<ul>
+<li><code>buf/buf.sp</code></li>
+<li><code>buf/buf-sim.sp</code></li>
+<li><code>buf/buf.gds</code></li>
+<li><code>buf/buf-rcx-sim.sp</code></li>
+</ul>
+<p>Here is a sketch of how to implement the layout for the buffer.</p>
+<p><img alt="" src="../img/lab1-buf-sketch.png" /></p>
+<p>Start by copying your layout from your inverter as follows. First, use
+KLayout to open the layout for the buffer and inverter in two separate
+tabs.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/lab1
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>%<span class="w"> </span>klayout<span class="w"> </span>-e<span class="w"> </span>buf/buf.gds<span class="w"> </span>inv/inv.gds
+</span></code></pre></div>
+<p>Now use the following steps to copy the inverter cell from <code>inv.gds</code> into
+<code>buf.gds</code> and then rename this cell from <em>INV</em> to <em>BUF</em>.</p>
+<ul>
+<li>Click on the tab for the inverter layout</li>
+<li>Right click on <em>INV</em> in the <em>Cells</em> panel</li>
+<li>Choose <em>Copy</em></li>
+<li>Click on the tab for the buffer layout</li>
+<li>Right click on the <em>Cells</em> pane</li>
+<li>Choose <em>Paste</em></li>
+<li>Close the tab for the inverter layout</li>
+<li>Right click on <em>INV</em> in the <em>Cells</em></li>
+<li>Choose <em>Rename Cell</em></li>
+<li>Enter <em>BUF</em></li>
+<li>Click <em>OK</em></li>
+</ul>
+<div class="admonition question">
+<p class="admonition-title">Critical Thinking Questions</p>
+<p>Consider the plot showing both Vin and Vout over time from simulating
+the extracted transistor-level schematic (not from just simulating
+the reference transistor-level schematic). Will this approach work in
+practice? Why or why not?</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

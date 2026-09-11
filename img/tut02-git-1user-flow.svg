@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1030"
+   height="370"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   version="1.0"
+   sodipodi:docname="tut02-git-1user-flow.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="1"
+     objecttolerance="1"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.6961165"
+     inkscape:cx="401.50544"
+     inkscape:cy="202.5"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:object-paths="false"
+     inkscape:grid-bbox="false"
+     inkscape:grid-points="true"
+     inkscape:guide-bbox="true"
+     width="900px"
+     height="700px"
+     inkscape:showpageshadow="false"
+     inkscape:window-width="2300"
+     inkscape:window-height="1374"
+     inkscape:window-x="100"
+     inkscape:window-y="3"
+     showguides="true"
+     inkscape:window-maximized="0"
+     inkscape:object-nodes="true"
+     inkscape:snap-to-guides="false">
+    <inkscape:grid
+       snapvisiblegridlinesonly="true"
+       id="GridFromPre046Settings"
+       type="xygrid"
+       originx="0"
+       originy="0"
+       spacingx="10"
+       spacingy="10"
+       color="#0000ff"
+       empcolor="#0000ff"
+       opacity="0.2"
+       empopacity="0.4"
+       empspacing="5"
+       visible="true"
+       enabled="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="SemiCircleOut"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="SemiCircleOut"
+       style="overflow:visible">
+      <path
+         id="path5399"
+         d="m -2.5,-0.80913858 c 0,2.75999998 -2.24,4.99999998 -5,4.99999998 v -10 c 2.76,0 5,2.24 5,5.00000002 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt"
+         transform="matrix(0.6,0,0,0.6,4.2752958,0.4580676)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="DotM"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="DotM"
+       style="overflow:visible">
+      <path
+         id="path5282"
+         d="m -2.5,-1 c 0,2.76 -2.24,5 -5,5 -2.76,0 -5,-2.24 -5,-5 0,-2.76 2.24,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt"
+         transform="matrix(0.4,0,0,0.4,2.96,0.4)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="TriangleOutM"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutM">
+      <path
+         transform="scale(0.4)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;marker-start:none"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path8724"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL"
+       style="overflow:visible">
+      <path
+         id="path3657"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;marker-start:none"
+         transform="scale(0.8)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 350 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="900 : 350 : 1"
+       inkscape:persp3d-origin="450 : 233.33333 : 1"
+       id="perspective7" />
+    <marker
+       inkscape:stockid="TriangleOutLw"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutLw"
+       style="overflow:visible">
+      <path
+         id="path4295"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:1.00000003pt;marker-start:none"
+         transform="scale(0.8)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="TriangleOutMQ"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutMQ">
+      <path
+         transform="scale(0.4)"
+         style="fill:#1bb7df;fill-rule:evenodd;stroke:#1bb7df;stroke-width:1.00000003pt;marker-start:none"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path4882"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="TriangleOutMi"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutMi">
+      <path
+         transform="scale(0.4)"
+         style="fill:#1bb7df;fill-rule:evenodd;stroke:#1bb7df;stroke-width:1.00000003pt;marker-start:none"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path4885"
+         inkscape:connector-curvature="0" />
+    </marker>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-49,-429)">
+    <path
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;marker:none;marker-start:none;marker-end:url(#TriangleOutM);enable-background:accumulate"
+       d="M 489.78236,714 H 629.11344"
+       id="path5692"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <rect
+       y="704"
+       x="524"
+       height="20"
+       width="80"
+       id="rect5720"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;marker:none;enable-background:accumulate" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path5686"
+       d="M 339.78236,684 H 479.11344"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;marker:none;marker-start:none;marker-end:url(#TriangleOutM);enable-background:accumulate" />
+    <rect
+       y="674"
+       x="389"
+       height="20"
+       width="50"
+       id="rect5718"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;marker:none;enable-background:accumulate" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:4, 4;stroke-dashoffset:0;marker:none;enable-background:accumulate"
+       d="M 789,509 V 794"
+       id="path4435"
+       inkscape:connector-curvature="0" />
+    <circle
+       id="path4437"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;stroke:#ffffff;stroke-width:2;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
+       cx="789.5"
+       cy="578.5"
+       r="40" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path4433"
+       d="M 639,509 V 794"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:4, 4;stroke-dashoffset:0;marker:none;enable-background:accumulate" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:4, 4;stroke-dashoffset:0;marker:none;enable-background:accumulate"
+       d="M 489,509 V 794"
+       id="path4431"
+       inkscape:connector-curvature="0" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path4429"
+       d="M 339,509 V 794"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:4, 4;stroke-dashoffset:0;marker:none;enable-background:accumulate" />
+    <image
+       sodipodi:absref="/Users/cbatten/vc/git-hub/cornell-ece2400/ece2400-docs-old/svg/../images/tut02-git-index.png"
+       xlink:href="tut02-git-index.png"
+       y="529"
+       x="438"
+       id="image3276"
+       height="101"
+       width="101" />
+    <image
+       sodipodi:absref="/Users/cbatten/vc/git-hub/cornell-ece2400/ece2400-docs-old/svg/../images/tut02-git-wdir.png"
+       xlink:href="tut02-git-wdir.png"
+       y="529"
+       x="289"
+       id="image3341"
+       height="101"
+       width="101" />
+    <image
+       sodipodi:absref="/Users/cbatten/vc/git-hub/cornell-ece2400/ece2400-docs-old/svg/../images/tut02-git-repo.png"
+       xlink:href="tut02-git-repo.png"
+       y="529"
+       x="589"
+       id="image3406"
+       height="99"
+       width="99" />
+    <image
+       sodipodi:absref="/Users/cbatten/vc/git-hub/cornell-ece2400/ece2400-docs-old/svg/../images/tut02-github.png"
+       xlink:href="tut02-github.png"
+       y="518"
+       x="729"
+       id="image3052"
+       height="121"
+       width="121" />
+    <text
+       id="text4397"
+       y="482.13293"
+       x="339.57812"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Palatino;-inkscape-font-specification:Palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;stroke:none;stroke-width:3.5;marker:none;enable-background:accumulate"
+       xml:space="preserve"><tspan
+         y="482.13293"
+         x="339.57812"
+         id="tspan4399"
+         sodipodi:role="line"
+         style="font-size:20px;line-height:1.01999998">Working</tspan><tspan
+         id="tspan4401"
+         y="502.53293"
+         x="339.57812"
+         sodipodi:role="line"
+         style="font-size:20px;line-height:1.01999998">Directory</tspan></text>
+    <text
+       xml:space="preserve"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Palatino;-inkscape-font-specification:Palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;stroke:none;stroke-width:3.5;marker:none;enable-background:accumulate"
+       x="489.57812"
+       y="482.13293"
+       id="text4403"><tspan
+         sodipodi:role="line"
+         x="492.07812"
+         y="482.13293"
+         id="tspan4407"
+         style="font-size:20px;line-height:1.01999998"> </tspan><tspan
+         sodipodi:role="line"
+         x="489.57812"
+         y="502.53293"
+         id="tspan5712"
+         style="font-size:20px;line-height:1.01999998">Index</tspan></text>
+    <text
+       id="text4409"
+       y="482.13293"
+       x="639.57812"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Palatino;-inkscape-font-specification:Palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;stroke:none;stroke-width:3.5;marker:none;enable-background:accumulate"
+       xml:space="preserve"><tspan
+         id="tspan4413"
+         y="482.13293"
+         x="639.57812"
+         sodipodi:role="line"
+         style="font-size:20px;line-height:1.01999998">.git</tspan><tspan
+         id="tspan4425"
+         y="502.53293"
+         x="639.57812"
+         sodipodi:role="line"
+         style="font-size:20px;line-height:1.01999998">Directory</tspan></text>
+    <text
+       xml:space="preserve"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Palatino;-inkscape-font-specification:Palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;stroke:none;stroke-width:3.5;marker:none;enable-background:accumulate"
+       x="789.57812"
+       y="482.13293"
+       id="text4415"><tspan
+         sodipodi:role="line"
+         x="792.07812"
+         y="482.13293"
+         id="tspan4419"
+         style="font-size:20px;line-height:1.01999998"> </tspan><tspan
+         sodipodi:role="line"
+         x="789.57812"
+         y="502.53293"
+         id="tspan5714"
+         style="font-size:20px;line-height:1.01999998">GitHub</tspan></text>
+    <path
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;marker:none;marker-end:url(#TriangleOutM);enable-background:accumulate"
+       d="M 789,654 H 649.66892"
+       id="path5020"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path5212"
+       d="M 789,654 H 349.66892"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;marker:none;marker-start:none;marker-end:url(#TriangleOutM);enable-background:accumulate" />
+    <text
+       xml:space="preserve"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Palatino;-inkscape-font-specification:Palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;stroke:none;stroke-width:3.5;marker:none;enable-background:accumulate"
+       x="414.08789"
+       y="690.26953"
+       id="text5688"><tspan
+         sodipodi:role="line"
+         x="414.08789"
+         y="690.26953"
+         id="tspan5690"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:1.01999998;font-family:Courier;-inkscape-font-specification:Courier">add</tspan></text>
+    <text
+       id="text5694"
+       y="718.81854"
+       x="564.08789"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Palatino;-inkscape-font-specification:Palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;stroke:none;stroke-width:3.5;marker:none;enable-background:accumulate"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:1.01999998;font-family:Courier;-inkscape-font-specification:Courier"
+         id="tspan5696"
+         y="718.81854"
+         x="564.08789"
+         sodipodi:role="line">commit</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path5706"
+       d="M 639.78236,774 H 779.11344"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;marker:none;marker-start:none;marker-end:url(#TriangleOutM);enable-background:accumulate" />
+    <rect
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;marker:none;enable-background:accumulate"
+       id="rect5716"
+       width="70"
+       height="20"
+       x="529"
+       y="644" />
+    <text
+       id="text4458"
+       y="658.31348"
+       x="564.08789"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Palatino;-inkscape-font-specification:Palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;stroke:none;stroke-width:3.5;marker:none;enable-background:accumulate"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:1.01999998;font-family:Courier;-inkscape-font-specification:Courier"
+         id="tspan4460"
+         y="658.31348"
+         x="564.08789"
+         sodipodi:role="line">clone</tspan></text>
+    <rect
+       y="764"
+       x="684.92712"
+       height="20"
+       width="60"
+       id="rect5724"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;marker:none;enable-background:accumulate" />
+    <text
+       xml:space="preserve"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Palatino;-inkscape-font-specification:Palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;stroke:none;stroke-width:3.5;marker:none;enable-background:accumulate"
+       x="714.08789"
+       y="779.4989"
+       id="text5708"><tspan
+         sodipodi:role="line"
+         x="714.08789"
+         y="779.4989"
+         id="tspan5710"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:1.01999998;font-family:Courier;-inkscape-font-specification:Courier">push</tspan></text>
+    <text
+       xml:space="preserve"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:palatino;-inkscape-font-specification:palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;marker:none;enable-background:accumulate"
+       x="489.02441"
+       y="447.78491"
+       id="text5728"><tspan
+         sodipodi:role="line"
+         id="tspan5730"
+         x="489.02441"
+         y="447.78491"
+         style="font-size:20px;line-height:1.01999998">Local Repo</tspan></text>
+    <text
+       id="text5734"
+       y="447.78491"
+       x="789.02441"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:palatino;-inkscape-font-specification:palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;marker:none;enable-background:accumulate"
+       xml:space="preserve"><tspan
+         y="447.78491"
+         x="789.02441"
+         id="tspan5736"
+         sodipodi:role="line"
+         style="font-size:20px;line-height:1.01999998">Remote Repo</tspan></text>
+    <path
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2;marker:none;enable-background:accumulate"
+       d="M 279,459 H 699"
+       id="path5738"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path5740"
+       d="M 729,459 H 849"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2;marker:none;enable-background:accumulate" />
+    <path
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;marker:none;marker-start:none;marker-end:url(#TriangleOutM);enable-background:accumulate"
+       d="M 638.41061,744 H 349.07953"
+       id="path6947"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <rect
+       y="734"
+       x="431.03644"
+       height="20"
+       width="114.7417"
+       id="rect6949"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;marker:none;enable-background:accumulate" />
+    <text
+       id="text6951"
+       y="749.4989"
+       x="489.08789"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Palatino;-inkscape-font-specification:Palatino;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;fill:#000000;stroke:none;stroke-width:3.5;marker:none;enable-background:accumulate"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:1.01999998;font-family:Courier;-inkscape-font-specification:Courier"
+         id="tspan6953"
+         y="749.4989"
+         x="489.08789"
+         sodipodi:role="line">checkout</tspan></text>
+  </g>
+</svg>

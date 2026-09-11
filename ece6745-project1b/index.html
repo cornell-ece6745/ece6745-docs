@@ -1,0 +1,2887 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-project1a/">
+      
+      
+        <link rel="next" href="../ece6745-project1c/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Part B: TinyFlow Front End - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ece-6745-project-1-tinyflow-tape-outtinyflow-front-end" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Part B: TinyFlow Front End
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-lab1/" class="md-tabs__link">
+          
+  
+  
+  Labs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../ece6745-project1a/" class="md-tabs__link">
+          
+  
+  
+  Projects
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tinyflow-180nm-drm/" class="md-tabs__link">
+          
+  
+  
+  Misc
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6950-lab1/" class="md-tabs__link">
+          
+  
+  
+  Chip Testing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 0: ECE Linux Server Remote Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 1: Linux Development Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 2: Git Distributed Version Control System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: Full-Custom Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 2: Standard-Cell Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 3: Tiny Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 4: Tiny Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 5: TinyRV2 Accelerators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 6: Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 7: Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 8: Block Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab9/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 9: Chip Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: TinyFlow Standard Cells
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: TinyFlow Front End
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: TinyFlow Front End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-background-on-tinyflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Background on TinyFlow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Background on TinyFlow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#22-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-generic-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. Generic Gates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-wildcards-and-constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4. Wildcards and Constants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-standard-cells" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5. Standard Cells
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-standard-cell-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6. Standard Cell View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-verilog-reader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7. Verilog Reader
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-gate-level-netlist-writer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8. Gate-Level Netlist Writer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-algorithm-unoptimized-technology-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Algorithm: Unoptimized Technology Mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Algorithm: Unoptimized Technology Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-substitution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Substitution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-unoptimized-technology-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Unoptimized Technology Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-algorithm-optimized-technology-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Algorithm: Optimized Technology Mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Algorithm: Optimized Technology Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-canonicalize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Canonicalize
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-cover" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Cover
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-traceback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Traceback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-optimized-technology-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4. Optimized Technology Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-algorithm-static-timing-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Algorithm: Static Timing Analysis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tinyflow-front-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. TinyFlow Front-End
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. TinyFlow Front-End">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-two-state-rtl-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Two-State RTL Simulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-four-state-rtl-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Four-State RTL Simulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Synthesis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-fast-functional-gate-level-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Fast-Functional Gate-Level Simulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-project-submission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Project Submission
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: TinyFlow Back End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2: Xcel Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 2: Xcel Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: Software & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: Xcel RTL Milestone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: Xcel RTL Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part D: ASIC Evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2e/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part E: Tape-Out and Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Misc
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tinyflow-180nm-drm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tinyflow 180nm Design Rules Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2-ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2 Ideas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip Testing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chip Testing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6950-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: FPGA Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-background-on-tinyflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Background on TinyFlow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Background on TinyFlow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#22-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-generic-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. Generic Gates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-wildcards-and-constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4. Wildcards and Constants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-standard-cells" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5. Standard Cells
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-standard-cell-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6. Standard Cell View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-verilog-reader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7. Verilog Reader
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-gate-level-netlist-writer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8. Gate-Level Netlist Writer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-algorithm-unoptimized-technology-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Algorithm: Unoptimized Technology Mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Algorithm: Unoptimized Technology Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-substitution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Substitution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-unoptimized-technology-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Unoptimized Technology Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-algorithm-optimized-technology-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Algorithm: Optimized Technology Mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Algorithm: Optimized Technology Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-canonicalize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Canonicalize
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-cover" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Cover
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-traceback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Traceback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-optimized-technology-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4. Optimized Technology Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-algorithm-static-timing-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Algorithm: Static Timing Analysis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tinyflow-front-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. TinyFlow Front-End
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. TinyFlow Front-End">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-two-state-rtl-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Two-State RTL Simulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-four-state-rtl-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Four-State RTL Simulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Synthesis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-fast-functional-gate-level-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Fast-Functional Gate-Level Simulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-project-submission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Project Submission
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ece-6745-project-1-tinyflow-tape-outtinyflow-front-end">ECE 6745 Project 1: TinyFlow Tape-Out<br>TinyFlow Front-End</h1>
+<p>In this project, students will build their own TinyFlow, a very simple
+standard-cell-based flow. They will develop seven standard cells in TSMC
+180nm and the corresponding standard cell behavioral, schematic, layout,
+extracted schematic, front-end, and back-end views. They will then
+implement simple algorithms for synthesis (technology mapping via tree
+covering, static timing analysis) and place-and-route (simulated
+annealing, 3D maze routing). Finally they will combine this work with
+open-source Verilog RTL and gate-level simulators and an open-source
+LVS/DRC tool to create the complete TinyFlow. Even though their TinyFlow
+will only support a very small combinational subset of Verilog, this
+project still gives students a unique hands-on opportunity to appreciate
+every step required in more sophisticated commercial tools. Each group
+will create a tiny block using their TinyFlow and these blocks will be
+aggregated into a single unified tape-out on the TSMC 180nm technology
+node.</p>
+<p>The project includes three parts:</p>
+<ul>
+<li>Part A: TinyFlow Standard Cells</li>
+<li>Part B: TinyFlow Front End</li>
+<li>Part C: TinyFlow Back End</li>
+</ul>
+<p>Continue working with your group from Part A. You can confirm your
+group on Canvas (Click on People, then Groups, then search for your name
+to find your project group).</p>
+<div class="admonition warning">
+<p class="admonition-title">All students must contribute to and understand all submitted work!</p>
+<p>It is not acceptable for one student to do all of Part A and a
+different student to do all of part B. It is not acceptable for one
+student to exclusively work on one algorithm while the other student
+exclusively works on a different algorithm. All students must
+contribute to and understand all parts. The instructors will also
+survey the Git commit log on GitHub to confirm that all students are
+contributing equally. If you are using a "pair programming" style,
+then both students must take turns using their own account so both
+students have representative Git commits. Students should create
+commits after finishing each step of the project, so their
+contribution is clear in the Git commit log. It is fine for the Git
+commit log to indicate that a student took the lead on one algorithm,
+but the student is still responsible for reviewing and undrestanding
+all algorithms included as part of the submission. <strong>A student's
+whose contribution is limited as represented by the Git commit log
+will receive a significant deduction to their project score.</strong></p>
+</div>
+<p>This handout assumes that you have read and understand the course
+tutorials and that you have attended the lab sections. To get started,
+use VS Code to log into a specific <code>ecelinux</code> server, use MS Remote
+Desktop to log into the same <code>ecelinux</code> server, source the setup scripts,
+and clone your remote repository from GitHub:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-gui.sh
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>%<span class="w"> </span>xclock<span class="w"> </span><span class="p">&amp;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/project1-groupXX
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>project1-groupXX
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>where <code>XX</code> should be replaced with your group number. You can both pull
+and push to your remote repository. If you have already cloned your
+remote repository, then use git pull to ensure you have any recent
+updates before working on your lab assignment.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>%<span class="w"> </span>git<span class="w"> </span>pull
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>%<span class="w"> </span>tree
+</span></code></pre></div>
+<p>where <code>XX</code> should be replaced with your group number. Your repo contains
+the following files.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>.
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>├── asic
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│   └── build-fa
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│       ├── 01-verilator-rtlsim
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│       ├── 02-iverilog-rtlsim
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>│       ├── 03-tinyflow-synth
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│       │   └── run.py
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>│       └── 04-iverilog-ffglsim
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>├── rtl
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>│   ├── FullAdder.v
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>│   └── test
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>│       └── FullAdder-test.v
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>├── stdcells
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>│   ├── stdcells.v
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>│   ├── stdcells.sp
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>│   ├── stdcells.gds
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>│   ├── stdcells-rcx.sp
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>│   ├── stdcells-fe.yml
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>│   ├── stdcells-be.yml
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>│   └── verilog-test
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>│       └── ...
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>└── tinyflow
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    ├── conftest.py
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    ├── pytest.ini
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>    ├── synth
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>    │   ├── tinyv.lark
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>    │   ├── verilog_parser.py
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>    │   ├── StdCellFrontEndView.py
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>    │   ├── TinyFrontEndDB.py
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    │   ├── TinyFrontEndGUI.py
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>    │   ├── substitute.py
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>    │   ├── techmap_unopt.py
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>    │   ├── techmap.py
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>    │   ├── sta.py
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>    │   └── tests
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>    │       └── ...
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>    └── tinyflow-synth
+</span></code></pre></div>
+<p>Go ahead and create a build directory where you will run the synthesis
+tools and tests:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>tinyflow/build
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tinyflow/build
+</span></code></pre></div>
+<h2 id="1-background-on-tinyflow">1. Background on TinyFlow</h2>
+<p>The complete TinyFlow standard-cell and ASIC design flow is shown below
+with the front end highlighted in red.</p>
+<p><img alt="" src="../img/lab3-tinyflow.png" /></p>
+<p>The front end includes two-state RTL simulation, four-state RTL
+simulation, synthesis, and fast-functional gate-level simulation. In
+lecture, we discussed an approach to synthesis based on technology
+mapping with dynamic programming to optimize the area of the final
+gate-level netlist.</p>
+<p>Synthesis itself consists of four key algorithms.</p>
+<p><img alt="" src="../img/proj1b-synth-flow.png" width="60%" /></p>
+<ul>
+<li>
+<p><strong>Verilog Reader:</strong> Parses Verilog RTL design into forest of trees of
+   generic logic gates</p>
+</li>
+<li>
+<p><strong>Technology Mapping:</strong> Maps trees of generic gates to trees of
+   standard cells; we will be implementing both an unoptimized and
+   optimized version</p>
+</li>
+<li>
+<p><strong>Static Timing Analysis:</strong> Statically analyze all paths to find
+   critical path</p>
+</li>
+<li>
+<p><strong>Gate-Level Netlist Writer:</strong> Outputs a standard-cell gate-level
+   netlist in a Verilog file</p>
+</li>
+</ul>
+<p>We provide you the Verilog reader and gate-level netlist writer. In this
+project you are reponsible for implementing technology mapping and static
+timing analysis.</p>
+<p>TinyFlow represents logic using expression trees stored in a front end
+database. This section describes the key data structures you will work
+with when implementing the synthesis algorithms.</p>
+<p>A design is represented as a <strong>forest</strong> of expression trees. Each primary
+output has one tree that computes its logic function. Intermediate signals
+(wires) can also have trees. The <code>TinyFrontEndDB</code> class is the container
+that holds the forest:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>TinyFrontEndDB
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>├── _inputs:  { "a", "b", "c" }           # primary input names
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>├── _outputs: { "out1": &lt;tree&gt;, ... }     # output name -&gt; tree
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>└── _wires:   { "tmp": &lt;tree&gt;, ... }      # wire name -&gt; tree
+</span></code></pre></div>
+<p>You can access trees using <code>db.get_tree(name)</code> and modify them using
+<code>db.set_tree(name, tree)</code>. The <code>db.trees</code> property returns a dict of all
+trees (both outputs and wires).</p>
+<h3 id="22-nodes">2.2. Nodes</h3>
+<p>Each node in a tree represents a logic gate. The <code>Node</code> base class has
+these key attributes:</p>
+<ul>
+<li><code>type</code>: Name of the gate (e.g., <code>"AND2"</code>, <code>"INVX1"</code>)</li>
+<li><code>children</code>: List of inputs, which can be other Nodes or strings
+   (primary inputs / wire references)</li>
+</ul>
+<p>And the following useful methods to determine the type of node.</p>
+<ul>
+<li><code>is_generic_gate()</code></li>
+<li><code>is_standard_cell()</code></li>
+<li><code>is_signal()</code></li>
+<li><code>is_wildcard()</code></li>
+</ul>
+<p>Trees are recursive structures.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>        NAND2                Node: type="NAND2", children=[INV, INV]
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>        /   \
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>      INV   INV              Node: type="INV", children=[Signal]
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>       |     |
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>       a     b               Node: type="Signal"
+</span></code></pre></div>
+<p>The <code>repr()</code> of a tree shows its structure: <code>NAND2(INV(a), INV(b))</code>.</p>
+<h3 id="23-generic-gates">2.3. Generic Gates</h3>
+<p>Generic gates represent logic operations parsed from Verilog RTL. They
+have no physical implementation. TinyFlow supports these generic gates:</p>
+<ul>
+<li><strong>Two-input gates:</strong> AND2, OR2, NAND2, NOR2, XOR2, XNOR2</li>
+<li><strong>Single-input gates:</strong> NOT, INV, BUF</li>
+</ul>
+<p>The NOT and INV gates both compute logical inversion but serve different
+purposes: NOT comes from Verilog (<code>~</code> operator), while INV is the
+canonical inverter used after canonicalization.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Node (base class)
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a> ├── AND2      (a1 AND a2)
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a> ├── OR2       (a1 OR a2)
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a> ├── NAND2     (NOT (a1 AND a2))
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a> ├── NOR2      (NOT (a1 OR a2))
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a> ├── XOR2      (a1 XOR a2)
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a> ├── XNOR2     (a1 XNOR a2)
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a> ├── NOT       (NOT a)  &lt;- from Verilog
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a> ├── INV       (NOT a)  &lt;- canonical form
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a> └── BUF       (a)      &lt;- buffer/passthrough
+</span></code></pre></div>
+<h3 id="24-wildcards-and-constants">2.4. Wildcards and Constants</h3>
+<p>Wildcards and constants are special nodes used to write substitution
+patterns. They are not part of actual designs but are used to match
+and transform trees.</p>
+<p><strong>Wildcards</strong> match any subtree and capture it by name:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">_0</span> <span class="o">=</span> <span class="n">Wildcard</span><span class="p">(</span><span class="s1">'_0'</span><span class="p">)</span> <span class="c1"># matches any subtree, captures as '_0'</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">_1</span> <span class="o">=</span> <span class="n">Wildcard</span><span class="p">(</span><span class="s1">'_1'</span><span class="p">)</span> <span class="c1"># matches any subtree, captures as '_1'</span>
+</span></code></pre></div>
+<p>These are used in substitution rules. For example, to replace AND with
+NAND-INV:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">Substitute</span><span class="p">(</span><span class="n">find</span><span class="o">=</span><span class="n">AND2</span><span class="p">(</span><span class="n">_0</span><span class="p">,</span> <span class="n">_1</span><span class="p">),</span> <span class="n">replace</span><span class="o">=</span><span class="n">INV</span><span class="p">(</span><span class="n">NAND2</span><span class="p">(</span><span class="n">_0</span><span class="p">,</span> <span class="n">_1</span><span class="p">)))</span>
+</span></code></pre></div>
+<p>The wildcards <code>_0</code>, <code>_1</code>, <code>_2</code>, <code>_3</code> and constants <code>_0</code>, <code>_1</code> are
+predefined in <code>TinyFrontEndDB</code> for convenience.</p>
+<h3 id="25-standard-cells">2.5. Standard Cells</h3>
+<p>Standard cells represent physical standard cells from your cell library
+and include physical information:</p>
+<ul>
+<li><strong>area_cost:</strong> Area of the cell (in lambda^2)</li>
+<li><strong>patterns:</strong> List of generic gate patterns the cell can implement</li>
+</ul>
+<p>For example, <code>NOR2X1</code> can implement multiple patterns:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>NOR2X1
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>├── area_cost: 2048
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>└── patterns:
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    ├── INV(NAND2(INV(_0), INV(_1)))         # NOR via De Morgan's
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    └── INV(INV(INV(NAND2(INV(_0), INV(_1))) # double inverter at output
+</span></code></pre></div>
+<p>The patterns tell techmap which generic gate combinations can be
+"covered" by a single standard cell. Technology mapping uses these
+patterns to find the minimum-area implementation.</p>
+<p>Standard cell classes (INVX1, NAND2X1, NOR2X1, AOI21X1, etc.) are
+dynamically created when you load the standard cell view.</p>
+<h3 id="26-standard-cell-view">2.6. Standard Cell View</h3>
+<p>The <code>StdCellFrontEndView</code> provides information about your standard cell
+library. It is loaded from <code>stdcells-fe.yml</code> and passed to
+<code>TinyFrontEndDB</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">view</span> <span class="o">=</span> <span class="n">StdCellFrontEndView</span><span class="p">(</span><span class="s2">"../stdcells/stdcells-fe.yml"</span><span class="p">)</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">db</span> <span class="o">=</span> <span class="n">TinyFrontEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The view provides information needed by synthesis algorithms:</p>
+<ul>
+<li>
+<p><strong>For techmap:</strong> Cell area and patterns (which generic gate
+   combinations each cell implements)</p>
+</li>
+<li>
+<p><strong>For STA:</strong> Timing model parameters:</p>
+</li>
+<li><code>Cgate</code>: Input capacitance (in fF)</li>
+<li><code>tau_d</code>: Intrinsic delay (in ps)</li>
+<li><code>tau_t</code>: Load-dependent delay factor (in ps/fF)</li>
+</ul>
+<p>The delay through a gate is computed as: <code>delay = tau_d + tau_t * load</code>
+where <code>load</code> is the total capacitance driven by the gate's output</p>
+<h3 id="27-verilog-reader">2.7. Verilog Reader</h3>
+<p>We provide you the verilog reader. Feel free to take a look at the
+associated grammar located in <code>tinyflow/synth/tinyv.lark</code>. You can use
+the following command to read a Verilog file into the TinyFlow front-end
+database.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">synth</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s2">"path/to/design.v"</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="28-gate-level-netlist-writer">2.8. Gate-Level Netlist Writer</h3>
+<p>We provide you the gate-level netlist writer. You can use the following
+command to write the TinyFlow front-end database to a Verilog file.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">synth</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">write_verilog</span><span class="p">(</span><span class="s2">"post-synth.v"</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="3-algorithm-unoptimized-technology-mapping">3. Algorithm: Unoptimized Technology Mapping</h2>
+<p>Students should implement a substitution rule framework before
+implementing technology mapping.</p>
+<h3 id="31-substitution">3.1. Substitution</h3>
+<p>Substitution is a core operation used throughout our synthesis framework
+in TinyFlow. It matches a <strong>find pattern</strong> against a node and, if
+successful, produces a new node based on a <strong>replace template</strong>. Wildcards
+in the pattern capture subtrees, which are then substituted into the
+template. For example, to transform an AND gate into NAND-INV form:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">synth</span><span class="o">&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="s2">"a"</span><span class="p">),</span> <span class="n">Signal</span><span class="p">(</span><span class="s2">"b"</span><span class="p">),</span> <span class="n">Signal</span><span class="p">(</span><span class="s2">"c"</span><span class="p">)</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">synth</span><span class="o">&gt;</span> <span class="n">sub</span> <span class="o">=</span> <span class="n">Substitute</span><span class="p">(</span><span class="n">find</span><span class="o">=</span><span class="n">AND2</span><span class="p">(</span><span class="n">_0</span><span class="p">,</span> <span class="n">_1</span><span class="p">),</span> <span class="n">replace</span><span class="o">=</span><span class="n">INV</span><span class="p">(</span><span class="n">NAND2</span><span class="p">(</span><span class="n">_0</span><span class="p">,</span> <span class="n">_1</span><span class="p">)))</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">synth</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">sub</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">AND2</span><span class="p">(</span><span class="n">OR2</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="n">c</span><span class="p">))</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">synth</span><span class="o">&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The wildcards <code>_0</code> and <code>_1</code> in the pattern capture the inputs <code>x</code> and
+<code>y</code>, then those captured values are substituted into the replace template
+to produce <code>INV(NAND2(x, y))</code>.</p>
+<p>We require students to implement the following functions in
+<code>tinyflow/synth/substitute.py</code> to complete the substitution framework:</p>
+<ul>
+<li>
+<p><code>match</code>: Recursively compare the find pattern tree against the input
+    node. Wildcards match any subtree and capture it by name. If types or
+    structure don't match, return <code>False</code>.</p>
+</li>
+<li>
+<p><code>capture</code>: Capture whatever the wildcards in the pattern tree match
+   to. Returns a dictionary mapping the wildcard name to the subtree it
+   matched.</p>
+</li>
+<li>
+<p><code>replace</code>: Build a new tree using the template and the captured
+   subtrees.</p>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Handling Repeated Wildcards</p>
+<p>In the lab, <code>match</code> did not track captures, and <code>capture</code> used <code>|=</code> to
+merge dictionaries from child recursions. This works for simple patterns
+but fails for <strong>repeated wildcards</strong> like <code>NAND2(_a, _a)</code> (which matches
+<code>INV</code>). With <code>|=</code>, the second capture silently overwrites the first, so
+<code>NAND2(x, y)</code> would incorrectly match <code>NAND2(_a, _a)</code>.</p>
+<p>In the project, we pass <code>captures</code> as an argument through <code>match</code> and
+<code>capture</code>. When a wildcard is encountered again, <code>match</code> checks if the
+new value equals the previously captured value. If they differ, <code>match</code>
+returns <code>False</code>. This correctly rejects <code>NAND2(x, y)</code> against <code>NAND2(_a, _a)</code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>match(node, p_node, captures)</code></p>
+<p><strong>Goal:</strong> Check if <code>node</code> matches pattern <code>p_node</code>, populating captures dict.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>node</code>: Tree node to match against</li>
+<li><code>p_node</code>: Pattern tree (contains wildcards)</li>
+<li><code>captures</code>: Dict to populate with wildcard name → matched subtree</li>
+</ul>
+<p><strong>Returns:</strong> <code>True</code> if node matches pattern, <code>False</code> otherwise</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>capture(node, p_node, captures)</code></p>
+<p><strong>Goal:</strong> Populate captures dict by traversing a matched pattern.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>node</code>: Tree node (already verified to match)</li>
+<li><code>p_node</code>: Pattern tree (contains wildcards)</li>
+<li><code>captures</code>: Dict to populate with wildcard name → matched subtree</li>
+</ul>
+<p><strong>Returns:</strong> The <code>captures</code> dict</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>replace(t_node, captures)</code></p>
+<p><strong>Goal:</strong> Build a new tree from template, substituting captured values for wildcards.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>t_node</code>: Template tree (contains wildcards to substitute)</li>
+<li><code>captures</code>: Dict mapping wildcard name → subtree to substitute</li>
+</ul>
+<p><strong>Returns:</strong> New <code>Node</code> tree with wildcards replaced by captured subtrees</p>
+</div>
+<h3 id="32-unoptimized-technology-mapping">3.2. Unoptimized Technology Mapping</h3>
+<p>Once you have your substitution framework working, you can use the
+substitution framework to implement a naive unoptimized technology
+mapping algorithm in <code>tinyflow/synth/techmap_unopt.py</code>. Simply create one
+rule for every generic gate and include a corresponding replacement which
+implements this generic gate using standard cells. Then apply these rules
+to every node in every tree. This unoptimized technology mapping
+algorithm makes no attempt to minimize area and will serve as a nice
+baseline for your optimized technology mapping algorithm.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>apply_rules(node)</code></p>
+<p><strong>Goal:</strong> Recursively apply substitution rules to a tree, bottom-up.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>node</code>: Tree node to transform</li>
+</ul>
+<p><strong>Returns:</strong> Transformed node with matching pattern applied</p>
+</div>
+<h2 id="4-algorithm-optimized-technology-mapping">4. Algorithm: Optimized Technology Mapping</h2>
+<p>The optimized technology mapping algorithm has three steps:</p>
+<ul>
+<li>
+<p><strong>Canonicalize:</strong> Replace every generic gate with equivalent tree of
+     just NAND2 and INV generic gates; determine equivalent trees of
+     NAND2 and INV generic gates for each standard cell</p>
+</li>
+<li>
+<p><strong>Cover:</strong> Use <em>dynamic programming</em> to determine optimal way to
+     cover each node in a canonicalized tree of generic gates with
+     equivalent standard cells; goal is to minmize total area</p>
+</li>
+<li>
+<p><strong>Traceback:</strong> Determine final optimal cover of all trees in the
+     forest</p>
+</li>
+</ul>
+<h3 id="41-canonicalize">4.1. Canonicalize</h3>
+<p>With the ability to substitute patterns with a template, we can now build
+the first step of the technology mapping phase: canonicalization. In order
+to map between generic gates and a given standard cell library, we need to
+lower both sides to a common representation and match against each other.
+Canonicalization is that step. The input is a tree with generic gates
+(AND2, OR2, NOR2, XOR2, XNOR2, NOT, BUF) and the output is a logically
+equivalent tree using only NAND2 and INV gates.</p>
+<p>Go ahead and implement the <code>canonicalize</code> function in
+<code>tinyflow/synth/techmap.py</code>. You will need to define a substitution rule
+for each generic gate type (one rule per gate), apply the rules to the
+nodes in a tree, and apply it to all trees in the database. The
+recommended approach is to write a recursive function to apply the rules
+to a tree, but you can implement this however you want.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>canonicalize_node(node, rules)</code></p>
+<p><strong>Goal:</strong> Recursively convert a tree to NAND2/INV basis.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>node</code>: Tree node to canonicalize</li>
+<li><code>rules</code>: List of substitution rules for generic gates</li>
+</ul>
+<p><strong>Returns:</strong> Canonicalized node using only NAND2 and INV gates</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>canonicalize(db, view)</code></p>
+<p><strong>Goal:</strong> Canonicalize all trees in the database.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyFrontEndDB containing trees to canonicalize</li>
+<li><code>view</code>: StdCellFrontEndView (unused, but passed for API consistency)</li>
+</ul>
+<p><strong>Returns:</strong> None (modifies db in place)</p>
+<p><strong>Hint:</strong> Use <code>db.get_tree(name)</code> and <code>db.set_tree(name, node)</code> to modify db in place</p>
+</div>
+<h3 id="42-cover">4.2. Cover</h3>
+<p>Technology mapping replaces the canonical NAND2/INV tree with library
+cells from your standard cell library. The goal is to find the
+minimum-area implementation.</p>
+<p>This is where the <strong>patterns</strong> field from your standard-cell front-end
+view comes into play. Each library cell has patterns describing which
+NAND2/INV combinations it can implement. For example, NOR2X1 has a
+pattern that matches <code>INV(NAND2(INV(_0), INV(_1)))</code>. When techmap finds
+this pattern in the canonical tree, it can replace all four gates with a
+single NOR2X1 cell.</p>
+<p><strong>Input:</strong> Canonicalized tree (NAND2/INV gates only)</p>
+<p><strong>Output:</strong> Tree with library cells (INVX1, NAND2X1, NOR2X1, AOI21X1,
+etc.) with minimum area (optimal for trees)</p>
+<p>The DP recurrence is:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>opt_cost(node) = min over patterns p { p.area_cost + sum(opt_cost(child)) }
+</span></code></pre></div>
+<p>Go ahead and implement the <code>cover</code> function in
+<code>tinyflow/synth/techmap.py</code>.</p>
+<p><strong>Hints:</strong></p>
+<ul>
+<li>Use <code>repr(node)</code> as the key into <code>opt_cost</code> and <code>opt_pattern</code> dicts</li>
+<li>Iterate over <code>view.patterns</code> to try all possible pattern matches</li>
+<li>Process children before the current node (bottom-up)</li>
+<li>Signals have zero cost and pass through unchanged</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>cover(node, view, opt_cost, opt_pattern)</code></p>
+<p><strong>Goal:</strong> Compute optimal cost and pattern for each node using bottom-up DP.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>node</code>: Canonicalized tree node to cover</li>
+<li><code>view</code>: StdCellFrontEndView containing patterns</li>
+<li><code>opt_cost</code>: Dict to populate with node key → minimum cost</li>
+<li><code>opt_pattern</code>: Dict to populate with node key → best pattern</li>
+</ul>
+<p><strong>Returns:</strong> None (populates opt_cost and opt_pattern dicts)</p>
+</div>
+<h3 id="43-traceback">4.3. Traceback</h3>
+<p>Finally, use a top-down approach to reconstruct the optimal technology
+mapping. Start from the root and recursively apply the optimal patterns.
+When you are done return the final tree which should exclusively contain
+standard-cell nodes.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>traceback(node, opt_pattern)</code></p>
+<p><strong>Goal:</strong> Reconstruct optimal tree by applying best patterns top-down.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>node</code>: Canonicalized tree node</li>
+<li><code>opt_pattern</code>: Dict mapping node key → best pattern</li>
+</ul>
+<p><strong>Returns:</strong> New tree with standard cells</p>
+</div>
+<h3 id="44-optimized-technology-mapping">4.4. Optimized Technology Mapping</h3>
+<p>Now put all three steps together in the <code>techmap</code> function located in
+'tinyflow/synth/techmap.py`. Call canonicalize first. Then call cover on
+every tree in the front-end database. Finally call traceback on every
+tree in the front-end database and set each tree to the newly technology
+mapped tree.</p>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>techmap(db, view)</code></p>
+<p><strong>Goal:</strong> Technology map all trees: canonicalize, cover, traceback.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyFrontEndDB containing trees to map</li>
+<li><code>view</code>: StdCellFrontEndView containing patterns and cell info</li>
+</ul>
+<p><strong>Returns:</strong> None (modifies db in place)</p>
+</div>
+<h2 id="5-algorithm-static-timing-analysis">5. Algorithm: Static Timing Analysis</h2>
+<p>Static timing analysis (STA) computes the delay through the mapped
+netlist and finds the critical path. This is where the <strong>timing model</strong>
+from your Part A front-end view is used.</p>
+<p>Recall the first-order delay model from Part A:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>gate_delay = tau_d + tau_t * load
+</span></code></pre></div>
+<p>where <code>tau_d</code> is the intrinsic (parasitic) delay, <code>tau_t</code> is the
+load-dependent delay factor, and <code>load</code> is the capacitance the gate
+drives. The load includes the input capacitance (<code>Cgate</code>) of all gates
+connected to the output.</p>
+<p><strong>Input:</strong> Mapped tree with library cells</p>
+<p><strong>Output:</strong> Critical path delay and the path itself</p>
+<p>The algorithm has three phases:</p>
+<ul>
+<li>
+<p><strong>Phase 1 (compute loads):</strong> Traverse the trees and accumulate the
+   load capacitance on each gate. A gate's load is the sum of <code>Cgate</code>
+   for all gates it drives. Primary outputs have a fixed output load.</p>
+</li>
+<li>
+<p><strong>Phase 2 (compute arrivals):</strong> Propagate arrival times from inputs
+   to outputs. Primary inputs have arrival time 0. For each gate:
+   <code>arrival = max(children arrivals) + gate_delay</code>.</p>
+</li>
+<li>
+<p><strong>Phase 3 (find critical path):</strong> Find the output with maximum
+   arrival time, then backtrace through the tree following the critical
+   pin at each node.</p>
+</li>
+</ul>
+<p><strong>Your task:</strong> Implement <code>compute_loads</code>, <code>compute_arrivals</code>, and
+<code>find_critical_path</code> in <code>tinyflow/synth/sta.py</code>.</p>
+<p><strong>Hints:</strong></p>
+<ul>
+<li>Use <code>view.get_cgate(gate_type, pin_idx)</code> to get input capacitance</li>
+<li>Use <code>view.get_parasitic_delay()</code> and <code>view.get_load_delay_factor()</code>
+   for timing parameters</li>
+<li>Store results on nodes: <code>node.load_cap</code> for load, <code>node.timing</code> for
+   arrival time and critical pin (use <code>Timing</code> namedtuple)</li>
+<li>Primary inputs have arrival time 0</li>
+<li>For arrivals, use memoization via <code>node.timing</code> to avoid recomputation</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>compute_loads(db, view, output_load)</code></p>
+<p><strong>Goal:</strong> Compute load capacitance for all nodes.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyFrontEndDB containing mapped trees</li>
+<li><code>view</code>: StdCellFrontEndView for Cgate lookup</li>
+<li><code>output_load</code>: Fixed load on primary outputs (default 10.0 fF)</li>
+</ul>
+<p><strong>Returns:</strong> None (sets <code>node.load_cap</code> on each gate)</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>compute_arrivals(db, view)</code></p>
+<p><strong>Goal:</strong> Compute arrival times for all nodes using forward DP.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyFrontEndDB containing mapped trees with <code>load_cap</code> set</li>
+<li><code>view</code>: StdCellFrontEndView for timing parameters</li>
+</ul>
+<p><strong>Returns:</strong> None (sets <code>node.timing</code> on each gate)</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>find_critical_path(db)</code></p>
+<p><strong>Goal:</strong> Find critical path by backtracing from max delay output.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyFrontEndDB with timing computed</li>
+</ul>
+<p><strong>Returns:</strong> Tuple of <code>(max_delay, critical_path, critical_output)</code></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Function: <code>sta(db, view, output_load)</code></p>
+<p><strong>Goal:</strong> Run full STA: compute_loads, compute_arrivals, find_critical_path.</p>
+<p><strong>Args:</strong></p>
+<ul>
+<li><code>db</code>: TinyFrontEndDB containing mapped trees</li>
+<li><code>view</code>: StdCellFrontEndView for timing parameters</li>
+<li><code>output_load</code>: Fixed load on primary outputs (default 10.0 fF)</li>
+</ul>
+<p><strong>Returns:</strong> None (stores results in db via db.set_sta_results)</p>
+<p><strong>Hint:</strong> You can set the STA results into DB using the following:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>path_stages = sum(1 for node in critical_path if node.is_gate())
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>db.set_sta_results(max_delay, critical_path, path_stages, critical_output)
+</span></code></pre></div></p>
+</div>
+<p>After techmap, you can run STA and view timing results:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">synth</span><span class="o">&gt;</span> <span class="n">sta</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">synth</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">report_timing</span><span class="p">()</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">tinyflow</span><span class="o">-</span><span class="n">synth</span><span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">report_summary</span><span class="p">()</span>
+</span></code></pre></div>
+<p>The timing report shows the critical path delay and the gates on the
+critical path.</p>
+<h2 id="6-testing">6. Testing</h2>
+<p>You can run the tests from your build directory like this.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../synth/tests/substitute_test.py<span class="w"> </span>-v
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../synth/tests/techmap_test.py<span class="w"> </span>-v
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>%<span class="w"> </span>pytest<span class="w"> </span>../synth/tests/sta_test.py<span class="w"> </span>-v
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>%<span class="w"> </span>pytest<span class="w"> </span>../synth/tests/synth_test.py<span class="w"> </span>-v
+</span></code></pre></div>
+<p>You can also run all the tests at once.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../synth/tests
+</span></code></pre></div>
+<p>Just because all of the test passes does not mean your implementation is
+correct. You are encoraged to add more tests.</p>
+<h2 id="7-tinyflow-front-end">7. TinyFlow Front-End</h2>
+<p>As discussed in lecture, the front end is more than just synthesis. The
+front-end flow consists of four stages: two-state simulation, four-state
+simulation, synthesis, and fast-functional gate-level simulation. As
+paranoid ASIC engineers, we verify our design at each step. We simulate
+the RTL before synthesis to catch design bugs early, then simulate the
+gate-level netlist after synthesis to ensure the transformation preserved
+functionality.</p>
+<h3 id="71-two-state-rtl-simulation">7.1 Two-State RTL Simulation</h3>
+<p>To ensure functionality, the first step is to verify our design quickly
+using two-state simulation. Two-state simulation tests only logic values
+1 and 0 to ensure basic logic correctness. In this part we will use
+Verilator to perform two-state simulation.</p>
+<p>In this project, we will verify a Full Adder design. We provide the
+Verilog RTL in <code>rtl/FullAdder.v</code> and a basic testbench in
+<code>rtl/test/FullAdder-test.v</code>. You can run the two-state simulation with
+Verilator as follows.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa/01-verilator-rtlsim
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>%<span class="w"> </span>verilator<span class="w"> </span>--top<span class="w"> </span>Top<span class="w"> </span>--timing<span class="w"> </span>--binary<span class="w"> </span>-o<span class="w"> </span>FullAdder-test<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span>../../../rtl/FullAdder.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">    </span>../../../rtl/test/FullAdder-test.v
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>%<span class="w"> </span>./obj_dir/FullAdder-test
+</span></code></pre></div>
+<p>We have put the above command in a shell script to simplify running
+two-state RTL simulation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>%<span class="w"> </span>./01-verilator-rtlsim/run
+</span></code></pre></div>
+<h3 id="72-four-state-rtl-simulation">7.2 Four-State RTL Simulation</h3>
+<p>Four-state simulation uses four logic values: 0, 1, X (unknown), and Z
+(high impedance). You get X when a signal is uninitialized, when multiple
+drivers are fighting (contention), or through propagation of uncertainty
+(X propagates through logic). You get Z when a wire is floating (nothing
+is driving it) or from a tri-stated output.</p>
+<p>We use four-state simulation to capture these bugs. It is slower than
+two-state simulation, but it narrows down our issue search space. If your
+design passes two-state but fails four-state, the problem is usually
+related to X propagation or uninitialized signals.</p>
+<p>Go ahead and run the four-state simulation with Icarus Verilog:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa/02-iverilog-rtlsim
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-g2012<span class="w"> </span>-o<span class="w"> </span>FullAdder-test<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">    </span>../../../rtl/FullAdder.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">    </span>../../../rtl/test/FullAdder-test.v
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>%<span class="w"> </span>./FullAdder-test
+</span></code></pre></div>
+<p>We have put the above command in a shell script to simplify running
+two-state RTL simulation.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>%<span class="w"> </span>./02-iverilog-rtlsim/run
+</span></code></pre></div>
+<h3 id="73-synthesis">7.3 Synthesis</h3>
+<p>Now that we have rigorously tested our Verilog design, we are ready to
+synthesize it into a gate-level netlist. For this step, we will use the
+batch processing mode of <code>tinyflow-synth</code> instead of the REPL mode we
+have previous used. The batch mode takes a run script that describes the
+synthesis steps. Populate the 'asic/build-fa/03-tinyflow-synth/run.py'
+script with the commands to perform synthesis and STA.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># Load the standard-cell front-end view and create front-end database</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">view</span> <span class="o">=</span> <span class="n">StdCellFrontEndView</span><span class="o">.</span><span class="n">parse_lib</span><span class="p">(</span><span class="s2">"../../../stdcells/stdcells-fe.yml"</span><span class="p">)</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">db</span> <span class="o">=</span> <span class="n">TinyFrontEndDB</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="c1"># Read Verilog file into the database</span>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="n">db</span><span class="o">.</span><span class="n">read_verilog</span><span class="p">(</span><span class="s2">"../../../rtl/FullAdder.v"</span><span class="p">)</span>
+</span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>
+</span><span id="__span-24-10"><a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="c1"># Optimized technology mapping</span>
+</span><span id="__span-24-11"><a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a>
+</span><span id="__span-24-12"><a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a><span class="n">techmap</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+</span><span id="__span-24-13"><a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a>
+</span><span id="__span-24-14"><a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a><span class="c1"># Static timing analysis with output load of 10fF</span>
+</span><span id="__span-24-15"><a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a>
+</span><span id="__span-24-16"><a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a><span class="n">output_load</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span id="__span-24-17"><a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a><span class="n">sta</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">output_load</span><span class="p">)</span>
+</span><span id="__span-24-18"><a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a>
+</span><span id="__span-24-19"><a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a><span class="c1"># Check design for issues</span>
+</span><span id="__span-24-20"><a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a>
+</span><span id="__span-24-21"><a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a><span class="n">db</span><span class="o">.</span><span class="n">check_design</span><span class="p">()</span>
+</span><span id="__span-24-22"><a id="__codelineno-24-22" name="__codelineno-24-22" href="#__codelineno-24-22"></a>
+</span><span id="__span-24-23"><a id="__codelineno-24-23" name="__codelineno-24-23" href="#__codelineno-24-23"></a><span class="c1"># Output reports</span>
+</span><span id="__span-24-24"><a id="__codelineno-24-24" name="__codelineno-24-24" href="#__codelineno-24-24"></a>
+</span><span id="__span-24-25"><a id="__codelineno-24-25" name="__codelineno-24-25" href="#__codelineno-24-25"></a><span class="n">db</span><span class="o">.</span><span class="n">report_area</span><span class="p">()</span>
+</span><span id="__span-24-26"><a id="__codelineno-24-26" name="__codelineno-24-26" href="#__codelineno-24-26"></a><span class="n">db</span><span class="o">.</span><span class="n">report_timing</span><span class="p">()</span>
+</span><span id="__span-24-27"><a id="__codelineno-24-27" name="__codelineno-24-27" href="#__codelineno-24-27"></a><span class="n">db</span><span class="o">.</span><span class="n">report_summary</span><span class="p">()</span>
+</span><span id="__span-24-28"><a id="__codelineno-24-28" name="__codelineno-24-28" href="#__codelineno-24-28"></a>
+</span><span id="__span-24-29"><a id="__codelineno-24-29" name="__codelineno-24-29" href="#__codelineno-24-29"></a><span class="c1"># Write front-end database to a Verilog gate-level netlist</span>
+</span><span id="__span-24-30"><a id="__codelineno-24-30" name="__codelineno-24-30" href="#__codelineno-24-30"></a>
+</span><span id="__span-24-31"><a id="__codelineno-24-31" name="__codelineno-24-31" href="#__codelineno-24-31"></a><span class="n">db</span><span class="o">.</span><span class="n">write_verilog</span><span class="p">(</span><span class="s2">"post-synth.v"</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Now run the synthesis:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa/03-tinyflow-synth
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>%<span class="w"> </span>../../../tinyflow/tinyflow-synth<span class="w"> </span>-f<span class="w"> </span>run.py
+</span></code></pre></div>
+<p>This outputs the <code>post-synth.v</code> file. We have put the above command in a
+shell script to simplify running synthesis.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>%<span class="w"> </span>./03-tinyflow-synth/run
+</span></code></pre></div>
+<h3 id="74-fast-functional-gate-level-simulation">7.4 Fast-Functional Gate-Level Simulation</h3>
+<p>Now that we have our synthesized design, as paranoid ASIC engineers we
+want to double check that the synthesized design still does what we
+intended. Synthesis tools may not always be correct! To verify this, we
+perform fast-functional gate-level simulation (FFGL), which is four-state
+simulation using the same testbench but with the synthesized design and
+the behavioral view of the standard cells.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa/04-iverilog-ffglsim
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>%<span class="w"> </span>iverilog<span class="w"> </span>-g2012<span class="w"> </span>-o<span class="w"> </span>FullAdder-test<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">    </span>../../../stdcells/stdcells.v<span class="w"> </span>../03-tinyflow-synth/post-synth.v<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span>../../../rtl/test/FullAdder-test.v
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>%<span class="w"> </span>./FullAdder-test
+</span></code></pre></div>
+<p>If the simulation passes, your synthesized design is functionally
+correct. We have put the above command in a shell script to simplify
+running synthesis.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>%<span class="w"> </span>./04-iverilog-ffglsim/run
+</span></code></pre></div>
+<h2 id="9-project-submission">9. Project Submission</h2>
+<p>To submit your code you simply push your code to GitHub. You can push
+your code as many times as you like before the deadline. Students are
+responsible for going to the GitHub website for your repository, browsing
+the source code, and confirming that the code they want to submit is on
+GitHub. Be sure to verify your code is passing all of
+your simulations on <code>ecelinux</code>.</p>
+<p>Here is how we will be testing your final code submission for Part B.
+First, we will create a build directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/project1-groupXX
+</span></code></pre></div>
+<p>Then we will run all of the tests for the synthesis flow.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project1-groupXX/tinyflow/build
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>%<span class="w"> </span>pytest<span class="w"> </span>../synth
+</span></code></pre></div>
+<p>Then we will verify that we can succesfully push the full adder through
+your TinyFlow.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/ece6745/project1-groupXX/asic/build-fa
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>%<span class="w"> </span>./01-verilator-rtlsim/run
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>%<span class="w"> </span>./02-iverilog-rtlsim/run
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>%<span class="w"> </span>./03-tinyflow-synth/run
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>%<span class="w"> </span>./04-iverilog-ffglsim/run
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>

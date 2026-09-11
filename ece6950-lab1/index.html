@@ -1,0 +1,2506 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Christopher Batten">
+      
+      
+      
+        <link rel="prev" href="../ece6745-project2-ideas/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Lab 1: FPGA Emulation - ECE 6745 Complex Digital ASIC Design</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lab-1-fpga-emulation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-header__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ECE 6745 Complex Digital ASIC Design
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Lab 1: FPGA Emulation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tut00-remote-access/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-lab1/" class="md-tabs__link">
+          
+  
+  
+  Labs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-project1a/" class="md-tabs__link">
+          
+  
+  
+  Projects
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ece6745-tinyflow-180nm-drm/" class="md-tabs__link">
+          
+  
+  
+  Misc
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Chip Testing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ECE 6745 Complex Digital ASIC Design" class="md-nav__button md-logo" aria-label="ECE 6745 Complex Digital ASIC Design" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ECE 6745 Complex Digital ASIC Design
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cornell-ece6745/ece6745-mkdocs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cornell-ece6745/ece6745-mkdocs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut00-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 0: ECE Linux Server Remote Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut01-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 1: Linux Development Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tut02-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 2: Git Distributed Version Control System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: Full-Custom Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 2: Standard-Cell Inverter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 3: Tiny Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 4: Tiny Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 5: TinyRV2 Accelerators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 6: Front-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 7: Back-End Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 8: Block Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-lab9/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 9: Chip Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 1: TinyFlow Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: TinyFlow Standard Cells
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: TinyFlow Front End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project1c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: TinyFlow Back End
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2: Xcel Tape-Out
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project 2: Xcel Tape-Out
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A: Software & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B: Xcel RTL Milestone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C: Xcel RTL Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part D: ASIC Evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2e/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part E: Tape-Out and Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Misc
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-tinyflow-180nm-drm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tinyflow 180nm Design Rules Manual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ece6745-project2-ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project 2 Ideas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chip Testing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chip Testing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: FPGA Emulation
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 1: FPGA Emulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-background-on-spi-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Background on SPI Protocol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Background on SPI Protocol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-spi-basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. SPI Basics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-spi-for-xcel-tape-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. SPI for Xcel Tape-Out
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-debug-unit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3. Debug Unit
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pre-silicon-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Pre-Silicon Verification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Pre-Silicon Verification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-xcel-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Xcel Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-xcel-chip-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Xcel Chip Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-clone-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. Clone Repo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-fpga-emulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. FPGA Emulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. FPGA Emulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-setup-quartus-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Setup Quartus Project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-integrate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Integrate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-synthesize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Synthesize
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Configure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-spi-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. SPI Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. SPI Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-using-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Using REPL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-using-xmsgs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Using xmsgs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-accelerator-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Accelerator Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-background-on-spi-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Background on SPI Protocol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Background on SPI Protocol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-spi-basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. SPI Basics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-spi-for-xcel-tape-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. SPI for Xcel Tape-Out
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-debug-unit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3. Debug Unit
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pre-silicon-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Pre-Silicon Verification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Pre-Silicon Verification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-xcel-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Xcel Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-xcel-chip-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Xcel Chip Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-clone-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. Clone Repo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-fpga-emulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. FPGA Emulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. FPGA Emulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-setup-quartus-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Setup Quartus Project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-integrate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Integrate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-synthesize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Synthesize
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Configure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-spi-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. SPI Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. SPI Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-using-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Using REPL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-using-xmsgs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Using xmsgs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-accelerator-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Accelerator Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="lab-1-fpga-emulation">Lab 1: FPGA Emulation</h1>
+<p>In this lab, you will be using FPGA emulation to verify your accelerator
+tape-out. FPGA emulation is the process of mapping the RTL for a chip to
+an FPGA, and then testing the FPGA in the same way as we will eventually
+test the actual tape-out. We will start by reviewing what we put on the
+tapeout including details about the SPI protocol we will be using to
+thest the chip before:</p>
+<ul>
+<li>revising our pre-silicon verification</li>
+<li>creating an FPGA emulator for your accelerator tape-out</li>
+<li>SPI testing using your FPGA emulator</li>
+<li>Accelerator testing using your FPGA emulator</li>
+</ul>
+<p>To get started find a free workstation and log in with your NetID and
+NetID password.</p>
+<h2 id="1-background-on-spi-protocol">1. Background on SPI Protocol</h2>
+<p>Let's start by reminding ourselves the block diagram for the top of our
+accelerator tape-out:</p>
+<p><img alt="" src="../img/lab9-gcd-xcel-chip.png" /></p>
+<p>Recall that we interact with your accelerator by sending accelerator
+request messages and receiving accelerator response messages. An
+accelerator request message includes a 1-bit type field (type = 0 for
+reads and type = 1 for writes), 5-bit register address field, and 32-bit
+write data field for a total of 38 bits:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>   37   36   32 31  ....  0
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>+------+-------+-----------+
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>| type | raddr | wdata     |
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>+------+-------+-----------+
+</span></code></pre></div>
+<p>An accelerator response message includes a 1-bit type field and 32-bit
+read data field for a total of 33 bits:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>   32   31  ....  0
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>+------+-----------+
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>| type | rdata     |
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>+------+-----------+
+</span></code></pre></div>
+<h3 id="11-spi-basics">1.1. SPI Basics</h3>
+<p>The SPI minion interfaces with a SPI master controlled by the host
+workstation. SPI is a very basic four-wire serial protocol with the
+following timing diagram:</p>
+<p><img alt="" src="../img/chip-test-lab1-spi-waveform.png" /></p>
+<p>Each SPI transaction involves exchanging an SPI request and an SPI
+response between the SPI master and the SPI minion using the following
+steps assuming we want to exchange 40-bits of data.</p>
+<ul>
+<li>Step 1: SPI master sets CS low (this is how the SPI minion knows the
+    start of an SPI transaction)</li>
+<li>Step 2: SPI master toggles SCLK 40 times, once for each bit of data</li>
+<li>Step 3: SPI master writes MOSI with each bit of the SPI request on the
+    falling edge of SCLK while the SPI minion writes MISO with each bit
+    of the SPI response on the falling edge of SCLK</li>
+<li>Step 4: SPI minion reads MOSI on the rising edge of SCLK while the SPI
+    master reads MISO on the rising edge of SCLK</li>
+<li>Step 5: SPI master sets CS high (this is how the SPI minion knows the
+    end of an SPI transaction)</li>
+</ul>
+<p>When an SPI transaction is done, the master has sent the minion 40-bits
+of data at the same time as the minion has sent the master 40-bits of
+data.</p>
+<h3 id="12-spi-for-xcel-tape-out">1.2. SPI for Xcel Tape-Out</h3>
+<p>For our accelerator tape-out, we will be using SPI to send and receive
+accelerator messages. The SPI request format for this course always
+includes a 1-bit valid field, a 1-bit constant field which is always one,
+and then potentially a 38-bit accelerator request message. The <code>val</code> bit
+specifies whether this SPI request contains a valid accelerator request
+message.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>   39     38     37   36   32 31  ....  0
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>+------+------+------+-------+-----------+
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>| val  | 1    | type | raddr | wdata     |
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>+------+------+------+-------+-----------+
+</span></code></pre></div>
+<p>The SPI response format for this course includes a 1-bit valid field, a
+1-bit constant field which is always one, a 5-bit field which is always
+zero, and then potentially a 33-bit accelerator response message.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>   39     38   37   33   32   31  ....  0
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>+------+------+-------+------+-----------+
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>| val  | 1    | 00000 | type | rdata     |
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>+------+------+-------+------+-----------+
+</span></code></pre></div>
+<p>The SPI protocol involves the master sending an accelerator request and
+then waiting until the minion sends back the corresponding accelerator
+response:</p>
+<ul>
+<li>
+<p>The host uses an SPI request with the valid bit set to one to send an
+   accelerator request to the accelerator tapeout</p>
+</li>
+<li>
+<p>The host then uses an SPI request with the valid bit set to zero to
+   repeatedly poll until eventually the SPI response is valid meaning the
+   accelerator is sending back the corresponding accelerator response</p>
+</li>
+</ul>
+<p>So writing xr0 with the value 0xdeadbeef would look like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a> ------- SPI request -------    ------ SPI response -------
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a> val 1 type raddr wdata         val 1 00000 type rdata
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a> ----------------------------------------------------------
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a> 1   1 1    0     0xdeadbeef -&gt; 0   1 00000 0    0x00000000 # send xcel req
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a> 0   1 0    0     0x00000000 -&gt; 0   1 00000 0    0x00000000 # ... waiting ...
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a> 0   1 0    0     0x00000000 -&gt; 0   1 00000 0    0x00000000 # ... waiting ...
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a> 0   1 0    0     0x00000000 -&gt; 1   1 00000 1    0x00000000 # recv xcel resp
+</span></code></pre></div>
+<h3 id="13-debug-unit">1.3. Debug Unit</h3>
+<p>Every accelerator tape-out also has a debug unit which sits between the
+SPI minion and the accelerator. An external input pin on the chipcan turn
+on/off debug mode. When in debug mode, the host workstation can only read
+and write xr0 which maps to a debug register in the debug unit. Reading
+and writing any other accelerator register while in debug mode is
+undefined. The least significant bit of the debug register is connected
+to the debug out pin on the chip.</p>
+<h2 id="2-pre-silicon-verification">2. Pre-Silicon Verification</h2>
+<p>Let's now reproduce our pre-silicon verification. Log into <code>ecelinux</code>
+using VS Code and clone a fresh copy of your tapeout repository. Then be
+sure to checkout the <code>tapeout-v2-branch</code> which is the exact version of
+the repository you taped out last spring.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>%<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-ece6745.sh
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>%<span class="w"> </span>mv<span class="w"> </span>project2-groupXX<span class="w"> </span>project2-groupXX-backup
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>%<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:cornell-ece6745/project2-groupXX
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>project2-groupXX
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>%<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>tapeout-v2-branch
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>%<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>sim/build
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+</span></code></pre></div>
+<p>Take a look at your chip top and convince yourself it matches the block
+diagram shown above.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project2-groupXX/sim/build
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>%<span class="w"> </span>code<span class="w"> </span>../proj2/Proj2XcelChip.v
+</span></code></pre></div>
+<h3 id="21-xcel-verification">2.1. Xcel Verification</h3>
+<p>Then run all of the tests for your accelerator in isolation as well
+as all of the chip tests.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project2-groupXX/sim/build
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../proj2<span class="w"> </span>--verbose
+</span></code></pre></div>
+<h3 id="22-xcel-chip-verification">2.2. Xcel Chip Verification</h3>
+<p>We want to run these exact same chip tests on the FPGA emulator and
+eventually the actual chip. We will do this by dumping all of the
+accelerator request messages and the (correct) accelerator response
+messages to an <em>xmsgs</em> file. Then we can replay the accelerator request
+messages from the xmsgs file on the FPGA emulator or chip and check that
+the accelerator response messages returned from the FPGA emulator or chip
+exactly match the expected accelerator response messages.</p>
+<p>You can generate the xmsgs files with the <code>--dump-xmsgs</code> command line
+option to pytest like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project2-groupXX/sim/build
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>%<span class="w"> </span>pytest<span class="w"> </span>../proj2/test/Proj2XcelChip_test.py<span class="w"> </span>--verbose<span class="w"> </span>--dump-xmsgs
+</span></code></pre></div>
+<p>Look inside one of the xmsg files:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project2-groupXX/sim/build
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>%<span class="w"> </span>ls<span class="w"> </span>*.xmsgs
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>%<span class="w"> </span>cat<span class="w"> </span>*.xmsgs
+</span></code></pre></div>
+<p>Each xmsg file looks like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>01 00 0000000f 00000000
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>01 01 00000005 00000000
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>00 02 00000000 00000005
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>01 00 00000006 00000000
+</span></code></pre></div>
+<p>The first field is the type, the second field is the accelerator register
+address, the third field is the write data, and the final field is the
+read data. Remind yourself what some of your tests do and make sure the
+xmsgs files match your expectations.</p>
+<p>We now need to commit the xmsg files to your repo.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ece6745/project2-groupXX/sim/build
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>%<span class="w"> </span>mv<span class="w"> </span>*.xmsgs<span class="w"> </span>../../xmsgs
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>%<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>../../xmsgs
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>%<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"added xmsgs"</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>%<span class="w"> </span>git<span class="w"> </span>push
+</span></code></pre></div>
+<h3 id="23-clone-repo">2.3. Clone Repo</h3>
+<p>We now need to get the files for your design and your xmsg files from
+<code>ecelinux</code> onto the workstation. This requires multiple steps.</p>
+<ul>
+<li>
+<p>Step 1. Click <em>Microsoft Edge</em> on the desktop to open a web-browser on
+   the workstation to log into GitHub and then find your repository</p>
+</li>
+<li>
+<p>Step 2. Start PowerShell by clicking the <em>Start</em> menu then searching
+   for <em>Windows PowerShell</em></p>
+</li>
+<li>
+<p>Step 3. Use the following command to change to your home directory on
+   the workstation in the lab (where <code>netid</code> is your Cornell NetID)</p>
+</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>% cd C:\Users\netid
+</span></code></pre></div>
+<ul>
+<li>Step 4. Clone your repo onto the workstation by using this command in
+   PowerShell (where <code>netid</code> is your Cornell NetID, <strong>notice we are using
+   https!</strong>):</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>% git clone https://github.com/cornell-ece6745/project2-groupXX
+</span></code></pre></div>
+<ul>
+<li>
+<p>Step 5. In the <em>Connect to GitHub</em> pop-up, click <em>Sign in with your
+   browser</em></p>
+</li>
+<li>
+<p>Step 6. You may be asked for your GitHub username again and you may be
+   asked to authorize the Git Credential Manager; click <em>authorize
+   git-ecosystem</em></p>
+</li>
+<li>
+<p>Step 7. Change into your repo, checkout the tapeout branch, and using
+   <code>tree</code> on the workstation:</p>
+</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>% cd project2-groupXX
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>% git checkout tapeout-v2-branch
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>% tree
+</span></code></pre></div>
+<h2 id="3-fpga-emulation">3. FPGA Emulation</h2>
+<p>We will now integrate your accelerator tape-out into the FPGA, synthesize
+the design, and configure the FPGA so we can use FPGA emulation to verify
+your design.</p>
+<p>Use the USB-C cable to connect the SPI adapter on the breadboard to the
+top-left USB port of the workstation. <strong>You must use the top-left USB
+port of the workstation; any other port will not work!</strong> Then use the
+USB-B cable to connect the FPGA board to the workstation.</p>
+<h3 id="31-setup-quartus-project">3.1. Setup Quartus Project</h3>
+<p>Click <em>Quartus (Quartus Prime 18.1)</em> on the desktop to start Quartus.
+Then, click <em>Run the Quartus Prime software</em>. You might need to try
+starting Quartus twice. Setup a new Quartus project using the <em>New
+Project Wizard</em>:</p>
+<ul>
+<li>Directory, Name, Top-Level Entity<ul>
+<li><strong>You must enter the working directory as follows with your NetID!</strong></li>
+<li>Working directory: <code>C:\Users\netid\fpga-emulation</code></li>
+<li>Name of this project: <code>fpga-emulation</code></li>
+<li>Name of top-level design entity: <code>fpga-emulation</code></li>
+<li>Click <em>Next</em></li>
+</ul>
+</li>
+<li>Directory does not exist. Do you want to create it?<ul>
+<li>Click yes</li>
+</ul>
+</li>
+<li>Project Type<ul>
+<li>Choose <em>Empty Project</em></li>
+<li>Click <em>Next</em></li>
+</ul>
+</li>
+<li>Add Files<ul>
+<li>Click <em>User Libraries...</em></li>
+<li>Click triple dots to the right of <em>Project library name</em></li>
+<li>Click on <em>This PC</em>, then navigate to your cloned repo by choosing
+   <em>Windows (C:) &gt;  Users &gt; netid &gt; project2-groupXX &gt; sim</em> where <em>XX</em> is your
+   group number</li>
+<li>Click <em>Select Folder</em></li>
+<li>Click <em>Add</em></li>
+<li>Click <em>OK</em></li>
+<li>Click triple dots to right of <em>File name</em></li>
+<li>Click on <em>This PC</em>, then navigate to your cloned repo by choosing
+   <em>Windows (C:) &gt;  Users &gt; netid &gt; project2-groupXX &gt; sim &gt; proj2</em>
+   where <em>XX</em> is your Cornell NetID</li>
+<li>Click on just <code>Proj2XcelChip.v</code>  (do not include any other files!)</li>
+<li>Click <em>Open</em></li>
+<li>Click <em>Next</em></li>
+</ul>
+</li>
+<li>Family, Device, and Board Settings<ul>
+<li>Click <em>Board</em> tab</li>
+<li>Family: <em>Cyclone V</em></li>
+<li>Select <em>DE0-CV Development Board</em></li>
+<li>Make sure <em>Create top-level design file</em> is checked</li>
+<li>Click <em>Next</em></li>
+</ul>
+</li>
+<li>EDA Tool Settings<ul>
+<li>Click <em>Next</em></li>
+</ul>
+</li>
+<li>Summary<ul>
+<li>Click <em>Finish</em></li>
+</ul>
+</li>
+</ul>
+<p>You must use the following steps to ensure Quartus knows your design
+includes SystemVerilog:</p>
+<ul>
+<li>Choose <em>Assignments &gt; Settings</em> from the menu</li>
+<li>Select the category <em>Compiler Settings &gt; Verilog HDL Input</em></li>
+<li>Under <em>Verilog version</em> click <em>SystemVerilog</em></li>
+<li>Click <em>OK</em></li>
+</ul>
+<h3 id="32-integrate">3.2. Integrate</h3>
+<p>We want to implement the FPGA emulator with the following specification:</p>
+<ul>
+<li>50MHz clock on the FPGA is connected to chip clock pin</li>
+<li>Reset button (<strong>ACTIVE LOW!</strong>) is connected to chip reset pin</li>
+<li>Switch <code>SW[0]</code> is connected to chip debug mode pin</li>
+<li><code>LEDR[0]</code> is connected to chip debug out pin</li>
+<li>Constants 0 are connected to chip gp0/gp1 pins</li>
+<li>The general-purpose pins will be used to connect clock out and SPI<ul>
+<li>Clock out connects to <code>GPIO_1[9]</code></li>
+<li>SCLK connects to GPIO_1[1] which connects to D0 on USB-to-SPI adapter</li>
+<li>MOSI connects to GPIO_1[3] which connects to D1 on USB-to-SPI adapter</li>
+<li>MISO connects to GPIO_1[5] which connects to D2 on USB-to-SPI adapter</li>
+<li>CS connects to GPIO_1[7] which connects to D3 on USB-to-SPI adapter</li>
+</ul>
+</li>
+</ul>
+<p>Here is a block diagam and annotated FPGA board and breadboard diagram
+illustrating our FPGA emulator.</p>
+<p><img alt="" src="../img/chip-test-lab1-block-diagram.png" width="75%" /></p>
+<p><img alt="" src="../img/chip-test-lab1-fpga-board.png" /></p>
+<p>Here is a template you can use for your design:</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">proj2_Proj2XcelChip</span><span class="w"> </span><span class="n">chip</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="p">(</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="p">.</span><span class="n">clk</span><span class="w">        </span><span class="p">(),</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="p">.</span><span class="n">reset</span><span class="w">      </span><span class="p">(),</span><span class="w"> </span><span class="c1">// remember reset is active low!</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">  </span><span class="p">.</span><span class="n">sclk</span><span class="w">       </span><span class="p">(),</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">  </span><span class="p">.</span><span class="n">mosi</span><span class="w">       </span><span class="p">(),</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">  </span><span class="p">.</span><span class="n">miso</span><span class="w">       </span><span class="p">(),</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">  </span><span class="p">.</span><span class="n">cs</span><span class="w">         </span><span class="p">(),</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">  </span><span class="p">.</span><span class="n">debug_mode</span><span class="w"> </span><span class="p">(),</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">  </span><span class="p">.</span><span class="n">debug_out</span><span class="w">  </span><span class="p">(),</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">  </span><span class="p">.</span><span class="n">clk_out</span><span class="w">    </span><span class="p">(),</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">  </span><span class="p">.</span><span class="n">gp0</span><span class="w">        </span><span class="p">(),</span>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="w">  </span><span class="p">.</span><span class="n">gp1</span><span class="w">        </span><span class="p">()</span>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="p">);</span>
+</span></code></pre></div>
+<p>Use the following steps when you are ready to integrate the chip.</p>
+<ul>
+<li>Double-click on DE0_CV_golden_top</li>
+<li>Instantiate the template shown above</li>
+<li>Fill in the connections to the top-level ports</li>
+<li>Choose File &gt; Save from the menu</li>
+</ul>
+<p>You will also need to add the following to the very top of your
+<code>Proj2XcelChip.v</code> file:</p>
+<div class="language-verilog highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1">// Quartus does not define SYNTHESIS, so we need to do so here just to</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1">// make sure we remove any non-synthesizable code.</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="cp">`define SYNTHESIS</span>
+</span></code></pre></div>
+<p>Then make sure to hook up the SPI interface on the breadboard as mentioned above.</p>
+<ul>
+<li>SCLK connects to <code>GPIO_1[1]</code> which connects to D0 on USB-to-SPI adapter</li>
+<li>MOSI connects to <code>GPIO_1[3]</code> which connects to D1 on USB-to-SPI adapter</li>
+<li>MISO connects to <code>GPIO_1[5]</code> which connects to D2 on USB-to-SPI adapter</li>
+<li>CS connects to   <code>GPIO_1[7]</code> which connects to D3 on USB-to-SPI adapter</li>
+</ul>
+<p>Connect the two oscilloscope primary probe points to the SCLK and MOSI
+pins of the SPI interface. Be sure also to connect the ground probe
+points to ground.</p>
+<h3 id="33-synthesize">3.3. Synthesize</h3>
+<p>In addition to the above, we need to give Quartus information about our
+timing constraints, so that it can properly analyze the timing of our
+design and analyze the critical path. This is analogous to the timing
+constraints we had to give to Synopsys DesignCompiler and Cadence Innovus
+for the tape-out.</p>
+<ul>
+<li>Choose <em>File &gt; New</em> from the menu</li>
+<li>Select <em>Synopsys Design Constraints File</em></li>
+<li>Add the following constraints:</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>set_max_delay -from [all_inputs] -to [all_outputs] 20
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>set_min_delay -from [all_inputs] -to [all_outputs] 0
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>create_clock -name clk -period 20 [get_ports {CLOCK_50}]
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>set_input_delay  -add_delay -clock clk -max 0 [all_inputs]
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>set_input_delay  -add_delay -clock clk -min 0 [all_inputs]
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>set_output_delay -add_delay -clock clk -max 0 [all_outputs]
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>set_output_delay -add_delay -clock clk -min 0 [all_outputs]
+</span></code></pre></div>
+<ul>
+<li>Choose <em>File &gt; Save As</em> from the menu</li>
+<li>Save as <code>timing.sdc</code> within your <code>fpga-emulation</code> directory</li>
+</ul>
+<p>Now choose <em>Processing &gt; Start Compilation</em> to start synthesis and
+place-and-route for your design.</p>
+<p>Now let's see how many gates our design is using.</p>
+<ul>
+<li>Choose <em>Processing -&gt; Compilation Report</em> from the menu</li>
+<li>Under <em>Table of Contents</em> choose <em>Fitter &gt; Resource Section &gt; Resource
+   Usage Summary</em></li>
+<li>Look through the report to determine what percentage of the total FPGA
+   resources are being used (use the "Logic Utilization" row at the top
+   of the area report)</li>
+</ul>
+<p>Let's also look at the area on the FPGA used by the processor FPGA
+prototype using the chip planner.</p>
+<ul>
+<li>Chip Planner<ul>
+<li>Choose <em>Tools &gt; Chip Planner</em> from the menu</li>
+<li>Identify where the logic used to implement your design is located
+   in the FPGA</li>
+<li>Choose <em>File &gt; Close</em> from the menu to close the chip planner</li>
+</ul>
+</li>
+</ul>
+<p>The final step is to analyze the timing (i.e., the critical path delay)
+of your FPGA emulator just like what we did for the tape-out in the
+spring. We will analyze timing for the <em>Slow 1100mV 85C Model</em> which is
+the default choice in the Timing Analyzer.</p>
+<ul>
+<li>Choose <em>Tools &gt; Timing Analyzer</em> from the menu</li>
+<li>Double-click <em>Update Timing Netlist</em></li>
+<li>Choose <em>Reports &gt; Custom Reports &gt; Report Timing</em> from the menu</li>
+<li>Report Timing<ul>
+<li>Clocks - From clock: <em>clk</em></li>
+<li>Clocks - To clock: <em>clk</em></li>
+<li>Targets - From: <em>[get_registers *]</em></li>
+<li>Targets - To: <em>[get_registers *]</em></li>
+<li>Report number of paths: <em>1</em></li>
+<li>Click <em>Report Timing</em></li>
+</ul>
+</li>
+<li>Identify the propagation delay of the displayed path</li>
+<li>Look at the actual critical path (i.e., <em>Data Arrival Path</em>) which
+    shows the longest path from one of the inputs through your
+    design to one of the outputs</li>
+<li>Choose <em>File &gt; Close</em> from the menu to close the timing analyzer</li>
+</ul>
+<h3 id="34-configure">3.4. Configure</h3>
+<p>Now we are finally ready to configure the FPGA for TinyRV1 single-cycle
+processor prototype.</p>
+<ul>
+<li>Choose <em>Tools &gt; Programmer</em> from the menu</li>
+<li>Click <em>Hardware Setup</em></li>
+<li>Currently selected hardware: <em>USB-Blaster [USB-0]</em></li>
+<li>Click <em>Close</em></li>
+<li>Click <em>Start</em></li>
+</ul>
+<h2 id="4-spi-testing">4. SPI Testing</h2>
+<p>We will start by just testing the SPI interface using debug mode, so go
+ahead and flip the debug mode switch.</p>
+<h3 id="41-using-repl">4.1. Using REPL</h3>
+<p>Start PowerShell by clicking the <em>Start</em> menu then searching for <em>Windows
+PowerShell</em>. Then start Python and use the following commands to exchange
+SPI transactions with the FPGA.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>%<span class="w"> </span>python
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>pyftdi.spi<span class="w"> </span>import<span class="w"> </span>*
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>&gt;&gt;&gt;<span class="w"> </span><span class="nv">spi_controller</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>SpiController<span class="o">()</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>&gt;&gt;&gt;<span class="w"> </span>spi_controller.configure<span class="o">(</span><span class="s1">'ftdi://ftdi:232h/1'</span><span class="o">)</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>&gt;&gt;&gt;<span class="w"> </span><span class="nv">spi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>spi_controller.get_port<span class="o">(</span><span class="nv">cs</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">freq</span><span class="o">=</span><span class="m">1000</span>,<span class="w"> </span><span class="nv">mode</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>&gt;&gt;&gt;<span class="w"> </span>spi.exchange<span class="o">(</span>0xe0_0000_0001.to_bytes<span class="o">(</span><span class="m">5</span><span class="o">)</span>,5,duplex<span class="o">=</span>True<span class="o">)</span>.hex<span class="o">()</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>&gt;&gt;&gt;<span class="w"> </span>spi.exchange<span class="o">(</span>0x80_0000_0000.to_bytes<span class="o">(</span><span class="m">5</span><span class="o">)</span>,5,duplex<span class="o">=</span>True<span class="o">)</span>.hex<span class="o">()</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>&gt;&gt;&gt;<span class="w"> </span>spi.exchange<span class="o">(</span>0xe0_0000_0000.to_bytes<span class="o">(</span><span class="m">5</span><span class="o">)</span>,5,duplex<span class="o">=</span>True<span class="o">)</span>.hex<span class="o">()</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>&gt;&gt;&gt;<span class="w"> </span>spi.exchange<span class="o">(</span>0x80_0000_0000.to_bytes<span class="o">(</span><span class="m">5</span><span class="o">)</span>,5,duplex<span class="o">=</span>True<span class="o">)</span>.hex<span class="o">()</span>
+</span></code></pre></div>
+<p>Why are we using 0xe0_0000_0001? Recall that the top three bits in an SPI
+request correspond to the valid bit, the constant 1 bit, and the type
+field. So the first transaction writes acceleator register xr0 with the
+value 1.</p>
+<p>Why are we using 0x80_0000_0000? Again that the top three bits in an SPI
+request correspond to the valid bit, the constant 1 bit, and the type
+field. So the second transaction is an invalid request; we are basically
+waiting for the accelerator response message.</p>
+<p>So the above sequence writes xr0 with the value 1, then writes xr0 with
+the value 0. This should toggle the debug out pin (i.e., the LED).</p>
+<p>Let's also look at the SPI transactions on the oscilloscope.</p>
+<ul>
+<li>Turn on the oscilloscope</li>
+<li>Press <em>Default Setup</em></li>
+<li>Press <em>2</em> to turn on Channel 2</li>
+</ul>
+<p>Now use the Python REPL to exchange SPI transactions. You should see the
+oscilloscope flicker. Using the following steps to capture a waveform of
+the SPI packets on the oscilloscope.</p>
+<ul>
+<li>Rotate the <em>Horizontal Scale</em> knob counter clockwise to 20ms</li>
+<li>Continue to exchange SPI transactions (i.e., press up arrow key in
+     PowerShell and then enter), see SPI packets flicker</li>
+<li>Rotate the <em>Vertical Position</em> knob of channel 2 counter-clock wise</li>
+<li>Continue to exchange SPI transactions ... position channel 2 below
+    channel 1 using <em>Vertical Position</em> knob</li>
+<li>Rotate the <em>Horizontal Position</em> counter clockwise to move the signal
+    to the left</li>
+<li>Continue exchange SPI transactions and adjust the vertical/horizontal
+     position</li>
+<li>Rotate the <em>Trigger Level</em> kbob clockwise until the trigger is about
+     1V higher than baseline voltage level</li>
+<li>Press <em>Single</em></li>
+<li>Exchange an SPI transactions again to get a captured waveform</li>
+</ul>
+<h3 id="42-using-xmsgs">4.2. Using xmsgs</h3>
+<p>e have provided you with a Python program to make it easier to send
+accelerator requests to the FPGA emulator and eventually your chip. In
+PowerShell on the workstation, change into the <code>xmsgs</code> subdirectory and
+then run the <code>ece6745-check-xmsgs</code> script.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\n</span>etid<span class="se">\p</span>roject2-groupXX<span class="se">\x</span>msgs
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>%<span class="w"> </span>python<span class="w"> </span>ece6745-check-xmsgs<span class="w"> </span>--help
+</span></code></pre></div>
+<p>You can use the <code>--debug-mode</code> command line option to write/read data
+to/from the debug unit like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\n</span>etid<span class="se">\p</span>roject2-groupXX<span class="se">\x</span>msgs
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>%<span class="w"> </span>python<span class="w"> </span>ece6745-check-xmsgs<span class="w"> </span>--verbose<span class="w"> </span>--debug-mode<span class="w"> </span><span class="m">1</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>%<span class="w"> </span>python<span class="w"> </span>ece6745-check-xmsgs<span class="w"> </span>--verbose<span class="w"> </span>--debug-mode<span class="w"> </span><span class="m">0</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>%<span class="w"> </span>python<span class="w"> </span>ece6745-check-xmsgs<span class="w"> </span>--verbose<span class="w"> </span>--debug-mode<span class="w"> </span><span class="m">1</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>%<span class="w"> </span>python<span class="w"> </span>ece6745-check-xmsgs<span class="w"> </span>--verbose<span class="w"> </span>--debug-mode<span class="w"> </span><span class="m">0</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>%<span class="w"> </span>python<span class="w"> </span>ece6745-check-xmsgs<span class="w"> </span>--verbose<span class="w"> </span>--debug-mode<span class="w"> </span>0xdeadbeef
+</span></code></pre></div>
+<h2 id="5-accelerator-testing">5. Accelerator Testing</h2>
+<p>Now that we know the SPI is working, we can test the actual accelerator
+using the xmsgs files we generated earlier. Start by picking the simplest
+xmsg file you have. Let's assume it is called <code>simple.xmsgs</code>. Then use
+the <code>ece6745-check-msgs</code> script to replay the accelerator requests and
+check the accelerator responses.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\n</span>etid<span class="se">\p</span>roject2-groupXX<span class="se">\x</span>msgs
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>%<span class="w"> </span>python<span class="w"> </span>ece6745-check-xmsgs<span class="w"> </span>--verbose<span class="w"> </span>simple.xmsgs
+</span></code></pre></div>
+<p>Try a few more and then try all of them at once.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>%<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\n</span>etid<span class="se">\p</span>roject2-groupXX<span class="se">\x</span>msgs
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>%<span class="w"> </span>python<span class="w"> </span>ece6745-check-xmsgs<span class="w"> </span>*.xmsgs
+</span></code></pre></div>
+<p>You have now successfully completed pre-silicon verification and FPGA
+emulation of your accelerator tape-out! We will be using a similar
+approach to test your chip.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Christopher Batten
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../js/extras.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/skins/default.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.1.0/wavedrom.min.js"></script>
+      
+        <script src="../js/wavedrom_loader.js"></script>
+      
+    
+  </body>
+</html>
