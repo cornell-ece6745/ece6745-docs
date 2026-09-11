@@ -148,8 +148,9 @@ the repository you taped out last spring.
 % cd ${HOME}/ece6745
 % mv project2-groupXX project2-groupXX-backup
 % git clone git@github.com:cornell-ece6745/project2-groupXX
-% cd project2-groupXX/sim
-% mkdir build
+% cd project2-groupXX
+% git checkout tapeout-v2-branch
+% mkdir -p sim/build
 % cd build
 ```
 
