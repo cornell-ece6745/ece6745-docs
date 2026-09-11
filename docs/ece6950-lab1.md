@@ -169,7 +169,7 @@ as all of the chip tests.
 
 ```bash
 % cd ${HOME}/ece6745/project2-groupXX/sim/build
-% pytest ../proj2
+% pytest ../proj2 --verbose
 ```
 
 ### 2.2. Xcel Chip Verification
@@ -187,7 +187,7 @@ option to pytest like this:
 
 ```bash
 % cd ${HOME}/ece6745/project2-groupXX/sim/build
-% pytest ../proj2/test/Proj2XcelChip_test.py --dump-xmsgs
+% pytest ../proj2/test/Proj2XcelChip_test.py --verbose --dump-xmsgs
 ```
 
 Look inside one of the xmsg files:
@@ -255,11 +255,12 @@ We now need to get the files for your design and your xmsg files from
    asked to authorize the Git Credential Manager; click _authorize
    git-ecosystem_
 
- - Step 7. Verify that you have successfully cloned your repo by changing
-   into your repo and using `tree` on the workstation:
+ - Step 7. Change into your repo, checkout the tapeout branch, and using
+   `tree` on the workstation:
 
 ```
 % cd project2-groupXX
+% git checkout tapeout-v2-branch
 % tree
 ```
 
