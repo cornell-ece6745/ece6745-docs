@@ -124,3 +124,7 @@ nav:
   - 'Misc':
     - 'Tinyflow 180nm Design Rules Manual': ece6745-tinyflow-180nm-drm.md
     - 'Project 2 Ideas': ece6745-project2-ideas.md
+
+  - 'Chip Testing':
+    - 'Lab 1: FPGA Emulation': ece6950-lab1.md
+

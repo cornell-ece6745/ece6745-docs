@@ -29,7 +29,9 @@ some project ideas.
 
  - **Encryption/Decryption Accelerator:** Create an accelerator that
    implements some kind of encryption or decryption algorithm such as
-   AES. The processor would send over 32-64B of data by writing 8-16
+   AES, DES, or ASCON. DES is simpler than AES and ASCON is specifically
+   designed to be lightweight so either of these might make a great
+   choice. The processor would send over 32-64B of data by writing 8-16
    accelerator registers and then read back the result by reading a
    different set of 8-16 accelerator registers. The accelerator could be
    for encryption, decryption, or both.
@@ -61,6 +63,10 @@ some project ideas.
    registers. Such an accelerator could eventually be used to process a
    tile of a much larger image.
 
+ - **Binary Neural Network Accelerator:** Create a binary vector-matrix
+   accelerator which could be used to accelerate a fully connected binary
+   neural network.
+
  - **Dense Matrix Multiplication Accelerator:** Create a systolic array
    to accelerate integer matrix multiplication. The processor would send
    over two small matrices. For example, assuming 8-bit elements pixels,
@@ -88,16 +94,14 @@ some project ideas.
    read the result (i.e., the rotated vector) by reading three additional
    accelerator registers.
 
- - **Integer Square Root Accelerator:** Create an accelerator that can
-   find the square root of an integer value using an iterative approach.
-
- - **Approximate Multiplier:** Create an approximate integer multiplier using
-   a log-based approach. Instead of computing A×B directly, the accelerator
-   computes log2(A) + log2(B) and applies the antilog. This hopefully yields
-   area and power savings at the cost of a small, bounded error. Target a
-   4-bit × 4-bit multiplier producing an 8-bit approximate product.
-   Students can compare area, delay, power, and error metrics against
-   an exact multiplier to explore the accuracy-vs-efficiency trade-off.
+ - **Approximate Multiplier:** Create an approximate integer multiplier
+   using a log-based approach. Instead of computing A×B directly, the
+   accelerator computes log2(A) + log2(B) and applies the antilog. This
+   hopefully yields area and power savings at the cost of a small,
+   bounded error. Target a 4-bit × 4-bit multiplier producing an 8-bit
+   approximate product. Students can compare area, delay, power, and
+   error metrics against an exact multiplier to explore the
+   accuracy-vs-efficiency trade-off.
 
  - **FIR Filter Accelerator:** Create an accelerator for a finite
    impulse response (FIR) filter. An N-tap FIR filter computes a
@@ -114,18 +118,6 @@ some project ideas.
    The accelerator maintains a sorted structure internally. Such
    an accelerator is useful for task scheduling, network packet
    prioritization, and graph algorithms like Dijkstra's shortest path.
-
- - **Prefix Sum Accelerator:** Create an accelerator that computes
-   the prefix sum of a small vector of integers. The processor
-   writes a small input vector into several accelerator registers
-   (for example, eight 32-bit values written to eight registers).
-   The processor then writes a control register to start the
-   operation. After completion, the processor reads back the
-   prefix-sum results from the accelerator registers. The
-   accelerator computes the inclusive prefix sum of the input
-   vector. It can be evaluated by comparing area and latency
-   against a software implementation running on the TinyRV2
-   processor.
 
  - **Viterbi Decoder Accelerator:** Create an accelerator that
    implements a Viterbi decoder for convolutional error-correcting
