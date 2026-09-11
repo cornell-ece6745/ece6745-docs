@@ -187,7 +187,7 @@ option to pytest like this:
 
 ```bash
 % cd ${HOME}/ece6745/project2-groupXX/sim/build
-% pytest ../proj2/Proj2XcelChip_test.py --dump-xmsgs
+% pytest ../proj2/test/Proj2XcelChip_test.py --dump-xmsgs
 ```
 
 Look inside one of the xmsg files:
